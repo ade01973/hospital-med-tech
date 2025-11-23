@@ -467,7 +467,16 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
-  const [showDoors, setShowDoors] = useState(false);
+  const [showDoors, setShowDoors] = useState(true);
+
+  useEffect(() => {
+    if (showDoors) {
+      const timer = setTimeout(() => {
+        setShowDoors(false);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [showDoors]);
 
   const handleAnswer = (optionIndex) => {
     setSelectedOption(optionIndex);
@@ -600,13 +609,57 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
       </div>
 
       {showDoors && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="text-center">
-            <div className="inline-flex gap-2 mb-4">
-              <div className="w-32 h-64 bg-gradient-to-b from-slate-600 to-slate-800 border-4 border-slate-700 rounded-lg animate-slide-left shadow-[0_0_30px_rgba(6,182,212,0.3)]"></div>
-              <div className="w-32 h-64 bg-gradient-to-b from-slate-600 to-slate-800 border-4 border-slate-700 rounded-lg animate-slide-right shadow-[0_0_30px_rgba(6,182,212,0.3)]"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 backdrop-blur-xl animate-fade-in">
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl"></div>
+          </div>
+          
+          <div className="relative z-10 text-center">
+            <div className="mb-12">
+              <p className="text-cyan-300/40 text-sm uppercase tracking-[0.2em] font-bold mb-2">Hospital Digital</p>
+              <p className="text-cyan-300 font-black text-2xl uppercase tracking-wider">Accediendo a Sala...</p>
             </div>
-            <p className="text-cyan-300 font-black text-2xl uppercase tracking-wider">Pasando a la siguiente sala...</p>
+
+            <div className="relative inline-flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/30 to-transparent blur-2xl rounded-full w-96 h-80"></div>
+              
+              <div className="relative">
+                <div className="w-72 h-80 bg-gradient-to-b from-slate-200 via-slate-100 to-slate-200 rounded-3xl border-8 border-slate-300 shadow-2xl overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-transparent to-blue-400/10"></div>
+                  
+                  <div className="absolute top-0 left-0 right-0 h-6 bg-gradient-to-r from-slate-400 via-slate-300 to-slate-400 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
+                  </div>
+                  
+                  <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-32 h-2 bg-gradient-to-r from-cyan-400/0 via-cyan-400 to-cyan-400/0 rounded-full blur-md"></div>
+                  
+                  <div className="h-full w-full flex items-center justify-center relative">
+                    <div className="text-4xl text-slate-400 font-black">⌬</div>
+                  </div>
+                  
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent rounded-full"></div>
+                </div>
+
+                <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-gradient-to-r from-slate-400 to-slate-300 rounded-lg shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/20 to-transparent rounded-lg"></div>
+                </div>
+
+                <div className="absolute -right-12 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-gradient-to-r from-slate-300 to-slate-400 rounded-lg shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/20 to-transparent rounded-lg"></div>
+                </div>
+              </div>
+
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 animate-door-open">
+                <div className="absolute left-0 w-36 h-80 bg-gradient-to-r from-slate-100 to-transparent rounded-r-3xl shadow-xl"></div>
+                <div className="absolute right-0 w-36 h-80 bg-gradient-to-l from-slate-100 to-transparent rounded-l-3xl shadow-xl"></div>
+              </div>
+            </div>
+
+            <div className="mt-10 flex justify-center gap-2">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            </div>
           </div>
         </div>
       )}
