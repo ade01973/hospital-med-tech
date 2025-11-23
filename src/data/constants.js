@@ -141,14 +141,19 @@ export const TOPICS = [
   {
     id: 8,
     title: "Trabajo en Equipo",
-    subtitle: "Sinergia y roles",
+    subtitle: "Colaboración e interdependencia",
     icon: Users,
     questions: [
-      { q: "¿Diferencia entre grupo y equipo?", options: ["El número", "Objetivo común y sinergia", "Mismo turno", "No hay diferencia"], correct: 1 },
-      { q: "¿Qué es sinergia?", options: ["Llevarse bien", "Resultado > suma partes (1+1=3)", "Trabajar rápido", "Hablar durante turno"], correct: 1 },
-      { q: "Según Belbin, ¿qué son roles de equipo?", options: ["Cargos", "Patrones de comportamiento", "Tareas asignadas", "Antigüedad"], correct: 1 },
-      { q: "Barrera para trabajo en equipo:", options: ["Comunicación asertiva", "Confianza", "Falta de claridad en objetivos", "Diversidad"], correct: 2 },
-      { q: "Para fomentar equipo vital:", options: ["Competencia", "Crítica pública", "Comunicación abierta y respeto", "Aislarse"], correct: 2 }
+      { q: "Según la definición presentada en el documento, ¿cuál es el elemento esencial que diferencia el trabajo en equipo de otras formas de organización?", options: ["El esfuerzo colaborativo de personas con diferentes habilidades trabajando interdependientemente para un objetivo común", "Que todos trabajen en el mismo turno", "Que tengan el mismo salario", "Que compartan el mismo despacho"], correct: 0 },
+      { q: "¿Cuál es la diferencia crítica entre un grupo de trabajo y un equipo según las características presentadas en la tabla del documento?", options: ["El grupo tiene baja colaboración e interdependencia individual; el equipo tiene alta colaboración e interdependencia compartida", "Los grupos trabajan más horas", "Los equipos son más grandes", "No existe diferencia significativa"], correct: 1 },
+      { q: "Según el modelo de desarrollo de equipos de Tuckman descrito en el documento, ¿cuál es la característica distintiva de la etapa de Tormenta (Storming)?", options: ["Los miembros aprenden a trabajar juntos efectivamente", "Los miembros expresan opiniones e ideas que pueden generar conflictos; es crucial aprender a manejarlos", "El equipo funciona de manera eficiente", "Los miembros se conocen por primera vez"], correct: 0 },
+      { q: "¿Cuál es el propósito fundamental de la etapa de Normalización (Norming) en el desarrollo de un equipo de enfermería?", options: ["Disolver el equipo tras completar la tarea", "Establecer procedimientos estándar, mejores prácticas y roles claros donde se aprecia la fortaleza de cada miembro", "Expresar conflictos abiertamente", "Mejorar la eficiencia administrativa"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son los TRES atributos clave que caracterizan un equipo de trabajo eficaz en enfermería?", options: ["Centralización, competencia individual, jerarquía rígida", "Comunicación efectiva, confianza y respeto mutuo, liderazgo compartido", "Rapidez en decisiones, ausencia de conflictos, uniformidad de opiniones", "Control externo, autoridad única, responsabilidad individual"], correct: 1 },
+      { q: "¿Cuál es el impacto específico de una comunicación efectiva en el contexto dinámico y estresante de los servicios de salud?", options: ["Reduce la autonomía del personal", "Previene errores, facilita coordinación de tareas y asegura seguridad del paciente", "Disminuye la velocidad de respuesta", "No tiene impacto medible"], correct: 3 },
+      { q: "Según el documento, ¿cuál es la función crítica de la confianza y el respeto mutuo en la dinámica de un equipo de enfermería?", options: ["Permiten que miembros se sientan seguros compartiendo ideas, expresando preocupaciones y admitiendo errores sin temor a crítica", "Aumentan la carga de trabajo", "Reducen la responsabilidad individual", "Disminuyen la comunicación formal"], correct: 0 },
+      { q: "¿Cuál es la ventaja fundamental del liderazgo compartido en un equipo de enfermería según las características descritas?", options: ["Un único líder toma todas las decisiones", "Diferentes individuos asumen liderazgo según sus fortalezas, experiencia y conocimientos específicos, promoviendo participación activa", "Elimina la necesidad de coordinación", "Reduce la responsabilidad colectiva"], correct: 1 },
+      { q: "Según el documento, ¿cuál es la razón por la que la toma de decisiones consensuada, aunque requiere más tiempo, produce resultados más sostenibles?", options: ["Es más rápida que otros métodos", "Refleja el compromiso colectivo del equipo y es aceptada por todos los miembros", "Reduce la participación del equipo", "No requiere consideración de opiniones"], correct: 2 },
+      { q: "Según el análisis de barreras para el trabajo en equipo presentado en el documento, ¿cuál es la consecuencia más grave de la falta de liderazgo en un equipo de enfermería?", options: ["Mejora la comunicación interna", "Crea incertidumbre, falta de dirección y disminuye la cohesión, comprometiendo la efectividad del equipo", "Acelera la toma de decisiones", "Aumenta la confianza entre miembros"], correct: 3 }
     ]
   },
   {
