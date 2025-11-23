@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signInAnonymously, signInWithCustomToken } from 'firebase/auth';
+import { signInAnonymously, signInWithCustomToken, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { ChevronRight, HeartPulse } from 'lucide-react';
 import { auth, db, appId } from '../firebase.js';
@@ -14,6 +14,8 @@ const AuthScreen = ({ onLogin }) => {
     setLoading(true);
 
     try {
+      await setPersistence(auth, browserLocalPersistence);
+      
       try {
         await signInAnonymously(auth);
       } catch (anonError) {
