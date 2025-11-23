@@ -174,7 +174,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           </div>
 
           {/* Module Information - Right Side */}
-          {currentTopic && isCurrentUnlocked && (
+          {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
             <div className="flex-1 bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20">
               {/* Module Card */}
               <div className="mb-6">
