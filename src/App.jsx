@@ -6,6 +6,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import Dashboard from './components/Dashboard';
 import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
+import ElevatorDoors from './components/ElevatorDoors';
 import { auth, db, appId } from './firebase.js';
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
   const [view, setView] = useState('auth');
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
+  const [showElevatorDoors, setShowElevatorDoors] = useState(false);
 
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
@@ -120,10 +122,18 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen bg-slate-950">
+      {showElevatorDoors && (
+        <ElevatorDoors 
+          onComplete={() => {
+            setShowElevatorDoors(false);
+            setView('game');
+          }}
+        />
+      )}
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
       {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('dashboard')} onLogout={() => auth.signOut()} />}
-      {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setCurrentFloor={setCurrentFloor} />}
-      {user && view === 'game' && currentLevel && (
+      {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setCurrentFloor={setCurrentFloor} setShowElevatorDoors={setShowElevatorDoors} />}
+      {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 
           topic={currentLevel} 
           user={user} 

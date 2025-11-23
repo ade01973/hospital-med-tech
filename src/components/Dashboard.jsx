@@ -3,7 +3,7 @@ import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown } from 'lucide-r
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import elevatorBg from '../assets/elevator-bg.png';
 
-const Dashboard = ({ user, userData, setView, setLevel }) => {
+const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
@@ -224,13 +224,12 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                   onClick={() => {
                     console.log('🎮 BOTÓN Entrar en la Unidad - Topic:', currentTopic?.id, currentTopic?.title);
                     console.log('📊 Llamando setLevel con:', currentTopic);
-                    console.log('📊 Llamando setView con: game');
                     if (!currentTopic) {
                       console.error('❌ ERROR: currentTopic es undefined!');
                       return;
                     }
                     setLevel(currentTopic);
-                    setView('game');
+                    setShowElevatorDoors(true);
                   }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
                 >
