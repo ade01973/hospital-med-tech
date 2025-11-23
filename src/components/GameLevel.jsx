@@ -47,21 +47,29 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     setSelectedOption(optionIndex);
     const correct = topic.questions[currentFloor].correct === optionIndex;
     setIsCorrect(correct);
+    
+    let pointsEarned = 0;
     if (correct) {
-      const pointsEarned = 100;
+      pointsEarned = 100;
       setScore(prev => prev + pointsEarned);
-      setTimeout(() => {
-        setShowModal(false);
-        const nextFloor = currentFloor + 1;
-        
-        if (nextFloor === floors.length) {
-          setCompleted(true);
-          setTimeout(() => onComplete(topic.id, score + pointsEarned, studentId), 500);
-        } else {
-          setCurrentFloor(nextFloor);
-        }
-       }, 1500);
     }
+    
+    // 🔄 SIEMPRE AVANZAR - correcta o incorrecta
+    setTimeout(() => {
+      const nextFloor = currentFloor + 1;
+      
+      if (nextFloor === floors.length) {
+        // ✅ Última pregunta - mostrar pantalla de éxito
+        setCompleted(true);
+        setTimeout(() => onComplete(topic.id, score + pointsEarned, studentId), 500);
+      } else {
+        // ➡️ Siguiente pregunta
+        setShowModal(false);
+        setSelectedOption(null);
+        setIsCorrect(null);
+        setCurrentFloor(nextFloor);
+      }
+    }, 1500);
   };
 
   if (completed) {
@@ -185,18 +193,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               
               {selectedOption !== null && (
                 <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 ${isCorrect ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'}`}>
-                  {isCorrect ? ">> ACCESO CONCEDIDO <<" : ">> ERROR CRÍTICO <<"}
-                  {!isCorrect && (
-                     <button 
-                        onClick={() => {
-                            setSelectedOption(null);
-                            setIsCorrect(null);
-                         }}
-                        className="block mx-auto mt-3 text-[10px] uppercase tracking-widest text-slate-400 hover:text-white underline"
-                    >
-                        Reiniciar Simulación
-                     </button>
-                  )}
+                  {isCorrect ? "✅ CORRECTO - +100 PTS" : "❌ INCORRECTO"}
+                  <div className="text-xs text-slate-400 mt-2">Siguiente pregunta en 1.5s...</div>
                 </div>
               )}
             </div>
