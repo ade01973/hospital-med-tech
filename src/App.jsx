@@ -683,18 +683,24 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   };
 
   const handleCompletionReturn = () => {
-    onComplete(topic.id, score + 100);
+    console.log(`🏠 Guardando progreso - Módulo: ${topic.id}, Puntos totales: ${score}`);
+    console.log(`DEBUG: onComplete es ${typeof onComplete}`);
+    if (onComplete) {
+      onComplete(topic.id, score);
+    } else {
+      console.error("❌ ERROR: onComplete no está disponible");
+    }
   };
 
   if (isCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex items-center justify-center p-4 font-sans relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
+        <div className="fixed inset-0 opacity-40 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
         </div>
 
-        <div className="relative z-10 text-center max-w-2xl">
+        <div className="relative z-20 text-center max-w-2xl">
           <div className="mb-12 animate-bounce">
             <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-[0_0_60px_rgba(250,204,21,0.5)] mb-8">
               <Trophy className="w-16 h-16 text-white" fill="white" />
@@ -711,7 +717,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
             <div className="flex items-center justify-center gap-8 mb-8">
               <div className="text-center">
                 <p className="text-cyan-300/60 font-bold text-sm uppercase tracking-wider mb-2">Puntos Obtenidos</p>
-                <p className="text-5xl font-black text-yellow-400">{score + 100}</p>
+                <p className="text-5xl font-black text-yellow-400">{score}</p>
               </div>
               <div className="w-px h-16 bg-cyan-500/30"></div>
               <div className="text-center">
@@ -726,13 +732,14 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
           </p>
 
           <button
-            onClick={handleCompletionReturn}
-            className="relative group overflow-hidden inline-block"
+            type="button"
+            onClick={() => {
+              console.log("🎯 Botón 'Volver al Ascensor' presionado");
+              handleCompletionReturn();
+            }}
+            className="relative group overflow-hidden inline-block cursor-pointer px-12 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.7)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wider text-lg border border-cyan-400/50"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
-            <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-5 px-12 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_50px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wider text-lg border border-cyan-400/50">
-              <ChevronUp size={24} /> Volver al Ascensor
-            </div>
+            <ChevronUp size={24} /> Volver al Ascensor
           </button>
         </div>
       </div>
@@ -1076,26 +1083,42 @@ export default function App() {
   }, [user]);
 
   const handleLevelComplete = async (levelId, pointsEarned) => {
-    if (!user) return;
-    if (userData?.completedLevels?.[levelId]) return;
+    console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}`);
+    
+    // ✅ NAVEGAR INMEDIATAMENTE AL DASHBOARD
+    console.log("✅ Navegando a dashboard INMEDIATAMENTE");
+    setView('dashboard');
+    
+    // 🔄 GUARDAR DATOS EN BACKGROUND (sin bloquear)
+    if (!user) {
+      console.error("❌ No hay usuario");
+      return;
+    }
+    if (userData?.completedLevels?.[levelId]) {
+      console.log("⚠️ Módulo ya completado");
+      return;
+    }
     const studentId = localStorage.getItem('studentId');
-    if (!studentId) return;
+    if (!studentId) {
+      console.error("❌ No se encontró studentId");
+      return;
+    }
     const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
     const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', studentId);
-    try {
-      await setDoc(userProgressRef, {
-        completedLevels: { [levelId]: true },
-        totalScore: increment(pointsEarned),
-        lastPlayed: serverTimestamp()
-      }, { merge: true });
-      await setDoc(publicProfileRef, {
-        totalScore: increment(pointsEarned),
-        lastActive: serverTimestamp()
-      }, { merge: true });
-      setView('dashboard');
-    } catch (e) {
-      console.error("Error saving progress:", e);
-    }
+    
+    // Guardar en background sin esperar
+    setDoc(userProgressRef, {
+      completedLevels: { [levelId]: true },
+      totalScore: increment(pointsEarned),
+      lastPlayed: serverTimestamp()
+    }, { merge: true }).catch(e => console.error("❌ Error saving user progress:", e));
+    
+    setDoc(publicProfileRef, {
+      totalScore: increment(pointsEarned),
+      lastActive: serverTimestamp()
+    }, { merge: true }).catch(e => console.error("❌ Error saving public profile:", e));
+    
+    console.log("💾 Guardando en Firestore en background...");
   };
 
   if (!user) return <AuthScreen onLogin={() => setView('welcome')} />;
