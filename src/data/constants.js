@@ -5,8 +5,8 @@ export const NURSING_RANKS = [
   { title: "Enfermera", minScore: 500, color: "from-emerald-500 to-teal-600", icon: "💉" },
   { title: "Referente", minScore: 1500, color: "from-cyan-500 to-blue-600", icon: "🌟" },
   { title: "Supervisora", minScore: 2500, color: "from-blue-600 to-indigo-600", icon: "📋" },
-  { title: "Adjunta", minScore: 4000, color: "from-indigo-600 to-purple-600", icon: "📊" },
-  { title: "Directora", minScore: 6000, color: "from-purple-600 to-fuchsia-600", icon: "👑" },
+  { title: "Supervisora de Área", minScore: 4000, color: "from-indigo-600 to-purple-600", icon: "📊" },
+  { title: "Directora de Enfermería", minScore: 6000, color: "from-purple-600 to-fuchsia-600", icon: "👑" },
   { title: "Gerente", minScore: 8000, color: "from-fuchsia-600 to-rose-600", icon: "🏥" },
   { title: "Líder Global", minScore: 10000, color: "from-amber-400 to-orange-600", icon: "🌍" }
 ];
