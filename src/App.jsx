@@ -20,28 +20,25 @@ import {
   BookOpen, 
   ChevronRight, 
   Lock, 
-  MapPin, 
-  Star, 
   User, 
   Users, 
   Trophy, 
   HeartPulse, 
   Brain, 
-  Syringe, 
   Stethoscope, 
   ArrowLeft, 
-  CheckCircle, 
+  CheckCircle,
   AlertCircle,
-  DoorClosed,
-  DoorOpen,
   Zap,
   Play,
   ShieldCheck,
-  TrendingUp
+  ChevronUp,
+  ChevronDown,
+  Building2,
+  Ambulance,
+  Cross
 } from 'lucide-react';
 
-// --- CONFIGURACIÓN DE FIREBASE ---
-// Configuración extraída del archivo proporcionado
 const firebaseConfig = {
   apiKey: "AIzaSyA6q0wMT-f751LgiDoyaXKkmiRWme7OHiQ",
   authDomain: "gestion-de-enfermeria-cfb69.firebaseapp.com",
@@ -57,16 +54,15 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const appId = 'gestion-enfermeria-v1';
 
-// --- DATOS DEL JUEGO (TEMARIO) ---
 const NURSING_RANKS = [
-  { title: "Estudiante", minScore: 0, color: "from-slate-500 to-slate-600", icon: "🎓" },
-  { title: "Enfermera", minScore: 500, color: "from-emerald-500 to-teal-600", icon: "💉" },
-  { title: "Referente", minScore: 1500, color: "from-cyan-500 to-blue-600", icon: "🌟" },
-  { title: "Supervisora", minScore: 2500, color: "from-blue-600 to-indigo-600", icon: "📋" },
-  { title: "Adjunta", minScore: 4000, color: "from-indigo-600 to-purple-600", icon: "📊" },
-  { title: "Directora", minScore: 6000, color: "from-purple-600 to-fuchsia-600", icon: "👑" },
-  { title: "Gerente", minScore: 8000, color: "from-fuchsia-600 to-rose-600", icon: "🏥" },
-  { title: "Líder Global", minScore: 10000, color: "from-amber-400 to-orange-600", icon: "🌍" }
+  { title: "Estudiante", minScore: 0, color: "from-gray-400 to-gray-500", icon: "🎓" },
+  { title: "Enfermera", minScore: 500, color: "from-green-500 to-emerald-600", icon: "💉" },
+  { title: "Referente", minScore: 1500, color: "from-blue-500 to-blue-600", icon: "🌟" },
+  { title: "Supervisora", minScore: 2500, color: "from-indigo-500 to-indigo-600", icon: "📋" },
+  { title: "Adjunta", minScore: 4000, color: "from-purple-500 to-purple-600", icon: "📊" },
+  { title: "Directora", minScore: 6000, color: "from-pink-500 to-rose-600", icon: "👑" },
+  { title: "Gerente", minScore: 8000, color: "from-red-500 to-red-600", icon: "🏥" },
+  { title: "Líder Global", minScore: 10000, color: "from-amber-500 to-orange-600", icon: "🌍" }
 ];
 
 const TOPICS = [
@@ -148,8 +144,6 @@ const TOPICS = [
   }))
 ];
 
-// --- COMPONENTES ---
-
 const AuthScreen = ({ onLogin }) => {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -160,13 +154,10 @@ const AuthScreen = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      // Intento robusto de autenticación
       try {
-        // Primero intentamos anónimo directo
         await signInAnonymously(auth);
       } catch (anonError) {
         console.warn("Fallo en login anónimo, intentando custom token si existe...", anonError);
-        // Si falla y tenemos un token personalizado
         if (typeof window !== 'undefined' && window.__initial_auth_token) {
            await signInWithCustomToken(auth, window.__initial_auth_token);
         } else {
@@ -187,7 +178,6 @@ const AuthScreen = ({ onLogin }) => {
       onLogin();
     } catch (error) {
       console.error("Error auth completo:", error);
-      // Mensajes de error amigables
       if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/configuration-not-found') {
         alert("⚠️ ERROR DE CONFIGURACIÓN FIREBASE:\n\nEl acceso 'Anónimo' no está habilitado en tu consola de Firebase.");
       } else if (error.code === 'auth/api-key-not-valid') {
@@ -201,36 +191,42 @@ const AuthScreen = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950 to-slate-950"></div>
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-green-50 flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.9)_2px,transparent_2px),linear-gradient(90deg,rgba(255,255,255,0.9)_2px,transparent_2px)] bg-[size:100px_100px] opacity-30"></div>
+      
+      <div className="absolute top-10 right-10 text-red-500 animate-pulse">
+        <Cross className="w-16 h-16" fill="currentColor" />
+      </div>
+      
+      <div className="absolute bottom-10 left-10 text-blue-400 opacity-40">
+        <Building2 className="w-24 h-24" />
+      </div>
 
-      <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full text-center relative z-10">
-        <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 transform rotate-6 hover:rotate-12 transition-all duration-500">
-          <HeartPulse className="w-10 h-10 text-white" />
+      <div className="bg-white border-4 border-gray-300 rounded-lg shadow-2xl p-10 max-w-md w-full text-center relative z-10">
+        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+          <HeartPulse className="w-12 h-12 text-white" strokeWidth={2.5} />
         </div>
-        <h1 className="text-4xl font-black text-white mb-2 tracking-tighter">NURSE<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">MANAGER</span></h1>
-        <p className="text-slate-400 mb-8 text-sm uppercase tracking-widest font-bold">Simulador de Gestión Sanitaria</p>
+        <h1 className="text-4xl font-black text-gray-800 mb-2">HOSPITAL</h1>
+        <h2 className="text-3xl font-black text-green-600 mb-4">SIMULADOR</h2>
+        <p className="text-gray-600 mb-8 text-sm font-semibold uppercase tracking-widest">Sistema de Capacitación</p>
         
         <form onSubmit={handleLogin} className="space-y-4">
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
+          <div className="relative">
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Introduce tu ID de Agente..."
-              className="relative w-full px-5 py-4 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-center font-bold tracking-wide"
+              placeholder="Ingrese su nombre..."
+              className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center font-semibold"
             />
           </div>
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-sm"
+            className="w-full bg-green-600 text-white hover:bg-green-700 font-bold py-4 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 uppercase tracking-wide text-sm border-2 border-green-700"
           >
-            {loading ? 'Iniciando Sistema...' : <>Entrar al Sistema <ChevronRight className="w-5 h-5" /></>}
+            {loading ? 'Accediendo...' : <>Ingresar al Hospital <ChevronRight className="w-5 h-5" /></>}
           </button>
         </form>
       </div>
@@ -246,152 +242,171 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
     ? (((userData?.totalScore || 0) - currentRank.minScore) / (nextRank.minScore - currentRank.minScore)) * 100 
     : 100;
 
-  const scrollRef = useRef(null);
+  const currentFloor = TOPICS.findIndex(t => {
+    const isUnlocked = t.id === 1 || (userData?.completedLevels && userData.completedLevels[t.id - 1]);
+    const isCompleted = userData?.completedLevels && userData.completedLevels[t.id];
+    return isUnlocked && !isCompleted;
+  });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-cyan-500/30">
-      {/* Top Bar - Glassmorphism */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-white/5 px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-slate-100 to-blue-50 font-sans">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:50px_50px] opacity-40"></div>
+      
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b-4 border-green-600 shadow-lg px-4 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${currentRank.color} flex items-center justify-center text-lg shadow-lg`}>
-              {currentRank.icon}
+            <div className="bg-red-500 p-2 rounded-lg">
+              <Cross className="w-6 h-6 text-white" fill="currentColor" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Rango Actual</span>
-              <span className="text-sm font-black text-white">{currentRank.title}</span>
+              <span className="text-xs text-gray-500 font-bold uppercase">Hospital General</span>
+              <span className="text-sm font-black text-gray-800">{currentRank.title}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-xs text-cyan-400 font-bold uppercase tracking-wider">Experiencia</span>
+            <div className="hidden sm:flex flex-col items-end">
+              <span className="text-xs text-green-600 font-bold uppercase">Puntos</span>
               <div className="flex items-center gap-1">
-                <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <span className="text-xl font-black leading-none">{userData?.totalScore || 0}</span>
+                <span className="text-2xl font-black text-gray-800">{userData?.totalScore || 0}</span>
               </div>
             </div>
             <button 
               onClick={() => setView('leaderboard')} 
-              className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center border border-white/10 transition-colors"
+              className="w-10 h-10 rounded-lg bg-yellow-400 hover:bg-yellow-500 flex items-center justify-center border-2 border-yellow-600 transition-colors shadow-md"
             >
-              <Trophy className="w-5 h-5 text-yellow-400" />
+              <Trophy className="w-5 h-5 text-yellow-900" />
             </button>
           </div>
         </div>
-        
-        {/* XP Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-slate-800">
-          <div 
-            className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_10px_rgba(34,211,238,0.5)] transition-all duration-1000"
-            style={{ width: `${progressPercent}%` }}
-          ></div>
-        </div>
       </div>
 
-      {/* Main Content - Vertical "Battle Pass" Timeline */}
-      <div className="pt-24 pb-24 px-4 max-w-xl mx-auto relative" ref={scrollRef}>
-        
-        {/* Central Line */}
-        <div className="absolute left-8 sm:left-1/2 top-0 bottom-0 w-1 bg-slate-800 transform sm:-translate-x-1/2"></div>
+      <div className="pt-20 pb-10 px-4 max-w-4xl mx-auto relative">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-black text-gray-800 mb-2">ASCENSOR DEL HOSPITAL</h2>
+          <p className="text-gray-600 font-semibold">Selecciona una planta para comenzar</p>
+        </div>
 
-        <div className="space-y-12">
-          {TOPICS.map((topic, index) => {
-            const isUnlocked = index === 0 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
-            const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
-            const isCurrent = isUnlocked && !isCompleted;
-
-            return (
-              <div key={topic.id} className={`relative flex items-center sm:justify-center ${isCurrent ? 'z-10' : 'z-0'}`}>
-                
-                {/* Connector Dot on Line */}
-                <div className={`absolute left-8 sm:left-1/2 w-4 h-4 rounded-full border-4 transform -translate-x-1/2 
-                  ${isCompleted ? 'bg-emerald-500 border-emerald-900' : 
-                    isCurrent ? 'bg-cyan-400 border-cyan-900 shadow-[0_0_15px_rgba(34,211,238,0.8)]' : 
-                    'bg-slate-800 border-slate-950'}`}
-                ></div>
-
-                {/* Card Container */}
-                <div className={`w-full pl-16 sm:pl-0 flex ${index % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'} sm:items-center sm:gap-12 sm:w-full`}>
-                  
-                  {/* Spacer for alignment */}
-                  <div className="hidden sm:block sm:w-1/2"></div>
-
-                  {/* The Card */}
-                  <button
-                    disabled={!isUnlocked || isCompleted}
-                    onClick={() => {
-                       setLevel(topic);
-                       setView('game');
-                    }}
-                    className={`relative w-full sm:w-[calc(50%-3rem)] group text-left transition-all duration-300`}
-                  >
-                    {/* Glowing Backdrop for Current Level */}
-                    {isCurrent && (
-                       <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-75 animate-pulse"></div>
-                    )}
-
-                    <div className={`relative rounded-2xl p-5 border transition-all duration-300
-                      ${isCompleted 
-                        ? 'bg-slate-900/50 border-emerald-500/30 hover:bg-slate-800/50' 
-                        : isCurrent 
-                          ? 'bg-slate-900 border-cyan-500 shadow-xl' 
-                          : 'bg-slate-900/30 border-slate-800 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 hover:bg-slate-800/50 hover:border-slate-600 cursor-not-allowed'
-                      }
-                    `}>
-                    
-                      {/* Level Number Badge */}
-                      <div className="flex justify-between items-start mb-3">
-                        <span className={`text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest border
-                          ${isCompleted 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                            : isCurrent 
-                              ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' 
-                              : 'bg-slate-800 text-slate-500 border-slate-700'
-                          }`}>
-                          Nivel {String(topic.id).padStart(2, '0')}
-                         </span>
-                        
-                        {/* Status Icon */}
-                        {isCompleted ? <ShieldCheck className="text-emerald-400 w-5 h-5" /> : 
-                         isCurrent ? <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div> : 
-                         <Lock className="text-slate-600 w-4 h-4" />}
-                      </div>
-
-                      <h3 className={`text-lg font-bold mb-1 leading-tight ${isUnlocked ? 'text-white' : 'text-slate-500'}`}>
-                        {topic.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 mb-4 font-medium">{topic.subtitle}</p>
-
-                      {/* Action Button / Indicator */}
-                      <div className="flex items-center justify-between mt-2">
-                        <div className={`p-2 rounded-lg ${isUnlocked ? 'bg-slate-800' : 'bg-slate-800/50'}`}>
-                          <topic.icon size={18} className={isUnlocked ? 'text-cyan-400' : 'text-slate-600'} />
-                        </div>
-                        
-                        {isCurrent && (
-                           <div className="flex items-center gap-2 text-cyan-400 text-xs font-black uppercase tracking-wider animate-pulse">
-                            Jugar <ChevronRight size={14} strokeWidth={3} />
-                          </div>
-                        )}
-                         {isCompleted && (
-                           <span className="text-emerald-500 text-xs font-bold uppercase">Completado</span>
-                        )}
-                      </div>
-                   </div>
-                  </button>
-
+        <div className="flex gap-8 justify-center items-start flex-wrap lg:flex-nowrap">
+          <div className="bg-gradient-to-b from-gray-800 via-gray-700 to-gray-900 rounded-3xl p-8 shadow-2xl border-8 border-gray-300 relative min-w-[320px]">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 px-6 py-2 rounded-full border-4 border-white shadow-lg">
+              <span className="text-white font-black text-sm">ASCENSOR</span>
+            </div>
+            
+            <div className="bg-black rounded-xl p-4 mb-6 border-4 border-gray-600">
+              <div className="text-center">
+                <div className="text-6xl font-black text-green-400 font-mono mb-2">
+                  {currentFloor >= 0 ? currentFloor + 1 : '—'}
+                </div>
+                <div className="text-green-400 text-xs font-bold uppercase tracking-widest">
+                  {currentFloor >= 0 ? TOPICS[currentFloor].title : 'Planta Baja'}
                 </div>
               </div>
-            );
-          })}
-          
-          {/* End of Line */}
-          <div className="flex flex-col items-center justify-center pt-8 pb-8 opacity-50">
-            <div className="w-1 h-12 bg-gradient-to-b from-slate-800 to-transparent"></div>
-            <p className="text-xs text-slate-600 uppercase tracking-[0.2em] font-bold mt-4">Más niveles pronto</p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {TOPICS.slice(0, 19).map((topic, index) => {
+                const isUnlocked = index === 0 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+                const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
+                const isCurrent = currentFloor === index;
+
+                return (
+                  <button
+                    key={topic.id}
+                    disabled={!isUnlocked || isCompleted}
+                    onClick={() => {
+                      setLevel(topic);
+                      setView('game');
+                    }}
+                    className={`h-16 rounded-lg font-black text-lg transition-all relative overflow-hidden ${
+                      isCompleted 
+                        ? 'bg-green-500 text-white border-2 border-green-700 cursor-default' 
+                        : isCurrent 
+                          ? 'bg-yellow-400 text-gray-900 border-4 border-yellow-600 shadow-lg shadow-yellow-400/50 animate-pulse' 
+                          : isUnlocked
+                            ? 'bg-white text-gray-800 border-2 border-gray-400 hover:bg-gray-100 hover:scale-105 cursor-pointer'
+                            : 'bg-gray-600 text-gray-400 border-2 border-gray-700 cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    {isCompleted && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                    )}
+                    {!isCompleted && (isUnlocked ? topic.id : <Lock className="mx-auto" size={20} />)}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex gap-2">
+              <button className="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-gray-500 transition-colors border-2 border-gray-700">
+                <ChevronDown size={20} /> BAJAR
+              </button>
+              <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-500 transition-colors border-2 border-blue-800">
+                <ChevronUp size={20} /> SUBIR
+              </button>
+            </div>
           </div>
 
+          <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-gray-300 min-w-[300px]">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-gray-200">
+              <div className="bg-blue-500 p-3 rounded-lg">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-black text-gray-800 text-lg">Planta Actual</h3>
+                <p className="text-sm text-gray-600 font-semibold">
+                  {currentFloor >= 0 ? `Piso ${currentFloor + 1}` : 'Planta Baja'}
+                </p>
+              </div>
+            </div>
+
+            {currentFloor >= 0 ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-4 rounded-xl text-white">
+                  <div className="flex items-center gap-3 mb-2">
+                    {React.createElement(TOPICS[currentFloor].icon, { className: "w-6 h-6" })}
+                    <h4 className="font-black text-lg">{TOPICS[currentFloor].title}</h4>
+                  </div>
+                  <p className="text-sm opacity-90 font-medium">{TOPICS[currentFloor].subtitle}</p>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-bold text-gray-600 uppercase">Progreso</span>
+                    <span className="text-xs font-bold text-green-600">{Math.round(progressPercent)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-500 rounded-full"
+                      style={{ width: `${progressPercent}%` }}
+                    ></div>
+                  </div>
+                  {nextRank && (
+                    <p className="text-xs text-gray-600 mt-2 font-semibold">
+                      Siguiente rango: <span className="font-black text-gray-800">{nextRank.title}</span> ({nextRank.minScore} pts)
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => {
+                    setLevel(TOPICS[currentFloor]);
+                    setView('game');
+                  }}
+                  className="w-full bg-green-600 text-white py-4 rounded-xl font-black text-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-green-800"
+                >
+                  ¡COMENZAR EVALUACIÓN!
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 font-semibold">Todas las plantas completadas</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -399,238 +414,144 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
 };
 
 const GameLevel = ({ topic, user, onExit, onComplete }) => {
-  const [currentFloor, setCurrentFloor] = useState(0);
-  const [isDoorOpening, setIsDoorOpening] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [currentQ, setCurrentQ] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
-  const [completed, setCompleted] = useState(false);
-
-  const floors = [...topic.questions];
-  const handleDoorClick = (floorIndex) => {
-    if (floorIndex === currentFloor) {
-      setIsDoorOpening(true);
-      setTimeout(() => {
-        setIsDoorOpening(false);
-        setShowModal(true);
-        setSelectedOption(null);
-        setIsCorrect(null);
-      }, 600);
-    }
-  };
+  const [showDoors, setShowDoors] = useState(true);
 
   const handleAnswer = (optionIndex) => {
     setSelectedOption(optionIndex);
-    const correct = topic.questions[currentFloor].correct === optionIndex;
+    const correct = topic.questions[currentQ].correct === optionIndex;
     setIsCorrect(correct);
     if (correct) {
       const pointsEarned = 100;
       setScore(prev => prev + pointsEarned);
       setTimeout(() => {
-        setShowModal(false);
-        const nextFloor = currentFloor + 1;
-        
-        if (nextFloor === floors.length) {
-          setCompleted(true);
-          setTimeout(() => onComplete(topic.id, score + pointsEarned), 500);
+        const next = currentQ + 1;
+        if (next === topic.questions.length) {
+          onComplete(topic.id, score + pointsEarned);
         } else {
-          setCurrentFloor(nextFloor);
+          setShowDoors(true);
+          setTimeout(() => {
+            setShowDoors(false);
+            setCurrentQ(next);
+            setSelectedOption(null);
+            setIsCorrect(null);
+          }, 800);
         }
-       }, 1500);
+      }, 1500);
     }
   };
 
-  if (completed) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in duration-300 relative overflow-hidden">
-        <div className="absolute inset-0">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
-        </div>
-        
-        <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl max-w-sm w-full relative z-10">
-          <div className="w-24 h-24 bg-gradient-to-tr from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(245,158,11,0.4)] animate-bounce">
-            <Trophy className="w-12 h-12 text-white" fill="white" />
-          </div>
-          <h2 className="text-3xl font-black text-white mb-2 italic uppercase tracking-tighter">¡MISIÓN CUMPLIDA!</h2>
-          <p className="text-slate-400 mb-8 font-medium">Módulo: {topic.title}</p>
-          
-          <div className="bg-slate-950/50 rounded-2xl p-6 mb-8 border border-white/5">
-            <p className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-1">Puntuación Total</p>
-            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-              +{score}
-             </p>
-          </div>
-          
-          <button onClick={onExit} className="w-full bg-white text-slate-900 hover:bg-slate-200 font-black py-4 rounded-xl transition-all transform hover:-translate-y-1 shadow-lg">
-            VOLVER AL MAPA
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans text-white overflow-hidden">
-      {/* HUD Superior */}
-      <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10 sticky top-0">
-        <button onClick={onExit} className="text-slate-400 hover:text-white flex items-center gap-2 font-bold transition-colors uppercase tracking-wider text-xs">
-          <ArrowLeft size={16}/> <span className="hidden sm:inline">Abandonar</span>
-        </button>
-        <div className="flex flex-col items-center">
-           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Planta</span>
-          <span className="text-cyan-400 font-black text-xl tracking-widest">0{currentFloor + 1} / 05</span>
-        </div>
-        <div className="bg-slate-800 border border-white/10 text-white px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-lg">
-          <Zap size={16} className="text-yellow-400 fill-yellow-400" /> {score}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 font-sans">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+      
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b-4 border-green-600 shadow-lg px-4 py-3">
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <button onClick={onExit} className="text-gray-600 hover:text-gray-800 flex items-center gap-2 font-bold transition-colors">
+            <ArrowLeft size={20}/> <span>Salir</span>
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-gray-600 uppercase">Sala</span>
+            <span className="text-2xl font-black text-green-600">{currentQ + 1} / {topic.questions.length}</span>
+          </div>
+          <div className="bg-yellow-400 border-2 border-yellow-600 text-gray-900 px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-md">
+            <Zap size={18} className="text-yellow-900 fill-yellow-900" /> {score}
+          </div>
         </div>
       </div>
 
-      {/* Escenario Vertical (Hospital Tower) */}
-      <div className="flex-1 relative overflow-y-auto overflow-x-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 to-black">
-        <div className="max-w-md mx-auto min-h-full flex flex-col-reverse justify-start py-20 px-6 gap-12 pb-32">
-          
-          {floors.map((q, index) => {
-            const isCurrent = index === currentFloor;
-            const isCompleted = index < currentFloor;
-            const isLocked = index > currentFloor;
-            return (
-              <div 
-                key={index} 
-                className={`relative transition-all duration-700 ${isCurrent ? 'scale-105 z-10' : 'opacity-40 scale-95 grayscale blur-[1px]'}`}
-              >
-                {/* Estructura de la Planta */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-1 relative shadow-2xl">
-                  
-                  {/* Etiqueta de Piso */}
-                  <div className="absolute -left-4 top-8 bg-slate-950 text-slate-500 px-3 py-2 text-xs font-black rounded-r border-y border-r border-slate-800 shadow-md tracking-widest writing-vertical-lr transform -rotate-180">
-                     PISO 0{index + 1}
-                  </div>
-
-                  {/* Interior de la Planta */}
-                  <div className="bg-gradient-to-b from-slate-800 to-slate-900 h-40 rounded-xl flex items-end justify-center relative overflow-hidden border border-white/5">
-                     
-                    {/* Decoración de fondo */}
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-
-                    {/* La Puerta */}
-                    <button 
-                      onClick={() => handleDoorClick(index)}
-                      disabled={!isCurrent}
-                      className={`relative mb-0 transition-all duration-500 group ${
-                        isCurrent ? 'cursor-pointer' : 'cursor-default'
-                      }`}
-                    >
-                      {/* Marco de puerta */}
-                      <div className={`w-32 h-32 transition-colors duration-500
-                         ${isCompleted ? 'bg-emerald-900/20 border-emerald-500/30' : 'bg-slate-950'} 
-                        border-4 ${isCurrent ? 'border-cyan-500 shadow-[0_0_30px_rgba(34,211,238,0.2)]' : 'border-slate-700'} 
-                        rounded-t-xl flex items-end justify-center relative overflow-hidden`}
-                      >
-                        
-                         {/* Puertas físicas */}
-                        <div className={`absolute inset-0 flex transition-transform duration-700 ease-in-out ${isDoorOpening || isCompleted ? 'scale-x-0 opacity-0' : 'scale-x-100'}`}>
-                          <div className="w-1/2 h-full bg-slate-800 border-r border-black flex items-center justify-end pr-2 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:10px_10px]">
-                            {isLocked && <Lock size={12} className="text-slate-600" />}
-                           </div>
-                          <div className="w-1/2 h-full bg-slate-800 border-l border-slate-700 flex items-center pl-2 bg-[linear-gradient(-45deg,transparent_25%,rgba(0,0,0,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:10px_10px]">
-                            {isCurrent && !isDoorOpening && <div className="w-12 h-1 bg-red-500 rounded-full animate-ping absolute top-1/2 left-1/2 transform -translate-x-1/2"></div>}
-                           </div>
-                        </div>
-
-                        {/* Interior de la puerta */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-cyan-500/5">
-                            {isCompleted ? <CheckCircle className="text-emerald-500 w-12 h-12" /> : 
-                            isCurrent ? <Play className="text-cyan-400 w-12 h-12 animate-pulse fill-cyan-400/20" /> : null}
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Personaje (Avatar) */}
-                    {isCurrent && (
-                      <div className="absolute bottom-0 right-6 animate-bounce duration-1000 z-20">
-                         <div className="bg-cyan-500 p-2 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.6)]">
-                            <User className="text-white w-6 h-6" />
-                         </div>
-                      </div>
-                    )}
-                  </div>
-                 </div>
+      <div className="pt-24 pb-10 px-4 max-w-4xl mx-auto relative">
+        <div className="bg-white rounded-2xl shadow-2xl border-4 border-gray-300 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 border-b-4 border-green-800">
+            <div className="flex items-center gap-4">
+              <div className="bg-white p-3 rounded-lg">
+                <topic.icon className="w-8 h-8 text-green-600" />
               </div>
-            );
-          })}
-          
-          {/* Suelo base */}
-          <div className="text-center text-slate-700 font-black text-xs mt-4 uppercase tracking-[0.5em]">Lobby Principal</div>
-        </div>
-      </div>
-
-      {/* Modal Pregunta */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-           <div className="bg-slate-900 border border-cyan-500/30 w-full max-w-lg rounded-2xl p-0 shadow-[0_0_50px_rgba(34,211,238,0.1)] animate-in zoom-in-95 duration-200 overflow-hidden">
-            {/* Header del Modal */}
-            <div className="bg-slate-950 p-4 border-b border-white/5 flex justify-between items-center relative overflow-hidden">
-               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
-               <span className="text-cyan-400 font-mono text-xs tracking-widest uppercase flex items-center gap-2 font-bold">
-                  <Activity size={14} className="animate-pulse"/> Protocolo de Respuesta
-               </span>
-               <span className="text-slate-500 font-mono text-xs">SEC-{currentFloor + 1}</span>
+              <div className="flex-1">
+                <h2 className="text-2xl font-black text-white mb-1">{topic.title}</h2>
+                <p className="text-green-100 font-semibold">{topic.subtitle}</p>
+              </div>
             </div>
+          </div>
 
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-8 leading-snug">
-                 {topic.questions[currentFloor].q}
+          <div className="p-8">
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-8">
+              <h3 className="text-xl font-bold text-gray-800 leading-relaxed">
+                {topic.questions[currentQ].q}
               </h3>
-
-              <div className="space-y-3">
-                {topic.questions[currentFloor].options.map((opt, idx) => (
-                  <button
-                     key={idx}
-                    onClick={() => handleAnswer(idx)}
-                    disabled={selectedOption !== null}
-                    className={`w-full text-left p-4 rounded-xl border transition-all text-sm font-bold relative overflow-hidden group ${
-                      selectedOption === null 
-                        ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-cyan-400 hover:text-white hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]'
-                        : selectedOption === idx
-                          ? isCorrect 
-                            ? 'bg-emerald-950/50 border-emerald-500 text-emerald-400'
-                            : 'bg-red-950/50 border-red-500 text-red-400'
-                          : idx === topic.questions[currentFloor].correct 
-                            ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-600' 
-                            : 'opacity-20 border-transparent text-slate-600'
-                    }`}
-                  >
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded border flex items-center justify-center text-sm font-black ${
-                         selectedOption === idx ? 'border-current' : 'border-slate-600 text-slate-500 group-hover:border-cyan-400 group-hover:text-cyan-400'
-                       }`}>
-                         {String.fromCharCode(65 + idx)}
-                       </div>
-                        {opt}
-                    </div>
-                  </button>
-                ))}
-              </div>
-              
-              {selectedOption !== null && (
-                <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 ${isCorrect ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'}`}>
-                  {isCorrect ? ">> ACCESO CONCEDIDO <<" : ">> ERROR CRÍTICO <<"}
-                  {!isCorrect && (
-                     <button 
-                        onClick={() => {
-                            setSelectedOption(null);
-                            setIsCorrect(null);
-                         }}
-                        className="block mx-auto mt-3 text-[10px] uppercase tracking-widest text-slate-400 hover:text-white underline"
-                    >
-                        Reiniciar Simulación
-                     </button>
-                  )}
-                </div>
-              )}
             </div>
+
+            <div className="grid gap-4">
+              {topic.questions[currentQ].options.map((opt, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleAnswer(idx)}
+                  disabled={selectedOption !== null}
+                  className={`text-left p-5 rounded-xl border-2 transition-all font-semibold relative overflow-hidden ${
+                    selectedOption === null 
+                      ? 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50 hover:border-green-500 hover:shadow-lg'
+                      : selectedOption === idx
+                        ? isCorrect 
+                          ? 'bg-green-100 border-green-600 text-green-800'
+                          : 'bg-red-100 border-red-600 text-red-800'
+                        : idx === topic.questions[currentQ].correct 
+                          ? 'bg-green-50 border-green-400 text-green-700' 
+                          : 'opacity-40 border-gray-200 text-gray-500'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-lg font-black ${
+                      selectedOption === idx 
+                        ? isCorrect 
+                          ? 'border-green-600 bg-green-600 text-white' 
+                          : 'border-red-600 bg-red-600 text-white'
+                        : 'border-gray-400 text-gray-600'
+                    }`}>
+                      {String.fromCharCode(65 + idx)}
+                    </div>
+                    <span className="flex-1">{opt}</span>
+                    {selectedOption === idx && isCorrect && <CheckCircle className="w-6 h-6 text-green-600" />}
+                    {selectedOption === idx && !isCorrect && <AlertCircle className="w-6 h-6 text-red-600" />}
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            {selectedOption !== null && (
+              <div className={`mt-6 p-5 rounded-xl text-center font-black text-lg border-2 ${
+                isCorrect 
+                  ? 'bg-green-100 text-green-800 border-green-600' 
+                  : 'bg-red-100 text-red-800 border-red-600'
+              }`}>
+                {isCorrect ? "✓ RESPUESTA CORRECTA - +100 pts" : "✗ RESPUESTA INCORRECTA - Intenta de nuevo"}
+                {!isCorrect && (
+                  <button 
+                    onClick={() => {
+                      setSelectedOption(null);
+                      setIsCorrect(null);
+                    }}
+                    className="block mx-auto mt-3 text-sm uppercase text-red-700 hover:text-red-900 underline font-bold"
+                  >
+                    Intentar nuevamente
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {showDoors && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="text-center">
+            <div className="inline-flex gap-2 mb-4">
+              <div className="w-32 h-64 bg-gray-700 border-4 border-gray-800 rounded-lg animate-slide-left"></div>
+              <div className="w-32 h-64 bg-gray-700 border-4 border-gray-800 rounded-lg animate-slide-right"></div>
+            </div>
+            <p className="text-white font-black text-2xl">Pasando a la siguiente sala...</p>
           </div>
         </div>
       )}
@@ -650,59 +571,60 @@ const Leaderboard = ({ onBack }) => {
     });
     return () => unsubscribe();
   }, []);
+
   return (
-    <div className="min-h-screen bg-slate-950 p-4 font-sans text-white">
-      <div className="max-w-2xl mx-auto mt-10">
-        <button onClick={onBack} className="text-slate-500 hover:text-white flex items-center gap-2 mb-8 font-bold transition-colors uppercase tracking-wider text-xs">
-          <ArrowLeft size={16}/> Volver al Mapa
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-green-50 p-4 font-sans">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:50px_50px] opacity-40"></div>
+      
+      <div className="max-w-3xl mx-auto mt-10 relative">
+        <button onClick={onBack} className="text-gray-600 hover:text-gray-800 flex items-center gap-2 mb-8 font-bold transition-colors">
+          <ArrowLeft size={20}/> Volver al Hospital
         </button>
         
         <div className="text-center mb-12">
-          <h2 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4 tracking-tighter">TOP PLAYERS</h2>
-           <p className="text-slate-400 font-medium uppercase tracking-widest text-sm">Ranking Global de Gestión</p>
+          <div className="inline-flex items-center gap-3 bg-yellow-400 px-8 py-4 rounded-2xl border-4 border-yellow-600 shadow-xl mb-4">
+            <Trophy className="w-10 h-10 text-yellow-900" />
+            <h2 className="text-4xl font-black text-gray-900">RANKING</h2>
+          </div>
+          <p className="text-gray-600 font-bold uppercase tracking-wide">Top Profesionales del Hospital</p>
         </div>
 
-        <div className="bg-slate-900/50 rounded-3xl border border-slate-800 overflow-hidden backdrop-blur-md">
-          <div className="overflow-y-auto max-h-[600px]">
-            {leaders.length === 0 ? (
-              <div className="p-12 text-center text-slate-600 font-mono text-sm">Cargando base de datos...</div>
-             ) : (
-              leaders.map((l, idx) => (
-                <div 
-                  key={idx} 
-                  className={`flex items-center justify-between p-6 border-b border-slate-800/50 transition-all ${
-                     idx === 0 ? 'bg-yellow-500/10 border-yellow-500/20' : 
-                    idx === 1 ? 'bg-slate-400/10 border-slate-400/20' : 
-                    idx === 2 ? 'bg-orange-500/10 border-orange-500/20' : 'hover:bg-slate-800/50'
-                  }`}
-                >
-                  <div className="flex items-center gap-6">
-                    <div className={`w-12 h-12 flex items-center justify-center font-black rounded-xl text-xl transform ${
-                      idx === 0 ? 'bg-yellow-500 text-slate-950 rotate-3 shadow-[0_0_20px_rgba(234,179,8,0.4)]' : 
-                      idx === 1 ? 'bg-slate-400 text-slate-950 -rotate-3' : 
-                      idx === 2 ? 'bg-orange-500 text-slate-950 rotate-1' : 'bg-slate-800 text-slate-600'
-                    }`}>
-                      {idx + 1}
-                    </div>
-                    <div>
-                       <p className="font-black text-white text-lg tracking-tight">{l.displayName}</p>
-                      <div className="flex items-center gap-2">
-                         <span className={`w-2 h-2 rounded-full ${idx < 3 ? 'bg-green-500 animate-pulse' : 'bg-slate-600'}`}></span>
-                         <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">
-                           {NURSING_RANKS.slice().reverse().find(r => (l.totalScore || 0) >= r.minScore)?.title || "Novato"}
-                         </p>
-                      </div>
-                    </div>
+        <div className="bg-white rounded-2xl border-4 border-gray-300 overflow-hidden shadow-2xl">
+          {leaders.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 font-semibold">Cargando datos...</div>
+          ) : (
+            leaders.map((l, idx) => (
+              <div 
+                key={idx} 
+                className={`flex items-center justify-between p-6 border-b-2 border-gray-200 transition-all ${
+                  idx === 0 ? 'bg-yellow-50' : 
+                  idx === 1 ? 'bg-gray-50' : 
+                  idx === 2 ? 'bg-orange-50' : 'hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center gap-6">
+                  <div className={`w-14 h-14 flex items-center justify-center font-black rounded-xl text-2xl border-4 ${
+                    idx === 0 ? 'bg-yellow-400 text-gray-900 border-yellow-600' : 
+                    idx === 1 ? 'bg-gray-300 text-gray-900 border-gray-500' : 
+                    idx === 2 ? 'bg-orange-400 text-gray-900 border-orange-600' : 'bg-white text-gray-600 border-gray-300'
+                  }`}>
+                    {idx + 1}
                   </div>
-                   <div className="text-right">
-                    <span className="block font-black text-cyan-400 text-2xl leading-none">{l.totalScore || 0}</span>
-                    <span className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">XP</span>
+                  <div>
+                    <p className="font-black text-gray-800 text-xl">{l.displayName}</p>
+                    <p className="text-sm text-gray-600 font-semibold">
+                      {NURSING_RANKS.slice().reverse().find(r => (l.totalScore || 0) >= r.minScore)?.title || "Novato"}
+                    </p>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-         </div>
+                <div className="text-right">
+                  <span className="block font-black text-green-600 text-3xl">{l.totalScore || 0}</span>
+                  <span className="text-xs text-gray-500 uppercase font-bold">puntos</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -782,5 +704,5 @@ export default function App() {
     return <Leaderboard onBack={() => setView('dashboard')} />;
   }
 
-  return <div className="flex items-center justify-center h-screen bg-slate-950 text-cyan-500 font-black animate-pulse tracking-widest uppercase text-sm">Inicializando Sistema...</div>;
+  return <div className="flex items-center justify-center h-screen bg-gray-100 text-gray-800 font-black text-xl">Cargando sistema hospitalario...</div>;
 }
