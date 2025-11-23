@@ -284,15 +284,20 @@ export const TOPICS = [
   },
   {
     id: 16,
-    title: "Las Cargas de Cuidados",
-    subtitle: "Agotamiento profesional",
+    title: "La Carga de Cuidados",
+    subtitle: "Medición, factores e impacto en enfermería",
     icon: Heart,
     questions: [
-      { q: "¿Qué es el síndrome burnout?", options: ["Cansancio normal", "Agotamiento emocional y profesional", "Vacaciones", "Entusiasmo"], correct: 1 },
-      { q: "¿Síntomas burnout incluyen?", options: ["Alegría constante", "Despersonalización y cinismo", "Promoción", "Satisfacción"], correct: 1 },
-      { q: "¿Causa principal carga enfermería?", options: ["Exceso motivación", "Exceso pacientes, estrés, recursos limitados", "Poco trabajo", "Mucho descanso"], correct: 1 },
-      { q: "¿Cómo prevenir burnout?", options: ["Más horas", "Límites, apoyo, desarrollo", "Ignorarlo", "Cambiar profesión"], correct: 1 },
-      { q: "Carga mental en enfermería:", options: ["No existe", "Es real e impacta salud", "Invento", "Solo imaginación"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de carga de cuidados enfermera?", options: ["Cantidad trabajo físico, emocional y mental que exige atención pacientes", "Solo tareas administrativas", "Cansancio general", "Estrés laboral nomás"], correct: 0 },
+      { q: "¿Cuáles son los TRES TIPOS PRINCIPALES de carga de cuidados según el documento?", options: ["Dos tipos", "Carga física, emocional, mental", "Solo carga mental", "Carga administrativa"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las CINCO CARACTERÍSTICAS del PACIENTE que influyen en carga cuidados?", options: ["Una característica", "Edad, diagnóstico, dependencia, agudeza proceso, comorbilidades y necesidades especiales", "Solo edad", "Solo diagnóstico"], correct: 2 },
+      { q: "¿Cuáles son los CINCO FACTORES de CARACTERÍSTICAS ENFERMERA que influyen en gestión carga?", options: ["Uno", "Experiencia, formación, habilidades, capacidades, nivel estrés", "Solo experiencia", "Solo formación"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son los CUATRO FACTORES del ENTORNO TRABAJO que afectan carga cuidados?", options: ["Tipo unidad, ratio enfermera-paciente, recursos disponibles, clima laboral y cultura organizacional", "Solo ratio", "Uno", "Dos"], correct: 0 },
+      { q: "¿Cuáles son los CUATRO INSTRUMENTOS DE MEDICIÓN principales según el documento?", options: ["Uno", "Escalas valoración (NAS, WOCN, Aiken), cuestionarios, diarios trabajo", "Solo escalas", "Solo cuestionarios"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las CINCO CARACTERÍSTICAS de la PARRILLA MONTESINOS?", options: ["Dos", "Evalúa ABVD, valora independencia leve/moderada/grave, sencilla uso, válida fiable, múltiples contextos", "Una", "Tres"], correct: 2 },
+      { q: "¿Cuáles son las SEIS CONSECUENCIAS PRINCIPALES de carga cuidados para la ENFERMERA según documento?", options: ["Cuatro", "Agotamiento físico/mental, estrés laboral, deterioro salud, disminución satisfacción, absentismo, deterioro vida", "Dos", "Una"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son las CINCO CONSECUENCIAS de carga cuidados para CALIDAD cuidados pacientes?", options: ["Errores medicación, infecciones, caídas pacientes, disminución intimidad, deterioro relación terapéutica", "Una", "Dos", "Tres"], correct: 0 },
+      { q: "¿Cuáles son los TRES NIVELES DE ESTRATEGIAS gestión carga cuidados según el documento?", options: ["Uno", "Individual (autocuidado, resiliencia), organizativo (recursos, clima), político (legislación, políticas sanitarias)", "Dos", "Solo individual"], correct: 1 }
     ]
   },
   {
