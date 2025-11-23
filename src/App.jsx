@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import hospitalImage from './assets/hospital-leon.jpg?url';
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
@@ -503,7 +504,16 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 font-sans relative overflow-hidden">
+    <div 
+      className="min-h-screen font-sans relative overflow-hidden"
+      style={{
+        backgroundImage: `url(${hospitalImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/70 via-blue-950/60 to-slate-900/70"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       
