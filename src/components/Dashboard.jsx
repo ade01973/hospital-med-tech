@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import elevatorBg from '../assets/elevator-bg.png';
 
@@ -67,8 +67,17 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             <button 
               onClick={() => setView('leaderboard')} 
               className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 hover:shadow-lg hover:shadow-orange-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Ver Leaderboard"
             >
               <Trophy className="w-6 h-6 text-white" />
+            </button>
+
+            <button 
+              onClick={() => setView('welcome')} 
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-rose-600 hover:shadow-lg hover:shadow-red-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Salir al Inicio"
+            >
+              <LogOut className="w-6 h-6 text-white" />
             </button>
           </div>
         </div>
