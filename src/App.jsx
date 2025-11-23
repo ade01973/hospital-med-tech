@@ -14,6 +14,7 @@ import {
   getFirestore, 
   doc, 
   setDoc, 
+  getDoc,
   onSnapshot, 
   collection, 
   serverTimestamp,
