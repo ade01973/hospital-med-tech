@@ -357,14 +357,19 @@ export const TOPICS = [
   {
     id: 20,
     title: "Dirección Estratégica",
-    subtitle: "Visión y posicionamiento",
+    subtitle: "Planificación, visión y herramientas estratégicas",
     icon: Target,
     questions: [
-      { q: "¿Qué es estrategia?:", options: ["Táctico", "Plan largo plazo con objetivos claros", "Operacional", "Improvisación"], correct: 1 },
-      { q: "¿Diferencia estrategia y táctica?:", options: ["Ninguna", "Estrategia largo plazo, táctica corto plazo", "Misma cosa", "Sinónimos"], correct: 1 },
-      { q: "¿DAFO análisis incluye?:", options: ["Dinero", "Debilidades, fortalezas, oportunidades, amenazas", "Datos", "Documentos"], correct: 1 },
-      { q: "¿Misión organizacional es?:", options: ["Opcional", "Razón existencia y valor que entrega", "Ganancia", "Crecer solo"], correct: 1 },
-      { q: "¿Visión estratégica?:", options: ["Pasado", "Futuro deseado inspirador", "Presente", "Azar"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de Dirección Estratégica?", options: ["Gestión diaria", "Proceso sistemático continuo que define objetivos largo plazo, establece estrategias, asigna recursos, evalúa progreso", "Control operacional", "Supervisión personal"], correct: 1 },
+      { q: "¿Cuáles son los CUATRO BENEFICIOS PRINCIPALES de Dirección Estratégica en enfermería según documento?", options: ["Uno", "Liderar cambio, mejorar calidad cuidados, gestionar recursos eficientemente, responder necesidades pacientes", "Dos", "Tres"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son las CUATRO FASES del PROCESO DE PLANIFICACIÓN ESTRATÉGICA?", options: ["Dos", "Análisis estratégico, formulación estrategia, implementación, evaluación/control", "Una", "Tres"], correct: 3 },
+      { q: "¿Cuáles son los TRES HERRAMIENTAS PRINCIPALES de planificación estratégica según el documento?", options: ["Una", "Análisis DAFO, Matriz BCG, Cinco Fuerzas Porter", "Dos", "Cuatro"], correct: 2 },
+      { q: "Según el documento, ¿cuál es la definición del MODELO DE CINCO FUERZAS DE PORTER?", options: ["Solo competencia", "Herramienta analiza competencia: nuevos competidores, poder proveedores, poder clientes, productos sustitutivos, rivalidad", "Análisis interno", "Estudios mercado"], correct: 1 },
+      { q: "¿Cuáles son los TRES ELEMENTOS CLAVE de Dirección Estratégica: VISIÓN, MISIÓN Y VALORES según documento?", options: ["Dos elementos", "Visión (imagen futuro deseado), misión (razón ser organización), valores (principios comportamiento)", "Uno", "Cuatro"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las CINCO CARACTERÍSTICAS de los OBJETIVOS ESTRATÉGICOS?", options: ["Tres", "Específicos, medibles, alcanzables, relevantes, temporales (SMART)", "Dos", "Cuatro"], correct: 3 },
+      { q: "¿Cuáles son los DOS TIPOS DE INDICADORES DESEMPEÑO según el documento?", options: ["Uno", "Indicadores resultados (impacto actividades), indicadores procesos (eficiencia procesos)", "Tres", "Cuatro"], correct: 0 },
+      { q: "Según el documento, ¿cuáles son las RESPONSABILIDADES DEL LÍDER en implementación de estrategia?", options: ["Delegación total", "Comunicar visión/estrategia, motivar empleados, gestionar cambio, superar resistencias", "Solo supervisión", "Sin responsabilidad"], correct: 1 },
+      { q: "¿Cuáles son las CINCO APLICACIONES de TIC en gestión enfermería según el documento?", options: ["Dos", "Documentación clínica, comunicación profesionales, planificación cuidados, administración medicamentos, educación/investigación", "Uno", "Tres"], correct: 2 }
     ]
   },
   {
