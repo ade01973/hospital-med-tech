@@ -1086,7 +1086,7 @@ export default function App() {
   }, [user]);
 
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
-    console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}`);
+    console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}, StudentID: ${studentId}`);
     
     // ✅ NAVEGAR INMEDIATAMENTE AL DASHBOARD
     console.log("✅ Navegando a dashboard INMEDIATAMENTE");
@@ -1101,12 +1101,20 @@ export default function App() {
       console.log("⚠️ Módulo ya completado");
       return;
     }
-    if (!studentId) {
-      console.error("❌ No se encontró studentId en parámetro");
+    
+    // Si no viene studentId en parámetro, obtener de localStorage
+    let finalStudentId = studentId;
+    if (!finalStudentId) {
+      finalStudentId = localStorage.getItem('studentId');
+      console.log(`📌 StudentID obtenido de localStorage: ${finalStudentId}`);
+    }
+    
+    if (!finalStudentId) {
+      console.error("❌ No se encontró studentId ni en parámetro ni en localStorage");
       return;
     }
-    const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
-    const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', studentId);
+    const userProgressRef = doc(db, 'artifacts', appId, 'users', finalStudentId, 'data', 'progress');
+    const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', finalStudentId);
     
     // ✅ MANTENER TODOS LOS NIVELES COMPLETADOS PREVIOS + AGREGAR EL NUEVO
     const newCompletedLevels = {
@@ -1155,12 +1163,11 @@ export default function App() {
   }
 
   if (view === 'game' && currentLevel) {
-    const currentStudentId = localStorage.getItem('studentId');
     return (
       <GameLevel 
         topic={currentLevel} 
         user={user} 
-        studentId={currentStudentId}
+        studentId={userData?.studentId}
         onExit={() => setView('dashboard')}
         onComplete={handleLevelComplete}
       />
