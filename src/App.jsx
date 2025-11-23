@@ -559,6 +559,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   const [score, setScore] = useState(0);
   const [showDoors, setShowDoors] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const playElevatorSound = () => {
     try {
@@ -631,7 +632,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
       setTimeout(() => {
         const next = currentQ + 1;
         if (next === topic.questions.length) {
-          onComplete(topic.id, score + pointsEarned);
+          setIsCompleted(true);
         } else {
           setShowDoors(true);
           setTimeout(() => {
@@ -644,6 +645,63 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
       }, 1500);
     }
   };
+
+  const handleCompletionReturn = () => {
+    onComplete(topic.id, score + 100);
+  };
+
+  if (isCompleted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative z-10 text-center max-w-2xl">
+          <div className="mb-12 animate-bounce">
+            <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-[0_0_60px_rgba(250,204,21,0.5)] mb-8">
+              <Trophy className="w-16 h-16 text-white" fill="white" />
+            </div>
+          </div>
+
+          <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-3 tracking-tight">
+            ¡MISIÓN CUMPLIDA!
+          </h1>
+
+          <p className="text-2xl font-black text-emerald-400 mb-2">{topic.title}</p>
+          
+          <div className="bg-slate-900/60 backdrop-blur-xl border-2 border-cyan-500/30 rounded-3xl p-12 my-8 shadow-[0_0_60px_rgba(6,182,212,0.2)]">
+            <div className="flex items-center justify-center gap-8 mb-8">
+              <div className="text-center">
+                <p className="text-cyan-300/60 font-bold text-sm uppercase tracking-wider mb-2">Puntos Obtenidos</p>
+                <p className="text-5xl font-black text-yellow-400">{score + 100}</p>
+              </div>
+              <div className="w-px h-16 bg-cyan-500/30"></div>
+              <div className="text-center">
+                <p className="text-cyan-300/60 font-bold text-sm uppercase tracking-wider mb-2">Preguntas Respondidas</p>
+                <p className="text-5xl font-black text-cyan-400">{topic.questions.length}/10</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-cyan-300/70 font-semibold text-lg mb-8">
+            ¡Felicidades! Has completado todas las habitaciones del piso "{topic.title}"
+          </p>
+
+          <button
+            onClick={handleCompletionReturn}
+            className="relative group overflow-hidden inline-block"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
+            <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-5 px-12 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_50px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wider text-lg border border-cyan-400/50">
+              <ChevronUp size={24} /> Volver al Ascensor
+            </div>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
