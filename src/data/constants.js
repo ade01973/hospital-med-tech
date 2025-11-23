@@ -267,14 +267,19 @@ export const TOPICS = [
   {
     id: 15,
     title: "Gestión de la Innovación",
-    subtitle: "Creatividad y mejora",
+    subtitle: "Procesos, liderazgo y competencias enfermeras",
     icon: Zap,
     questions: [
-      { q: "¿Qué es innovación?", options: ["Novedad", "Implementar idea nueva con valor", "Cambio pequeño", "Tecnología solo"], correct: 1 },
-      { q: "¿Cómo fomentar innovación?", options: ["Control rígido", "Cultura psicológica segura", "Miedo", "Castigo errores"], correct: 1 },
-      { q: "Innovación disruptiva es:", options: ["Cambio menor", "Rompe modelos existentes", "Gradual", "Sin impacto"], correct: 1 },
-      { q: "¿Ciclo innovación comienza con?", options: ["Implementación", "Identificar problema", "Venta", "Cierre"], correct: 1 },
-      { q: "¿Por qué innovar en salud?", options: ["Moda", "Mejorar calidad y eficiencia", "Sin razón", "Gastar presupuesto"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de innovación en enfermería?", options: ["Solo nuevas tecnologías", "Introducción nuevos conocimientos, ideas, procesos, productos/servicios que mejoran calidad atención y resultados paciente", "Cambios administrativos", "Cambios cosmética"], correct: 1 },
+      { q: "¿Cuáles son los CUATRO beneficios principales de la innovación para mejora calidad cuidados según el documento?", options: ["Solo eficiencia", "Mejora eficiencia/eficacia, seguridad paciente, satisfacción paciente, promueve salud/bienestar", "Beneficios económicos", "Menos beneficios"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son los CUATRO principales RETOS Y DESAFÍOS de la innovación en enfermería?", options: ["Sin retos", "Falta recursos, cultura organizacional no favorable, falta formación, resistencia cambio", "Solo desafíos tecnológicos", "Retos políticos"], correct: 0 },
+      { q: "¿Cuáles son las CUATRO FASES del proceso de innovación según el documento?", options: ["Dos fases", "Identificación necesidades, generación ideas, planificación/implementación, evaluación/difusión", "Una fase", "Tres fases"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son las TRES metodologías para GENERAR IDEAS Y SOLUCIONES en innovación?", options: ["Solo lluvia ideas", "Brainstorming, mapas mentales, análisis FODA", "Reuniones formales", "Decisiones directivas"], correct: 2 },
+      { q: "¿Cuáles son los CUATRO FACTORES CLAVE para el éxito de la innovación en enfermería según el documento?", options: ["Un factor", "Cultura organizacional favorable, liderazgo apoyo, recursos humanos/financieros, gestión conocimiento/aprendizaje", "Solo recursos", "Solo liderazgo"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las CINCO COMPETENCIAS Y HABILIDADES CLAVE para innovar en enfermería?", options: ["Una habilidad", "Pensamiento crítico, resolución problemas, comunicación efectiva, trabajo equipo, liderazgo", "Solo comunicación", "Solo liderazgo"], correct: 3 },
+      { q: "¿Cuáles son las CINCO PARTICIPACIONES de la gestora enfermera en proceso innovación según el documento?", options: ["Una participación", "Identificar necesidades, generar ideas, planificar/implementar, evaluar, difundir innovación", "Ejecutar nomás", "Supervisar"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son los TRES COMPONENTES de CULTURA ORGANIZACIONAL FAVORABLE A INNOVACIÓN?", options: ["Uno", "Valora creatividad/toma riesgos, apoya aprendizaje/desarrollo, celebra éxito y aprende errores", "Control rígido", "Solo tecnología"], correct: 0 },
+      { q: "¿Cuáles son las TRES ESTRATEGIAS PRINCIPALES para FOMENTAR INNOVACIÓN en enfermería según documento?", options: ["Una estrategia", "Programas formación/desarrollo profesional, unidades innovación y gestión cambio, sistemas apoyo investigación", "Solo capacitación", "Solo unidades innovación"], correct: 1 }
     ]
   },
   {
