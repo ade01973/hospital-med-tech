@@ -321,14 +321,19 @@ export const TOPICS = [
   {
     id: 18,
     title: "La Administración como Ciencia",
-    subtitle: "Orígenes y evolución",
+    subtitle: "Orígenes, enfoques y escuelas administrativas",
     icon: BookOpen,
     questions: [
-      { q: "¿Padre administración moderna?", options: ["Hippócrates", "Frederick Taylor", "Aristóteles", "Platón"], correct: 1 },
-      { q: "¿Qué fue Revolución Industrial?", options: ["Revolución francesa", "Cambio producción mecanización", "Cambio político", "Cambio agrario"], correct: 1 },
-      { q: "¿Escuela administración clásica?", options: ["Teoría X", "Planificación, organización, dirección, control", "Caos", "Intuición"], correct: 1 },
-      { q: "¿Teoría relaciones humanas enfatiza?:", options: ["Solo tareas", "Personas y relaciones", "Máquinas", "Ganancias"], correct: 1 },
-      { q: "¿Administración moderna es?:", options: ["Igual siempre", "Adaptativa e integradora", "Sin cambios", "Rígida"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de administración?", options: ["Solo gestión de dinero", "Proceso planificar, organizar, dirigir y controlar recursos humanos, materiales, financieros para alcanzar objetivos", "Supervisión de personal", "Cumplimiento normativo"], correct: 1 },
+      { q: "¿Cuáles son los CINCO BENEFICIOS PRINCIPALES de administración en enfermería según documento?", options: ["Uno", "Optimizar recursos, mejorar coordinación, motivar personal, promover investigación, garantizar calidad", "Dos", "Tres"], correct: 3 },
+      { q: "Según el documento, ¿quién es considerado PADRE de la ADMINISTRACIÓN CIENTÍFICA?", options: ["Henri Fayol", "Frederick Winslow Taylor con 'Principios Administración Científica' 1911; propuso división trabajo, especialización, estudio tiempos/movimientos", "Frank Gilbreth", "Max Weber"], correct: 1 },
+      { q: "¿Cuáles son las SEIS FUNCIONES BÁSICAS de administración según HENRI FAYOL según documento?", options: ["Cuatro", "Previsión, organización, dirección, coordinación, control, mando", "Dos", "Ocho"], correct: 2 },
+      { q: "Según el documento, ¿cuál fue la contribución PRINCIPAL de Frank y Lillian Gilbreth?", options: ["División trabajo", "Técnica micromovimientos: filmar/analizar movimientos trabajador para eliminar innecesarios", "Especialización", "Incentivos"], correct: 2 },
+      { q: "¿Cuáles son los TRES ENFOQUES PRINCIPALES de administración según documento?", options: ["Dos", "Clásico (estructura eficiencia), neoclásico (factor humano), humanista (desarrollo personal ambiente)", "Uno", "Cuatro"], correct: 1 },
+      { q: "Según el documento, ¿cuál es la diferencia CRÍTICA entre TEORÍA X y TEORÍA Y de McGregor?", options: ["No hay diferencia", "Teoría X: trabajadores perezosos necesitan control; Teoría Y: responsables, motivación interna", "X es mejor", "Y es antigua"], correct: 1 },
+      { q: "¿Cuáles son los CINCO NIVELES JERÁRQUICOS de necesidades según TEORÍA HUMANISTA en documento?", options: ["Tres", "Fisiológicas, seguridad, sociales, estima, autorrealización", "Dos", "Cuatro"], correct: 0 },
+      { q: "Según el documento, ¿cuál fue la contribución de FLORENCE NIGHTINGALE a administración enfermería?", options: ["Medicina solo", "Desarrolló sistema gestión hospitalaria que mejoró higiene/calidad en hospitales militares Guerra Crimea", "Teoría enfermería", "Cuidados paliativos"], correct: 2 },
+      { q: "¿Cuáles son los CUATRO PRINCIPIOS FUNDAMENTALES de administración aplicables a enfermería según documento?", options: ["Dos", "Planificación, organización, dirección, control", "Uno", "Cinco"], correct: 1 }
     ]
   },
   {
