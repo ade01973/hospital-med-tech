@@ -121,13 +121,8 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                         disabled={!isUnlocked || isCompleted}
                         onClick={() => {
                           console.log(`🔘 Click en planta ${topic.id}. Desbloqueada: ${isUnlocked}, Completada: ${isCompleted}`);
-                          if (!isCompleted && isUnlocked) {
-                            console.log(`✅ Iniciando planta ${topic.id} directamente desde grilla`);
-                            setLevel(topic);
-                            setView('game');
-                          } else {
-                            setSelectedFloor(topic.id);
-                          }
+                          // Always show the right panel first
+                          setSelectedFloor(topic.id);
                         }}
                         className={`
                           w-12 h-12 rounded-lg font-black text-sm transition-all duration-200 transform border-2
