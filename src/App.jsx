@@ -503,44 +503,71 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 font-sans relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-50/30 via-transparent to-blue-50/30"></div>
       
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.1)] px-4 py-3">
-        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-slate-300 via-slate-200 to-transparent shadow-md"></div>
+        
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-200 via-slate-100 to-transparent"></div>
+        
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-300 via-slate-200 to-transparent"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-300 via-slate-200 to-transparent"></div>
+        
+        <div className="absolute top-24 left-8 right-8 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-40"></div>
+        <div className="absolute top-32 left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-slate-300 to-transparent opacity-60"></div>
+        
+        <div className="absolute top-1/4 left-12 w-32 h-2 bg-gradient-to-r from-cyan-400/0 via-cyan-400/60 to-cyan-400/0 rounded-full blur-sm"></div>
+        <div className="absolute top-1/4 right-12 w-32 h-2 bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 rounded-full blur-sm"></div>
+        
+        <div className="absolute top-12 left-1/4 w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
+        <div className="absolute top-12 right-1/4 w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)] animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+        
+        <div className="absolute bottom-20 left-1/3 w-20 h-1 bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300"></div>
+        <div className="absolute bottom-16 right-1/3 w-20 h-1 bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300"></div>
+      </div>
+      
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-gradient-to-br from-cyan-200 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-200 to-transparent rounded-full blur-3xl"></div>
+      </div>
+      
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-slate-200/95 to-slate-100/80 backdrop-blur-md border-b-2 border-slate-300 shadow-lg px-4 py-3">
+        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60"></div>
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <button onClick={onExit} className="text-cyan-400 hover:text-cyan-300 flex items-center gap-2 font-bold transition-colors">
+          <button onClick={onExit} className="text-slate-700 hover:text-slate-900 flex items-center gap-2 font-bold transition-colors">
             <ArrowLeft size={20}/> <span>Salir</span>
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-cyan-400/60 uppercase tracking-wider">Pregunta</span>
-            <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">{currentQ + 1} / {topic.questions.length}</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Pregunta</span>
+            <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{currentQ + 1} / {topic.questions.length}</span>
           </div>
-          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 border border-yellow-500/50 text-yellow-950 px-4 py-2 rounded-xl font-black flex items-center gap-2 shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+          <div className="bg-gradient-to-br from-yellow-300 to-orange-400 border-2 border-yellow-500 text-yellow-900 px-4 py-2 rounded-xl font-black flex items-center gap-2 shadow-[0_0_20px_rgba(251,191,36,0.4)]">
             <Zap size={18} className="fill-current" /> {score}
           </div>
         </div>
       </div>
 
       <div className="pt-24 pb-10 px-4 max-w-4xl mx-auto relative">
-        <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-[0_0_60px_rgba(6,182,212,0.15)] border border-cyan-500/20 overflow-hidden">
-          <div className="bg-gradient-to-r from-cyan-500/20 to-blue-600/20 backdrop-blur-sm p-6 border-b border-cyan-500/30 relative">
-            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
-            <div className="flex items-center gap-4">
-              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-slate-200 overflow-hidden relative z-20">
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-50/50 via-transparent to-blue-50/50 pointer-events-none"></div>
+          
+          <div className="bg-gradient-to-r from-cyan-600 to-blue-700 p-6 border-b-2 border-cyan-700 relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50"></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl border border-white/30 shadow-lg">
                 {React.createElement(topic.icon, { className: "w-8 h-8 text-white" })}
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-black text-white mb-1">{topic.title}</h2>
-                <p className="text-cyan-300/70 font-semibold">{topic.subtitle}</p>
+                <p className="text-cyan-100 font-semibold">{topic.subtitle}</p>
               </div>
             </div>
           </div>
 
-          <div className="p-8">
-            <div className="bg-cyan-500/10 backdrop-blur-sm border-l-4 border-cyan-400 p-6 rounded-2xl mb-8 shadow-[0_0_30px_rgba(6,182,212,0.05)]">
-              <h3 className="text-xl font-bold text-white leading-relaxed">
+          <div className="p-8 relative z-10">
+            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-600 p-6 rounded-2xl mb-8 shadow-md">
+              <h3 className="text-xl font-bold text-slate-800 leading-relaxed">
                 {topic.questions[currentQ].q}
               </h3>
             </div>
@@ -551,31 +578,31 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
                   key={idx}
                   onClick={() => handleAnswer(idx)}
                   disabled={selectedOption !== null}
-                  className={`text-left p-5 rounded-2xl border transition-all font-semibold relative overflow-hidden group ${
+                  className={`text-left p-5 rounded-2xl border-2 transition-all font-semibold relative overflow-hidden group ${
                     selectedOption === null 
-                      ? 'bg-slate-800/50 backdrop-blur-sm border-cyan-500/30 text-white hover:bg-slate-700/50 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]'
+                      ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-50 hover:border-cyan-500 hover:shadow-lg'
                       : selectedOption === idx
                         ? isCorrect 
-                          ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-                          : 'bg-red-500/20 border-red-400 text-red-300 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+                          ? 'bg-emerald-50 border-emerald-600 text-emerald-800 shadow-lg'
+                          : 'bg-red-50 border-red-600 text-red-800 shadow-lg'
                         : idx === topic.questions[currentQ].correct 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400/70' 
-                          : 'opacity-30 border-slate-700/30 text-slate-500'
+                          ? 'bg-emerald-50 border-emerald-400 text-emerald-700' 
+                          : 'opacity-40 border-slate-200 text-slate-500'
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center text-lg font-black ${
                       selectedOption === idx 
                         ? isCorrect 
-                          ? 'border-emerald-400 bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.5)]' 
-                          : 'border-red-400 bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]'
-                        : 'border-cyan-500/40 text-cyan-400'
+                          ? 'border-emerald-600 bg-emerald-600 text-white shadow-lg' 
+                          : 'border-red-600 bg-red-600 text-white shadow-lg'
+                        : 'border-cyan-500 text-cyan-600 bg-white'
                     }`}>
                       {String.fromCharCode(65 + idx)}
                     </div>
                     <span className="flex-1">{opt}</span>
-                    {selectedOption === idx && isCorrect && <CheckCircle className="w-6 h-6 text-emerald-400" />}
-                    {selectedOption === idx && !isCorrect && <AlertCircle className="w-6 h-6 text-red-400" />}
+                    {selectedOption === idx && isCorrect && <CheckCircle className="w-6 h-6 text-emerald-600" />}
+                    {selectedOption === idx && !isCorrect && <AlertCircle className="w-6 h-6 text-red-600" />}
                   </div>
                   {selectedOption === null && (
                     <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
@@ -585,10 +612,10 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
             </div>
             
             {selectedOption !== null && (
-              <div className={`mt-6 p-5 rounded-2xl text-center font-black text-lg border backdrop-blur-sm ${
+              <div className={`mt-6 p-5 rounded-2xl text-center font-black text-lg border-2 ${
                 isCorrect 
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-[0_0_30px_rgba(16,185,129,0.2)]' 
-                  : 'bg-red-500/20 text-red-300 border-red-400/50 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-600 shadow-lg' 
+                  : 'bg-red-50 text-red-800 border-red-600 shadow-lg'
               }`}>
                 {isCorrect ? "✓ RESPUESTA CORRECTA +100 PTS" : "✗ RESPUESTA INCORRECTA - Intenta de nuevo"}
                 {!isCorrect && (
@@ -597,7 +624,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
                       setSelectedOption(null);
                       setIsCorrect(null);
                     }}
-                    className="block mx-auto mt-3 text-sm uppercase text-red-400 hover:text-red-300 underline font-bold transition-colors"
+                    className="block mx-auto mt-3 text-sm uppercase text-red-700 hover:text-red-900 underline font-bold transition-colors"
                   >
                     Reintentar
                   </button>
