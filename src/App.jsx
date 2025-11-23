@@ -648,18 +648,18 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
                     <p className="text-sm text-red-300/80">La respuesta correcta es la opción marcada arriba.</p>
                     <button 
                       onClick={() => {
-                        setShowDoors(true);
-                        setTimeout(() => {
-                          const next = currentQ + 1;
-                          if (next === topic.questions.length) {
-                            onComplete(topic.id, score);
-                          } else {
+                        const next = currentQ + 1;
+                        if (next === topic.questions.length) {
+                          onComplete(topic.id, score);
+                        } else {
+                          setShowDoors(true);
+                          setTimeout(() => {
                             setCurrentQ(next);
                             setSelectedOption(null);
                             setIsCorrect(null);
                             setShowDoors(false);
-                          }
-                        }, 1000);
+                          }, 1000);
+                        }
                       }}
                       className="mx-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-xl transition-all transform hover:scale-105 uppercase tracking-wider text-sm border border-orange-400/50 shadow-[0_0_15px_rgba(249,115,22,0.4)]"
                     >
