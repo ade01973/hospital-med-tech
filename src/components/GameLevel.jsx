@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play } from 'lucide-react';
 import { User } from 'lucide-react';
+import gameLevelBg from '../assets/game-level-bg.png';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
@@ -111,9 +112,17 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans text-white overflow-hidden relative">
-      {/* Fondo con gradiente */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 to-black -z-10"></div>
+    <div 
+      className="min-h-screen flex flex-col font-sans text-white overflow-hidden relative"
+      style={{
+        backgroundImage: `url(${gameLevelBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black/60 -z-10"></div>
 
       {/* HUD Superior */}
       <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10">

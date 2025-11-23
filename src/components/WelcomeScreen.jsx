@@ -23,7 +23,7 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
         </div>
         
         <h1 className="text-5xl font-black text-white mb-2 tracking-tighter">¡Bienvenid@s!</h1>
-        <p className="text-2xl text-cyan-400 font-bold mb-8">al Hospital Med-Tech</p>
+        <p className="text-2xl text-cyan-400 font-bold mb-8">al Hospital Gest-Tech</p>
         
         <p className="text-slate-300 text-base mb-8 leading-relaxed max-w-lg mx-auto">
           Ingresa en el simulador de gestión sanitaria más avanzado. Completa módulos de liderazgo, toma de decisiones y gestión hospitalaria. Sube de rango y demuestra tus habilidades como gestor sanitario.
