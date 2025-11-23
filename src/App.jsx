@@ -558,23 +558,28 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const playElevatorSound = () => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Elevator sound: beep going down
-    oscillator.frequency.value = 800;
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.15);
-    
-    // Second beep
-    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
-    oscillator.start(audioContext.currentTime + 0.2);
-    oscillator.stop(audioContext.currentTime + 0.35);
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const gainNode = audioContext.createGain();
+      gainNode.connect(audioContext.destination);
+      
+      // First beep
+      const osc1 = audioContext.createOscillator();
+      osc1.connect(gainNode);
+      osc1.frequency.value = 800;
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      osc1.start(audioContext.currentTime);
+      osc1.stop(audioContext.currentTime + 0.15);
+      
+      // Second beep
+      const osc2 = audioContext.createOscillator();
+      osc2.connect(gainNode);
+      osc2.frequency.value = 600;
+      osc2.start(audioContext.currentTime + 0.2);
+      osc2.stop(audioContext.currentTime + 0.35);
+    } catch (e) {
+      console.warn("Audio playback not supported or blocked:", e);
+    }
   };
 
   const speakText = (text, rate = 1) => {
@@ -932,22 +937,14 @@ export default function App() {
   const [userData, setUserData] = useState(null);
   const [view, setView] = useState('auth'); 
   const [currentLevel, setCurrentLevel] = useState(null);
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) {
-        if (!hasSeenWelcome) {
-          setView('welcome');
-        } else {
-          setView('dashboard');
-        }
-      }
-      else setView('auth');
+      if (!u) setView('auth');
     });
     return () => unsubscribe();
-  }, [hasSeenWelcome]);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -980,15 +977,12 @@ export default function App() {
     }
   };
 
-  if (!user) return <AuthScreen onLogin={() => {}} />;
+  if (!user) return <AuthScreen onLogin={() => setView('welcome')} />;
 
   if (view === 'welcome') {
     return (
       <WelcomeScreen 
-        onContinue={() => {
-          setHasSeenWelcome(true);
-          setView('dashboard');
-        }}
+        onContinue={() => setView('dashboard')}
       />
     );
   }
