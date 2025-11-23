@@ -191,44 +191,70 @@ const AuthScreen = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-green-50 flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.9)_2px,transparent_2px),linear-gradient(90deg,rgba(255,255,255,0.9)_2px,transparent_2px)] bg-[size:100px_100px] opacity-30"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-cyan-950 flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.05)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       
-      <div className="absolute top-10 right-10 text-red-500 animate-pulse">
-        <Cross className="w-16 h-16" fill="currentColor" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-emerald-500 shadow-[0_0_20px_rgba(6,182,212,0.5)]"></div>
+      
+      <div className="absolute top-10 right-10 text-cyan-400 animate-pulse">
+        <Cross className="w-16 h-16 drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]" fill="currentColor" />
       </div>
       
-      <div className="absolute bottom-10 left-10 text-blue-400 opacity-40">
-        <Building2 className="w-24 h-24" />
+      <div className="absolute bottom-10 left-10 text-blue-400/20">
+        <Building2 className="w-32 h-32" />
       </div>
 
-      <div className="bg-white border-4 border-gray-300 rounded-lg shadow-2xl p-10 max-w-md w-full text-center relative z-10">
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-          <HeartPulse className="w-12 h-12 text-white" strokeWidth={2.5} />
-        </div>
-        <h1 className="text-4xl font-black text-gray-800 mb-2">HOSPITAL</h1>
-        <h2 className="text-3xl font-black text-green-600 mb-4">SIMULADOR</h2>
-        <p className="text-gray-600 mb-8 text-sm font-semibold uppercase tracking-widest">Sistema de Capacitación</p>
+      <div className="bg-slate-900/40 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl shadow-[0_0_60px_rgba(6,182,212,0.2)] p-10 max-w-md w-full text-center relative z-10">
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5"></div>
         
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="relative">
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Ingrese su nombre..."
-              className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-center font-semibold"
-            />
+        <div className="relative">
+          <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.6)] relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20"></div>
+            <HeartPulse className="w-14 h-14 text-white relative z-10 drop-shadow-lg" strokeWidth={2.5} />
           </div>
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-green-600 text-white hover:bg-green-700 font-bold py-4 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 uppercase tracking-wide text-sm border-2 border-green-700"
-          >
-            {loading ? 'Accediendo...' : <>Ingresar al Hospital <ChevronRight className="w-5 h-5" /></>}
-          </button>
-        </form>
+          
+          <div className="mb-8">
+            <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-2 tracking-tight">MED-TECH</h1>
+            <h2 className="text-2xl font-black text-emerald-400 mb-3 tracking-wider">HOSPITAL</h2>
+            <p className="text-cyan-300/70 text-xs font-bold uppercase tracking-[0.3em]">Sistema de Capacitación Avanzada</p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="ID de Personal Médico..."
+                className="relative w-full px-6 py-4 bg-slate-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-2xl text-white placeholder-cyan-400/40 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-center font-semibold shadow-inner"
+              />
+            </div>
+            
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="relative w-full group overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
+              <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-4 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_40px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-0.5 flex items-center justify-center gap-2 uppercase tracking-wider text-sm border border-cyan-400/50">
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>VERIFICANDO ACCESO</span>
+                  </>
+                ) : (
+                  <>
+                    <span>ACCESO AL SISTEMA</span>
+                    <ChevronRight className="w-5 h-5" />
+                  </>
+                )}
+              </div>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -249,62 +275,68 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-slate-100 to-blue-50 font-sans">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:50px_50px] opacity-40"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b-4 border-green-600 shadow-lg px-4 py-3">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.1)] px-4 py-3">
+        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-red-500 p-2 rounded-lg">
-              <Cross className="w-6 h-6 text-white" fill="currentColor" />
+            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2.5 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+              <Cross className="w-5 h-5 text-white" fill="currentColor" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500 font-bold uppercase">Hospital General</span>
-              <span className="text-sm font-black text-gray-800">{currentRank.title}</span>
+              <span className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider">MED-TECH HOSPITAL</span>
+              <span className="text-sm font-black text-cyan-400">{currentRank.title}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-xs text-green-600 font-bold uppercase">Puntos</span>
-              <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-gray-800">{userData?.totalScore || 0}</span>
+              <span className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider">Puntuación</span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">{userData?.totalScore || 0}</span>
+                <span className="text-xs text-cyan-400/60 font-bold">PTS</span>
               </div>
             </div>
             <button 
               onClick={() => setView('leaderboard')} 
-              className="w-10 h-10 rounded-lg bg-yellow-400 hover:bg-yellow-500 flex items-center justify-center border-2 border-yellow-600 transition-colors shadow-md"
+              className="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 flex items-center justify-center border border-yellow-500/50 transition-all shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transform hover:scale-105"
             >
-              <Trophy className="w-5 h-5 text-yellow-900" />
+              <Trophy className="w-5 h-5 text-yellow-950" fill="currentColor" />
             </button>
           </div>
         </div>
       </div>
 
-      <div className="pt-20 pb-10 px-4 max-w-4xl mx-auto relative">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-gray-800 mb-2">ASCENSOR DEL HOSPITAL</h2>
-          <p className="text-gray-600 font-semibold">Selecciona una planta para comenzar</p>
+      <div className="pt-24 pb-10 px-4 max-w-5xl mx-auto relative">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-3 tracking-tight">ASCENSOR DIGITAL</h2>
+          <p className="text-cyan-300/60 font-semibold text-sm uppercase tracking-widest">Sistema de navegación vertical</p>
         </div>
 
         <div className="flex gap-8 justify-center items-start flex-wrap lg:flex-nowrap">
-          <div className="bg-gradient-to-b from-gray-800 via-gray-700 to-gray-900 rounded-3xl p-8 shadow-2xl border-8 border-gray-300 relative min-w-[320px]">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 px-6 py-2 rounded-full border-4 border-white shadow-lg">
-              <span className="text-white font-black text-sm">ASCENSOR</span>
+          <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl p-8 shadow-[0_0_60px_rgba(6,182,212,0.15)] border border-cyan-500/20 relative min-w-[340px]">
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5"></div>
+            
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-2 rounded-full border border-cyan-400/50 shadow-[0_0_30px_rgba(6,182,212,0.4)]">
+              <span className="text-white font-black text-xs uppercase tracking-wider">Panel de Control</span>
             </div>
             
-            <div className="bg-black rounded-xl p-4 mb-6 border-4 border-gray-600">
-              <div className="text-center">
-                <div className="text-6xl font-black text-green-400 font-mono mb-2">
-                  {currentFloor >= 0 ? currentFloor + 1 : '—'}
+            <div className="bg-black/80 backdrop-blur-sm rounded-2xl p-5 mb-6 border border-cyan-500/30 shadow-[inset_0_0_30px_rgba(6,182,212,0.1)] relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+              <div className="text-center relative z-10">
+                <div className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-cyan-400 to-cyan-600 font-mono mb-2 drop-shadow-[0_0_20px_rgba(6,182,212,0.8)]">
+                  {currentFloor >= 0 ? String(currentFloor + 1).padStart(2, '0') : '--'}
                 </div>
-                <div className="text-green-400 text-xs font-bold uppercase tracking-widest">
-                  {currentFloor >= 0 ? TOPICS[currentFloor].title : 'Planta Baja'}
+                <div className="text-cyan-400 text-xs font-bold uppercase tracking-[0.3em] animate-pulse">
+                  {currentFloor >= 0 ? TOPICS[currentFloor].title : 'Nivel Base'}
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="grid grid-cols-3 gap-3 mb-6 relative z-10">
               {TOPICS.slice(0, 19).map((topic, index) => {
                 const isUnlocked = index === 0 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
                 const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
@@ -318,74 +350,85 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                       setLevel(topic);
                       setView('game');
                     }}
-                    className={`h-16 rounded-lg font-black text-lg transition-all relative overflow-hidden ${
+                    className={`h-16 rounded-xl font-black text-lg transition-all relative overflow-hidden group ${
                       isCompleted 
-                        ? 'bg-green-500 text-white border-2 border-green-700 cursor-default' 
+                        ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white border border-emerald-400/50 cursor-default shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
                         : isCurrent 
-                          ? 'bg-yellow-400 text-gray-900 border-4 border-yellow-600 shadow-lg shadow-yellow-400/50 animate-pulse' 
+                          ? 'bg-gradient-to-br from-cyan-400 to-blue-600 text-white border-2 border-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.6)] animate-pulse scale-105' 
                           : isUnlocked
-                            ? 'bg-white text-gray-800 border-2 border-gray-400 hover:bg-gray-100 hover:scale-105 cursor-pointer'
-                            : 'bg-gray-600 text-gray-400 border-2 border-gray-700 cursor-not-allowed opacity-50'
+                            ? 'bg-slate-800/50 backdrop-blur-sm text-cyan-400 border border-cyan-500/30 hover:bg-slate-700/50 hover:border-cyan-400 hover:scale-105 cursor-pointer hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]'
+                            : 'bg-slate-800/30 text-slate-600 border border-slate-700/30 cursor-not-allowed opacity-40'
                     }`}
                   >
                     {isCompleted && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <CheckCircle className="w-6 h-6 text-white" />
+                        <CheckCircle className="w-7 h-7 text-white drop-shadow-lg" />
                       </div>
                     )}
-                    {!isCompleted && (isUnlocked ? topic.id : <Lock className="mx-auto" size={20} />)}
+                    {!isCompleted && (isUnlocked ? (
+                      <span className="relative z-10">{topic.id}</span>
+                    ) : (
+                      <Lock className="mx-auto" size={20} />
+                    ))}
+                    {isUnlocked && !isCompleted && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            <div className="flex gap-2">
-              <button className="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-gray-500 transition-colors border-2 border-gray-700">
+            <div className="flex gap-3 relative z-10">
+              <button className="flex-1 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 text-slate-400 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-700/50 hover:border-slate-500 hover:text-slate-300 transition-all">
                 <ChevronDown size={20} /> BAJAR
               </button>
-              <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-500 transition-colors border-2 border-blue-800">
+              <button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 border border-cyan-400/50 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]">
                 <ChevronUp size={20} /> SUBIR
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-xl border-4 border-gray-300 min-w-[300px]">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-gray-200">
-              <div className="bg-blue-500 p-3 rounded-lg">
+          <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl p-6 shadow-[0_0_60px_rgba(6,182,212,0.15)] border border-cyan-500/20 min-w-[320px] relative">
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5"></div>
+            
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-cyan-500/20 relative z-10">
+              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.4)]">
                 <Building2 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-black text-gray-800 text-lg">Planta Actual</h3>
-                <p className="text-sm text-gray-600 font-semibold">
-                  {currentFloor >= 0 ? `Piso ${currentFloor + 1}` : 'Planta Baja'}
+                <h3 className="font-black text-cyan-400 text-lg">Nivel Actual</h3>
+                <p className="text-sm text-cyan-300/60 font-semibold uppercase tracking-wider">
+                  {currentFloor >= 0 ? `Piso ${String(currentFloor + 1).padStart(2, '0')}` : 'Nivel Base'}
                 </p>
               </div>
             </div>
 
             {currentFloor >= 0 ? (
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-4 rounded-xl text-white">
-                  <div className="flex items-center gap-3 mb-2">
-                    {React.createElement(TOPICS[currentFloor].icon, { className: "w-6 h-6" })}
-                    <h4 className="font-black text-lg">{TOPICS[currentFloor].title}</h4>
+              <div className="space-y-4 relative z-10">
+                <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 backdrop-blur-sm p-5 rounded-2xl border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.1)] relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+                  <div className="flex items-center gap-3 mb-2 relative z-10">
+                    {React.createElement(TOPICS[currentFloor].icon, { className: "w-7 h-7 text-cyan-400" })}
+                    <h4 className="font-black text-white text-lg">{TOPICS[currentFloor].title}</h4>
                   </div>
-                  <p className="text-sm opacity-90 font-medium">{TOPICS[currentFloor].subtitle}</p>
+                  <p className="text-sm text-cyan-300/70 font-medium">{TOPICS[currentFloor].subtitle}</p>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-bold text-gray-600 uppercase">Progreso</span>
-                    <span className="text-xs font-bold text-green-600">{Math.round(progressPercent)}%</span>
+                <div className="bg-slate-800/50 backdrop-blur-sm p-5 rounded-2xl border border-slate-700/50">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-bold text-cyan-400/70 uppercase tracking-wider">Progreso Carrera</span>
+                    <span className="text-xs font-black text-cyan-400">{Math.round(progressPercent)}%</span>
                   </div>
-                  <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-slate-900/80 rounded-full h-3 overflow-hidden border border-slate-700/50 shadow-inner">
                     <div 
-                      className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-500 rounded-full"
+                      className="h-full bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-500 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.6)]"
                       style={{ width: `${progressPercent}%` }}
                     ></div>
                   </div>
                   {nextRank && (
-                    <p className="text-xs text-gray-600 mt-2 font-semibold">
-                      Siguiente rango: <span className="font-black text-gray-800">{nextRank.title}</span> ({nextRank.minScore} pts)
+                    <p className="text-xs text-cyan-300/60 mt-3 font-semibold">
+                      Próximo rango: <span className="font-black text-cyan-400">{nextRank.title}</span> 
+                      <span className="text-cyan-500/70"> ({nextRank.minScore} pts)</span>
                     </p>
                   )}
                 </div>
@@ -395,15 +438,21 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                     setLevel(TOPICS[currentFloor]);
                     setView('game');
                   }}
-                  className="w-full bg-green-600 text-white py-4 rounded-xl font-black text-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-green-800"
+                  className="w-full relative group overflow-hidden"
                 >
-                  ¡COMENZAR EVALUACIÓN!
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
+                  <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-4 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_40px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-wider text-sm border border-cyan-400/50">
+                    <Play className="w-5 h-5" fill="currentColor" />
+                    <span>INICIAR EVALUACIÓN</span>
+                  </div>
                 </button>
               </div>
             ) : (
-              <div className="text-center py-8">
-                <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 font-semibold">Todas las plantas completadas</p>
+              <div className="text-center py-8 relative z-10">
+                <div className="w-20 h-20 mx-auto mb-4 bg-slate-800/50 rounded-full flex items-center justify-center border border-slate-700/50">
+                  <AlertCircle className="w-10 h-10 text-slate-600" />
+                </div>
+                <p className="text-cyan-300/60 font-semibold">Todos los niveles completados</p>
               </div>
             )}
           </div>
