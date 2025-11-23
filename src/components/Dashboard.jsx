@@ -227,7 +227,7 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    console.log('🎮 BOTÓN Comenzar Evaluación - Topic:', currentTopic?.id, currentTopic?.title);
+                    console.log('🎮 BOTÓN Entrar en la Unidad - Topic:', currentTopic?.id, currentTopic?.title);
                     console.log('📊 Llamando setLevel con:', currentTopic);
                     console.log('📊 Llamando setView con: game');
                     if (!currentTopic) {
@@ -239,7 +239,7 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                   }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
                 >
-                  ¡Comenzar Evaluación! ({currentTopic?.questions?.length || 0} preguntas)
+                  ⏬ Entrar en la Unidad ({currentTopic?.questions?.length || 0} preguntas)
                 </button>
               )}
               {isCurrentCompleted && (
