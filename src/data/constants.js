@@ -339,14 +339,19 @@ export const TOPICS = [
   {
     id: 19,
     title: "La Calidad",
-    subtitle: "Modelos de calidad",
+    subtitle: "Modelos, dimensiones e implementación en enfermería",
     icon: ShieldCheck,
     questions: [
-      { q: "¿Definición calidad en salud?", options: ["Caro", "Efectivo, seguro, centrado paciente", "Rápido", "Bonito"], correct: 1 },
-      { q: "¿Modelo calidad ISO 9001?:", options: ["Gastronomía", "Gestión calidad procesos", "Medicina", "Derecho"], correct: 1 },
-      { q: "¿Dimensiones calidad salud?:", options: ["Una", "Múltiples: acceso, seguridad, efectividad, experiencia", "Dos", "Ninguna"], correct: 1 },
-      { q: "¿Auditoría de calidad es?:", options: ["Castigo", "Evaluación sistemática conformidad", "Revisión aleatoria", "Sin valor"], correct: 1 },
-      { q: "¿Mejora continua significa?:", options: ["Cambios grandes anuales", "Pequeños cambios constantes", "Sin cambios", "Cambio radical frecuente"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de CALIDAD en contexto sanitario?", options: ["Solo costo", "Grado en que servicios satisfacen necesidades usuarios en resultados (salud) y procesos (personalizado, eficiente, seguro)", "Rapidez", "Tecnología"], correct: 1 },
+      { q: "¿Cuáles son las SIETE DIMENSIONES CLAVE de la CALIDAD en enfermería según el documento?", options: ["Tres", "Seguridad, eficacia, eficiencia, satisfacción, oportunidad, equidad, accesibilidad", "Cuatro", "Dos"], correct: 2 },
+      { q: "Según el documento, ¿cuál es la definición del MODELO DE DONABEDIAN y sus TRES DIMENSIONES?", options: ["Dos dimensiones", "Modelo 1980 que evalúa: estructura (recursos), proceso (actividades), resultado (impacto salud)", "Cuatro dimensiones", "Una dimensión"], correct: 3 },
+      { q: "¿Cuáles son los SEIS CRITERIOS PRINCIPALES del MODELO EFQM según el documento?", options: ["Tres", "Liderazgo, planificación estratégica, gestión personas, recursos/procesos, satisfacción cliente, resultados", "Dos", "Cuatro"], correct: 0 },
+      { q: "Según el documento, ¿cuáles son los CINCO MODELOS DE CALIDAD MODERNOS analizados?", options: ["Dos", "EFQM, Seis Sigma, Lean Healthcare, mejora continua, modelo de Donabedian", "Tres", "Uno"], correct: 1 },
+      { q: "¿Cuáles son las CINCO FASES DE IMPLEMENTACIÓN de modelos calidad según documento?", options: ["Tres", "Planificación, diseño, desarrollo, evaluación, mejora", "Dos", "Cuatro"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son los TRES TIPOS DE INDICADORES de calidad?", options: ["Uno", "Indicadores estructura (recursos), proceso (actividades), resultado (impacto)", "Dos", "Cuatro"], correct: 0 },
+      { q: "¿Cuáles son los CUATRO MÉTODOS PRINCIPALES DE EVALUACIÓN de calidad según documento?", options: ["Dos", "Auditorías, encuestas satisfacción, grupos focales, observación directa", "Uno", "Tres"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son los CUATRO PRINCIPALES RETOS Y DESAFÍOS para calidad enfermería actual?", options: ["Dos", "Envejecimiento población, enfermedades crónicas, avances tecnológicos, restricciones económicas", "Uno", "Tres"], correct: 3 },
+      { q: "¿Cuáles son las CINCO TENDENCIAS PRINCIPALES en gestión calidad según documento?", options: ["Tres", "Enfoque paciente, seguridad paciente, mejora continua, trabajo equipo, uso TIC", "Dos", "Cuatro"], correct: 0 }
     ]
   },
   {
