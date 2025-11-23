@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signInAnonymously, signInWithCustomToken, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { ChevronRight, HeartPulse } from 'lucide-react';
+import hospitalBg from '../assets/hospital-background.png';
 import { auth, db, appId } from '../firebase.js';
 
 const AuthScreen = ({ onLogin }) => {
@@ -54,8 +55,16 @@ const AuthScreen = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950 to-slate-950"></div>
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
+      style={{
+        backgroundImage: `url(${hospitalBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="absolute top-0 left-0 w-full h-full bg-black/40"></div>
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
 
