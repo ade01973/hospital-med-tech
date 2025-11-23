@@ -118,10 +118,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       <button
                         key={topic.id}
                         type="button"
-                        disabled={!isUnlocked || isCompleted}
+                        disabled={!isUnlocked}
                         onClick={() => {
                           console.log(`🔘 Click en planta ${topic.id}. Desbloqueada: ${isUnlocked}, Completada: ${isCompleted}`);
-                          // Always show the right panel first
                           setSelectedFloor(topic.id);
                         }}
                         className={`
@@ -130,9 +129,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                           ${isSelected
                             ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 border-yellow-300 shadow-lg shadow-yellow-500/50 text-black scale-105'
                             : isCompleted 
-                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30 hover:scale-105'
+                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30 hover:scale-105 cursor-pointer'
                               : isUnlocked
-                                ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-500 text-slate-200 hover:border-cyan-400 hover:shadow-cyan-500/30 hover:scale-105'
+                                ? 'bg-gradient-to-br from-slate-700 to-slate-800 border-slate-500 text-slate-200 hover:border-cyan-400 hover:shadow-cyan-500/30 hover:scale-105 cursor-pointer'
                                 : 'bg-slate-800/50 border-slate-700 text-slate-500 cursor-not-allowed opacity-40'
                           }
                         `}
@@ -226,41 +225,69 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 </p>
               </div>
 
-              {/* Start Button */}
-              {!isCurrentCompleted && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    console.log('🎮 BOTÓN Entrar en la Unidad - Topic:', currentTopic?.id, currentTopic?.title);
-                    console.log('📊 Llamando setLevel con:', currentTopic);
-                    if (!currentTopic) {
-                      console.error('❌ ERROR: currentTopic es undefined!');
-                      return;
-                    }
-                    setLevel(currentTopic);
-                    setShowElevatorDoors(true);
-                  }}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
-                >
-                  ⏬ Entrar en la Unidad ({currentTopic?.questions?.length || 0} preguntas)
-                </button>
-              )}
-              {isCurrentCompleted && (
-                <div className="space-y-4">
-                  <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4">
-                    <p className="text-sm text-emerald-300 font-black mb-2">📊 CONTENIDO APRENDIDO</p>
-                    <p className="text-xs text-emerald-200 leading-relaxed">
-                      {currentTopic.questions?.length || 0} preguntas de nivel 10/10 completadas sobre: {currentTopic.subtitle}
-                    </p>
-                  </div>
-                  <button
-                    disabled
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-emerald-500/30 cursor-default"
-                  >
-                    ✓ Planta Completada
-                  </button>
-                </div>
-              )}
+              {/* Start Button - Only next incomplete level */}
+              {(() => {
+                // Find first uncompleted + unlocked level
+                const firstUncompletedIdx = TOPICS.findIndex(t => 
+                  (t.id === 1 || (userData?.completedLevels && userData.completedLevels[t.id - 1])) && 
+                  !(userData?.completedLevels && userData.completedLevels[t.id])
+                );
+                const canEnter = firstUncompletedIdx !== -1 && firstUncompletedIdx === selectedFloor - 1;
+                
+                return (
+                  <>
+                    {!isCurrentCompleted && canEnter && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log('🎮 BOTÓN Entrar en la Unidad - Topic:', currentTopic?.id, currentTopic?.title);
+                          if (!currentTopic) {
+                            console.error('❌ ERROR: currentTopic es undefined!');
+                            return;
+                          }
+                          setLevel(currentTopic);
+                          setShowElevatorDoors(true);
+                        }}
+                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
+                      >
+                        ⏬ Entrar en la Unidad ({currentTopic?.questions?.length || 0} preguntas)
+                      </button>
+                    )}
+                    {isCurrentCompleted && (
+                      <div className="space-y-4">
+                        <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4">
+                          <p className="text-sm text-emerald-300 font-black mb-2">📊 CONTENIDO APRENDIDO</p>
+                          <p className="text-xs text-emerald-200 leading-relaxed">
+                            {currentTopic.questions?.length || 0} preguntas de nivel 10/10 completadas sobre: {currentTopic.subtitle}
+                          </p>
+                        </div>
+                        <button
+                          disabled
+                          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-emerald-500/30 cursor-default"
+                        >
+                          ✓ Planta Completada
+                        </button>
+                      </div>
+                    )}
+                    {!isCurrentCompleted && !canEnter && (
+                      <div className="space-y-4">
+                        <div className="bg-slate-500/20 border border-slate-500/50 rounded-xl p-4">
+                          <p className="text-sm text-slate-300 font-black mb-2">⏸️ BLOQUEADA</p>
+                          <p className="text-xs text-slate-200 leading-relaxed">
+                            Completa los módulos anteriores para desbloquear esta planta
+                          </p>
+                        </div>
+                        <button
+                          disabled
+                          className="w-full bg-gradient-to-r from-slate-700 to-slate-800 text-slate-400 font-black py-4 rounded-xl uppercase tracking-wider cursor-not-allowed opacity-50"
+                        >
+                          Próximamente
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           )}
 
