@@ -632,22 +632,30 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
             </div>
             
             {selectedOption !== null && (
-              <div className={`mt-6 p-5 rounded-2xl text-center font-black text-lg border backdrop-blur-sm ${
+              <div className={`mt-6 p-6 rounded-2xl text-center font-black border backdrop-blur-sm ${
                 isCorrect 
                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-[0_0_30px_rgba(16,185,129,0.2)]' 
                   : 'bg-red-500/20 text-red-300 border-red-400/50 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
               }`}>
-                {isCorrect ? "✓ RESPUESTA CORRECTA +100 PTS" : "✗ RESPUESTA INCORRECTA - Intenta de nuevo"}
+                <div className="text-lg mb-4">{isCorrect ? "✓ RESPUESTA CORRECTA +100 PTS" : "✗ RESPUESTA INCORRECTA"}</div>
                 {!isCorrect && (
-                  <button 
-                    onClick={() => {
-                      setSelectedOption(null);
-                      setIsCorrect(null);
-                    }}
-                    className="block mx-auto mt-3 text-sm uppercase text-red-400 hover:text-red-300 underline font-bold transition-colors"
-                  >
-                    Reintentar
-                  </button>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-sm text-red-300/80">La respuesta correcta es la opción marcada arriba.</p>
+                    <button 
+                      onClick={() => {
+                        setSelectedOption(null);
+                        setIsCorrect(null);
+                      }}
+                      className="mx-auto px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-black rounded-xl transition-all transform hover:scale-105 uppercase tracking-wider text-sm border border-red-400/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                    >
+                      ↻ Reintentar
+                    </button>
+                  </div>
+                )}
+                {isCorrect && (
+                  <div className="mt-4">
+                    <p className="text-sm text-emerald-300/80">Avanzando a la siguiente pregunta...</p>
+                  </div>
                 )}
               </div>
             )}
