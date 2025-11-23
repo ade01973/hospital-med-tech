@@ -188,11 +188,16 @@ const AuthScreen = ({ onLogin }) => {
           lastActive: serverTimestamp(),
           totalScore: 0
         }, { merge: true });
+        
+        console.log("✓ Login exitoso, llamando onLogin");
+        // Pequeño delay para asegurar que todo se sincroniza
+        setTimeout(() => {
+          onLogin();
+        }, 100);
       }
-      
-      onLogin();
     } catch (error) {
       console.error("Error auth completo:", error);
+      setLoading(false);
       if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/configuration-not-found') {
         alert("⚠️ ERROR DE CONFIGURACIÓN FIREBASE:\n\nEl acceso 'Anónimo' no está habilitado en tu consola de Firebase.");
       } else if (error.code === 'auth/api-key-not-valid') {
@@ -200,8 +205,6 @@ const AuthScreen = ({ onLogin }) => {
       } else {
         alert("Error al conectar: " + error.message);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -938,18 +941,28 @@ export default function App() {
   const [view, setView] = useState('auth'); 
   const [currentLevel, setCurrentLevel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [prevUser, setPrevUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       console.log("Auth state changed:", u ? "Usuario logueado" : "Sin usuario");
+      
+      // Si hubo login (usuario pasó de null a existente)
+      if (!prevUser && u) {
+        console.log("✓ Nuevo login detectado, ir a bienvenida");
+        setView('welcome');
+      }
+      
       setUser(u);
+      setPrevUser(u);
       setIsLoading(false);
+      
       if (!u) {
         setView('auth');
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [prevUser]);
 
   useEffect(() => {
     if (!user) return;
