@@ -6,8 +6,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
   
   const [currentFloor, setCurrentFloor] = useState(0);
-  const [isDoorOpening, setIsDoorOpening] = useState(false);
-  const [showModal, setShowModal] = useState(true); // ✅ CAMBIO: Mostrar modal automáticamente
+  const [isDoorOpening, setIsDoorOpening] = useState(true); // ✅ Puertas abiertas automáticamente
+  const [showModal, setShowModal] = useState(true);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
@@ -95,9 +95,12 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans text-white overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col font-sans text-white overflow-hidden relative">
+      {/* Fondo con gradiente */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 to-black -z-10"></div>
+
       {/* HUD Superior */}
-      <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10 sticky top-0">
+      <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10">
         <button onClick={onExit} className="text-slate-400 hover:text-white flex items-center gap-2 font-bold transition-colors uppercase tracking-wider text-xs">
           <ArrowLeft size={16}/> <span className="hidden sm:inline">Abandonar</span>
         </button>
@@ -110,128 +113,71 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         </div>
       </div>
 
-      {/* Escenario Vertical (Hospital Tower) */}
-      <div className="flex-1 relative overflow-y-auto overflow-x-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 to-black">
-        <div className="max-w-md mx-auto min-h-full flex flex-col-reverse justify-start py-20 px-6 gap-12 pb-32">
-          
-          {floors.map((q, index) => {
-            const isCurrent = index === currentFloor;
-            const isCompleted = index < currentFloor;
-            const isLocked = index > currentFloor;
-            return (
-              <div 
-                key={index} 
-                className={`relative transition-all duration-700 ${isCurrent ? 'scale-105 z-10' : 'opacity-40 scale-95 grayscale blur-[1px]'}`}
-              >
-                {/* Estructura de la Planta */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-1 relative shadow-2xl">
-                  
-                  {/* Etiqueta de Piso */}
-                  <div className="absolute -left-4 top-8 bg-slate-950 text-slate-500 px-3 py-2 text-xs font-black rounded-r border-y border-r border-slate-800 shadow-md tracking-widest writing-vertical-lr transform -rotate-180">
-                     PISO 0{index + 1}
-                  </div>
+      {/* Contenedor Principal - Puertas Grandes + Preguntas */}
+      <div className="flex-1 flex items-center justify-center relative px-4 py-12">
+        {/* PUERTAS ASCENSOR - GRANDE */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+          <div className="w-full max-w-2xl h-96 rounded-3xl border-8 border-cyan-500/30 flex">
+            {/* Puerta izquierda */}
+            <div className={`flex-1 bg-gradient-to-r from-slate-800 to-slate-900 border-r-4 border-black transition-transform duration-700 ease-in-out ${isDoorOpening ? '-translate-x-full' : 'translate-x-0'}`}></div>
+            {/* Puerta derecha */}
+            <div className={`flex-1 bg-gradient-to-l from-slate-800 to-slate-900 border-l-4 border-black transition-transform duration-700 ease-in-out ${isDoorOpening ? 'translate-x-full' : 'translate-x-0'}`}></div>
+          </div>
+        </div>
 
-                  {/* Interior de la Planta */}
-                  <div className="bg-gradient-to-b from-slate-800 to-slate-900 h-40 rounded-xl flex items-end justify-center relative overflow-hidden border border-white/5">
-                     
-                    {/* Decoración de fondo */}
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-
-                    {/* La Puerta */}
-                    <button 
-                      onClick={() => handleDoorClick(index)}
-                      disabled={!isCurrent}
-                      className={`relative mb-0 transition-all duration-500 group ${
-                        isCurrent ? 'cursor-pointer' : 'cursor-default'
-                      }`}
-                    >
-                      {/* Marco de puerta */}
-                      <div className={`w-32 h-32 transition-colors duration-500
-                         ${isCompleted ? 'bg-emerald-900/20 border-emerald-500/30' : 'bg-slate-950'} 
-                        border-4 ${isCurrent ? 'border-cyan-500 shadow-[0_0_30px_rgba(34,211,238,0.2)]' : 'border-slate-700'} 
-                        rounded-t-xl flex items-end justify-center relative overflow-hidden`}
-                      >
-                        
-                         {/* Puertas físicas */}
-                        <div className={`absolute inset-0 flex transition-transform duration-700 ease-in-out ${isDoorOpening || isCompleted ? 'scale-x-0 opacity-0' : 'scale-x-100'}`}>
-                          <div className="w-1/2 h-full bg-slate-800 border-r border-black flex items-center justify-end pr-2 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:10px_10px]">
-                            {isLocked && <Lock size={12} className="text-slate-600" />}
-                           </div>
-                          <div className="w-1/2 h-full bg-slate-800 border-l border-slate-700 flex items-center pl-2 bg-[linear-gradient(-45deg,transparent_25%,rgba(0,0,0,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:10px_10px]">
-                            {isCurrent && !isDoorOpening && <div className="w-12 h-1 bg-red-500 rounded-full animate-ping absolute top-1/2 left-1/2 transform -translate-x-1/2"></div>}
-                           </div>
-                        </div>
-
-                        {/* Interior de la puerta */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-cyan-500/5">
-                            {isCompleted ? <CheckCircle className="text-emerald-500 w-12 h-12" /> : 
-                            isCurrent ? <Play className="text-cyan-400 w-12 h-12 animate-pulse fill-cyan-400/20" /> : null}
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Personaje (Avatar) */}
-                    {isCurrent && (
-                      <div className="absolute bottom-0 right-6 animate-bounce duration-1000 z-20">
-                         <div className="bg-cyan-500 p-2 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.6)]">
-                            <User className="text-white w-6 h-6" />
-                         </div>
-                      </div>
-                    )}
-                  </div>
-                 </div>
-              </div>
-            );
-          })}
-          
-          {/* Suelo base */}
-          <div className="text-center text-slate-700 font-black text-xs mt-4 uppercase tracking-[0.5em]">Lobby Principal</div>
+        {/* CONTENIDO PRINCIPAL */}
+        <div className="relative z-10 w-full max-w-3xl">
+          {/* AQUÍ VAN LAS PREGUNTAS */}
         </div>
       </div>
 
-      {/* Modal Pregunta */}
+      {/* Modal Pregunta - GRANDE Y PROMINENTE */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-           <div className="bg-slate-900 border border-cyan-500/30 w-full max-w-lg rounded-2xl p-0 shadow-[0_0_50px_rgba(34,211,238,0.1)] animate-in zoom-in-95 duration-200 overflow-hidden">
-            {/* Header del Modal */}
-            <div className="bg-slate-950 p-4 border-b border-white/5 flex justify-between items-center relative overflow-hidden">
-               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
-               <span className="text-cyan-400 font-mono text-xs tracking-widest uppercase flex items-center gap-2 font-bold">
-                  <Activity size={14} className="animate-pulse"/> Protocolo de Respuesta
-               </span>
-               <span className="text-slate-500 font-mono text-xs">SEC-{currentFloor + 1}</span>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+           <div className="bg-slate-900 border-2 border-cyan-500/50 w-full max-w-2xl rounded-3xl p-0 shadow-[0_0_80px_rgba(34,211,238,0.3)] animate-in zoom-in-95 duration-300 overflow-hidden">
+            {/* Header del Modal - GRANDE */}
+            <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 p-6 border-b border-cyan-500/20 flex justify-between items-center relative overflow-hidden">
+               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 shadow-lg"></div>
+               <div className="flex items-center gap-3">
+                 <div className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></div>
+                 <span className="text-cyan-300 font-mono text-sm tracking-widest uppercase font-bold">
+                    Protocolo de Respuesta
+                 </span>
+               </div>
+               <span className="text-slate-400 font-mono text-sm">PREGUNTA {String(currentFloor + 1).padStart(2, '0')}</span>
             </div>
 
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-white mb-8 leading-snug">
+            <div className="p-8">
+              <h3 className="text-2xl font-black text-white mb-10 leading-snug">
                  {topic.questions[currentFloor].q}
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {topic.questions[currentFloor].options.map((opt, idx) => (
                   <button
                      key={idx}
+                    type="button"
                     onClick={() => handleAnswer(idx)}
                     disabled={selectedOption !== null}
-                    className={`w-full text-left p-4 rounded-xl border transition-all text-sm font-bold relative overflow-hidden group ${
+                    className={`w-full text-left p-5 rounded-xl border-2 transition-all text-base font-bold relative overflow-hidden group ${
                       selectedOption === null 
-                        ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-cyan-400 hover:text-white hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                        ? 'bg-slate-800/50 border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-cyan-400 hover:text-white hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]'
                         : selectedOption === idx
                           ? isCorrect 
-                            ? 'bg-emerald-950/50 border-emerald-500 text-emerald-400'
-                            : 'bg-red-950/50 border-red-500 text-red-400'
+                            ? 'bg-emerald-900/60 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-500/30'
+                            : 'bg-red-900/60 border-red-500 text-red-300 shadow-lg shadow-red-500/30'
                           : idx === topic.questions[currentFloor].correct 
-                            ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-600' 
-                            : 'opacity-20 border-transparent text-slate-600'
+                            ? 'bg-emerald-900/40 border-emerald-500/50 text-emerald-400' 
+                            : 'opacity-30 border-transparent text-slate-500'
                     }`}
                   >
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded border flex items-center justify-center text-sm font-black ${
-                         selectedOption === idx ? 'border-current' : 'border-slate-600 text-slate-500 group-hover:border-cyan-400 group-hover:text-cyan-400'
+                    <div className="relative z-10 flex items-center gap-5">
+                        <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-sm font-black flex-shrink-0 ${
+                         selectedOption === idx ? 'border-current bg-current/10' : 'border-slate-500 text-slate-400 group-hover:border-cyan-400 group-hover:text-cyan-400 group-hover:bg-cyan-400/10'
                        }`}>
                          {String.fromCharCode(65 + idx)}
                        </div>
-                        {opt}
+                        <span>{opt}</span>
                     </div>
                   </button>
                 ))}
