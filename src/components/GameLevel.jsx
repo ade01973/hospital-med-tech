@@ -3,13 +3,32 @@ import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play } from 'lucid
 import { User } from 'lucide-react';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
+  console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
+  
   const [currentFloor, setCurrentFloor] = useState(0);
   const [isDoorOpening, setIsDoorOpening] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true); // ✅ CAMBIO: Mostrar modal automáticamente
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
+
+  if (!topic || !topic.questions || topic.questions.length === 0) {
+    console.error('❌ Topic inválido:', topic);
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Error: No hay preguntas cargadas</h2>
+          <button 
+            onClick={onExit}
+            className="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-lg"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const floors = [...topic.questions];
   const handleDoorClick = (floorIndex) => {

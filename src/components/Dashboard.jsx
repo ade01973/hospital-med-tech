@@ -117,14 +117,16 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                     return (
                       <button
                         key={topic.id}
+                        type="button"
                         disabled={!isUnlocked || isCompleted}
                         onClick={() => {
-                          if (!isCompleted) {
+                          console.log(`🔘 Click en planta ${topic.id}. Desbloqueada: ${isUnlocked}, Completada: ${isCompleted}`);
+                          if (!isCompleted && isUnlocked) {
+                            console.log(`✅ Iniciando planta ${topic.id} directamente desde grilla`);
+                            setLevel(topic);
+                            setView('game');
+                          } else {
                             setSelectedFloor(topic.id);
-                            if (isUnlocked) {
-                              setLevel(topic);
-                              setView('game');
-                            }
                           }
                         }}
                         className={`
@@ -223,13 +225,21 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
               {/* Start Button */}
               {!isCurrentCompleted && (
                 <button
+                  type="button"
                   onClick={() => {
+                    console.log('🎮 BOTÓN Comenzar Evaluación - Topic:', currentTopic?.id, currentTopic?.title);
+                    console.log('📊 Llamando setLevel con:', currentTopic);
+                    console.log('📊 Llamando setView con: game');
+                    if (!currentTopic) {
+                      console.error('❌ ERROR: currentTopic es undefined!');
+                      return;
+                    }
                     setLevel(currentTopic);
                     setView('game');
                   }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
                 >
-                  ¡Comenzar Evaluación!
+                  ¡Comenzar Evaluación! ({currentTopic?.questions?.length || 0} preguntas)
                 </button>
               )}
               {isCurrentCompleted && (
