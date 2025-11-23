@@ -303,14 +303,19 @@ export const TOPICS = [
   {
     id: 17,
     title: "Los Sistemas de Salud",
-    subtitle: "Estructura y salud pública",
+    subtitle: "Estructura, financiación y modelos internacionales",
     icon: Shield,
     questions: [
-      { q: "¿Salud bien público significa?", options: ["Negocio privado", "Derecho universal, responsabilidad colectiva", "Lujo", "Privilegio"], correct: 1 },
-      { q: "¿Pilares sistema salud?", options: ["Ganancias", "Acceso, calidad, equidad", "Dinero", "Marketing"], correct: 1 },
-      { q: "¿Diferencia Primaria, Secundaria, Terciaria?", options: ["Ninguna", "Prevención, tratamiento, rehabilitación", "Colores", "Tamaño"], correct: 1 },
-      { q: "¿Modelo sistema salud español?", options: ["Privado puro", "Público universal con privada", "Sin modelo", "Caótico"], correct: 1 },
-      { q: "¿Desafío sistemas salud hoy?", options: ["Ninguno", "Envejecimiento, tecnología, costos", "Exceso dinero", "Exceso personal"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de sistema de salud?", options: ["Solo hospitales", "Conjunto elementos interrelacionados que organizan provisión servicios salud a población", "Administración pública", "Seguros médicos"], correct: 1 },
+      { q: "¿Cuáles son los CINCO ELEMENTOS CLAVE que integran un sistema de salud?", options: ["Dos elementos", "Recursos humanos, financieros, físicos, organización, objetivo mejora salud", "Solo recursos", "Solo financiación"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son las CINCO FUNCIONES PRINCIPALES de sistemas de salud?", options: ["Una función", "Provisión servicios, protección financiera, promoción salud, investigación/desarrollo, regulación", "Dos funciones", "Tres funciones"], correct: 2 },
+      { q: "¿Cuáles son los CUATRO SISTEMAS SALUD INTERNACIONALES analizados según el documento?", options: ["Dos", "NHS Reino Unido, Bismarck Alemania, Beveridge Canadá, Seguro Social EEUU", "Uno", "Cinco"], correct: 2 },
+      { q: "Según el documento, ¿cuáles son las TRES características definitorias del SISTEMA NHS REINO UNIDO?", options: ["Una", "Financiación pública, centralizado, cobertura universal gratuita, impuestos, tiempos espera largos", "Dos", "Mixta"], correct: 2 },
+      { q: "¿Cuáles son los TRES NIVELES ESTRUCTURALES del Sistema Nacional Salud español?", options: ["Dos", "Central (Ministerio), autonómico (CCAA servicios), local (Áreas/Centros salud)", "Uno", "Cuatro"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son las TRES PRESTACIONES PRINCIPALES del SNS español?", options: ["Una", "Atención primaria, atención especializada, atención sociosanitaria, salud pública", "Dos", "Solo atención primaria"], correct: 1 },
+      { q: "¿Cuáles son las DOS PROPIEDADES FUNDAMENTALES de un BIEN PÚBLICO según documento?", options: ["Una propiedad", "No exclusividad y no rivalidad; imposible excluir, no reduce cantidad disponible", "Rivalidad solo", "Exclusividad solo"], correct: 0 },
+      { q: "Según el documento, ¿cuáles son los TRES FALLOS DEL MERCADO en provisión salud?", options: ["Uno", "Inequidad (sin recursos no acceso), ineficiencia (exceso/infraprovisión), falta innovación mercado", "Dos", "Ninguno"], correct: 2 },
+      { q: "¿Cuáles son los CUATRO PRINCIPALES DESAFÍOS de sistemas salud contemporáneos según documento?", options: ["Dos", "Envejecimiento población, aumento enfermedades crónicas, tecnología, sostenibilidad financiera", "Uno", "Tres"], correct: 1 }
     ]
   },
   {
