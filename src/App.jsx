@@ -87,11 +87,11 @@ const TOPICS = [
     subtitle: "Competencias Clave",
     icon: Stethoscope,
     questions: [
-      { q: "¿Cuál NO es una función básica del proceso administrativo enfermero?", options: ["Planificar", "Diagnosticar clínicamente", "Organizar", "Evaluar/Controlar"], correct: 1 },
-      { q: "La Supervisora de Unidad es un cargo de gestión:", options: ["Alta Dirección", "Gestión Intermedia (Mesogestión)", "Gestión Clínica (Microgestión)", "Gestión Política"], correct: 2 },
-      { q: "¿Qué competencia es esencial para una gestora enfermera?", options: ["Saber canalizar vías centrales", "Inteligencia Emocional y Comunicación", "Memorizar el vademécum", "Ser la más antigua de la planta"], correct: 1 },
-      { q: "La Dirección de Enfermería se encarga de:", options: ["La gestión estratégica de los cuidados del hospital", "Repartir la medicación", "Limpiar los quirófanos", "Atender las urgencias leves"], correct: 0 },
-      { q: "¿Qué responsabilidad tiene la gestora respecto a los recursos materiales?", options: ["Usar los más caros siempre", "Eficiencia y uso racional", "No es su responsabilidad", "Esconderlos para que no falten"], correct: 1 }
+      { q: "Según González García (2019), ¿cuál es la transición fundamental en el paradigma del rol de la gestora enfermera contemporánea?", options: ["Del cuidado clínico a la administración de recursos", "Del 'controlar y mandar' al 'liderar y desarrollar'", "De la supervisión hospitalaria a la gestión política", "De la atención individual al trabajo multidisciplinar"], correct: 1 },
+      { q: "¿Cuál de los siguientes elementos NO forma parte del 'core de competencias' clave de la gestora enfermera según el modelo integral presentado?", options: ["Toma de decisiones basada en datos cuantitativos y cualitativos", "Gestión de relaciones interpersonales y dinámicas de equipos", "Capacidad de realizar intervenciones clínicas complejas", "Liderazgo ético con habilidad para gestionar conflictos"], correct: 2 },
+      { q: "En la pirámide de gestión en enfermería, ¿cuál es la característica distintiva de la 'Gestión Logística o Intermedia'?", options: ["Liderazgo operativo directo junto a la cama del paciente", "Implementación de protocolos y traducción de estrategias de alta dirección", "Formulación de políticas sanitarias y dirección institucional", "Supervisión exclusiva de procesos clínicos de enfermería"], correct: 1 },
+      { q: "¿Cuál es la diferencia fundamental entre cómo se concebía históricamente la gestión enfermera frente al enfoque holístico contemporáneo?", options: ["La histórica era más tecnológica; la contemporánea es más humanista", "La histórica enfatizaba control y jerarquía; la contemporánea promueve inspiración y empoderamiento", "No hay diferencia significativa, solo cambios de terminología", "La histórica era más eficiente; la contemporánea es más participativa pero menos efectiva"], correct: 1 },
+      { q: "¿Cómo se define en el documento el desarrollo de motivaciones en la gestora enfermera como componente de sus competencias?", options: ["A través de sanciones y sistemas de control", "Mediante educación y autoconocimiento para enfocar energía hacia mejora continua del cuidado", "Exclusivamente mediante incentivos económicos", "Por la experiencia práctica únicamente, sin necesidad de formación adicional"], correct: 1 }
     ]
   },
   {
