@@ -177,14 +177,19 @@ export const TOPICS = [
   {
     id: 10,
     title: "Toma de Decisiones",
-    subtitle: "Resolución de problemas",
+    subtitle: "Proceso y herramientas críticas",
     icon: Brain,
     questions: [
-      { q: "¿Primer paso en decisiones?", options: ["Evaluar alternativas", "Identificar problema", "Implementar", "Consultar gerente"], correct: 1 },
-      { q: "Matriz Eisenhower, tarea importante NO urgente:", options: ["Hacer ya", "Planificar", "Delegar", "Eliminar"], correct: 1 },
-      { q: "¿Qué es coste de oportunidad?", options: ["Dinero de decidir", "Valor opción no elegida", "Tiempo pensando", "Coste material"], correct: 1 },
-      { q: "Decisiones basadas en evidencia:", options: ["Tradición", "Mejor investigación disponible", "Intuición", "Paciente quiere"], correct: 1 },
-      { q: "Situación urgente, decisión:", options: ["Lenta", "Rápida y directiva", "Pospuesta", "Aleatoria"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de la toma de decisiones en enfermería?", options: ["Proceso complejo y continuo que implica seleccionar la mejor opción entre alternativas, considerando evidencia científica, valores del paciente, recursos disponibles y juicio profesional", "Elegir rápidamente sin pensar", "Seguir siempre las órdenes del médico", "Solo tomar decisiones urgentes"], correct: 0 },
+      { q: "¿Cuáles son las TRES categorías de factores que influyen en la toma de decisiones según el documento?", options: ["Solo factores del paciente", "Factores individuales, del entorno y del paciente", "Solo factores administrativos", "Factores económicos únicamente"], correct: 1 },
+      { q: "Según el documento, ¿cuál es la CORRECTA secuencia de las cinco fases del proceso de toma de decisiones?", options: ["Identificación, análisis, planificación, ejecución y evaluación", "Evaluación, identificación, análisis, planificación, ejecución", "Análisis, identificación, ejecución, planificación, evaluación", "Planificación, identificación, ejecución, análisis, evaluación"], correct: 0 },
+      { q: "¿Cuáles son los CUATRO modelos principales de toma de decisiones descritos en el documento?", options: ["Racional, intuitiva, basada en evidencia y en equipo", "Solo racional", "Solo intuitiva", "Autoritaria, democrática, consultiva y autocrática"], correct: 2 },
+      { q: "Según el documento, ¿cuál es el rol CRÍTICO del pensamiento crítico en el proceso de toma de decisiones?", options: ["No tiene importancia", "Es esencial; permite evaluar información, identificar problemas, generar soluciones creativas y tomar decisiones bien fundamentadas", "Solo se usa en emergencias", "Es solo para estudiantes"], correct: 3 },
+      { q: "¿Cuáles son las características DEFINITORIAS de las situaciones complejas en enfermería según el documento?", options: ["Siempre son urgentes", "Incertidumbre, ambigüedad, falta de información, múltiples factores y presión temporal", "Solo falta de dinero", "Problemas con el personal"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las PRINCIPALES herramientas disponibles para apoyar la toma de decisiones?", options: ["Solo intuición", "Escalas valoración, guías clínicas, protocolos, sistemas información, software análisis datos y técnicas resolución problemas", "Solo experiencia", "Nada, solo juicio profesional"], correct: 2 },
+      { q: "¿Cuál es el impacto específico de los factores del entorno en la toma de decisiones según el análisis del documento?", options: ["No influyen en absoluto", "Recursos disponibles, tiempo, presión asistencial y protocolos afectan significativamente la calidad decisiones", "Solo influye el dinero", "La ubicación geográfica es lo único importante"], correct: 0 },
+      { q: "Según el documento, ¿cuál es la razón fundamental por la que el trabajo en equipo y colaboración son ESENCIALES en situaciones complejas?", options: ["Para pasar el tiempo", "Proporciona perspectivas múltiples, apoyo mutuo y genera soluciones innovadoras imposibles para una persona sola", "Es simplemente reglamentario", "Para evitar responsabilidades"], correct: 3 },
+      { q: "¿Cuáles son las estrategias CLAVE que una enfermera debe aplicar para tomar decisiones efectivas en situaciones complejas?", options: ["Decidir rápido sin información", "Recopilar máxima información, consultar profesionales, usar herramientas apoyo, considerar valores paciente, conocer sesgos propios, tomar decisiones provisionales reviables", "Actuar solo", "Ignorar la información nueva"], correct: 1 }
     ]
   },
   {
