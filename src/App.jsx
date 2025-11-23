@@ -835,7 +835,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
                       onClick={() => {
                         const next = currentQ + 1;
                         if (next === topic.questions.length) {
-                          onComplete(topic.id, score);
+                          setIsCompleted(true);
                         } else {
                           setShowDoors(true);
                           setTimeout(() => {
