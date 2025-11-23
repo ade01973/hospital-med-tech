@@ -659,11 +659,15 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
     if (correct) {
       const pointsEarned = 100;
       setScore(prev => prev + pointsEarned);
+      console.log("✓ Respuesta CORRECTA, esperando 1500ms antes de avanzar");
       setTimeout(() => {
         const next = currentQ + 1;
+        console.log(`Pregunta correcta #${currentQ + 1}/${topic.questions.length}`);
         if (next === topic.questions.length) {
+          console.log("✓ ¡PREGUNTA 10 COMPLETADA! Mostrando Misión Cumplida");
           setIsCompleted(true);
         } else {
+          console.log(`→ Avanzando a pregunta ${next}`);
           setShowDoors(true);
           setTimeout(() => {
             setCurrentQ(next);
@@ -673,6 +677,8 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
           }, 1000);
         }
       }, 1500);
+    } else {
+      console.log("✗ Respuesta INCORRECTA - Esperando que el usuario haga clic en el botón (NO hay auto-avance)");
     }
   };
 
@@ -861,12 +867,16 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
                 {!isCorrect && (
                   <div className="flex flex-col gap-4">
                     <p className="text-sm text-red-300/80">La respuesta correcta es la opción marcada arriba.</p>
+                    <p className="text-xs text-red-300/60">Haz clic en el botón para continuar a la siguiente pregunta</p>
                     <button 
                       onClick={() => {
                         const next = currentQ + 1;
+                        console.log(`Pregunta actual: ${currentQ + 1}, Total preguntas: ${topic.questions.length}, Siguiente: ${next}`);
                         if (next === topic.questions.length) {
+                          console.log("🏆 Mostrando pantalla de Misión Cumplida");
                           setIsCompleted(true);
                         } else {
+                          console.log("🚪 Mostrando pantalla de ascensor");
                           setShowDoors(true);
                           setTimeout(() => {
                             setCurrentQ(next);
