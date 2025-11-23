@@ -231,14 +231,19 @@ export const TOPICS = [
   {
     id: 13,
     title: "Marketing Sanitario",
-    subtitle: "Promoción y comunicación",
+    subtitle: "Estrategias de valor y experiencia del paciente",
     icon: Target,
     questions: [
-      { q: "¿Qué es marketing sanitario?", options: ["Vender medicinas", "Comunicación valor servicios salud", "Publicidad engañosa", "Vender pacientes"], correct: 1 },
-      { q: "¿Componente clave marca hospital?", options: ["Logo bonito", "Reputación y experiencia paciente", "Precio bajo", "Publicidad masiva"], correct: 1 },
-      { q: "¿Ética en marketing salud?", options: ["Secundaria", "Esencial, transparencia y veracidad", "Innecesaria", "Para rivales"], correct: 1 },
-      { q: "¿Cómo fidelizar pacientes?", options: ["Ignorarlos", "Calidad asistencial y comunicación", "Cobrar más", "Dar falsas promesas"], correct: 1 },
-      { q: "¿Riesgo marketing salud?", options: ["Ninguno", "Publicidad engañosa y falsas promesas", "Ser honesto", "Transparencia"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de Marketing Sanitario en contexto sistema sanitario español?", options: ["Solo publicidad de medicinas", "Conjunto de estrategias orientadas a promover salud, prevención, informar sobre servicios, mejorar accesibilidad y fomentar participación pacientes", "Vender servicios médicos", "Marketing comercial tradicional"], correct: 1 },
+      { q: "¿Cuáles son las CINCO funciones CLAVE del Marketing Sanitario según el documento?", options: ["Solo publicidad", "Promover salud/prevención, informar sobre servicios, mejorar accesibilidad/calidad, fomentar participación pacientes, educación", "Marketing de lujo", "Solo ganancias"], correct: 3 },
+      { q: "Según el documento, ¿cuál es la diferencia CRÍTICA entre Marketing y Publicidad en contexto sanitario?", options: ["No hay diferencia", "Marketing: enfoque integral bidireccional; Publicidad: herramienta unidireccional que comunica mensajes", "Son exactamente iguales", "Marketing es más barato"], correct: 2 },
+      { q: "¿Cuáles son los CINCO elementos clave de la propuesta de valor del Marketing Sanitario?", options: ["Solo precios bajos", "Foco paciente, comunicación eficaz, construcción relaciones, promoción salud pública, eficiencia y rentabilidad", "Solo tecnología", "Menos costos"], correct: 0 },
+      { q: "Según la evolución histórica documentada, ¿cuál es el enfoque del Marketing Sanitario en la actualidad?", options: ["Años 50-60: publicidad productos", "Años 2000: online; Actualidad: marketing centrado paciente, experiencia paciente, marketing digital", "Solo promoción hospitales", "Publicidad masiva"], correct: 3 },
+      { q: "¿Cuáles son los CUATRO criterios principales de segmentación de mercados en ámbito sanitario?", options: ["Solo por precio", "Demográficos, geográficos, psicográficos, criterios relacionados salud", "Solo edad", "Por ubicación únicamente"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las características definitorias del PACIENTE EMPODERADO en contexto actual?", options: ["Pasivo, sin información", "Mayor acceso información, participación decisiones, responsabilidad en autocuidado, acceso tecnologías", "Dependiente del médico", "Sin derechos"], correct: 2 },
+      { q: "¿Cuáles son las CINCO características de la atención sanitaria que busca el paciente actual?", options: ["Solo barata", "Accesible, calidad, eficiente, personalizada, humana", "Rápida nomás", "Sin importancia"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las TRES razones por las que Marketing Sanitario cobra mayor importancia actual?", options: ["Solo economía", "Aumento competencia sector, mayor empoderamiento paciente, evolución TIC", "Menos razones", "Sin importancia"], correct: 2 },
+      { q: "¿Cuáles son los CINCO objetivos fundamentales del Marketing Sanitario en contexto sistema sanitario español?", options: ["Solo vender", "Promover eficiencia/sostenibilidad, garantizar equidad acceso, responder necesidades ciudadanos, mejorar posicionamiento, satisfacción", "Marketing tradicional", "Sin objetivos"], correct: 1 }
     ]
   },
   {
