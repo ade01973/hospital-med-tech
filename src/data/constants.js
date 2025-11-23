@@ -249,14 +249,19 @@ export const TOPICS = [
   {
     id: 14,
     title: "Gestión del Cambio",
-    subtitle: "Adaptación e innovación",
+    subtitle: "Modelos, resistencia y liderazgo transformacional",
     icon: Lightbulb,
     questions: [
-      { q: "¿Por qué cambio es difícil?", options: ["No lo es", "Miedo a incertidumbre", "Siempre fácil", "Cambio rápido"], correct: 1 },
-      { q: "Modelo Kotter de cambio tiene fases:", options: ["Una", "Ocho fases claras", "Dos", "Sin estructura"], correct: 1 },
-      { q: "Resistencia al cambio viene de:", options: ["Debilidad", "Miedo, falta info, hábitos", "Fortaleza", "Crecimiento"], correct: 1 },
-      { q: "¿Cómo comunicar cambio?", options: ["Sorpresa", "Claro, temprano, frecuente", "Vago", "Después implementar"], correct: 1 },
-      { q: "Líder cambio debe:", options: ["Imponer", "Inspirar y apoyar", "Desaparecer", "Criticar"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de gestión del cambio?", options: ["Solo implementar nuevas reglas", "Proceso planificado y sistemático que busca implementar modificaciones para mejorar funcionamiento y alcanzar objetivos estratégicos", "Cambio sin planeación", "Cambio rápido sin análisis"], correct: 1 },
+      { q: "¿Cuáles son las TRES fases principales del modelo de Lewin según el documento?", options: ["Inicio, medio, fin", "Descongelación, cambio, recongelación", "Análisis, decisión, ejecución", "Planificación, acción, cierre"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las OCHO etapas del modelo de Kotter?", options: ["Menos etapas", "Urgencia, coalición, visión, comunicación, empoderamiento, victorias, consolidación, anclaje cultural", "Tres etapas", "Cinco etapas"], correct: 2 },
+      { q: "¿Cuáles son las CINCO etapas del modelo de Kübler-Ross adaptado para cambio organizacional?", options: ["Dos etapas", "Negación, ira, negociación, depresión, aceptación", "Ocho etapas", "Tres etapas"], correct: 0 },
+      { q: "Según el documento, ¿cuál es la diferencia CRÍTICA entre cambio incremental y cambio radical?", options: ["No hay diferencia", "Incremental: pequeño y gradual; Radical: profundo y significativo/disruptivo", "Ambos iguales", "Radical es más lento"], correct: 1 },
+      { q: "¿Cuáles son las TRES etapas del modelo de Bridges para transición?", options: ["Cuatro etapas", "Fin de antiguo, zona neutral, comienzo nuevo", "Inicio, medio, fin", "Planificación, ejecución, cierre"], correct: 3 },
+      { q: "Según el documento, ¿cuál es la definición y rol fundamental de un agente de cambio?", options: ["Solo ejecutor de órdenes", "Persona que facilita/impulsa proceso cambio; identifica necesidad, comunica, planifica, ejecuta, evalúa", "Observador pasivo", "Solo crítico"], correct: 0 },
+      { q: "¿Cuáles son los CINCO tipos principales de agentes de cambio según el documento?", options: ["Solo líderes formales", "Líderes formales, informales, expertos, innovadores, campeones cambio", "Dos tipos", "Tres tipos"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las SEIS habilidades y características clave de un agente de cambio efectivo?", options: ["Una habilidad", "Comunicación, liderazgo, gestión proyectos, resolución problemas, adaptación, flexibilidad, paciencia", "Tres habilidades", "Solo liderazgo"], correct: 3 },
+      { q: "¿Cuáles son las CUATRO principales CAUSAS de resistencia al cambio según los factores individuales, grupales y organizacionales?", options: ["Solo una causa", "Miedo incertidumbre, falta información, pérdida poder, hábitos establecidos; cultural, conflictos interés, recursos limitados", "Sin causas", "Desconocidas"] , correct: 0 }
     ]
   },
   {
