@@ -70,19 +70,6 @@ const NURSING_RANKS = [
 const TOPICS = [
   {
     id: 1,
-    title: "Liderazgo y Estilos",
-    subtitle: "Fundamentos de Influencia",
-    icon: User,
-    questions: [
-      { q: "¿Qué estilo de liderazgo se caracteriza por la toma de decisiones unilateral sin consultar al equipo?", options: ["Democrático", "Autoritario (Autocrático)", "Laissez-faire", "Transformacional"], correct: 1 },
-      { q: "¿Cuál es la principal diferencia entre un jefe y un líder?", options: ["El jefe inspira, el líder manda", "El jefe tiene autoridad formal, el líder influye", "No hay diferencia", "El líder siempre cobra más"], correct: 1 },
-      { q: "El liderazgo 'Laissez-faire' se caracteriza por:", options: ["Control absoluto", "Alta participación", "Ausencia de dirección y control", "Motivación constante"], correct: 2 },
-      { q: "¿Qué estilo de liderazgo es más adecuado en una situación de parada cardiorrespiratoria?", options: ["Participativo", "Autoritario", "Laissez-faire", "Coaching"], correct: 1 },
-      { q: "El líder transformacional busca:", options: ["Mantener el status quo", "Intercambiar premios por trabajo", "Inspirar y motivar el cambio", "Evitar conflictos a toda costa"], correct: 2 }
-    ]
-  },
-  {
-    id: 2,
     title: "La Gestora Enfermera",
     subtitle: "Competencias Clave",
     icon: Stethoscope,
@@ -92,6 +79,19 @@ const TOPICS = [
       { q: "En la pirámide de gestión en enfermería, ¿cuál es la característica distintiva de la 'Gestión Logística o Intermedia'?", options: ["Liderazgo operativo directo junto a la cama del paciente", "Implementación de protocolos y traducción de estrategias de alta dirección", "Formulación de políticas sanitarias y dirección institucional", "Supervisión exclusiva de procesos clínicos de enfermería"], correct: 1 },
       { q: "¿Cuál es la diferencia fundamental entre cómo se concebía históricamente la gestión enfermera frente al enfoque holístico contemporáneo?", options: ["La histórica era más tecnológica; la contemporánea es más humanista", "La histórica enfatizaba control y jerarquía; la contemporánea promueve inspiración y empoderamiento", "No hay diferencia significativa, solo cambios de terminología", "La histórica era más eficiente; la contemporánea es más participativa pero menos efectiva"], correct: 1 },
       { q: "¿Cómo se define en el documento el desarrollo de motivaciones en la gestora enfermera como componente de sus competencias?", options: ["A través de sanciones y sistemas de control", "Mediante educación y autoconocimiento para enfocar energía hacia mejora continua del cuidado", "Exclusivamente mediante incentivos económicos", "Por la experiencia práctica únicamente, sin necesidad de formación adicional"], correct: 1 }
+    ]
+  },
+  {
+    id: 2,
+    title: "Liderazgo y Estilos",
+    subtitle: "Fundamentos de Influencia",
+    icon: User,
+    questions: [
+      { q: "¿Qué estilo de liderazgo se caracteriza por la toma de decisiones unilateral sin consultar al equipo?", options: ["Democrático", "Autoritario (Autocrático)", "Laissez-faire", "Transformacional"], correct: 1 },
+      { q: "¿Cuál es la principal diferencia entre un jefe y un líder?", options: ["El jefe inspira, el líder manda", "El jefe tiene autoridad formal, el líder influye", "No hay diferencia", "El líder siempre cobra más"], correct: 1 },
+      { q: "El liderazgo 'Laissez-faire' se caracteriza por:", options: ["Control absoluto", "Alta participación", "Ausencia de dirección y control", "Motivación constante"], correct: 2 },
+      { q: "¿Qué estilo de liderazgo es más adecuado en una situación de parada cardiorrespiratoria?", options: ["Participativo", "Autoritario", "Laissez-faire", "Coaching"], correct: 1 },
+      { q: "El líder transformacional busca:", options: ["Mantener el status quo", "Intercambiar premios por trabajo", "Inspirar y motivar el cambio", "Evitar conflictos a toda costa"], correct: 2 }
     ]
   },
   {
