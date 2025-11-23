@@ -400,6 +400,8 @@ const Dashboard = ({ user, userData, setView, setLevel, onLogout }) => {
 
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex flex-col items-end">
+              <span className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider">Estudiante</span>
+              <span className="text-sm font-black text-cyan-300 mb-2">{localStorage.getItem('studentId') || 'Usuario'}</span>
               <span className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider">Puntuación</span>
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">{userData?.totalScore || 0}</span>
