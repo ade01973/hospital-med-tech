@@ -1109,9 +1109,17 @@ export default function App() {
     const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
     const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', studentId);
     
+    // ✅ MANTENER TODOS LOS NIVELES COMPLETADOS PREVIOS + AGREGAR EL NUEVO
+    const newCompletedLevels = {
+      ...(userData?.completedLevels || {}),
+      [levelId]: true
+    };
+    
+    console.log("📊 Niveles completados:", newCompletedLevels);
+    
     // Guardar en background sin esperar
     setDoc(userProgressRef, {
-      completedLevels: { [levelId]: true },
+      completedLevels: newCompletedLevels,
       totalScore: increment(pointsEarned),
       lastPlayed: serverTimestamp()
     }, { merge: true }).catch(e => console.error("❌ Error saving user progress:", e));
