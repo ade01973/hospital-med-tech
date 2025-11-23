@@ -467,7 +467,7 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
-  const [showDoors, setShowDoors] = useState(true);
+  const [showDoors, setShowDoors] = useState(false);
 
   const handleAnswer = (optionIndex) => {
     setSelectedOption(optionIndex);
