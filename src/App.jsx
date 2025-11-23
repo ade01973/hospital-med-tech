@@ -287,7 +287,12 @@ const AuthScreen = ({ onLogin }) => {
   );
 };
 
-const WelcomeScreen = ({ onContinue }) => {
+const WelcomeScreen = ({ onContinue, onLogout }) => {
+  const handleLogout = async () => {
+    await auth.signOut();
+    if (onLogout) onLogout();
+  };
+
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
@@ -300,6 +305,13 @@ const WelcomeScreen = ({ onContinue }) => {
     >
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-950/85 to-slate-900/90"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
+      
+      <button 
+        onClick={handleLogout}
+        className="absolute top-4 left-4 z-20 text-cyan-400 hover:text-cyan-300 flex items-center gap-2 font-bold transition-colors p-3 rounded-xl hover:bg-slate-900/50 backdrop-blur-sm border border-cyan-500/20"
+      >
+        <LogOut size={24} />
+      </button>
       
       <div className="relative z-10 text-center max-w-2xl mx-auto">
         <div className="mb-12">
@@ -1059,6 +1071,7 @@ export default function App() {
     return (
       <WelcomeScreen 
         onContinue={() => setView('dashboard')}
+        onLogout={() => setView('auth')}
       />
     );
   }
