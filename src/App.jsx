@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import hospitalImage from './assets/hospital-leon.jpg?url';
+import hospitalUniversidad from './assets/hospital-leon.jpg?url';
 import elevatorLobby from './assets/elevator-lobby.png?url';
 import elevatorBg from './assets/elevator-bg.jpg?url';
 import { initializeApp } from 'firebase/app';
@@ -203,13 +204,13 @@ const AuthScreen = ({ onLogin }) => {
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
       style={{
-        backgroundImage: `url(${elevatorLobby})`,
+        backgroundImage: `url(${hospitalUniversidad})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-blue-950/80 to-slate-900/85"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-950/85 to-slate-900/90"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       
@@ -246,7 +247,7 @@ const AuthScreen = ({ onLogin }) => {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="ID de Personal Médico..."
+                placeholder="ID de Estudiante..."
                 className="relative w-full px-6 py-4 bg-slate-800/50 backdrop-blur-xl border border-cyan-500/30 rounded-2xl text-white placeholder-cyan-400/40 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-center font-semibold shadow-inner"
               />
             </div>
@@ -273,6 +274,41 @@ const AuthScreen = ({ onLogin }) => {
             </button>
           </form>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const WelcomeScreen = ({ onContinue }) => {
+  return (
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
+      style={{
+        backgroundImage: `url(${elevatorBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-950/85 to-slate-900/90"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent"></div>
+      
+      <div className="relative z-10 text-center max-w-2xl mx-auto">
+        <div className="mb-12">
+          <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-2 tracking-tight">Bienvenid@</h1>
+          <p className="text-5xl font-black text-emerald-400 mb-6">al Hospital Med-Tech</p>
+          <p className="text-cyan-300/70 text-lg font-semibold">Comienza tu viaje de aprendizaje en gestión de enfermería</p>
+        </div>
+        
+        <button 
+          onClick={onContinue}
+          className="relative group overflow-hidden mt-12"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
+          <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-5 px-12 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_50px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wider text-lg border border-cyan-400/50">
+            <ChevronUp size={24} /> Sube al Aprendizaje
+          </div>
+        </button>
       </div>
     </div>
   );
@@ -843,15 +879,22 @@ export default function App() {
   const [userData, setUserData] = useState(null);
   const [view, setView] = useState('auth'); 
   const [currentLevel, setCurrentLevel] = useState(null);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) setView('dashboard');
+      if (u) {
+        if (!hasSeenWelcome) {
+          setView('welcome');
+        } else {
+          setView('dashboard');
+        }
+      }
       else setView('auth');
     });
     return () => unsubscribe();
-  }, []);
+  }, [hasSeenWelcome]);
 
   useEffect(() => {
     if (!user) return;
@@ -885,6 +928,17 @@ export default function App() {
   };
 
   if (!user) return <AuthScreen onLogin={() => {}} />;
+
+  if (view === 'welcome') {
+    return (
+      <WelcomeScreen 
+        onContinue={() => {
+          setHasSeenWelcome(true);
+          setView('dashboard');
+        }}
+      />
+    );
+  }
 
   if (view === 'dashboard') {
     return (
