@@ -175,7 +175,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
           {/* Module Information - Right Side */}
           {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
-            <div className="flex-1 bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/20">
+            <div className={`flex-1 bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-8 shadow-2xl ${
+              isCurrentCompleted 
+                ? 'border-emerald-500/50 shadow-emerald-500/20' 
+                : 'border-cyan-400/30 shadow-cyan-500/20'
+            }`}>
               {/* Module Card */}
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -186,8 +190,13 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   } flex items-center justify-center shadow-lg`}>
                     <currentTopic.icon size={28} className="text-white" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-white">{currentTopic.title}</h2>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h2 className="text-2xl font-black text-white">{currentTopic.title}</h2>
+                      {isCurrentCompleted && (
+                        <span className="px-2 py-1 bg-emerald-500 text-white text-xs font-black rounded-full">✓ COMPLETADO</span>
+                      )}
+                    </div>
                     <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
                   </div>
                 </div>
@@ -237,12 +246,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 </button>
               )}
               {isCurrentCompleted && (
-                <button
-                  disabled
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-emerald-500/30"
-                >
-                  ✓ Completado
-                </button>
+                <div className="space-y-4">
+                  <div className="bg-emerald-500/20 border border-emerald-500/50 rounded-xl p-4">
+                    <p className="text-sm text-emerald-300 font-black mb-2">📊 CONTENIDO APRENDIDO</p>
+                    <p className="text-xs text-emerald-200 leading-relaxed">
+                      {currentTopic.questions?.length || 0} preguntas de nivel 10/10 completadas sobre: {currentTopic.subtitle}
+                    </p>
+                  </div>
+                  <button
+                    disabled
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-4 rounded-xl uppercase tracking-wider shadow-lg shadow-emerald-500/30 cursor-default"
+                  >
+                    ✓ Planta Completada
+                  </button>
+                </div>
               )}
             </div>
           )}
