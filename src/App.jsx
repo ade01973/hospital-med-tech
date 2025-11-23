@@ -585,7 +585,7 @@ const Dashboard = ({ user, userData, setView, setLevel, onLogout }) => {
   );
 };
 
-const GameLevel = ({ topic, user, onExit, onComplete }) => {
+const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [currentQ, setCurrentQ] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
@@ -686,10 +686,10 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   };
 
   const handleCompletionReturn = () => {
-    console.log(`🏠 Guardando progreso - Módulo: ${topic.id}, Puntos totales: ${score}`);
+    console.log(`🏠 Guardando progreso - Módulo: ${topic.id}, Puntos totales: ${score}, StudentID: ${studentId}`);
     console.log(`DEBUG: onComplete es ${typeof onComplete}`);
     if (onComplete) {
-      onComplete(topic.id, score);
+      onComplete(topic.id, score, studentId);
     } else {
       console.error("❌ ERROR: onComplete no está disponible");
     }
@@ -1085,7 +1085,7 @@ export default function App() {
     return () => unsubscribe();
   }, [user]);
 
-  const handleLevelComplete = async (levelId, pointsEarned) => {
+  const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
     console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}`);
     
     // ✅ NAVEGAR INMEDIATAMENTE AL DASHBOARD
@@ -1101,9 +1101,8 @@ export default function App() {
       console.log("⚠️ Módulo ya completado");
       return;
     }
-    const studentId = localStorage.getItem('studentId');
     if (!studentId) {
-      console.error("❌ No se encontró studentId");
+      console.error("❌ No se encontró studentId en parámetro");
       return;
     }
     const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
@@ -1156,10 +1155,12 @@ export default function App() {
   }
 
   if (view === 'game' && currentLevel) {
+    const currentStudentId = localStorage.getItem('studentId');
     return (
       <GameLevel 
         topic={currentLevel} 
         user={user} 
+        studentId={currentStudentId}
         onExit={() => setView('dashboard')}
         onComplete={handleLevelComplete}
       />
