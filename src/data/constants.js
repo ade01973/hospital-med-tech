@@ -195,14 +195,19 @@ export const TOPICS = [
   {
     id: 11,
     title: "Planificación y Gestión del Tiempo",
-    subtitle: "Eficiencia y productividad",
+    subtitle: "Procesos y metodologías estratégicas",
     icon: Clock,
     questions: [
-      { q: "¿Beneficio de planificar?", options: ["Perder más tiempo", "Maximizar recursos", "Aumentar estrés", "Rigidez"], correct: 1 },
-      { q: "¿Qué son los objetivos SMART?", options: ["Vagas", "Específicos, Medibles, Alcanzables, Relevantes, Temporales", "Generales", "Sin detalles"], correct: 1 },
-      { q: "Procrastinación causa:", options: ["Mejoría", "Estrés y mala calidad", "Más tiempo", "Mejor resultado"], correct: 1 },
-      { q: "Técnica Pomodoro implica:", options: ["Trabajar sin parar", "Intervalos trabajo-descanso", "Solo reuniones", "Multitarea"], correct: 1 },
-      { q: "¿Cómo priorizar tareas?", options: ["Azar", "Urgencia e importancia", "Tamaño", "Mood del día"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de la planificación?", options: ["Hacer listas de tareas sin orden", "Proceso de establecer objetivos y metas, desarrollando plan de acción para alcanzarlos; herramienta esencial para éxito personal, profesional y social", "Solo para empresas grandes", "Una tarea administrativa innecesaria"], correct: 1 },
+      { q: "¿Cuáles son los TRES tipos principales de planificación organizacional descritos en el documento?", options: ["Personal, familiar y social", "Estratégica, táctica y operativa", "Rápida, media y lenta", "Financiera, legal y administrativa"], correct: 2 },
+      { q: "Según el documento, ¿cuál es la diferencia crítica entre planificación estratégica y planificación táctica?", options: ["Estratégica define dirección a largo plazo basada en análisis FODA; táctica traduce objetivos estratégicos en planes de acción específicos a corto plazo", "No hay diferencia", "Táctica es más importante", "Estratégica es solo teórica"], correct: 0 },
+      { q: "¿Cuál es el propósito fundamental de la planificación operativa en contexto de enfermería?", options: ["Establecer visión empresarial", "Desarrollar detalles de implementación día a día; gestión tareas, priorización, seguimiento operaciones", "Solo para reuniones", "Prevenir cambios organizacionales"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son los CUATRO pasos clave del método ABC para planificación?", options: ["Identificar tareas, clasificar A-B-C, priorizar A, planificar B-C y revisar regularmente", "Solo hacer lista", "Ignorar importancia", "Hacer todo a la vez"], correct: 0 },
+      { q: "¿Cuál es la estructura fundamental de la matriz de Eisenhower según el documento?", options: ["Tres cuadrantes", "Cuatro cuadrantes basados en importancia y urgencia para clasificar tareas", "Solo dos opciones", "Cinco niveles de prioridad"], correct: 1 },
+      { q: "Según el documento, ¿cuál es el propósito CRÍTICO del análisis DAFO en planificación estratégica?", options: ["Decorar reportes", "Diagnóstico situación actual identificando factores internos (fortalezas-debilidades) y externos (oportunidades-amenazas) que afectan éxito", "Solo cumplimiento", "Marketing"], correct: 2 },
+      { q: "¿Cuáles son las herramientas PRINCIPALES para la planificación táctica según el documento?", options: ["Solo reuniones verbales", "Diagramas flujo, diagramas Gantt, PERT, CPM para visualizar cronogramas y ruta crítica", "Intuición personal", "Secretaría"], correct: 1 },
+      { q: "Según el documento, ¿cuál es la función crítica de las herramientas software en la planificación?", options: ["Complicar procesos", "Mejoran eficiencia ofreciendo calendarios, gestión tareas, seguimiento progreso, comunicación y colaboración", "No sirven", "Solo para reportes bonitos"], correct: 3 },
+      { q: "¿Cuáles son los CUATRO beneficios esenciales de una planificación eficaz según el análisis del documento?", options: ["Ser más lento", "Ser más productivo, alcanzar objetivos rápido/eficiente, reducir estrés/ansiedad, mejorar calidad vida", "Causas aburrimiento", "Reduce capacidad"], correct: 0 }
     ]
   },
   {
