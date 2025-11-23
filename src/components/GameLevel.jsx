@@ -83,8 +83,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           <ArrowLeft size={16}/> <span className="hidden sm:inline">Abandonar</span>
         </button>
         <div className="flex flex-col items-center">
-           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Planta</span>
-          <span className="text-cyan-400 font-black text-xl tracking-widest">0{currentFloor + 1} / 05</span>
+           <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Pregunta</span>
+          <span className="text-cyan-400 font-black text-xl tracking-widest">0{currentFloor + 1} / {String(topic.questions.length).padStart(2, '0')}</span>
         </div>
         <div className="bg-slate-800 border border-white/10 text-white px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-lg">
           <Zap size={16} className="text-yellow-400 fill-yellow-400" /> {score}

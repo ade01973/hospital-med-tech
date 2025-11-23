@@ -17,6 +17,17 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
   const currentTopic = TOPICS.find(t => t.id === selectedFloor);
   const isCurrentUnlocked = selectedFloor === 1 || (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
   const isCurrentCompleted = userData?.completedLevels && userData.completedLevels[selectedFloor];
+  
+  // Prevent clicking on already completed levels
+  const handleFloorClick = (topic) => {
+    const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+    const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
+    
+    if (isUnlocked && !isCompleted) {
+      setLevel(topic);
+      setView('game');
+    }
+  };
 
   return (
     <div 
@@ -106,12 +117,14 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
                     return (
                       <button
                         key={topic.id}
-                        disabled={!isUnlocked}
+                        disabled={!isUnlocked || isCompleted}
                         onClick={() => {
-                          setSelectedFloor(topic.id);
-                          if (isUnlocked && !isCompleted) {
-                            setLevel(topic);
-                            setView('game');
+                          if (!isCompleted) {
+                            setSelectedFloor(topic.id);
+                            if (isUnlocked) {
+                              setLevel(topic);
+                              setView('game');
+                            }
                           }
                         }}
                         className={`

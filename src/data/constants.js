@@ -18,11 +18,16 @@ export const TOPICS = [
     subtitle: "Niveles de gestión y competencias",
     icon: Stethoscope,
     questions: [
-      { q: "¿Cuál NO es una función básica del proceso administrativo enfermero?", options: ["Planificar", "Diagnosticar clínicamente", "Organizar", "Evaluar/Controlar"], correct: 1 },
-      { q: "La Supervisora de Unidad es un cargo de gestión:", options: ["Alta Dirección", "Gestión Intermedia (Mesogestión)", "Gestión Clínica (Microgestión)", "Gestión Política"], correct: 1 },
-      { q: "¿Qué competencia es esencial para una gestora enfermera?", options: ["Saber canalizar vías centrales", "Inteligencia Emocional y Comunicación", "Memorizar el vademécum", "Ser la más antigua de la planta"], correct: 1 },
-      { q: "La Dirección de Enfermería se encarga de:", options: ["La gestión estratégica de los cuidados del hospital", "Repartir la medicación", "Limpiar los quirófanos", "Atender las urgencias leves"], correct: 0 },
-      { q: "¿Qué responsabilidad tiene la gestora respecto a los recursos?", options: ["Usar los más caros", "Eficiencia y uso racional", "No es su responsabilidad", "Maximizar gastos"], correct: 1 }
+      { q: "Según el paradigma moderno presentado, ¿cuál es la principal diferencia en el rol de la gestora enfermera respecto al enfoque histórico?", options: ["Ha aumentado su poder autoritario", "Ha evolucionado de 'controlar y mandar' a 'liderar y desarrollar'", "Ha disminuido su responsabilidad", "Es exactamente igual que antes"], correct: 1 },
+      { q: "¿Cuál de los siguientes NO es un nivel de gestión en enfermería según la estructura organizativa mencionada?", options: ["Gestión Operativa", "Gestión Logística o Intermedia", "Alta Dirección", "Gestión Ejecutiva Global"], correct: 3 },
+      { q: "La Gestión Operativa en enfermería se caracteriza principalmente por:", options: ["Formular estrategias institucionales", "Liderar la atención directa al paciente junto a la cama", "Coordinar entre departamentos", "Establecer políticas sanitarias"], correct: 1 },
+      { q: "¿Qué responsabilidad específica tiene la Gestión Intermedia (Logística) en relación a la Alta Dirección?", options: ["Reemplazar sus decisiones", "Traducir y transmitir las estrategias hacia los niveles operativos", "Hacer lo opuesto", "No tiene relación directa"], correct: 1 },
+      { q: "Según el documento, ¿cuál es el aspecto MÁS crítico que diferencia a la gestora enfermera moderna de un simple administrador?", options: ["La capacidad de controlar costos", "La capacidad de inspirar, colaborar y empoderar a través del liderazgo transformacional", "El número de tareas que realiza", "La antigüedad en el puesto"], correct: 1 },
+      { q: "¿Cuál es el propósito principal de que la gestora enfermera cree 'ambientes de trabajo seguros y saludables'?", options: ["Cumplir normativa laboral", "Promover el trabajo en equipo y mejorar la calidad asistencial", "Reducir costos operativos", "Aumentar el número de empleados"], correct: 1 },
+      { q: "La evaluación continua de los servicios prestados por la gestora enfermera está orientada principalmente a:", options: ["Castigar errores", "Garantizar que la atención se alinee con estándares de excelencia", "Documentar fallos", "Justificar presupuestos"], correct: 1 },
+      { q: "¿Qué aspecto hace que la gestión en enfermería 'trascienda la mera administración de recursos'?", options: ["El uso de tecnología avanzada", "La capacidad de influir, motivar y promover excelencia mediante liderazgo ético", "El tamaño del presupuesto", "La cantidad de personal disponible"], correct: 1 },
+      { q: "Según González García (2019), ¿cuáles son los pilares fundamentales sobre los que descansa el rol de la gestora enfermera?", options: ["Autoridad y control únicamente", "Planificación, organización de servicios, ambientes seguros, participación y evaluación", "Solo planificación estratégica", "Únicamente tareas operativas"], correct: 1 },
+      { q: "¿Por qué se describe la gestión enfermera como un 'acto de equilibrio delicado y dinámico'?", options: ["Porque es impredecible", "Porque requiere conocimiento, habilidad, pasión, empatía y compromiso con valores fundamentales", "Porque es muy fácil", "Porque no tiene estabilidad"], correct: 1 }
     ]
   },
   {
