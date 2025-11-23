@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play } from 'lucide-react';
 import { User } from 'lucide-react';
 
@@ -12,6 +12,12 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
+  
+  // Cuando cambiamos de pregunta, forzamos que el modal se recargue
+  useEffect(() => {
+    console.log(`📄 Pregunta cambió a: ${currentFloor + 1}`);
+    setShowModal(true);
+  }, [currentFloor]);
 
   if (!topic || !topic.questions || topic.questions.length === 0) {
     console.error('❌ Topic inválido:', topic);
@@ -44,6 +50,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   };
 
   const handleAnswer = (optionIndex) => {
+    console.log(`📍 Respuesta en pregunta ${currentFloor + 1}: opción ${optionIndex}`);
     setSelectedOption(optionIndex);
     const correct = topic.questions[currentFloor].correct === optionIndex;
     setIsCorrect(correct);
@@ -57,17 +64,18 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     // 🔄 SIEMPRE AVANZAR - correcta o incorrecta
     setTimeout(() => {
       const nextFloor = currentFloor + 1;
+      console.log(`⏭️ Avanzando a pregunta ${nextFloor} de ${floors.length}`);
       
       if (nextFloor === floors.length) {
         // ✅ Última pregunta - mostrar pantalla de éxito
+        console.log(`🏆 ¡COMPLETADO! Puntuación final: ${score + pointsEarned}`);
         setCompleted(true);
         setTimeout(() => onComplete(topic.id, score + pointsEarned, studentId), 500);
       } else {
-        // ➡️ Siguiente pregunta
-        setShowModal(false);
+        // ➡️ Siguiente pregunta - SIN cerrar el modal, solo resetear estados
+        setCurrentFloor(nextFloor);
         setSelectedOption(null);
         setIsCorrect(null);
-        setCurrentFloor(nextFloor);
       }
     }, 1500);
   };
