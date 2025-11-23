@@ -375,14 +375,19 @@ export const TOPICS = [
   {
     id: 21,
     title: "Seguridad del Paciente",
-    subtitle: "Gestión del riesgo sanitario",
+    subtitle: "Gestión del riesgo, eventos adversos y cultura de seguridad",
     icon: Shield,
     questions: [
-      { q: "¿Evento adverso en salud es?:", options: ["Mejoría", "Daño no intencional al paciente", "Éxito", "Previsto"], correct: 1 },
-      { q: "¿Cultura seguridad implica?:", options: ["Ocultar errores", "Transparencia y aprendizaje", "Culpa", "Ignorancia"], correct: 1 },
-      { q: "¿Herramienta FMEA en salud?:", options: ["Medicina", "Identificar y analizar riesgos", "Diagnóstico", "Tratamiento"], correct: 1 },
-      { q: "¿Reporte de eventos adversos?:", options: ["Opcional", "Esencial para mejora", "Castigo", "Sin valor"], correct: 1 },
-      { q: "¿Cómo mejorar seguridad?:", options: ["Responsabilizar individual", "Rediseño sistemas y procesos", "Ignorar", "Esperar"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de SEGURIDAD DEL PACIENTE?", options: ["Reducción riesgo daño a mínimo aceptable; ausencia errores, eventos adversos, cultura seguridad", "Ausencia total de riesgo", "Cumplimiento normativo", "Responsabilidad médicos"], correct: 0 },
+      { q: "¿Cuáles son los CUATRO BENEFICIOS PRINCIPALES de Seguridad Paciente según documento?", options: ["Uno", "Protege pacientes, mejora calidad, reduce costes, promueve confianza", "Dos", "Tres"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las CINCO FASES del PROCESO GESTIÓN RIESGO SANITARIO?", options: ["Tres", "Identificación, valoración/análisis, priorización, intervención/control, evaluación/seguimiento", "Dos", "Cuatro"], correct: 2 },
+      { q: "¿Cuáles son los CUATRO HERRAMIENTAS principales de Gestión Riesgos según el documento?", options: ["Análisis DAFO, Árbol fallos, AMFE, Listas verificación", "Una", "Dos", "Tres"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son las CINCO CARACTERÍSTICAS de CULTURA SEGURIDAD PACIENTE?", options: ["Dos", "Compromiso dirección, comunicación abierta, trabajo equipo, aprendizaje continuo, justa cultura", "Una", "Tres"], correct: 0 },
+      { q: "¿Cuál es la DEFINICIÓN y CLASIFICACIÓN de EVENTO ADVERSO según el documento?", options: ["Mejora esperada", "Incidente causa daño paciente no relacionado enfermedad; clasificado por gravedad (leve/moderado/grave), intencionalidad, prevenibilidad", "Resultado exitoso", "Evolución natural"], correct: 1 },
+      { q: "Según el documento, ¿cuáles son las TRES CAUSAS PRINCIPALES de EVENTOS ADVERSOS?", options: ["Una causa", "Errores humanos, fallos sistemas, factores ambientales", "Dos", "Cuatro"], correct: 2 },
+      { q: "¿Cuáles son las CUATRO CONSECUENCIAS PRINCIPALES de Eventos Adversos según documento?", options: ["Daño paciente, aumento costes, disminución satisfacción, daño imagen centro sanitario", "Una", "Dos", "Tres"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son los CINCO PASOS para IMPLEMENTACIÓN CULTURA SEGURIDAD?", options: ["Dos", "Política seguridad, formación profesionales, sistema notificación, auditorías, esfuerzo sostenido", "Uno", "Tres"], correct: 0 },
+      { q: "¿Cuál es la IMPORTANCIA de NOTIFICACIÓN Y ANÁLISIS de EVENTOS ADVERSOS según documento?", options: ["Sin importancia", "Notificación obligatoria permite identificar riesgos; análisis identifica causas y prevención futura mejorando seguridad", "Solo administrativo", "Castigo profesionales"], correct: 1 }
     ]
   }
 ];
