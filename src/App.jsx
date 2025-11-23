@@ -555,15 +555,63 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [showDoors, setShowDoors] = useState(true);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const playElevatorSound = () => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Elevator sound: beep going down
+    oscillator.frequency.value = 800;
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.15);
+    
+    // Second beep
+    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
+    oscillator.start(audioContext.currentTime + 0.2);
+    oscillator.stop(audioContext.currentTime + 0.35);
+  };
+
+  const speakText = (text, rate = 1) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = rate;
+      utterance.lang = 'es-ES';
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   useEffect(() => {
-    if (showDoors) {
+    if (showDoors && isFirstLoad) {
+      setIsFirstLoad(false);
+      // Elevator sound + floor announcement
+      playElevatorSound();
+      setTimeout(() => {
+        const floorText = `Planta ${currentQ + 1}, ${topic.title}`;
+        speakText(floorText);
+      }, 400);
+    }
+  }, [showDoors, isFirstLoad, currentQ, topic.title]);
+
+  useEffect(() => {
+    if (showDoors && !isFirstLoad) {
       const timer = setTimeout(() => {
         setShowDoors(false);
+        // Speak room number when doors open
+        setTimeout(() => {
+          speakText(`Habitación ${currentQ + 1}`, 1.2);
+        }, 300);
       }, 1200);
       return () => clearTimeout(timer);
     }
-  }, [showDoors]);
+  }, [showDoors, isFirstLoad, currentQ]);
 
   const handleAnswer = (optionIndex) => {
     setSelectedOption(optionIndex);
