@@ -213,14 +213,19 @@ export const TOPICS = [
   {
     id: 12,
     title: "Gestión por Procesos",
-    subtitle: "Optimización y calidad",
+    subtitle: "Diseño, implementación y mejora continua",
     icon: BarChart3,
     questions: [
-      { q: "¿Qué es un proceso?", options: ["Una tarea", "Conjunto actividades para resultado", "Una reunión", "Una persona"], correct: 1 },
-      { q: "¿Objetivo gestión procesos?", options: ["Caos", "Eficiencia y consistencia", "Más gasto", "Menos documentación"], correct: 1 },
-      { q: "Un indicador de proceso es:", options: ["Opinión", "Métrica medible de desempeño", "Humedad", "Color"], correct: 1 },
-      { q: "¿Cómo mejorar procesos?", options: ["Sin cambios", "Analizar, optimizar, implementar", "Cambiar todo", "Hacer más rápido"], correct: 1 },
-      { q: "Six Sigma busca:", options: ["Más defectos", "Minimizar variabilidad y defectos", "Duplicar trabajo", "Menos control"], correct: 1 }
+      { q: "Según el documento, ¿cuál es la definición fundamental de la gestión por procesos?", options: ["Solo una tarea administrativa", "Metodología sistemática de identificación, diseño, implementación y mejora continua de procesos; enfoque orientado a eficiencia, eficacia y satisfacción de clientes", "Un sistema solo de calidad", "Una herramienta de control únicamente"], correct: 1 },
+      { q: "¿Cuáles son las CINCO características clave de la gestión por procesos según el documento?", options: ["Autoritarismo, secreto, aislamiento, rigidez, ignorancia", "Enfoque cliente, orientación eficiencia, mejora continua, enfoque sistémico, trabajo equipo", "Solo rapidez", "Solo economía"], correct: 3 },
+      { q: "Según la tabla del documento, ¿cuál es la diferencia CRÍTICA en estructura entre gestión tradicional y gestión por procesos?", options: ["No hay diferencia", "Tradicional: jerárquica; por procesos: plana; tradicional enfoque funcional; procesos enfoque horizontal", "Ambas son iguales", "Procesos es más jerárquica"], correct: 2 },
+      { q: "¿Cuáles son los TRES tipos principales de procesos en gestión por procesos según el documento?", options: ["Rápidos, medios, lentos", "Asistenciales, apoyo, estratégicos", "Públicos, privados, externos", "Simples, complejos, intermedios"], correct: 0 },
+      { q: "Según el documento, ¿cuál es la diferencia CRÍTICA entre procesos asistenciales y procesos de apoyo?", options: ["No existe diferencia", "Asistenciales: directamente con paciente e impacto calidad; apoyo: no directos con paciente pero necesarios para procesos asistenciales", "Todos son iguales", "Apoyo es menos importante"], correct: 1 },
+      { q: "¿Cuáles son los CINCO pasos para implementación de gestión por procesos en servicios enfermería?", options: ["Solo planificar", "Identificar, analizar, rediseñar, implementar, evaluar y mejorar continuamente", "Nada específico", "Cambiar todo de golpe"], correct: 3 },
+      { q: "Según el documento, ¿cuáles son los CINCO criterios fundamentales para identificar procesos?", options: ["Solo opinion", "Objetivo, inicio-fin, entradas-salidas, clientes, frecuencia", "Nada importante", "Solo documentos"], correct: 1 },
+      { q: "¿Cuáles son las CUATRO técnicas principales para la identificación de procesos según el documento?", options: ["Solo observar", "Análisis documentación, observación directa, entrevistas, cuestionarios", "Nada", "Solo preguntar"], correct: 2 },
+      { q: "Según el documento, ¿cuál es el rol FUNDAMENTAL de la gestora enfermera en implementación de gestión por procesos?", options: ["No tiene rol importante", "Liderar cambio, diseñar/implementar procesos, evaluar/mejorar, formar equipo, comunicar gestión procesos", "Solo supervisar", "Solo documentar"], correct: 1 },
+      { q: "¿Cuáles son los CINCO beneficios esenciales de la gestión por procesos en ámbito sanitario según el documento?", options: ["Menos beneficios", "Mejora calidad atención, mayor eficiencia, mejor coordinación profesionales, mayor satisfacción profesionales, mejora seguridad paciente", "Solo economía", "Menos trabajo"], correct: 3 }
     ]
   },
   {
