@@ -483,11 +483,11 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
         } else {
           setShowDoors(true);
           setTimeout(() => {
-            setShowDoors(false);
             setCurrentQ(next);
             setSelectedOption(null);
             setIsCorrect(null);
-          }, 800);
+            setShowDoors(false);
+          }, 1000);
         }
       }, 1500);
     }
@@ -600,13 +600,13 @@ const GameLevel = ({ topic, user, onExit, onComplete }) => {
       </div>
 
       {showDoors && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
           <div className="text-center">
             <div className="inline-flex gap-2 mb-4">
-              <div className="w-32 h-64 bg-gray-700 border-4 border-gray-800 rounded-lg animate-slide-left"></div>
-              <div className="w-32 h-64 bg-gray-700 border-4 border-gray-800 rounded-lg animate-slide-right"></div>
+              <div className="w-32 h-64 bg-gradient-to-b from-slate-600 to-slate-800 border-4 border-slate-700 rounded-lg animate-slide-left shadow-[0_0_30px_rgba(6,182,212,0.3)]"></div>
+              <div className="w-32 h-64 bg-gradient-to-b from-slate-600 to-slate-800 border-4 border-slate-700 rounded-lg animate-slide-right shadow-[0_0_30px_rgba(6,182,212,0.3)]"></div>
             </div>
-            <p className="text-white font-black text-2xl">Pasando a la siguiente sala...</p>
+            <p className="text-cyan-300 font-black text-2xl uppercase tracking-wider">Pasando a la siguiente sala...</p>
           </div>
         </div>
       )}
