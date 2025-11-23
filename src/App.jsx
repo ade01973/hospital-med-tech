@@ -181,16 +181,32 @@ const AuthScreen = ({ onLogin }) => {
       }
       
       if (auth.currentUser) {
-        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', auth.currentUser.uid);
+        const studentId = name.trim().toLowerCase();
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', studentId);
+        const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
+        
+        // Verificar si el estudiante ya existe
+        const docSnap = await getDoc(userRef);
+        
         await setDoc(userRef, {
           displayName: name,
+          studentId: studentId,
           uid: auth.currentUser.uid,
           lastActive: serverTimestamp(),
-          totalScore: 0
+          totalScore: docSnap.exists() ? docSnap.data().totalScore : 0
         }, { merge: true });
         
-        console.log("✓ Login exitoso, llamando onLogin");
-        // Pequeño delay para asegurar que todo se sincroniza
+        // Asegurar que existe el documento de progreso
+        const progressSnap = await getDoc(userProgressRef);
+        if (!progressSnap.exists()) {
+          await setDoc(userProgressRef, {
+            totalScore: 0,
+            completedLevels: {}
+          });
+        }
+        
+        console.log("✓ Login exitoso para:", studentId);
+        localStorage.setItem('studentId', studentId);
         setTimeout(() => {
           onLogin();
         }, 100);
@@ -289,6 +305,7 @@ const AuthScreen = ({ onLogin }) => {
 
 const WelcomeScreen = ({ onContinue, onLogout }) => {
   const handleLogout = async () => {
+    localStorage.removeItem('studentId');
     await auth.signOut();
     if (onLogout) onLogout();
   };
@@ -349,6 +366,7 @@ const Dashboard = ({ user, userData, setView, setLevel, onLogout }) => {
   });
 
   const handleLogout = async () => {
+    localStorage.removeItem('studentId');
     await auth.signOut();
     if (onLogout) onLogout();
   };
@@ -1028,6 +1046,7 @@ export default function App() {
       setIsLoading(false);
       
       if (!u) {
+        localStorage.removeItem('studentId');
         setView('auth');
       }
     });
@@ -1036,7 +1055,9 @@ export default function App() {
 
   useEffect(() => {
     if (!user) return;
-    const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress');
+    const studentId = localStorage.getItem('studentId');
+    if (!studentId) return;
+    const docRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) setUserData(docSnap.data());
       else setDoc(docRef, { totalScore: 0, completedLevels: {} });
@@ -1047,8 +1068,10 @@ export default function App() {
   const handleLevelComplete = async (levelId, pointsEarned) => {
     if (!user) return;
     if (userData?.completedLevels?.[levelId]) return;
-    const userProgressRef = doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress');
-    const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', auth.currentUser.uid);
+    const studentId = localStorage.getItem('studentId');
+    if (!studentId) return;
+    const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
+    const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', studentId);
     try {
       await setDoc(userProgressRef, {
         completedLevels: { [levelId]: true },
