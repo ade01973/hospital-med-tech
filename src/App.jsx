@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
-import { Loader, Lock, CheckCircle, LogOut } from 'lucide-react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import Dashboard from './components/Dashboard';
 import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
-import { TOPICS, NURSING_RANKS } from './data/constants';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBfZ9Xjvvvvvvvv",
-  authDomain: "nursing-sim-game.firebaseapp.com",
-  projectId: "nursing-sim-game",
-  storageBucket: "nursing-sim-game.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = 'nursing-sim-game';
+import { auth, db, appId } from './firebase.js';
 
 export default function App() {
   const [user, setUser] = useState(null);
