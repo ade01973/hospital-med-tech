@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import elevatorBg from '../assets/elevator-bg.png';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
+  const [showRoadmap, setShowRoadmap] = useState(false); // Show/hide career roadmap
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
@@ -42,6 +43,129 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/50"></div>
 
+      {/* Career Roadmap Modal */}
+      {showRoadmap && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-slate-900/95 backdrop-blur-xl border-2 border-purple-500/50 rounded-3xl p-8 shadow-2xl shadow-purple-500/30 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                  <Map className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-3xl font-black text-white">Ruta de la Gestora Enfermera</h2>
+              </div>
+              <button
+                onClick={() => setShowRoadmap(false)}
+                className="text-slate-400 hover:text-white text-2xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Stages List */}
+            <div className="space-y-4">
+              {NURSING_RANKS.map((rank, idx) => {
+                const currentScore = userData?.totalScore || 0;
+                const isReached = currentScore >= rank.minScore;
+                const nextRankScore = NURSING_RANKS[idx + 1]?.minScore || rank.minScore;
+                const progressInRank = isReached 
+                  ? ((currentScore - rank.minScore) / (nextRankScore - rank.minScore)) * 100
+                  : 0;
+
+                return (
+                  <div
+                    key={rank.title}
+                    className={`relative rounded-2xl p-6 border-2 transition-all ${
+                      isReached
+                        ? 'bg-gradient-to-r from-purple-900/50 to-violet-900/50 border-purple-500/80 shadow-lg shadow-purple-500/20'
+                        : 'bg-slate-800/50 border-slate-700/50 opacity-60'
+                    }`}
+                  >
+                    {/* Current indicator */}
+                    {isReached && idx === NURSING_RANKS.findIndex(r => r.minScore <= currentScore) && (
+                      <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-yellow-400 rounded-full border-2 border-yellow-300 flex items-center justify-center shadow-lg">
+                        <span className="text-xs font-black text-yellow-900">→</span>
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="flex items-start gap-4">
+                      {/* Icon */}
+                      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${rank.color} flex items-center justify-center text-2xl shadow-lg flex-shrink-0 ${!isReached && 'opacity-50'}`}>
+                        {rank.icon}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1">
+                        <div className="flex items-baseline gap-2 mb-2">
+                          <h3 className={`text-2xl font-black ${isReached ? 'text-white' : 'text-slate-400'}`}>
+                            {rank.title}
+                          </h3>
+                          <span className="text-xs text-slate-400 font-bold">
+                            {rank.minScore} pts
+                          </span>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className={isReached ? 'text-purple-300' : 'text-slate-500'}>
+                              {Math.round(progressInRank)}% completado
+                            </span>
+                            <span className="text-slate-500">
+                              {isReached ? currentScore : Math.max(0, currentScore - rank.minScore)} / {nextRankScore - rank.minScore} pts en rango
+                            </span>
+                          </div>
+                          <div className="w-full h-3 bg-slate-700/50 rounded-full overflow-hidden border border-slate-700">
+                            <div
+                              className={`h-full transition-all duration-500 ${
+                                isReached
+                                  ? 'bg-gradient-to-r from-purple-500 to-violet-500'
+                                  : 'bg-gradient-to-r from-slate-600 to-slate-700'
+                              }`}
+                              style={{ width: `${Math.max(0, progressInRank)}%` }}
+                            ></div>
+                          </div>
+                        </div>
+
+                        {/* Status */}
+                        {isReached && (
+                          <div className="mt-3 inline-block px-3 py-1 bg-emerald-500/20 border border-emerald-500/50 rounded-full">
+                            <span className="text-xs text-emerald-300 font-bold">✓ ALCANZADO</span>
+                          </div>
+                        )}
+                        {!isReached && (
+                          <div className="mt-3 inline-block px-3 py-1 bg-slate-600/30 border border-slate-600/50 rounded-full">
+                            <span className="text-xs text-slate-400 font-bold">
+                              {rank.minScore - currentScore} pts restantes
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="mt-8 pt-6 border-t border-slate-700">
+              <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                <p className="text-sm text-slate-300 mb-2">
+                  <span className="font-black text-purple-300">{userData?.totalScore || 0} XP</span> acumulados
+                </p>
+                <p className="text-xs text-slate-500">
+                  {currentRank.title === 'Líder Global' 
+                    ? '🎉 ¡Eres Líder Global! ¡Máximo rango alcanzado!'
+                    : `${nextRank ? nextRank.minScore - (userData?.totalScore || 0) : 0} puntos para alcanzar ${nextRank?.title || 'Líder Global'}`}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-white/10 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -56,14 +180,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Experiencia</span>
-              <div className="flex items-center gap-1">
-                <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <span className="text-lg font-black">{userData?.totalScore || 0} XP</span>
-              </div>
-            </div>
-            
             <button 
               onClick={() => setView('leaderboard')} 
               className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 hover:shadow-lg hover:shadow-orange-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
@@ -71,6 +187,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             >
               <Trophy className="w-6 h-6 text-white" />
             </button>
+
+            <button 
+              onClick={() => setShowRoadmap(!showRoadmap)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Ruta de la Gestora Enfermera"
+            >
+              <Map className="w-6 h-6 text-white" />
+            </button>
+
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Experiencia</span>
+              <div className="flex items-center gap-1">
+                <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                <span className="text-lg font-black">{userData?.totalScore || 0} XP</span>
+              </div>
+            </div>
 
             <button 
               onClick={() => setView('welcome')} 
