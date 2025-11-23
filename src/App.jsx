@@ -39,7 +39,8 @@ import {
   ChevronDown,
   Building2,
   Ambulance,
-  Cross
+  Cross,
+  LogOut
 } from 'lucide-react';
 
 const firebaseConfig = {
@@ -277,7 +278,7 @@ const AuthScreen = ({ onLogin }) => {
   );
 };
 
-const Dashboard = ({ user, userData, setView, setLevel }) => {
+const Dashboard = ({ user, userData, setView, setLevel, onLogout }) => {
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
   
@@ -290,6 +291,11 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
     const isCompleted = userData?.completedLevels && userData.completedLevels[t.id];
     return isUnlocked && !isCompleted;
   });
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    if (onLogout) onLogout();
+  };
 
   return (
     <div 
@@ -318,7 +324,7 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="hidden sm:flex flex-col items-end">
               <span className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider">Puntuación</span>
               <div className="flex items-center gap-2">
@@ -332,14 +338,21 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
             >
               <Trophy className="w-5 h-5 text-yellow-950" fill="currentColor" />
             </button>
+            <button 
+              onClick={handleLogout}
+              className="w-11 h-11 rounded-xl bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 flex items-center justify-center border border-red-400/50 transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transform hover:scale-105"
+            >
+              <LogOut className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
       </div>
 
       <div className="pt-24 pb-10 px-4 max-w-5xl mx-auto relative">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-3 tracking-tight">ASCENSOR DIGITAL</h2>
-          <p className="text-cyan-300/60 font-semibold text-sm uppercase tracking-widest">Sistema de navegación vertical</p>
+          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-2 tracking-tight">Bienvenid@ al Hospital</h2>
+          <p className="text-2xl font-black text-emerald-400 mb-3">Med-Tech</p>
+          <p className="text-cyan-300/60 font-semibold text-sm uppercase tracking-widest">Sistema de navegación vertical - Ascensor Digital</p>
         </div>
 
         <div className="flex gap-8 justify-center items-start flex-wrap lg:flex-nowrap">
@@ -404,14 +417,21 @@ const Dashboard = ({ user, userData, setView, setLevel }) => {
               })}
             </div>
 
-            <div className="flex gap-3 relative z-10">
-              <button className="flex-1 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 text-slate-400 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-700/50 hover:border-slate-500 hover:text-slate-300 transition-all">
-                <ChevronDown size={20} /> BAJAR
-              </button>
-              <button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 border border-cyan-400/50 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                <ChevronUp size={20} /> SUBIR
-              </button>
-            </div>
+            <button 
+              onClick={() => {
+                if (currentFloor >= 0) {
+                  setLevel(TOPICS[currentFloor]);
+                  setView('game');
+                }
+              }}
+              disabled={currentFloor < 0}
+              className="w-full relative group overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur-sm group-hover:blur transition-all"></div>
+              <div className="relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black py-4 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_40px_rgba(6,182,212,0.7)] transition-all transform group-hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-wider text-sm border border-cyan-400/50 disabled:opacity-50 disabled:cursor-not-allowed">
+                <ChevronUp size={20} /> Sube al Aprendizaje
+              </div>
+            </button>
           </div>
 
           <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl p-6 shadow-[0_0_60px_rgba(6,182,212,0.15)] border border-cyan-500/20 min-w-[320px] relative">
@@ -872,7 +892,8 @@ export default function App() {
         user={user} 
         userData={userData} 
         setView={setView} 
-        setLevel={setCurrentLevel} 
+        setLevel={setCurrentLevel}
+        onLogout={() => setView('auth')}
       />
     );
   }
