@@ -8,8 +8,10 @@ import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
 import ElevatorDoors from './components/ElevatorDoors';
 import LoginRewardNotification from './components/LoginRewardNotification';
+import BadgeNotification from './components/BadgeNotification';
 import { auth, db, appId } from './firebase.js';
 import { useLoginStreak } from './hooks/useLoginStreak';
+import { useBadges } from './hooks/useBadges';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -22,6 +24,7 @@ export default function App() {
   const [showRewardNotification, setShowRewardNotification] = useState(false);
   
   const { processLogin } = useLoginStreak();
+  const { newBadge, showBadgeNotification, setShowBadgeNotification } = useBadges(userData);
 
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
@@ -140,6 +143,13 @@ export default function App() {
         isOpen={showRewardNotification}
         onClose={() => setShowRewardNotification(false)}
         rewardData={rewardNotification}
+      />
+      
+      {/* Badge Notification */}
+      <BadgeNotification
+        isOpen={showBadgeNotification}
+        onClose={() => setShowBadgeNotification(false)}
+        badge={newBadge}
       />
       
       {showElevatorDoors && (

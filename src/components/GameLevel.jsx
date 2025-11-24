@@ -5,9 +5,11 @@ import gameLevelBg from '../assets/game-level-bg.png';
 import Confetti from './Confetti';
 import LivesGameOver from './LivesGameOver';
 import { useMissions } from '../hooks/useMissions';
+import { useBadges } from '../hooks/useBadges';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const { trackQuestionAnswered, trackStreakCheck, trackFastAnswer, trackPerfectLevel } = useMissions();
+  // Note: useBadges se llamará en Dashboard ya que userData se obtiene en App.jsx
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
   
   const [currentFloor, setCurrentFloor] = useState(0);

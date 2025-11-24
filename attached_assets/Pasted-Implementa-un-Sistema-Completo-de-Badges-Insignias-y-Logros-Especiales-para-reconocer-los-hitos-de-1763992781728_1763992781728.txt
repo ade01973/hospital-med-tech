@@ -1,0 +1,119 @@
+Implementa un Sistema Completo de Badges (Insignias) y Logros Especiales para reconocer los hitos del jugador:
+
+SISTEMA DE BADGES Y LOGROS:
+
+CATEGORÍAS DE BADGES:
+
+1️⃣ BADGES DE PROGRESO:
+🔰 "Primera Victoria" - Completa tu primer nivel
+🎓 "Aprendiz Dedicado" - Completa 5 niveles
+🎖️ "Experto en Formación" - Completa 10 niveles
+🏆 "Maestro" - Completa todos los niveles del módulo
+
+2️⃣ BADGES DE EXCELENCIA:
+⭐ "Perfeccionista" - Completa un nivel con 100% de aciertos
+🔥 "Racha Legendaria" - Alcanza racha de 10 respuestas consecutivas
+⚡ "Velocista" - Responde 10 preguntas en menos de 10s cada una
+💡 "Genio" - Obtén 1000 XP en un solo nivel
+
+3️⃣ BADGES DE DEDICACIÓN:
+📅 "Semana Perfecta" - Login 7 días consecutivos
+🌟 "Mes Completo" - Login 30 días consecutivos
+🎯 "Cazador de Misiones" - Completa 50 misiones diarias
+💪 "Inquebrantable" - Mantén racha de login de 100 días
+
+4️⃣ BADGES DE COMPETICIÓN:
+🥇 "Campeón" - Llega a #1 en tu liga
+🥈 "Subcampeón" - Termina en top 3 de tu liga
+🏅 "Competidor" - Participa en 10 temporadas de ligas
+
+5️⃣ BADGES ESPECIALES:
+👑 "VIP" - Alcanza el rango de Ministra de Sanidad
+🎉 "Fundador" - Eres uno de los primeros 100 usuarios
+✨ "Coleccionista" - Obtén 20 badges diferentes
+
+UBICACION EN LA APP:
+- El botón de 🎯 MISIONES se transforma en botón de 🎁 RECOMPENSAS
+- Dentro del modal de Recompensas hay 2 tabs:
+  * Tab 1: "🎯 MISIONES" (lo que ya existe)
+  * Tab 2: "🏆 BADGES" (nuevo)
+
+DISEÑO DEL TAB DE BADGES:
+
+Título: "🏆 TUS LOGROS"
+
+Sección 1: "RESUMEN"
+- Número total de badges obtenidos: "15 / 25 badges"
+- Barra de progreso visual
+- Porcentaje de completitud: "60% completado"
+
+Sección 2: "BADGES OBTENIDOS"
+- Grid de badges con:
+  * Icono grande del badge
+  * Nombre del badge
+  * Descripción corta
+  * Fecha de obtención
+  * Efecto visual de brillo/glow en badges obtenidos
+
+Sección 3: "BADGES BLOQUEADOS"
+- Grid de badges no obtenidos:
+  * Icono en escala de grises/opaco
+  * Nombre del badge
+  * Pista de cómo obtenerlo
+  * Barra de progreso si es aplicable (ej: "5/10 niveles completados")
+
+Sección 4: "BADGE MÁS RECIENTE"
+- Highlight del último badge obtenido
+- Animación especial
+
+NOTIFICACION DE BADGE:
+Cuando se obtiene un badge:
+- Modal automático tipo "achievement unlocked"
+- Fondo con gradiente dorado/brillante
+- Animación del badge apareciendo con zoom + rotation
+- Título: "🎉 ¡LOGRO DESBLOQUEADO!"
+- Nombre del badge en grande
+- Descripción
+- Botón "GENIAL" para cerrar
+- Confetti animation
+
+LÓGICA DE DETECCIÓN:
+- Verificar logros automáticamente después de cada acción relevante:
+  * Después de completar un nivel
+  * Después de responder una pregunta
+  * Al hacer login
+  * Al reclamar misiones
+- Si se desbloquea un badge, mostrar notificación inmediatamente
+
+PERSISTENCIA:
+- localStorage con clave "badges"
+- Array de objetos:
+  [
+    {
+      id: "primera_victoria",
+      name: "Primera Victoria",
+      icon: "🔰",
+      category: "progreso",
+      obtained: true,
+      obtainedDate: "2025-01-15",
+      description: "Completa tu primer nivel"
+    },
+    ...
+  ]
+
+INTEGRACIÓN:
+- Badge "Perfeccionista" se activa al completar un nivel con 10/10 correctas
+- Badge "Racha Legendaria" se activa cuando racha >= 10
+- Badge "Semana Perfecta" se activa cuando login streak = 7
+- Badge "Mes Completo" se activa cuando login streak = 30
+- Badge "Campeón" se activa al terminar #1 en liga semanal
+- Badge "Genio" se activa al ganar 1000+ XP en un nivel
+
+BADGE EN PERFIL:
+- Mostrar los 3 badges más recientes en el dashboard (esquina del perfil)
+- Tooltip al hacer hover mostrando nombre del badge
+
+Importante:
+- Debe integrarse con sistemas existentes (misiones, ligas, rachas, calendario)
+- Animaciones suaves y profesionales
+- Los badges deben sentirse como logros significativos
