@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, ShoppingBag, Zap, Heart, Clock, Eye, TrendingUp, Shield, Target, BookOpen } from 'lucide-react';
+import { X, ShoppingBag, Zap, Heart, Clock, TrendingUp, Shield } from 'lucide-react';
 
 const CONSUMABLES = [
   {
@@ -18,43 +18,10 @@ const CONSUMABLES = [
     price: 80,
     icon: '⏱️',
     iconComponent: Clock
-  },
-  {
-    id: 'eliminate_options',
-    name: 'Eliminar 2 Opciones',
-    description: 'Elimina 2 opciones incorrectas',
-    price: 120,
-    icon: '🎯',
-    iconComponent: Target
-  },
-  {
-    id: 'visual_hint',
-    name: 'Pista Visual',
-    description: 'Resalta la respuesta correcta',
-    price: 60,
-    icon: '👁️',
-    iconComponent: Eye
-  },
-  {
-    id: 'double_points',
-    name: '2x Puntos',
-    description: 'Duplica puntos de la pregunta',
-    price: 150,
-    icon: '⚡',
-    iconComponent: Zap
   }
 ];
 
 const UPGRADES = [
-  {
-    id: 'precision_1',
-    name: 'Precisión I',
-    description: '+5% de precisión en respuestas',
-    price: 500,
-    icon: '🎯',
-    iconComponent: Target,
-    color: 'from-blue-500 to-cyan-500'
-  },
   {
     id: 'resistance_1',
     name: 'Resistencia I',
@@ -72,15 +39,6 @@ const UPGRADES = [
     icon: '⚡',
     iconComponent: Zap,
     color: 'from-yellow-500 to-orange-500'
-  },
-  {
-    id: 'wisdom_1',
-    name: 'Sabiduría I',
-    description: '+20% de puntos por respuesta',
-    price: 1000,
-    icon: '📚',
-    iconComponent: BookOpen,
-    color: 'from-purple-500 to-pink-500'
   }
 ];
 
