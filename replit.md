@@ -11,7 +11,7 @@ This is an interactive quiz-based learning application designed for nursing mana
 - Progressive unlocking system with 22 learning modules
 - Rank progression system with XP (23,000 max points)
 - Variable point scoring based on response speed
-- Streak bonuses (+20pts when streak >=5)
+- Streak bonuses and life/heart system (Duolingo-style)
 - Beautiful animated UI with confetti effects and smooth transitions
 - Gamified "hospital tower" interface for quiz levels
 
@@ -28,19 +28,20 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ```
 /src/
-├── App.jsx                # Main application component
-├── index.css              # Tailwind imports
-├── firebase.js            # Firebase configuration
+├── App.jsx                    # Main application component
+├── index.css                  # Tailwind imports
+├── firebase.js                # Firebase configuration
 ├── components/
-│   ├── GameLevel.jsx      # Quiz game interface with animations
-│   ├── Dashboard.jsx      # Module selection and progress
-│   ├── Rewards.jsx        # Milestone rewards system
-│   ├── ElevatorDoors.jsx  # Door animation component
-│   └── Confetti.jsx       # Confetti particles effect
+│   ├── GameLevel.jsx          # Quiz game interface with lives system
+│   ├── LivesGameOver.jsx      # Modal for when lives run out
+│   ├── Dashboard.jsx          # Module selection and progress
+│   ├── Rewards.jsx            # Milestone rewards system
+│   ├── ElevatorDoors.jsx      # Door animation component
+│   └── Confetti.jsx           # Confetti particles effect
 ├── data/
-│   └── constants.js       # Quiz questions and module data
+│   └── constants.js           # Quiz questions and module data
 └── assets/
-    └── game-level-bg.png  # Game background image
+    └── game-level-bg.png      # Game background image
 ```
 
 ## Features
@@ -57,25 +58,51 @@ This is an interactive quiz-based learning application designed for nursing mana
 - **XP Ranks**: 8 levels up to 23,000 max points
 - **Milestone Rewards**: 12 reward tiers (every 2000 points)
 - **Leaderboard**: Global top performers ranking
+- **Lives System**: 5 corazones per level (Duolingo-style)
 
 ### Timer System
 - 30-second countdown per question
-- Auto-fails at 0 seconds
+- Auto-fails at 0 seconds (costs 1 life)
 - Pauses when answer submitted
 - Visual progress bar with dynamic colors
 
-### Enhanced Animations (NEW - Nov 24)
+### Lives/Hearts System (NEW - Duolingo-style)
+- **Start**: 5 corazones per level (❤️❤️❤️❤️❤️)
+- **On Incorrect Answer**: Lose 1 corazón (💔)
+- **Game Over**: When lives reach 0, show modal with options
+- **Recovery Options**:
+  1. **Esperar 30 minutos**: Auto-recover 5 corazones after timer
+  2. **Ver Video de Repaso**: Watch educational video → recover 2 corazones
+  3. **Usar Power-Up**: Use power-up item → recover 5 corazones instantly
+- **Persistence**: Lives saved in localStorage per module
+- **Visual Indicator**: Header shows ❤️❤️💔💔💔 (2/5 example)
+
+### Enhanced Animations
 - **Confetti Effect**: Particles falling on correct answers
 - **Points Animation**: Zoom + bounce + glow (0.8s duration)
 - **Shake Animation**: 0.3s shake on incorrect answers
 - **Stagger Effect**: Options slide-in with 50ms delays
 - **Glow Effects**: Color-coded pulsing (green/red/cyan)
+- **Heart Loss Animation**: Shake animation when losing a heart
 - **Hover States**: Scale 1.02 with elevated shadow (200ms)
 - **Smooth Transitions**: Fade in/out between questions (300ms)
 
 ## Recent Changes
 
-### Latest Session (Nov 24, 2025)
+### Latest Session (Nov 24, 2025) - Lives/Hearts System
+- ✅ Implemented 5-hearts system per level
+- ✅ Added 1-heart loss per incorrect answer
+- ✅ Created LivesGameOver modal component
+- ✅ Implemented 30-minute timer for recovery (localStorage)
+- ✅ Added video recovery option (+2 hearts)
+- ✅ Added power-up recovery system (5 hearts)
+- ✅ Integrated heart indicator in header
+- ✅ Added shake animation for heart loss
+- ✅ Implemented localStorage persistence per module
+- ✅ Compatible with streak system (racha NO affected by lives)
+- ✅ Modal shows all 3 recovery options elegantly
+
+### Previous Session (Nov 24, 2025) - Animations & Timer
 - ✅ Implemented 30-second timer with auto-fail at 0s
 - ✅ Added variable point system (150/100/50 based on speed)
 - ✅ Integrated timer pause when user responds
@@ -92,12 +119,16 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ## Files Added/Modified
 
-### New Files
+### New Files (Latest)
+- `src/components/LivesGameOver.jsx` - Modal for lives game over
+
+### Previously New Files
 - `src/components/Confetti.jsx` - Confetti particle system
 
 ### Modified Files
-- `src/components/GameLevel.jsx` - Timer, animations, confetti integration
+- `src/components/GameLevel.jsx` - Full integration of lives system + timer + animations
 - `tailwind.config.js` - Custom keyframes and animations
+- `replit.md` - Updated documentation
 
 ### Custom Animations (Tailwind)
 - `shake` - Horizontal tremor (0.3s)
@@ -108,14 +139,24 @@ This is an interactive quiz-based learning application designed for nursing mana
 - `slide-in-left` - Options entrance (0.3s)
 - `confetti-fall` - Particle gravity (3s)
 
-## Game Mechanics
+## Game Mechanics - Complete Flow
 
-### Question Flow
-1. Timer starts: 30s countdown
-2. User selects answer
-3. Points calculated: base (speed) + bonus (streak if >=5)
-4. Feedback shown: 1.5s delay before next question
-5. Auto-advance to next question or completion
+### Question Flow with Lives
+1. Start level with 5 corazones
+2. Timer starts: 30s countdown
+3. User selects answer
+4. If correct:
+   - Points calculated: base (speed) + bonus (streak if >=5)
+   - Confetti effect, animations
+   - Advance to next question
+5. If incorrect:
+   - Lose 1 corazón (heart loss animation)
+   - If lives > 0: advance to next question
+   - If lives == 0: show LivesGameOver modal with 3 options
+6. If timeout (0 seconds):
+   - Counted as incorrect
+   - Lose 1 corazón
+   - Same flow as incorrect
 
 ### Point Calculation
 ```
@@ -132,6 +173,16 @@ Total = base + bonus
 - Displays when >=3 (🔥 RACHA x[N])
 - Bonus (+20) when >=5 (⭐ +20 BONUS RACHA!)
 - Persists via localStorage key: `userStreak`
+- **Important**: Racha NOT affected by running out of lives
+
+### Lives System Details
+- **Storage Key**: `gameLives_${topicId}` in localStorage
+- **Recovery Timer Key**: `livesRecoveryTime_${topicId}` in localStorage
+- **Max Lives**: 5 per level
+- **Recovery Timer**: 30 minutes (1,800,000 ms)
+- **Heart Loss**: 1 heart per incorrect answer or timeout
+- **Video Recovery**: +2 hearts (one-time, per level)
+- **Power-Up**: +5 hearts (if available)
 
 ## Firebase Configuration
 
@@ -158,6 +209,7 @@ Server runs on port 5000 with hot module replacement enabled.
 - Confetti particles limited to 30 per trigger
 - Animations use ease-out/ease-in-out for smoothness
 - No animation blocking - all transitions are non-blocking
+- Heart animation uses efficient CSS shake effect
 
 ## User Interface Highlights
 
@@ -165,27 +217,45 @@ Server runs on port 5000 with hot module replacement enabled.
 - **Dashboard**: Module grid with lock icons, progress bars
 - **Game Level**: Hospital tower with animated doors
 - **Question Modal**: Timer bar, options with stagger, feedback panel
+- **Hearts Indicator**: ❤️❤️❤️❤️❤️ / 💔 in header
+- **Lives Game Over**: Beautiful modal with 3 recovery options
 - **Completion**: Celebration animation with score display
 - **Leaderboard**: Real-time player rankings
 
 ## Design Principles
 
-- Gamification: Points, streaks, ranks, rewards
-- Feedback: Immediate visual response to all actions
-- Progression: Clear unlocking and achievement system
-- Aesthetics: Futuristic hospital theme with smooth animations
-- Performance: Optimized animations for smooth gameplay
+- **Gamification**: Points, streaks, ranks, rewards, lives
+- **Feedback**: Immediate visual response to all actions
+- **Progression**: Clear unlocking and achievement system
+- **Aesthetics**: Futuristic hospital theme with smooth animations
+- **Performance**: Optimized animations for smooth gameplay
+- **Accessibility**: Clear heart indicator, readable text, good contrast
 
 ## Next Steps / TODO
 
-- [ ] Add sound effects for correct/incorrect answers
+- [ ] Add sound effects for correct/incorrect/heart-loss
 - [ ] Implement difficulty levels
 - [ ] Add multiplayer/competitive mode
 - [ ] Create administrator dashboard for question management
 - [ ] Add more learning modules (full content for all 22)
 - [ ] Implement certificates for completion
+- [ ] Add daily challenges with bonus XP
+- [ ] Implement power-up system (obtain, use, track inventory)
+- [ ] Add seasonal leaderboards
+
+## Summary
+
+NURSE MANAGER is a comprehensive, gamified learning platform featuring:
+- 30-second timer with variable points (150/100/50 based on speed)
+- Streak system with +20 bonus when >=5
+- Duolingo-style 5-hearts/lives system per level
+- Beautiful animations (confetti, shake, glow, bounce)
+- Three ways to recover lives (wait 30min, video, power-up)
+- Full persistence via localStorage + Firestore
+- Professional UI with smooth transitions
 
 ---
 
 **Last Updated**: Nov 24, 2025
-**Status**: MVP with enhanced animations ✨
+**Status**: MVP with lives system + enhanced animations ✨
+**Version**: 2.5 (Lives/Hearts Implementation)

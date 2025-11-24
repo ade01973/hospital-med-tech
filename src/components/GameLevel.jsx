@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play } from 'lucide-react';
+import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play, Heart } from 'lucide-react';
 import { User } from 'lucide-react';
 import gameLevelBg from '../assets/game-level-bg.png';
 import Confetti from './Confetti';
+import LivesGameOver from './LivesGameOver';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
   
   const [currentFloor, setCurrentFloor] = useState(0);
-  const [isDoorOpening, setIsDoorOpening] = useState(true); // ✅ Puertas abiertas automáticamente
+  const [isDoorOpening, setIsDoorOpening] = useState(true);
   const [showModal, setShowModal] = useState(true);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
@@ -16,29 +17,46 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [completed, setCompleted] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(30); // Timer de 30 segundos
-  const [timeBonus, setTimeBonus] = useState(''); // Texto de bonus por velocidad
+  const [remainingTime, setRemainingTime] = useState(30);
+  const [timeBonus, setTimeBonus] = useState('');
   const [showTimeBonus, setShowTimeBonus] = useState(false);
-  const [triggerConfetti, setTriggerConfetti] = useState(false); // Trigger para confetti
-  const [pointsToShow, setPointsToShow] = useState(''); // Puntos para mostrar animación
-  
-  // Cargar streak del localStorage al iniciar
+  const [triggerConfetti, setTriggerConfetti] = useState(false);
+  const [pointsToShow, setPointsToShow] = useState('');
+  const [lives, setLives] = useState(5);
+  const [showLivesGameOver, setShowLivesGameOver] = useState(false);
+  const [loseHeartAnimation, setLoseHeartAnimation] = useState(false);
+
+  // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
     const savedStreak = localStorage.getItem('userStreak');
     if (savedStreak) {
       setCurrentStreak(parseInt(savedStreak, 10));
     }
-  }, []);
-  
+
+    const livesKey = `gameLives_${topic?.id}`;
+    const savedLives = localStorage.getItem(livesKey);
+    if (savedLives !== null) {
+      const parsedLives = parseInt(savedLives, 10);
+      setLives(Math.min(parsedLives, 5)); // No permitir más de 5 vidas
+    }
+  }, [topic?.id]);
+
+  // Guardar lives en localStorage cuando cambien
+  useEffect(() => {
+    if (topic?.id) {
+      const livesKey = `gameLives_${topic.id}`;
+      localStorage.setItem(livesKey, lives.toString());
+    }
+  }, [lives, topic?.id]);
+
   // Timer countdown
   useEffect(() => {
-    if (selectedOption !== null || completed) return; // Pausar timer al responder o terminar
+    if (selectedOption !== null || completed || showLivesGameOver) return;
     
     const timer = setInterval(() => {
       setRemainingTime(prev => {
         if (prev <= 1) {
-          // Tiempo agotado - contar como incorrecto
-          setSelectedOption(0); // Marcar que se respondió (forzar UI)
+          setSelectedOption(0);
           setIsCorrect(false);
           clearInterval(timer);
           
@@ -48,6 +66,16 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               setCompleted(true);
               setTimeout(() => onComplete(topic.id, score, studentId), 500);
             } else {
+              // Perder vida por timeout
+              const newLives = lives - 1;
+              if (newLives <= 0) {
+                setShowLivesGameOver(true);
+              } else {
+                setLives(newLives);
+                setLoseHeartAnimation(true);
+                setTimeout(() => setLoseHeartAnimation(false), 600);
+              }
+              
               setCurrentFloor(nextFloor);
               setSelectedOption(null);
               setIsCorrect(null);
@@ -62,16 +90,15 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [selectedOption, completed, currentFloor, topic.questions.length, score, studentId, onComplete]);
-  
+  }, [selectedOption, completed, currentFloor, topic.questions.length, score, studentId, onComplete, lives, showLivesGameOver]);
+
   // Resetear timer cuando cambia la pregunta
   useEffect(() => {
     if (selectedOption === null) {
       setRemainingTime(30);
     }
   }, [currentFloor]);
-  
-  // Cuando cambiamos de pregunta, forzamos que el modal se recargue
+
   useEffect(() => {
     console.log(`📄 Pregunta cambió a: ${currentFloor + 1}`);
     setShowModal(true);
@@ -95,6 +122,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   }
 
   const floors = [...topic.questions];
+
   const handleDoorClick = (floorIndex) => {
     if (floorIndex === currentFloor) {
       setIsDoorOpening(true);
@@ -119,12 +147,10 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     const timeSpent = 30 - remainingTime;
     
     if (correct) {
-      // Incrementar racha
       newStreak = currentStreak + 1;
       setCurrentStreak(newStreak);
       localStorage.setItem('userStreak', newStreak.toString());
       
-      // Puntos base según velocidad
       if (timeSpent < 10) {
         pointsEarned = 150;
         speedBonus = '¡RÁPIDO! +150 PTS';
@@ -136,7 +162,6 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         speedBonus = '¡MÁS RÁPIDO! +50 PTS';
       }
       
-      // Bonus si racha >= 5 (se suma después)
       if (newStreak >= 5) {
         pointsEarned += 20;
         setShowStreakBonus(true);
@@ -147,7 +172,6 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setShowTimeBonus(true);
       setTimeout(() => setShowTimeBonus(false), 1500);
       
-      // Triggerear confetti para respuesta correcta
       setTriggerConfetti(true);
       setPointsToShow(`+${pointsEarned}`);
       setTimeout(() => setTriggerConfetti(false), 3500);
@@ -155,29 +179,66 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setScore(prev => prev + pointsEarned);
       console.log(`✅ CORRECTO! Tiempo: ${timeSpent}s, Velocidad: ${speedBonus}, Racha: ${newStreak}, Puntos: ${pointsEarned}`);
     } else {
-      // Resetear racha cuando falla
+      // Incorrecto - perder 1 vida
+      const newLives = lives - 1;
+      if (newLives <= 0) {
+        setShowLivesGameOver(true);
+        console.log(`💔 SIN VIDAS! Juego terminado por falta de energía`);
+      } else {
+        setLives(newLives);
+        setLoseHeartAnimation(true);
+        setTimeout(() => setLoseHeartAnimation(false), 600);
+        console.log(`❌ INCORRECTO! Vidas restantes: ${newLives}`);
+      }
+      
+      // Racha se resetea
       setCurrentStreak(0);
       localStorage.setItem('userStreak', '0');
-      console.log(`❌ INCORRECTO! Racha reseteada a 0. Tiempo: ${timeSpent}s`);
     }
     
-    // 🔄 SIEMPRE AVANZAR - correcta o incorrecta
-    setTimeout(() => {
-      const nextFloor = currentFloor + 1;
-      console.log(`⏭️ Avanzando a pregunta ${nextFloor} de ${floors.length}`);
-      
-      if (nextFloor === floors.length) {
-        // ✅ Última pregunta - mostrar pantalla de éxito
-        console.log(`🏆 ¡COMPLETADO! Puntuación final: ${score + pointsEarned}`);
-        setCompleted(true);
-        setTimeout(() => onComplete(topic.id, score + pointsEarned, studentId), 500);
-      } else {
-        // ➡️ Siguiente pregunta - SIN cerrar el modal, solo resetear estados
-        setCurrentFloor(nextFloor);
-        setSelectedOption(null);
-        setIsCorrect(null);
-      }
-    }, 1500);
+    // AVANZAR solo si hay vidas
+    if (!(lives - 1 <= 0)) {
+      setTimeout(() => {
+        const nextFloor = currentFloor + 1;
+        
+        if (nextFloor === floors.length) {
+          setCompleted(true);
+          setTimeout(() => onComplete(topic.id, score + (correct ? pointsEarned : 0), studentId), 500);
+        } else {
+          setCurrentFloor(nextFloor);
+          setSelectedOption(null);
+          setIsCorrect(null);
+        }
+      }, 1500);
+    }
+  };
+
+  const handleLivesGameOverContinue = (newLives) => {
+    setLives(newLives);
+    setShowLivesGameOver(false);
+  };
+
+  const handleWatchVideo = () => {
+    // Video URLs por módulo
+    const videoUrl = {
+      1: 'https://youtu.be/bL0e705JuZQ',
+      2: 'https://youtu.be/eb1nlMUK3-c',
+    }[topic.id];
+
+    if (videoUrl) {
+      window.open(videoUrl, '_blank');
+      // Simular cierre del video después de un tiempo (en producción, detectar cuando cierre)
+      setTimeout(() => {
+        setLives(prev => Math.min(prev + 2, 5)); // +2 corazones, máximo 5
+        setShowLivesGameOver(false);
+      }, 5000);
+    }
+  };
+
+  const handleUsePowerUp = () => {
+    // En producción, verificar si el usuario tiene power-ups disponibles
+    setLives(5);
+    setShowLivesGameOver(false);
   };
 
   if (completed) {
@@ -220,13 +281,10 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         backgroundAttachment: 'fixed'
       }}
     >
-      {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/60 -z-10"></div>
       
-      {/* Confetti Effect */}
       <Confetti trigger={triggerConfetti} />
       
-      {/* Animated Points */}
       {triggerConfetti && pointsToShow && (
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[200]">
           <div className="animate-points-bounce text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-400 to-cyan-400 drop-shadow-[0_0_20px_rgba(16,185,129,0.8)]">
@@ -235,39 +293,51 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         </div>
       )}
 
-      {/* HUD Superior */}
+      {/* HUD Superior con Vidas */}
       <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10">
         <button onClick={onExit} className="text-slate-400 hover:text-white flex items-center gap-2 font-bold transition-colors uppercase tracking-wider text-xs">
           <ArrowLeft size={16}/> <span className="hidden sm:inline">Abandonar</span>
         </button>
+        
+        {/* Corazones */}
+        <div className={`flex items-center gap-2 transition-all ${loseHeartAnimation ? 'animate-shake' : ''}`}>
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="relative">
+              {i < lives ? (
+                <span className="text-lg drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]">❤️</span>
+              ) : (
+                <span className="text-lg opacity-40">💔</span>
+              )}
+            </div>
+          ))}
+          <span className="text-xs font-mono text-slate-400 ml-1">{lives}/5</span>
+        </div>
+
         <div className="flex flex-col items-center">
            <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Pregunta</span>
           <span className="text-cyan-400 font-black text-xl tracking-widest">0{currentFloor + 1} / {String(topic.questions.length).padStart(2, '0')}</span>
         </div>
+
         <div className="bg-slate-800 border border-white/10 text-white px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-lg">
           <Zap size={16} className="text-yellow-400 fill-yellow-400" /> {score}
         </div>
       </div>
 
-      {/* Contenedor Principal - Puertas Grandes + Preguntas */}
+      {/* Contenedor Principal */}
       <div className="flex-1 flex items-center justify-center relative px-4 py-12">
-        {/* PUERTAS ASCENSOR - GRANDE */}
         <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
           <div className="w-full max-w-2xl h-96 rounded-3xl border-8 border-cyan-500/30 flex">
-            {/* Puerta izquierda */}
             <div className={`flex-1 bg-gradient-to-r from-slate-800 to-slate-900 border-r-4 border-black transition-transform duration-700 ease-in-out ${isDoorOpening ? '-translate-x-full' : 'translate-x-0'}`}></div>
-            {/* Puerta derecha */}
             <div className={`flex-1 bg-gradient-to-l from-slate-800 to-slate-900 border-l-4 border-black transition-transform duration-700 ease-in-out ${isDoorOpening ? 'translate-x-full' : 'translate-x-0'}`}></div>
           </div>
         </div>
 
-        {/* CONTENIDO PRINCIPAL */}
         <div className="relative z-10 w-full max-w-3xl">
           {/* AQUÍ VAN LAS PREGUNTAS */}
         </div>
       </div>
 
-      {/* Modal Pregunta - GRANDE Y PROMINENTE */}
+      {/* Modal Pregunta */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
            <div className="bg-slate-900 border-2 border-cyan-500/50 w-full max-w-2xl rounded-3xl p-0 shadow-[0_0_80px_rgba(34,211,238,0.3)] animate-in zoom-in-95 duration-300 overflow-hidden">
@@ -284,7 +354,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               ></div>
             </div>
             
-            {/* Header del Modal - GRANDE */}
+            {/* Header del Modal */}
             <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 p-6 border-b border-cyan-500/20 flex justify-between items-center relative overflow-hidden">
                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 shadow-lg"></div>
                <div className="flex items-center gap-3">
@@ -354,14 +424,12 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
                     {isCorrect ? "✅ CORRECTO" : "❌ INCORRECTO"}
                   </div>
                   
-                  {/* Feedback de velocidad con animación */}
                   {showTimeBonus && (
                     <div className="text-sm text-cyan-300 mt-2 font-bold animate-bounce drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">
                       ⚡ {timeBonus}
                     </div>
                   )}
                   
-                  {/* Feedback de racha */}
                   {isCorrect && currentStreak >= 3 && (
                     <div className="text-xs text-orange-400 mt-2 font-bold drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]">
                       🔥 RACHA x{currentStreak}
@@ -379,6 +447,17 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal de Game Over por Vidas */}
+      {showLivesGameOver && (
+        <LivesGameOver
+          topic={topic}
+          onContinue={handleLivesGameOverContinue}
+          onWatchVideo={handleWatchVideo}
+          onUsePowerUp={handleUsePowerUp}
+          hasPowerUp={false}
+        />
       )}
     </div>
   );
