@@ -6,13 +6,31 @@ const BadgeNotification = ({ isOpen, onClose, badge }) => {
 
   useEffect(() => {
     if (isOpen && badge) {
+      console.log(`🎉 BadgeNotification ABIERTO - Badge:`, badge.name);
       setTriggerConfetti(true);
-      const timer = setTimeout(() => setTriggerConfetti(false), 1000);
-      return () => clearTimeout(timer);
+      
+      // Confetti animation duration
+      const confettiTimer = setTimeout(() => setTriggerConfetti(false), 1000);
+      
+      // Auto-close modal after 3 seconds
+      const closeTimer = setTimeout(() => {
+        console.log(`⏰ Auto-cerrando badge notification después de 3s`);
+        onClose();
+      }, 3000);
+      
+      return () => {
+        clearTimeout(confettiTimer);
+        clearTimeout(closeTimer);
+      };
     }
-  }, [isOpen, badge]);
+  }, [isOpen, badge, onClose]);
 
-  if (!isOpen || !badge) return null;
+  if (!isOpen || !badge) {
+    if (isOpen) console.log(`❌ Badge notification - isOpen:${isOpen}, badge:${badge}`);
+    return null;
+  }
+  
+  console.log(`✅ Renderizando BadgeNotification - Nombre:`, badge.name);
 
   return (
     <>

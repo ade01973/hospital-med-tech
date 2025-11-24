@@ -43,8 +43,12 @@ export const useBadges = (userData) => {
         saveBadges(updatedBadges);
         
         const badgeToShow = updatedBadges[check.key];
+        console.log(`🔴 setNewBadge EJECUTÁNDOSE CON:`, badgeToShow);
         setNewBadge(badgeToShow);
+        
+        console.log(`🔴 setShowBadgeNotification(true) EJECUTÁNDOSE AHORA`);
         setShowBadgeNotification(true);
+        
         console.log(`✨ Badge desbloqueado: ${check.name}`, badgeToShow);
         
         badgeUnlocked = check.key;
@@ -52,6 +56,7 @@ export const useBadges = (userData) => {
       }
     }
 
+    console.log(`🔴 checkLevelBadges DEVOLVIENDO:`, badgeUnlocked);
     return badgeUnlocked;
   };
 

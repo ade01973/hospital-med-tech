@@ -101,10 +101,6 @@ export default function App() {
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
     console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}, StudentID: ${studentId}`);
     
-    // ✅ NAVEGAR INMEDIATAMENTE AL DASHBOARD
-    console.log('✅ Navegando a dashboard INMEDIATAMENTE');
-    setView('dashboard');
-    
     // 🔄 GUARDAR DATOS EN BACKGROUND (sin bloquear)
     if (!user) {
       console.error('❌ No hay usuario');
@@ -149,15 +145,22 @@ export default function App() {
 
       console.log('✅ Progreso guardado exitosamente');
       
-      // 🏆 DETECTAR BADGES INMEDIATAMENTE DESPUÉS DE GUARDAR
+      // 🏆 DETECTAR BADGES ANTES DE NAVEGAR
       const completedCount = Object.values(newCompletedLevels || {}).filter(Boolean).length;
       console.log(`🎯 Verificando badges - Niveles completados: ${completedCount}`);
+      
+      // Ejecutar checkLevelBadges AHORA (cambiará el estado del hook)
       if (checkLevelBadges) {
         const badgeUnlocked = checkLevelBadges();
-        if (badgeUnlocked) {
-          console.log(`🏆 ¡BADGE DESBLOQUEADO EXITOSAMENTE! ${badgeUnlocked}`);
-        }
+        console.log(`🏆 Badge check result: ${badgeUnlocked}`);
       }
+      
+      // ✅ NAVEGAR AL DASHBOARD DESPUÉS DE BADGE CHECK
+      // Dar tiempo para que React renderice el modal del badge
+      setTimeout(() => {
+        console.log('➡️ Navegando a dashboard');
+        setView('dashboard');
+      }, 500);
     } catch (error) {
       console.error('❌ Error al guardar progreso:', error);
     }
