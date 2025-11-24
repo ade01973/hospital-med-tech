@@ -15,6 +15,9 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [completed, setCompleted] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(30); // Timer de 30 segundos
+  const [timeBonus, setTimeBonus] = useState(''); // Texto de bonus por velocidad
+  const [showTimeBonus, setShowTimeBonus] = useState(false);
   
   // Cargar streak del localStorage al iniciar
   useEffect(() => {
@@ -23,6 +26,47 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setCurrentStreak(parseInt(savedStreak, 10));
     }
   }, []);
+  
+  // Timer countdown
+  useEffect(() => {
+    if (selectedOption !== null || completed) return; // Pausar timer al responder o terminar
+    
+    const timer = setInterval(() => {
+      setRemainingTime(prev => {
+        if (prev <= 1) {
+          // Tiempo agotado - contar como incorrecto
+          setSelectedOption(0); // Marcar que se respondió (forzar UI)
+          setIsCorrect(false);
+          clearInterval(timer);
+          
+          setTimeout(() => {
+            const nextFloor = currentFloor + 1;
+            if (nextFloor === topic.questions.length) {
+              setCompleted(true);
+              setTimeout(() => onComplete(topic.id, score, studentId), 500);
+            } else {
+              setCurrentFloor(nextFloor);
+              setSelectedOption(null);
+              setIsCorrect(null);
+              setRemainingTime(30);
+            }
+          }, 1500);
+          
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [selectedOption, completed, currentFloor, topic.questions.length, score, studentId, onComplete]);
+  
+  // Resetear timer cuando cambia la pregunta
+  useEffect(() => {
+    if (selectedOption === null) {
+      setRemainingTime(30);
+    }
+  }, [currentFloor]);
   
   // Cuando cambiamos de pregunta, forzamos que el modal se recargue
   useEffect(() => {
@@ -68,6 +112,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     
     let pointsEarned = 0;
     let newStreak = currentStreak;
+    let speedBonus = '';
+    const timeSpent = 30 - remainingTime;
     
     if (correct) {
       // Incrementar racha
@@ -75,23 +121,36 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setCurrentStreak(newStreak);
       localStorage.setItem('userStreak', newStreak.toString());
       
-      // Puntos base
-      pointsEarned = 100;
+      // Puntos base según velocidad
+      if (timeSpent < 10) {
+        pointsEarned = 150;
+        speedBonus = '¡RÁPIDO! +150 PTS';
+      } else if (timeSpent <= 20) {
+        pointsEarned = 100;
+        speedBonus = '+100 PTS';
+      } else {
+        pointsEarned = 50;
+        speedBonus = '¡MÁS RÁPIDO! +50 PTS';
+      }
       
-      // Bonus si racha >= 5
+      // Bonus si racha >= 5 (se suma después)
       if (newStreak >= 5) {
         pointsEarned += 20;
         setShowStreakBonus(true);
         setTimeout(() => setShowStreakBonus(false), 1500);
       }
       
+      setTimeBonus(speedBonus);
+      setShowTimeBonus(true);
+      setTimeout(() => setShowTimeBonus(false), 1500);
+      
       setScore(prev => prev + pointsEarned);
-      console.log(`✅ CORRECTO! Racha: ${newStreak}, Puntos: ${pointsEarned}`);
+      console.log(`✅ CORRECTO! Tiempo: ${timeSpent}s, Velocidad: ${speedBonus}, Racha: ${newStreak}, Puntos: ${pointsEarned}`);
     } else {
       // Resetear racha cuando falla
       setCurrentStreak(0);
       localStorage.setItem('userStreak', '0');
-      console.log(`❌ INCORRECTO! Racha reseteada a 0`);
+      console.log(`❌ INCORRECTO! Racha reseteada a 0. Tiempo: ${timeSpent}s`);
     }
     
     // 🔄 SIEMPRE AVANZAR - correcta o incorrecta
@@ -192,6 +251,19 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
            <div className="bg-slate-900 border-2 border-cyan-500/50 w-full max-w-2xl rounded-3xl p-0 shadow-[0_0_80px_rgba(34,211,238,0.3)] animate-in zoom-in-95 duration-300 overflow-hidden">
+            
+            {/* TIMER PROGRESS BAR */}
+            <div className="w-full h-2 bg-slate-800 overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-300 ${
+                  remainingTime > 20 ? 'bg-gradient-to-r from-emerald-500 to-green-400' :
+                  remainingTime > 10 ? 'bg-gradient-to-r from-yellow-500 to-orange-400' :
+                  'bg-gradient-to-r from-red-600 to-rose-500 animate-pulse'
+                }`}
+                style={{ width: `${(remainingTime / 30) * 100}%` }}
+              ></div>
+            </div>
+            
             {/* Header del Modal - GRANDE */}
             <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 p-6 border-b border-cyan-500/20 flex justify-between items-center relative overflow-hidden">
                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 shadow-lg"></div>
@@ -201,7 +273,16 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
                     Protocolo de Respuesta
                  </span>
                </div>
-               <span className="text-slate-400 font-mono text-sm">PREGUNTA {String(currentFloor + 1).padStart(2, '0')}</span>
+               <div className="flex items-center gap-4">
+                 <span className="text-slate-400 font-mono text-sm">PREGUNTA {String(currentFloor + 1).padStart(2, '0')}</span>
+                 <div className={`px-3 py-1 rounded-full font-black text-sm font-mono ${
+                   remainingTime > 20 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50' :
+                   remainingTime > 10 ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50' :
+                   'bg-red-500/20 text-red-300 border border-red-500/50 animate-pulse'
+                 }`}>
+                   {remainingTime}s
+                 </div>
+               </div>
             </div>
 
             <div className="p-8">
@@ -242,14 +323,22 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               
               {selectedOption !== null && (
                 <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 ${isCorrect ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'}`}>
-                  {isCorrect ? `✅ CORRECTO - +${showStreakBonus ? 120 : 100} PTS` : "❌ INCORRECTO"}
+                  {isCorrect ? "✅ CORRECTO" : "❌ INCORRECTO"}
+                  
+                  {/* Feedback de velocidad */}
+                  {showTimeBonus && (
+                    <div className="text-sm text-cyan-300 mt-2 font-bold animate-bounce">{timeBonus}</div>
+                  )}
+                  
+                  {/* Feedback de racha */}
                   {isCorrect && currentStreak >= 3 && (
                     <div className="text-xs text-orange-400 mt-2 font-bold">🔥 RACHA x{currentStreak}</div>
                   )}
                   {showStreakBonus && (
-                    <div className="text-xs text-yellow-400 mt-2 font-bold animate-bounce">+20 BONUS RACHA!</div>
+                    <div className="text-xs text-yellow-400 mt-1 font-bold animate-bounce">+20 BONUS RACHA!</div>
                   )}
-                  <div className="text-xs text-slate-400 mt-2">Siguiente pregunta en 1.5s...</div>
+                  
+                  <div className="text-xs text-slate-400 mt-3">Siguiente pregunta en 1.5s...</div>
                 </div>
               )}
             </div>
