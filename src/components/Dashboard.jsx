@@ -8,6 +8,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showRoadmap, setShowRoadmap] = useState(false); // Show/hide career roadmap
   const [showVideo, setShowVideo] = useState(false); // Show/hide video modal
   
+  // Video links for each topic
+  const videoLinks = {
+    1: "bL0e705JuZQ",
+    2: "eb1nlMUK3-c"
+  };
+  
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
   
@@ -54,7 +60,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
                   <Play className="w-6 h-6 text-white fill-white" />
                 </div>
-                Video Introductorio - La Gestora Enfermera
+                Video Introductorio - {currentTopic?.title}
               </h2>
               <button
                 onClick={() => setShowVideo(false)}
@@ -68,8 +74,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             <div className="relative w-full bg-black rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/bL0e705JuZQ?autoplay=1&rel=0&modestbranding=1"
-                title="Video Introductorio - La Gestora Enfermera"
+                src={`https://www.youtube.com/embed/${videoLinks[selectedFloor]}?autoplay=1&rel=0&modestbranding=1`}
+                title={`Video Introductorio - ${currentTopic?.title}`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen={true}
@@ -363,8 +369,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                     isCurrentCompleted 
                       ? 'from-emerald-500 to-teal-600' 
                       : 'from-cyan-500 to-blue-600'
-                  } flex items-center justify-center shadow-lg`}>
-                    <currentTopic.icon size={28} className="text-white" />
+                  } flex items-center justify-center shadow-lg text-3xl`}>
+                    {currentTopic.icon}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -372,7 +378,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       {isCurrentCompleted && (
                         <span className="px-2 py-1 bg-emerald-500 text-white text-xs font-black rounded-full">✓ COMPLETADO</span>
                       )}
-                      {selectedFloor === 1 && (
+                      {(selectedFloor === 1 || selectedFloor === 2) && (
                         <button
                           onClick={() => setShowVideo(true)}
                           className="group relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 rounded-xl transition-all duration-300 transform hover:scale-110 hover:shadow-[0_0_30px_rgba(239,68,68,0.8)] border border-red-400/50 hover:border-red-300 font-black"

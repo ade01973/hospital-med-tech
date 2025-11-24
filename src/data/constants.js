@@ -16,7 +16,7 @@ export const TOPICS = [
     id: 1,
     title: "La Gestora Enfermera",
     subtitle: "Niveles de gestión y competencias",
-    icon: Stethoscope,
+    icon: "👩‍⚕️",
     questions: [
       { q: "Según el paradigma moderno presentado, ¿cuál es la principal diferencia en el rol de la gestora enfermera respecto al enfoque histórico?", options: ["Ha aumentado su poder autoritario", "Ha evolucionado de 'controlar y mandar' a 'liderar y desarrollar'", "Ha disminuido su responsabilidad", "Es exactamente igual que antes"], correct: 1 },
       { q: "¿Cuál de los siguientes NO es un nivel de gestión en enfermería según la estructura organizativa mencionada?", options: ["Gestión Operativa", "Gestión Logística o Intermedia", "Alta Dirección", "Gestión Ejecutiva Global"], correct: 3 },
@@ -34,7 +34,7 @@ export const TOPICS = [
     id: 2,
     title: "Liderazgo",
     subtitle: "Estilos de liderazgo",
-    icon: User,
+    icon: "🎯",
     questions: [
       { q: "Según las teorías de rasgos de liderazgo, ¿cuál es la premisa fundamental sobre cómo se adquiere el liderazgo?", options: ["El liderazgo es una habilidad aprendida exclusivamente", "Los líderes nacen con ciertos atributos innatos que predisponen al liderazgo", "El liderazgo depende únicamente del contexto", "Todos nacen con los mismos rasgos de liderazgo"], correct: 1 },
       { q: "¿Cuál es la diferencia fundamental entre liderazgo centrado en tareas y liderazgo orientado a relaciones?", options: ["El primero enfatiza la realización de objetivos; el segundo enfatiza el bienestar del equipo", "No hay diferencia real", "El primero es más efectivo siempre", "El segundo es más rápido en resultados"], correct: 0 },
@@ -52,7 +52,7 @@ export const TOPICS = [
     id: 3,
     title: "Competencias Digitales",
     subtitle: "IA y escenarios futuros",
-    icon: Lightbulb,
+    icon: "🤖",
     questions: [
       { q: "¿Cuál es la definición más precisa de competencias digitales en enfermería según el contexto académico?", options: ["Solo la capacidad de usar email y programas básicos", "Conjunto de habilidades para utilizar efectivamente TIC incluyendo datos electrónicos, telemedicina, seguridad y herramientas de IA", "La capacidad exclusiva de programar sistemas de salud", "El conocimiento de las redes sociales"], correct: 1 },
       { q: "¿Cuál es la distinción fundamental entre IA débil (estrecha) y IA fuerte (general)?", options: ["No hay diferencia real entre ambas", "IA débil realiza tareas específicas; IA fuerte posee capacidades cognitivas similares a humanos", "La IA débil es más costosa que la fuerte", "La IA fuerte solo se usa en laboratorios"], correct: 1 },
@@ -70,7 +70,7 @@ export const TOPICS = [
     id: 4,
     title: "Gestión de la Comunicación",
     subtitle: "Efectiva y asertiva",
-    icon: MessageSquare,
+    icon: "💬",
     questions: [
       { q: "Según el documento, ¿cuál es el propósito fundamental de la comunicación en el contexto sanitario?", options: ["Facilitar la toma de decisiones, el tratamiento y el cuidado de los pacientes", "Aumentar la duración de las consultas", "Realizar más burocracia", "Reducir el tiempo de atención"], correct: 0 },
       { q: "¿Cuál de los siguientes NO es un elemento básico del proceso de comunicación efectiva?", options: ["La retroalimentación (feedback) que completa el ciclo comunicativo", "La motivación personal del emisor", "La decodificación del mensaje por parte del receptor", "El canal por el cual se envía el mensaje"], correct: 1 },
@@ -88,7 +88,7 @@ export const TOPICS = [
     id: 5,
     title: "El Clima Laboral",
     subtitle: "Ambiente y satisfacción",
-    icon: Zap,
+    icon: "⚡",
     questions: [
       { q: "Según los estudios mencionados en el documento, ¿cuál fue el hallazgo principal de la AHRQ sobre la relación entre clima laboral positivo y resultados sanitarios?", options: ["Los hospitales con clima positivo tenían menores tasas de mortalidad, readmisión y complicaciones", "No existe relación comprobada entre clima y resultados", "El clima laboral solo afecta la productividad", "Los pacientes no notan diferencia en el ambiente"], correct: 0 },
       { q: "¿Cuál es la diferencia fundamental entre motivación intrínseca y extrínseca en el contexto del clima laboral de enfermería?", options: ["La intrínseca proviene del propio trabajo; la extrínseca de factores externos como salario y recompensas", "Son exactamente lo mismo", "La intrínseca es menos importante", "No aplica en sanidad"], correct: 1 },
@@ -106,7 +106,7 @@ export const TOPICS = [
     id: 6,
     title: "La Gestión del Conflicto",
     subtitle: "Negociación y mediación",
-    icon: Activity,
+    icon: "⚔️",
     questions: [
       { q: "Según la definición presentada en el documento, ¿cuál es el elemento fundamental de cualquier conflicto?", options: ["La presencia de agresión física", "La percepción de incompatibilidad entre objetivos, intereses o valores", "La falta de dinero", "La ausencia de comunicación escrita"], correct: 0 },
       { q: "¿Cuál de los siguientes NO es un tipo de conflicto clasificado en el ámbito sanitario según el documento?", options: ["Conflicto interpersonal", "Conflicto intrapersonal", "Conflicto organizacional", "Conflicto meteorológico"], correct: 1 },
@@ -124,7 +124,7 @@ export const TOPICS = [
     id: 7,
     title: "La Motivación en Gestión",
     subtitle: "Teorías y aplicación",
-    icon: TrendingUp,
+    icon: "🔥",
     questions: [
       { q: "Según la definición presentada en el documento, ¿cuál es la esencia fundamental de la motivación?", options: ["La fuerza interna que impulsa a las personas a actuar y persistir para alcanzar un objetivo", "La capacidad de trabajar más horas", "El dinero que recibe una persona", "La obediencia a la autoridad"], correct: 0 },
       { q: "¿Cuál es la correcta secuencia jerárquica de las cinco necesidades según Maslow aplicada a enfermería?", options: ["Fisiológicas, seguridad, afiliación, estima, autorrealización", "Autorrealización, estima, afiliación, seguridad, fisiológicas", "Seguridad, fisiológicas, afiliación, estima, autorrealización", "Estima, autorrealización, fisiológicas, seguridad, afiliación"], correct: 0 },
@@ -142,7 +142,7 @@ export const TOPICS = [
     id: 8,
     title: "Trabajo en Equipo",
     subtitle: "Colaboración e interdependencia",
-    icon: Users,
+    icon: "🤝",
     questions: [
       { q: "Según la definición presentada en el documento, ¿cuál es el elemento esencial que diferencia el trabajo en equipo de otras formas de organización?", options: ["El esfuerzo colaborativo de personas con diferentes habilidades trabajando interdependientemente para un objetivo común", "Que todos trabajen en el mismo turno", "Que tengan el mismo salario", "Que compartan el mismo despacho"], correct: 0 },
       { q: "¿Cuál es la diferencia crítica entre un grupo de trabajo y un equipo según las características presentadas en la tabla del documento?", options: ["El grupo tiene baja colaboración e interdependencia individual; el equipo tiene alta colaboración e interdependencia compartida", "Los grupos trabajan más horas", "Los equipos son más grandes", "No existe diferencia significativa"], correct: 1 },
@@ -160,7 +160,7 @@ export const TOPICS = [
     id: 9,
     title: "Imagen Digital de la Enfermera",
     subtitle: "Presencia y reputación online",
-    icon: BookOpen,
+    icon: "📱",
     questions: [
       { q: "Según el documento, ¿cuál es el impacto fundamental de una imagen digital positiva en la profesión enfermera?", options: ["Genera confianza en pacientes, facilita oportunidades laborales y desarrolla carrera profesional; puede conseguir formación, investigación y liderazgo", "Permite ganar dinero en redes sociales", "Requiere que todos los enfermeros tengan presencia online", "No tiene ningún impacto en la carrera profesional"], correct: 0 },
       { q: "¿Cuál es la composición fundamental de la identidad digital según el documento?", options: ["Solo la foto de perfil", "Nombre, foto de perfil, biografía, publicaciones y actividad en redes", "Únicamente el número de seguidores", "Solo la información profesional"], correct: 1 },
@@ -178,7 +178,7 @@ export const TOPICS = [
     id: 10,
     title: "Toma de Decisiones",
     subtitle: "Proceso y herramientas críticas",
-    icon: Brain,
+    icon: "🧠",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de la toma de decisiones en enfermería?", options: ["Proceso complejo y continuo que implica seleccionar la mejor opción entre alternativas, considerando evidencia científica, valores del paciente, recursos disponibles y juicio profesional", "Elegir rápidamente sin pensar", "Seguir siempre las órdenes del médico", "Solo tomar decisiones urgentes"], correct: 0 },
       { q: "¿Cuáles son las TRES categorías de factores que influyen en la toma de decisiones según el documento?", options: ["Solo factores del paciente", "Factores individuales, del entorno y del paciente", "Solo factores administrativos", "Factores económicos únicamente"], correct: 1 },
@@ -196,7 +196,7 @@ export const TOPICS = [
     id: 11,
     title: "Planificación y Gestión del Tiempo",
     subtitle: "Procesos y metodologías estratégicas",
-    icon: Clock,
+    icon: "⏱️",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de la planificación?", options: ["Hacer listas de tareas sin orden", "Proceso de establecer objetivos y metas, desarrollando plan de acción para alcanzarlos; herramienta esencial para éxito personal, profesional y social", "Solo para empresas grandes", "Una tarea administrativa innecesaria"], correct: 1 },
       { q: "¿Cuáles son los TRES tipos principales de planificación organizacional descritos en el documento?", options: ["Personal, familiar y social", "Estratégica, táctica y operativa", "Rápida, media y lenta", "Financiera, legal y administrativa"], correct: 2 },
@@ -214,7 +214,7 @@ export const TOPICS = [
     id: 12,
     title: "Gestión por Procesos",
     subtitle: "Diseño, implementación y mejora continua",
-    icon: BarChart3,
+    icon: "📈",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de la gestión por procesos?", options: ["Solo una tarea administrativa", "Metodología sistemática de identificación, diseño, implementación y mejora continua de procesos; enfoque orientado a eficiencia, eficacia y satisfacción de clientes", "Un sistema solo de calidad", "Una herramienta de control únicamente"], correct: 1 },
       { q: "¿Cuáles son las CINCO características clave de la gestión por procesos según el documento?", options: ["Autoritarismo, secreto, aislamiento, rigidez, ignorancia", "Enfoque cliente, orientación eficiencia, mejora continua, enfoque sistémico, trabajo equipo", "Solo rapidez", "Solo economía"], correct: 3 },
@@ -232,7 +232,7 @@ export const TOPICS = [
     id: 13,
     title: "Marketing Sanitario",
     subtitle: "Estrategias de valor y experiencia del paciente",
-    icon: Target,
+    icon: "🎯",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de Marketing Sanitario en contexto sistema sanitario español?", options: ["Solo publicidad de medicinas", "Conjunto de estrategias orientadas a promover salud, prevención, informar sobre servicios, mejorar accesibilidad y fomentar participación pacientes", "Vender servicios médicos", "Marketing comercial tradicional"], correct: 1 },
       { q: "¿Cuáles son las CINCO funciones CLAVE del Marketing Sanitario según el documento?", options: ["Solo publicidad", "Promover salud/prevención, informar sobre servicios, mejorar accesibilidad/calidad, fomentar participación pacientes, educación", "Marketing de lujo", "Solo ganancias"], correct: 3 },
@@ -250,7 +250,7 @@ export const TOPICS = [
     id: 14,
     title: "Gestión del Cambio",
     subtitle: "Modelos, resistencia y liderazgo transformacional",
-    icon: Lightbulb,
+    icon: "💡",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de gestión del cambio?", options: ["Solo implementar nuevas reglas", "Proceso planificado y sistemático que busca implementar modificaciones para mejorar funcionamiento y alcanzar objetivos estratégicos", "Cambio sin planeación", "Cambio rápido sin análisis"], correct: 1 },
       { q: "¿Cuáles son las TRES fases principales del modelo de Lewin según el documento?", options: ["Inicio, medio, fin", "Descongelación, cambio, recongelación", "Análisis, decisión, ejecución", "Planificación, acción, cierre"], correct: 1 },
@@ -268,7 +268,7 @@ export const TOPICS = [
     id: 15,
     title: "Gestión de la Innovación",
     subtitle: "Procesos, liderazgo y competencias enfermeras",
-    icon: Zap,
+    icon: "⚡",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de innovación en enfermería?", options: ["Solo nuevas tecnologías", "Introducción nuevos conocimientos, ideas, procesos, productos/servicios que mejoran calidad atención y resultados paciente", "Cambios administrativos", "Cambios cosmética"], correct: 1 },
       { q: "¿Cuáles son los CUATRO beneficios principales de la innovación para mejora calidad cuidados según el documento?", options: ["Solo eficiencia", "Mejora eficiencia/eficacia, seguridad paciente, satisfacción paciente, promueve salud/bienestar", "Beneficios económicos", "Menos beneficios"], correct: 3 },
@@ -286,7 +286,7 @@ export const TOPICS = [
     id: 16,
     title: "La Carga de Cuidados",
     subtitle: "Medición, factores e impacto en enfermería",
-    icon: Heart,
+    icon: "❤️",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de carga de cuidados enfermera?", options: ["Cantidad trabajo físico, emocional y mental que exige atención pacientes", "Solo tareas administrativas", "Cansancio general", "Estrés laboral nomás"], correct: 0 },
       { q: "¿Cuáles son los TRES TIPOS PRINCIPALES de carga de cuidados según el documento?", options: ["Dos tipos", "Carga física, emocional, mental", "Solo carga mental", "Carga administrativa"], correct: 1 },
@@ -304,7 +304,7 @@ export const TOPICS = [
     id: 17,
     title: "Los Sistemas de Salud",
     subtitle: "Estructura, financiación y modelos internacionales",
-    icon: Shield,
+    icon: "🛡️",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de sistema de salud?", options: ["Solo hospitales", "Conjunto elementos interrelacionados que organizan provisión servicios salud a población", "Administración pública", "Seguros médicos"], correct: 1 },
       { q: "¿Cuáles son los CINCO ELEMENTOS CLAVE que integran un sistema de salud?", options: ["Dos elementos", "Recursos humanos, financieros, físicos, organización, objetivo mejora salud", "Solo recursos", "Solo financiación"], correct: 2 },
@@ -322,7 +322,7 @@ export const TOPICS = [
     id: 18,
     title: "La Administración como Ciencia",
     subtitle: "Orígenes, enfoques y escuelas administrativas",
-    icon: BookOpen,
+    icon: "📖",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de administración?", options: ["Solo gestión de dinero", "Proceso planificar, organizar, dirigir y controlar recursos humanos, materiales, financieros para alcanzar objetivos", "Supervisión de personal", "Cumplimiento normativo"], correct: 1 },
       { q: "¿Cuáles son los CINCO BENEFICIOS PRINCIPALES de administración en enfermería según documento?", options: ["Uno", "Optimizar recursos, mejorar coordinación, motivar personal, promover investigación, garantizar calidad", "Dos", "Tres"], correct: 3 },
@@ -340,7 +340,7 @@ export const TOPICS = [
     id: 19,
     title: "La Calidad",
     subtitle: "Modelos, dimensiones e implementación en enfermería",
-    icon: ShieldCheck,
+    icon: "✅",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de CALIDAD en contexto sanitario?", options: ["Solo costo", "Grado en que servicios satisfacen necesidades usuarios en resultados (salud) y procesos (personalizado, eficiente, seguro)", "Rapidez", "Tecnología"], correct: 1 },
       { q: "¿Cuáles son las SIETE DIMENSIONES CLAVE de la CALIDAD en enfermería según el documento?", options: ["Tres", "Seguridad, eficacia, eficiencia, satisfacción, oportunidad, equidad, accesibilidad", "Cuatro", "Dos"], correct: 2 },
@@ -358,7 +358,7 @@ export const TOPICS = [
     id: 20,
     title: "Dirección Estratégica",
     subtitle: "Planificación, visión y herramientas estratégicas",
-    icon: Target,
+    icon: "🎯",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de Dirección Estratégica?", options: ["Gestión diaria", "Proceso sistemático continuo que define objetivos largo plazo, establece estrategias, asigna recursos, evalúa progreso", "Control operacional", "Supervisión personal"], correct: 1 },
       { q: "¿Cuáles son los CUATRO BENEFICIOS PRINCIPALES de Dirección Estratégica en enfermería según documento?", options: ["Uno", "Liderar cambio, mejorar calidad cuidados, gestionar recursos eficientemente, responder necesidades pacientes", "Dos", "Tres"], correct: 2 },
@@ -376,7 +376,7 @@ export const TOPICS = [
     id: 21,
     title: "Seguridad del Paciente",
     subtitle: "Gestión del riesgo, eventos adversos y cultura de seguridad",
-    icon: Shield,
+    icon: "🛡️",
     questions: [
       { q: "Según el documento, ¿cuál es la definición fundamental de SEGURIDAD DEL PACIENTE?", options: ["Reducción riesgo daño a mínimo aceptable; ausencia errores, eventos adversos, cultura seguridad", "Ausencia total de riesgo", "Cumplimiento normativo", "Responsabilidad médicos"], correct: 0 },
       { q: "¿Cuáles son los CUATRO BENEFICIOS PRINCIPALES de Seguridad Paciente según documento?", options: ["Uno", "Protege pacientes, mejora calidad, reduce costes, promueve confianza", "Dos", "Tres"], correct: 1 },
@@ -394,7 +394,7 @@ export const TOPICS = [
     id: 22,
     title: "El Mirador de la Gestión",
     subtitle: "Síntesis integrada de competencias sanitarias",
-    icon: Eye,
+    icon: "👁️",
     questions: [
       { q: "Integrando liderazgo y seguridad del paciente, ¿cómo debe el líder enfermero transformar eventos adversos en oportunidades de mejora?", options: ["Culpabilizando individual", "Fomentando justa cultura, aprendizaje continuo, análisis de causas raíz sin blame para mejorar sistemas", "Ocultándolos", "Despidiendo personal"], correct: 1 },
       { q: "¿Cuál es la relación crítica entre competencias digitales, calidad y seguridad del paciente en gestión moderna?", options: ["Sin relación", "IA y datos mejoran diagnóstico/prevención eventos adversos; sistemas EHR integran seguridad en procesos; TIC facilitan monitoreo", "Solo costos", "Tecnología irrelevante"], correct: 1 },
