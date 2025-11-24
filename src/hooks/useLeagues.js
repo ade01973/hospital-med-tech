@@ -7,10 +7,14 @@ export const useLeagues = (playerRank = 'Estudiante', playerXP = 0, playerId = '
   const [playerPosition, setPlayerPosition] = useState(null);
   const [weeklyXP, setWeeklyXP] = useState(0);
 
-  // Obtener liga basada en rango
+  // Obtener liga basada en rango - manejo seguro de undefined/null
   const getRankLeague = (rank) => {
-    const rankData = NURSING_RANKS.find(r => r.title === rank);
-    if (!rankData?.league) return null;
+    const safeRank = rank || 'Estudiante'; // Default si undefined
+    const rankData = NURSING_RANKS.find(r => r.title === safeRank);
+    if (!rankData?.league) {
+      // Si no encontró liga, usar BRONCE como default
+      return LEAGUE_SYSTEM['BRONCE'] || null;
+    }
     return LEAGUE_SYSTEM[rankData.league];
   };
 

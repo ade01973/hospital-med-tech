@@ -132,7 +132,7 @@ export default function App() {
       )}
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
       {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('dashboard')} onLogout={() => auth.signOut()} />}
-      {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setCurrentFloor={setCurrentFloor} setShowElevatorDoors={setShowElevatorDoors} />}
+      {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />}
       {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 
           topic={currentLevel} 

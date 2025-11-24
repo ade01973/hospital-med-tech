@@ -1,0 +1,51 @@
+BUGS DETECTADOS - PRIORIDAD ALTA: Necesito que diagnostiques y corrijas todos los problemas antes de continuar con la siguiente mejora.
+
+PROBLEMAS ENCONTRADOS AL PROBAR:
+
+1. ❌ MODAL DE LIGAS NO SE ABRE:
+   - Al hacer clic en el ícono de ligas (🏆 segundo ícono en el dashboard)
+   - El ícono se resalta (borde rosa/morado) pero no aparece el modal
+   - Esperado: Debería abrirse un modal mostrando:
+     * Liga actual del jugador
+     * TOP 10 ranking con 9 jugadores ficticios + usuario
+     * Posición del usuario
+     * XP ganado esta semana
+     * Tiempo restante hasta el reset
+     * Preview de la siguiente liga
+
+2. ❌ NIVELES NO CARGAN (PANTALLA EN BLANCO):
+   - Al hacer clic en "Iniciar Nivel →" desde el dashboard
+   - La pantalla muestra animación de carga (líneas azules en los bordes)
+   - Luego se queda en PANTALLA COMPLETAMENTE EN BLANCO
+   - No se carga el componente GameLevel con las preguntas
+   - Esperado: Debería cargar el nivel con:
+     * Header con corazones, timer, contador de preguntas
+     * Pregunta y 4 opciones de respuesta
+     * Barra de progreso
+
+3. ❔ POSIBLE ISSUE: SOLO 3 ICONOS EN DASHBOARD
+   - Veo solo 3 iconos en la top bar del dashboard
+   - Debería haber 4: Misiones, Ligas, Progresión, Recompensas
+   - Verifica que todos los iconos estén renderizados correctamente
+
+ACCIONES REQUERIDAS:
+
+a) Revisa los console logs del navegador para errores JavaScript
+b) Verifica que el componente Leagues esté correctamente importado en Dashboard
+c) Verifica que el modal de Leagues tenga el estado correcto (showLeagues)
+d) Verifica que GameLevel.jsx no tenga errores de compilación
+e) Verifica que todas las rutas y navegación funcionen correctamente
+f) Asegúrate de que no haya errores undefined o null en los hooks
+g) Verifica que el componente Dashboard tenga todos los botones (4 iconos)
+
+Por favor:
+1. Diagnostica los problemas usando console logs, grep, cat, etc.
+2. Identifica la causa raíz de cada problema
+3. Corrige todos los bugs encontrados
+4. Reinicia el servidor
+5. Verifica que AMBOS problemas estén resueltos:
+   - Modal de ligas se abre correctamente
+   - Niveles cargan y muestran preguntas
+6. Documenta qué estaba mal y qué corregiste
+
+Esto es BLOQUEANTE - no puedo continuar con la siguiente mejora hasta que la app funcione correctamente.

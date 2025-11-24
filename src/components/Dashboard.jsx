@@ -252,7 +252,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {!isCurrentCompleted && (
                 <button
-                  onClick={() => { setLevel(currentTopic.id); setShowElevatorDoors(true); }}
+                  onClick={() => { setLevel(currentTopic); setShowElevatorDoors(true); }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
                 >
                   Iniciar Nivel →
