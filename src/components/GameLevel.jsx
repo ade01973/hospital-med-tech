@@ -19,6 +19,7 @@ import useSoundEffects from "../../useSoundEffects";
 import ReactConfetti from "react-confetti";
 import useConfetti from "../hooks/useConfetti";
 import ShareModal from "./ShareModal";
+import { useMediCoins } from "../hooks/useMediCoins";
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const {
@@ -62,6 +63,9 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   // Hook de confeti
   const { isActive: isConfettiActive, triggerConfetti: triggerConfettiEffect } = useConfetti();
 
+  // Hook de MediCoins
+  const { earnCoins, useConsumable, getItemCount, hasUpgrade } = useMediCoins();
+
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
     const savedStreak = localStorage.getItem("userStreak");
@@ -71,11 +75,14 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
 
     const livesKey = `gameLives_${topic?.id}`;
     const savedLives = localStorage.getItem(livesKey);
+    const maxLives = hasUpgrade('resistance_1') ? 6 : 5;
     if (savedLives !== null) {
       const parsedLives = parseInt(savedLives, 10);
-      setLives(Math.min(parsedLives, 5)); // No permitir más de 5 vidas
+      setLives(Math.min(parsedLives, maxLives));
+    } else {
+      setLives(maxLives); // Comenzar con vidas según upgrade
     }
-  }, [topic?.id]);
+  }, [topic?.id, hasUpgrade]);
 
   // Guardar lives en localStorage cuando cambien
   useEffect(() => {
@@ -243,6 +250,10 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       }
 
       setScore((prev) => prev + pointsEarned);
+      
+      // Ganar MediCoins por respuesta correcta
+      earnCoins(10, 'Respuesta correcta');
+      
       console.log(
         `✅ CORRECTO! Tiempo: ${timeSpent}s, Velocidad: ${speedBonus}, Racha: ${newStreak}, Puntos: ${pointsEarned}`,
       );
@@ -283,6 +294,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
 
           playVictory(); // 🏆 Sonido de módulo completado
           triggerConfettiEffect(); // 🎉 Confeti por completar módulo
+          earnCoins(100, 'Módulo completado'); // 💰 Ganar coins por completar módulo
           setCompleted(true);
           setTimeout(
             () =>
@@ -538,6 +550,52 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Botón de Inventario */}
+          <div className="bg-slate-800 border border-white/10 rounded-lg overflow-hidden shadow-lg flex">
+            {getItemCount('extra_life') > 0 && (
+              <button
+                onClick={() => {
+                  if (useConsumable('extra_life')) {
+                    setLives(Math.min(lives + 1, hasUpgrade('resistance_1') ? 6 : 5));
+                  }
+                }}
+                className="px-3 py-2 hover:bg-slate-700 transition-all border-r border-white/10"
+                title="Vida Extra"
+              >
+                <span className="text-lg">❤️</span>
+                <span className="text-xs ml-1 font-black text-cyan-300">{getItemCount('extra_life')}</span>
+              </button>
+            )}
+            {getItemCount('extra_time') > 0 && (
+              <button
+                onClick={() => {
+                  if (useConsumable('extra_time')) {
+                    setRemainingTime(prev => prev + 15);
+                  }
+                }}
+                className="px-3 py-2 hover:bg-slate-700 transition-all border-r border-white/10"
+                title="+15 Segundos"
+              >
+                <span className="text-lg">⏱️</span>
+                <span className="text-xs ml-1 font-black text-cyan-300">{getItemCount('extra_time')}</span>
+              </button>
+            )}
+            {getItemCount('double_points') > 0 && (
+              <button
+                onClick={() => {
+                  if (useConsumable('double_points')) {
+                    // Implementar lógica de 2x puntos para próxima pregunta
+                  }
+                }}
+                className="px-3 py-2 hover:bg-slate-700 transition-all"
+                title="2x Puntos"
+              >
+                <span className="text-lg">⚡</span>
+                <span className="text-xs ml-1 font-black text-cyan-300">{getItemCount('double_points')}</span>
+              </button>
+            )}
+          </div>
+
           {/* Botón de Toggle de Sonido */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}

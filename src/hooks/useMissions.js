@@ -183,6 +183,12 @@ export const useMissions = () => {
         };
         localStorage.setItem('dailyMissions', JSON.stringify(missions));
         setDailyMissions(missions);
+        
+        // Award MediCoins for claiming mission
+        const savedCoins = localStorage.getItem('mediCoins');
+        const currentCoins = savedCoins ? parseInt(savedCoins, 10) : 0;
+        localStorage.setItem('mediCoins', (currentCoins + 200).toString());
+        console.log('💰 +200 MediCoins por misión reclamada');
       }
     } else if (missionType === 'weekly') {
       const saved = localStorage.getItem('weeklyMission');
@@ -194,6 +200,12 @@ export const useMissions = () => {
         };
         localStorage.setItem('weeklyMission', JSON.stringify(mission));
         setWeeklyMission(mission);
+        
+        // Award MediCoins for claiming weekly mission
+        const savedCoins = localStorage.getItem('mediCoins');
+        const currentCoins = savedCoins ? parseInt(savedCoins, 10) : 0;
+        localStorage.setItem('mediCoins', (currentCoins + 200).toString());
+        console.log('💰 +200 MediCoins por misión semanal reclamada');
       }
     }
   };
