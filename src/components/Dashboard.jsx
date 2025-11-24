@@ -68,11 +68,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             <div className="relative w-full bg-black rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/bL0e705JuZQ?autoplay=1&rel=0"
+                src="https://www.youtube.com/embed/bL0e705JuZQ?autoplay=1&rel=0&modestbranding=1"
                 title="Video Introductorio - La Gestora Enfermera"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen={true}
               ></iframe>
             </div>
           </div>
@@ -375,10 +375,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       {selectedFloor === 1 && (
                         <button
                           onClick={() => setShowVideo(true)}
-                          className="p-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-lg transition-all transform hover:scale-110 shadow-lg hover:shadow-red-500/50"
+                          className="flex items-center gap-2 px-3 py-1 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-red-500/50"
                           title="Ver video introductorio"
                         >
                           <Play className="w-5 h-5 text-white fill-white" />
+                          <span className="text-xs font-black text-white uppercase tracking-wider">Ver resumen del Tema</span>
                         </button>
                       )}
                     </div>
