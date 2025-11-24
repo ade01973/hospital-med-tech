@@ -53,7 +53,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [showStartScreen, setShowStartScreen] = useState(true);
 
   // Hook de efectos de sonido
-  const { playSuccess, playError, playVictory } = useSoundEffects();
+  const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } = useSoundEffects();
 
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
@@ -504,8 +504,21 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           </span>
         </div>
 
-        <div className="bg-slate-800 border border-white/10 text-white px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-lg">
-          <Zap size={16} className="text-yellow-400 fill-yellow-400" /> {score}
+        <div className="flex items-center gap-3">
+          {/* Botón de Toggle de Sonido */}
+          <button
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className="bg-slate-800 border border-white/10 text-white px-3 py-2 rounded-lg font-black hover:bg-slate-700 hover:border-cyan-400 transition-all cursor-pointer shadow-lg"
+            title={soundEnabled ? "Desactivar sonido" : "Activar sonido"}
+          >
+            <span className="text-xl">
+              {soundEnabled ? "🔊" : "🔇"}
+            </span>
+          </button>
+
+          <div className="bg-slate-800 border border-white/10 text-white px-4 py-2 rounded-lg font-black flex items-center gap-2 shadow-lg">
+            <Zap size={16} className="text-yellow-400 fill-yellow-400" /> {score}
+          </div>
         </div>
       </div>
 
