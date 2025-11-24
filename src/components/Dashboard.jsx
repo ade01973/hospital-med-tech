@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
+import Rewards from './Rewards.jsx';
 import elevatorBg from '../assets/elevator-bg.png';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
   const [showRoadmap, setShowRoadmap] = useState(false); // Show/hide career roadmap
   const [showVideo, setShowVideo] = useState(false); // Show/hide video modal
+  const [showRewards, setShowRewards] = useState(false); // Show/hide rewards screen
   const [showRankAchievement, setShowRankAchievement] = useState(false); // Show rank achievement banner
   const [newRank, setNewRank] = useState(null); // Store the new rank achieved
   const [previousScore, setPreviousScore] = useState(0); // Track previous score for comparison
@@ -103,6 +105,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           </div>
         </div>
       )}
+
+      {/* Rewards Modal */}
+      <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} userData={userData} />
 
       {/* Rank Achievement Banner */}
       {showRankAchievement && newRank && (
@@ -310,6 +315,19 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               title="Ruta de la Gestora Enfermera"
             >
               <Map className="w-6 h-6 text-white" />
+            </button>
+
+            <button 
+              onClick={() => setShowRewards(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Ver Recompensas"
+            >
+              <Gift className="w-6 h-6 text-white" />
+              {Math.floor((userData?.totalScore || 0) / 2000) > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-black border border-white">
+                  {Math.floor((userData?.totalScore || 0) / 2000)}
+                </div>
+              )}
             </button>
 
             <div className="flex flex-col items-center">
