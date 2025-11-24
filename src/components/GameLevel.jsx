@@ -269,6 +269,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
             console.log(`🏆 Nivel perfecto completado - tracking llamado`);
           }
 
+          playVictory(); // 🏆 Sonido de módulo completado
           setCompleted(true);
           setTimeout(
             () =>
