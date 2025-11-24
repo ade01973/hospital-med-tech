@@ -29,6 +29,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [lives, setLives] = useState(5);
   const [showLivesGameOver, setShowLivesGameOver] = useState(false);
   const [loseHeartAnimation, setLoseHeartAnimation] = useState(false);
+  const [showStartScreen, setShowStartScreen] = useState(true);
 
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
@@ -240,7 +241,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     setShowLivesGameOver(false);
   };
 
-  const handleWatchVideo = () => {
+  const handleWatchVideo = (isBeforeStart = false) => {
     // Video URLs por módulo
     const videoUrl = {
       1: 'https://youtu.be/bL0e705JuZQ',
@@ -253,12 +254,15 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       console.log(`✅ Abriendo video en nueva ventana:`, videoUrl);
       window.open(videoUrl, '_blank');
       
-      // Simular cierre del video después de un tiempo (en producción, detectar cuando cierre)
-      setTimeout(() => {
-        console.log(`⏰ Agregando 2 corazones después de ver video`);
-        setLives(prev => Math.min(prev + 2, 5)); // +2 corazones, máximo 5
-        setShowLivesGameOver(false);
-      }, 5000);
+      // Si es antes de empezar, no hacer nada especial
+      if (!isBeforeStart) {
+        // Simular cierre del video después de un tiempo (en producción, detectar cuando cierre)
+        setTimeout(() => {
+          console.log(`⏰ Agregando 2 corazones después de ver video`);
+          setLives(prev => Math.min(prev + 2, 5)); // +2 corazones, máximo 5
+          setShowLivesGameOver(false);
+        }, 5000);
+      }
     } else {
       console.log(`❌ No hay URL de video para el módulo ${topic.id}`);
     }
@@ -269,6 +273,57 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     setLives(5);
     setShowLivesGameOver(false);
   };
+
+  // 📺 MODAL DE INICIO CON VIDEO
+  if (showStartScreen) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in duration-300 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
+        </div>
+        
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl max-w-md w-full relative z-10">
+          <div className="w-20 h-20 bg-gradient-to-tr from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(34,211,238,0.4)]">
+            <span className="text-4xl">📖</span>
+          </div>
+          
+          <h1 className="text-3xl font-black text-white mb-2">{topic.title}</h1>
+          <p className="text-slate-300 mb-6 text-sm leading-relaxed">Completa todas las preguntas correctamente y demuestra tu dominio en este módulo.</p>
+          
+          {/* Video Badge */}
+          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 mb-6">
+            <p className="text-cyan-300 font-black text-sm mb-3">📺 VIDEO DE REPASO DISPONIBLE</p>
+            <button
+              onClick={() => handleWatchVideo(true)}
+              className="w-full bg-gradient-to-r from-cyan-500/30 to-blue-500/30 hover:from-cyan-500/50 hover:to-blue-500/50 border-2 border-cyan-500/60 text-cyan-300 hover:text-cyan-100 p-3 rounded-lg transition-all font-black text-sm"
+            >
+              📺 VER VIDEO ANTES DE EMPEZAR
+            </button>
+          </div>
+          
+          {/* Start Button */}
+          <button
+            onClick={() => {
+              console.log('🎮 Iniciando nivel...');
+              setShowStartScreen(false);
+              setIsDoorOpening(false);
+            }}
+            className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-black py-4 rounded-xl transition-all transform hover:scale-105 mb-3 shadow-lg"
+          >
+            ▶️ EMPEZAR NIVEL
+          </button>
+          
+          <button
+            onClick={onExit}
+            className="w-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white font-black py-3 rounded-xl transition-all border border-white/20"
+          >
+            ← VOLVER
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (completed) {
     return (
