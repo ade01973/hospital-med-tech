@@ -236,6 +236,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       );
     } else {
       // Incorrecto - perder 1 vida
+      playError(); // ❌ Sonido de respuesta incorrecta
       const newLives = lives - 1;
       if (newLives <= 0) {
         setShowLivesGameOver(true);
