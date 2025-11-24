@@ -20,6 +20,7 @@ import ReactConfetti from "react-confetti";
 import useConfetti from "../hooks/useConfetti";
 import ShareModal from "./ShareModal";
 import { useMediCoins } from "../hooks/useMediCoins";
+import ConfettiCelebration from "./ConfettiCelebration";
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const {
@@ -56,6 +57,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [loseHeartAnimation, setLoseHeartAnimation] = useState(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [triggerVictoryConfetti, setTriggerVictoryConfetti] = useState(false);
+  const [triggerStreakConfetti, setTriggerStreakConfetti] = useState(false);
 
   // Hook de efectos de sonido
   const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } = useSoundEffects();
@@ -244,9 +247,10 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setPointsToShow(`+${pointsEarned}`);
       setTimeout(() => setTriggerConfetti(false), 3500);
 
-      // Activar confeti por racha de 3 respuestas correctas
-      if (newStreak === 3) {
-        triggerConfettiEffect();
+      // Activar confeti mini por racha de 3 respuestas correctas
+      if (newStreak === 3 || newStreak === 6 || newStreak === 9) {
+        setTriggerStreakConfetti(true);
+        playVictory(); // 🎉 Bonus fanfare for streak
       }
 
       setScore((prev) => prev + pointsEarned);
@@ -293,7 +297,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           }
 
           playVictory(); // 🏆 Sonido de módulo completado
-          triggerConfettiEffect(); // 🎉 Confeti por completar módulo
+          setTriggerVictoryConfetti(true); // 🎉 Confeti de victoria por completar módulo
+          triggerConfettiEffect(); // 🎉 Confeti adicional por completar módulo
           earnCoins(100, 'Módulo completado'); // 💰 Ganar coins por completar módulo
           setCompleted(true);
           setTimeout(
@@ -431,6 +436,15 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   if (completed) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in duration-300 relative overflow-hidden">
+        {/* 🎉 CONFETI DE VICTORIA */}
+        <ConfettiCelebration
+          trigger={triggerVictoryConfetti}
+          duration={5000}
+          numberOfPieces={300}
+          celebrationType="victory"
+          onComplete={() => setTriggerVictoryConfetti(false)}
+        />
+
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
@@ -488,6 +502,15 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       <div className="absolute inset-0 bg-black/60 -z-10"></div>
 
       <Confetti trigger={triggerConfetti} />
+
+      {/* 🎉 CONFETI POR RACHA DE 3 RESPUESTAS */}
+      <ConfettiCelebration
+        trigger={triggerStreakConfetti}
+        duration={2000}
+        numberOfPieces={150}
+        celebrationType="streak"
+        onComplete={() => setTriggerStreakConfetti(false)}
+      />
 
       {/* React Confetti para celebraciones */}
       {isConfettiActive && (
