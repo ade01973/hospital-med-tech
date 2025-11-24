@@ -277,11 +277,16 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   // 📺 MODAL DE INICIO CON VIDEO
   if (showStartScreen) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in zoom-in duration-300 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse delay-1000"></div>
-        </div>
+      <div 
+        className="min-h-screen flex flex-col items-center justify-center p-6 text-center animate-in zoom-in duration-300 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${gameLevelBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60 -z-10"></div>
         
         <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl max-w-md w-full relative z-10">
           <div className="w-20 h-20 bg-gradient-to-tr from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(34,211,238,0.4)]">
