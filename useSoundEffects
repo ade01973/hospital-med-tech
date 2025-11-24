@@ -1,0 +1,105 @@
+import { useState, useEffect, useCallback } from 'react';
+
+
+// Custom hook para manejar efectos de sonido procedurales
+const useSoundEffects = () => {
+  // Estado para habilitar/deshabilitar el sonido
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    // Obtener la preferencia del localStorage o usar true por defecto
+    const storedValue = localStorage.getItem('soundEnabled');
+    return storedValue === null ? true : storedValue === 'true';
+  });
+
+  // Contexto de la Web Audio API
+  const audioContext = useCallback(() => {
+    return new (window.AudioContext || window.webkitAudioContext)();
+  }, []);
+
+  // Función para guardar la preferencia de sonido en localStorage
+  useEffect(() => {
+    localStorage.setItem('soundEnabled', String(soundEnabled));
+  }, [soundEnabled]);
+
+  // Función para crear un sonido con una frecuencia y duración dadas
+  const playSound = useCallback((frequency, duration) => {
+    if (!soundEnabled) return;
+
+    const ctx = audioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+
+    // Conectar el oscilador al gain node y el gain node al destino (altavoces)
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    // Ajustar el volumen para evitar clics al inicio y al final
+    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+
+    oscillator.start();
+
+    // Fade out suave al final del sonido
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ctx.currentTime + duration / 1000
+    );
+
+    // Detener el oscilador después de la duración especificada
+    oscillator.stop(ctx.currentTime + duration / 1000);
+  }, [soundEnabled, audioContext]);
+
+  // Función para reproducir el sonido de éxito
+  const playSuccess = useCallback(() => {
+    playSound(800, 200); // Frecuencia 800Hz, duración 200ms
+  }, [playSound]);
+
+  // Función para reproducir el sonido de error
+  const playError = useCallback(() => {
+    playSound(200, 300); // Frecuencia 200Hz, duración 300ms
+  }, [playSound]);
+
+  // Función para reproducir el sonido de victoria (secuencia de tonos ascendentes)
+  const playVictory = useCallback(() => {
+    if (!soundEnabled) return;
+
+    const ctx = audioContext();
+    const now = ctx.currentTime;
+    const baseFrequency = 440;
+    const intervals = [0, 4, 7]; // Semitonos para crear un acorde mayor
+    const duration = 0.2; // Duración de cada tono en segundos
+    const intervalBetweenTones = 0.1; // Intervalo entre cada tono
+
+    intervals.forEach((interval, index) => {
+      const frequency = baseFrequency * Math.pow(2, interval / 12);
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, now + index * (duration + intervalBetweenTones));
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      gainNode.gain.setValueAtTime(0.1, now + index * (duration + intervalBetweenTones));
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + index * (duration + intervalBetweenTones) + duration
+      );
+
+      oscillator.start(now + index * (duration + intervalBetweenTones));
+      oscillator.stop(now + index * (duration + intervalBetweenTones) + duration);
+    });
+  }, [soundEnabled, audioContext]);
+
+  return {
+    playSuccess,
+    playError,
+    playVictory,
+    soundEnabled,
+    setSoundEnabled,
+  };
+};
+
+export default useSoundEffects;
