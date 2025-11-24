@@ -174,18 +174,48 @@ Plus **Salir** (Logout) button in top-right
 - No real-time multiplayer (demo only)
 - localStorage limited to device (no cloud sync for calendar)
 
-## Next Potential Features
+## 🔊 SISTEMA DE EFECTOS DE SONIDO (Nov 24 - Implementado)
+
+### Características
+
+**Archivos Creados:**
+- `src/hooks/useSoundEffects.js` - Hook completo con Web Audio API
+
+**Sonidos Procedurales (sin archivos externos):**
+1. ✅ **Respuesta Correcta** - 3 notas ascendentes (Do-Mi-Sol)
+2. ❌ **Respuesta Incorrecta** - Nota grave descendente
+3. 🎉 **Módulo Completado** - Fanfarria épica (6 notas)
+4. 📍 **Notificaciones** - Sonido corto
+
+**Características:**
+- Toggle de sonido en HUD (🔊/🔇)
+- Preferencia guardada en localStorage
+- Web Audio API generación procedural (sin dependencias externas)
+- Volumen controlado y sutiles
+- Manejo robusto de errores para compatibilidad
+
+**Integración en GameLevel.jsx:**
+- Línea 61: Importación del hook
+- Línea 218: playSuccess() al responder correctamente
+- Línea 262: playError() al responder incorrectamente  
+- Línea 295: playVictory() al completar módulo
+- Líneas 600-608: Botón toggle en HUD
+
+**Cómo Funciona:**
+1. Al hacer clic en una respuesta: se reproduce sonido inmediatamente
+2. Botón 🔊/🔇 en la barra superior para activar/desactivar
+3. Preferencia persiste entre sesiones
+4. Sonidos generados proceduralmente con Oscillator Web Audio API
+
+### Next Potential Features
 - Power-up system implementation
 - Achievement badges display enhancement
-- Educational video integration (currently has placeholders)
-- Animated confetti/effects on achievements
 - Mobile app optimization
 - Dark mode toggle
-- Sound effects
 
 ---
 
-**Last Updated:** November 24, 2025 - Login Streak Calendar System Implemented
+**Last Updated:** November 24, 2025 - Sound Effects System Implemented ✨
 
 ---
 
@@ -299,8 +329,8 @@ El sistema está completamente integrado pero LISTO para conectar con:
 
 ---
 
-**Last Updated**: November 24, 2025 - Sistema Completo de Badges Implementado ✨
-**Status**: MVP with Gamification System (Ranks, Leagues, Login Streak, Badges) 🎉
+**Last Updated**: November 24, 2025 - Sound Effects System Added ✨
+**Status**: MVP with Gamification System (Ranks, Leagues, Login Streak, Badges, Sound Effects) 🎉
 
 ---
 

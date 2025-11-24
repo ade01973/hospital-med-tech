@@ -15,7 +15,7 @@ import Confetti from "./Confetti";
 import LivesGameOver from "./LivesGameOver";
 import { useMissions } from "../hooks/useMissions";
 import { useBadges } from "../hooks/useBadges";
-import useSoundEffects from "../../useSoundEffects";
+import useSoundEffects from "../hooks/useSoundEffects";
 import ReactConfetti from "react-confetti";
 import useConfetti from "../hooks/useConfetti";
 import ShareModal from "./ShareModal";
