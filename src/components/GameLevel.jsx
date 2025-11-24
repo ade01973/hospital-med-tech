@@ -16,6 +16,8 @@ import LivesGameOver from "./LivesGameOver";
 import { useMissions } from "../hooks/useMissions";
 import { useBadges } from "../hooks/useBadges";
 import useSoundEffects from "../../useSoundEffects";
+import ReactConfetti from "react-confetti";
+import useConfetti from "../hooks/useConfetti";
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const {
@@ -54,6 +56,9 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
 
   // Hook de efectos de sonido
   const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } = useSoundEffects();
+
+  // Hook de confeti
+  const { isActive: isConfettiActive, triggerConfetti } = useConfetti();
 
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
@@ -230,6 +235,11 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setPointsToShow(`+${pointsEarned}`);
       setTimeout(() => setTriggerConfetti(false), 3500);
 
+      // Activar confeti por racha de 3 respuestas correctas
+      if (newStreak === 3) {
+        triggerConfetti();
+      }
+
       setScore((prev) => prev + pointsEarned);
       console.log(
         `✅ CORRECTO! Tiempo: ${timeSpent}s, Velocidad: ${speedBonus}, Racha: ${newStreak}, Puntos: ${pointsEarned}`,
@@ -270,6 +280,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           }
 
           playVictory(); // 🏆 Sonido de módulo completado
+          triggerConfetti(); // 🎉 Confeti por completar módulo
           setCompleted(true);
           setTimeout(
             () =>
@@ -455,6 +466,18 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       <div className="absolute inset-0 bg-black/60 -z-10"></div>
 
       <Confetti trigger={triggerConfetti} />
+
+      {/* React Confetti para celebraciones */}
+      {isConfettiActive && (
+        <ReactConfetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          numberOfPieces={200}
+          recycle={false}
+          colors={['#0EA5E9', '#10B981', '#FFFFFF']}
+          style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}
+        />
+      )}
 
       {triggerConfetti && pointsToShow && (
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[200]">
