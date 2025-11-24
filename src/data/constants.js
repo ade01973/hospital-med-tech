@@ -1,14 +1,85 @@
 import { Activity, BookOpen, User, Users, Brain, Stethoscope, MessageSquare, Zap, Target, Clock, BarChart3, Lightbulb, Shield, TrendingUp, Heart, ShieldCheck, Eye } from 'lucide-react';
 
+// 🔄 BALANCED XP CURVE (Exponencial suave)
+// Cálculo realista: ~500-800 XP por nivel (10 preguntas + misiones)
+// - Estudiante → Enfermera: 2000 XP (~3-4 días)
+// - Enfermera → Referente: 3000 XP (~5 días)
+// - Escala exponencial para rangosmás altos (2-3 semanas para máximo)
 export const NURSING_RANKS = [
-  { title: "Estudiante", minScore: 0, color: "from-slate-500 to-slate-600", icon: "🎓" },
-  { title: "Enfermera", minScore: 3001, color: "from-emerald-500 to-teal-600", icon: "💉" },
-  { title: "Referente", minScore: 8001, color: "from-cyan-500 to-blue-600", icon: "🌟" },
-  { title: "Supervisora", minScore: 12001, color: "from-blue-600 to-indigo-600", icon: "📋" },
-  { title: "Supervisora de Área", minScore: 15001, color: "from-indigo-600 to-purple-600", icon: "📊" },
-  { title: "Directora de Enfermería", minScore: 18501, color: "from-purple-600 to-fuchsia-600", icon: "👑" },
-  { title: "Gerente", minScore: 20001, color: "from-fuchsia-600 to-rose-600", icon: "🏥" },
-  { title: "Líder Global", minScore: 22001, color: "from-amber-400 to-orange-600", icon: "🌍" }
+  { title: "Estudiante", minScore: 0, color: "from-slate-500 to-slate-600", icon: "🎓", league: null },
+  { title: "Enfermera", minScore: 2000, color: "from-emerald-500 to-teal-600", icon: "💉", league: "BRONCE" },
+  { title: "Referente", minScore: 5000, color: "from-cyan-500 to-blue-600", icon: "🌟", league: "BRONCE" },
+  { title: "Supervisora", minScore: 10000, color: "from-blue-600 to-indigo-600", icon: "📋", league: "PLATA" },
+  { title: "Coordinadora", minScore: 18000, color: "from-indigo-600 to-purple-600", icon: "📊", league: "PLATA" },
+  { title: "Directora de Enfermería", minScore: 30000, color: "from-purple-600 to-fuchsia-600", icon: "👑", league: "ORO" },
+  { title: "Directora Regional", minScore: 50000, color: "from-fuchsia-600 to-rose-600", icon: "🏥", league: "PLATINO" },
+  { title: "Ministra de Sanidad", minScore: 80000, color: "from-amber-400 to-orange-600", icon: "🌍", league: "LEYENDA" }
+];
+
+// 🏆 SISTEMA DE LIGAS (5 ligas competitivas)
+export const LEAGUE_SYSTEM = {
+  BRONCE: {
+    name: "🥉 LIGA BRONCE",
+    color: "from-amber-700 to-orange-700",
+    icon: "🥉",
+    ranks: ["Estudiante", "Enfermera", "Referente"],
+    rewards: {
+      first: { xp: 500, badge: "🥇 Campeón Bronce", title: "Campeón Bronce" },
+      second: { xp: 300, badge: "🥈", title: "Subcampeón" },
+      third: { xp: 150, badge: "🥉", title: "Tercer Puesto" }
+    }
+  },
+  PLATA: {
+    name: "🥈 LIGA PLATA",
+    color: "from-slate-300 to-slate-500",
+    icon: "🥈",
+    ranks: ["Supervisora", "Coordinadora"],
+    rewards: {
+      first: { xp: 800, badge: "🥇 Campeón Plata", title: "Campeón Plata" },
+      second: { xp: 500, badge: "🥈", title: "Subcampeón" },
+      third: { xp: 200, badge: "🥉", title: "Tercer Puesto" }
+    }
+  },
+  ORO: {
+    name: "🥇 LIGA ORO",
+    color: "from-yellow-500 to-yellow-600",
+    icon: "🥇",
+    ranks: ["Directora de Enfermería"],
+    rewards: {
+      first: { xp: 1200, badge: "🥇 Campeón Oro", title: "Campeón Oro" },
+      second: { xp: 700, badge: "🥈", title: "Subcampeón" },
+      third: { xp: 300, badge: "🥉", title: "Tercer Puesto" }
+    }
+  },
+  PLATINO: {
+    name: "💎 LIGA PLATINO",
+    color: "from-cyan-400 to-blue-400",
+    icon: "💎",
+    ranks: ["Directora Regional"],
+    rewards: {
+      first: { xp: 1500, badge: "🥇 Campeón Platino", title: "Campeón Platino" },
+      second: { xp: 900, badge: "🥈", title: "Subcampeón" },
+      third: { xp: 400, badge: "🥉", title: "Tercer Puesto" }
+    }
+  },
+  LEYENDA: {
+    name: "⭐ LIGA LEYENDA",
+    color: "from-purple-500 to-pink-500",
+    icon: "⭐",
+    ranks: ["Ministra de Sanidad"],
+    rewards: {
+      first: { xp: 2000, badge: "👑 Leyenda Suprema", title: "Leyenda Suprema" },
+      second: { xp: 1200, badge: "🥈", title: "Leyenda Elite" },
+      third: { xp: 600, badge: "🥉", title: "Leyenda" }
+    }
+  }
+};
+
+// 🎮 Ejemplo de nombres ficticios para demo
+export const DEMO_PLAYER_NAMES = [
+  "Dr. García", "Dra. López", "Enfermero Martín", "Supervisora Alba",
+  "Coordinador Pérez", "Directora Carmen", "Dr. Ruiz", "Enfermera Sofia",
+  "Gestor Rafael", "Coordinadora Teresa"
 ];
 
 export const TOPICS = [

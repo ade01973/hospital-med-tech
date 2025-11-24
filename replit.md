@@ -292,6 +292,44 @@ NURSE MANAGER is a comprehensive, gamified learning platform featuring:
 
 ---
 
+## ✅ TAREAS COMPLETADAS
+
+### TAREA 1: Balance de XP (COMPLETADO)
+- ✅ Revisados rangos originales
+- ✅ Curva exponencial ajustada:
+  - Estudiante → Enfermera: 2000 XP (~3-4 días)
+  - Enfermera → Referente: +3000 XP (5 días)
+  - Referente → Supervisora: +5000 XP (7 días)
+  - Supervisora → Coordinadora: +8000 XP (10 días)
+  - Coordinadora → Directora: +12000 XP (15 días)
+  - Directora → Regional: +20000 XP (25 días)
+  - Regional → Ministra: +30000 XP (aspiracional 30+ días)
+- ✅ Cada rango ahora requiere esfuerzo sostenido
+
+### TAREA 2: Sistema de Ligas Competitivas (COMPLETADO)
+- ✅ 5 Ligas creadas con colores y recompensas:
+  - 🥉 BRONCE (Estudiante, Enfermera, Referente)
+  - 🥈 PLATA (Supervisora, Coordinadora)
+  - 🥇 ORO (Directora de Enfermería)
+  - 💎 PLATINO (Directora Regional)
+  - ⭐ LEYENDA (Ministra de Sanidad)
+- ✅ Hook useLeagues.js implementado:
+  - Genera Top 10 ranking semanal
+  - Jugadores ficticios demo (9 + jugador real)
+  - Reset automático cada lunes
+  - Cálculo de posición y XP semanal
+- ✅ Componente Leagues.jsx creado:
+  - Modal profesional con tema de colores de liga
+  - Muestra tu posición + Top 10
+  - Preview de siguiente liga
+  - Info de recompensas (Top 3)
+- ✅ Integración en Dashboard:
+  - Nuevo botón 🏆 LIGAS
+  - Badge con posición (Top 3)
+  - Acceso rápido desde header
+
+---
+
 **Last Updated**: Nov 24, 2025
-**Status**: MVP with missions system + lives + enhanced animations ✨
-**Version**: 3.0 (Daily & Weekly Missions Implementation)
+**Status**: MVP con sistema de XP balanceado + Ligas Competitivas ✨
+**Version**: 4.0 (Competitive League System)

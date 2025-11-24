@@ -1,0 +1,89 @@
+TAREA 1 - REVISIÓN DE BALANCE DE XP (URGENTE):
+
+El usuario tiene razón: con todos los sistemas de recompensas que hemos añadido, los jugadores pueden estar ganando demasiado XP y llegar al máximo nivel muy rápido.
+
+FUENTES ACTUALES DE XP:
+1. Por responder preguntas correctas: ~100 XP base
+2. Bonus de velocidad (rápido/más rápido): +50 a +150 XP
+3. Bonus de racha (racha >= 5): +20 XP
+4. Misiones diarias:
+   - "Responde 10 preguntas": +300 XP
+   - "Mantén tu racha activa": +200 XP
+5. Misión semanal: +1500 XP
+
+CÁLCULO:
+- En UN NIVEL (10 preguntas perfectas con velocidad):
+  - Base: 10 x 100 = 1000 XP
+  - Bonus velocidad: 10 x 100 (promedio) = 1000 XP
+  - Bonus rachas: ~100 XP
+  - Misión diaria (10 preguntas): +300 XP
+  - Misión racha: +200 XP
+  - TOTAL: ~2600 XP por nivel
+
+Si el siguiente rango es "Enfermera (3001 pts)", el jugador llegaría en solo 2 niveles. Esto rompe la progresión.
+
+SOLUCIÓN NECESARIA:
+1. Revisa el archivo de constants.js donde están los rangos/niveles
+2. Calcula cuánto XP se puede ganar realistically por día
+3. Ajusta la curva de rangos para que:
+   - Los primeros rangos sean alcanzables (motivación inicial)
+   - Los rangos medios requieran esfuerzo sostenido (3-5 días)
+   - Los rangos altos sean aspiracionales (1-2 semanas)
+4. Propón una curva exponencial suave (ejemplo: 1000, 2500, 5000, 10000, 20000, etc.)
+
+Por favor:
+a) Abre src/data/constants.js
+b) Revisa los rangos actuales
+c) Calcula el balance correcto
+d) Ajusta los valores para crear una progresión equilibrada
+e) Documenta la nueva curva en un comentario
+
+---
+
+TAREA 2 - IMPLEMENTAR LIGAS COMPETITIVAS (después del ajuste de XP):
+
+Después de ajustar el balance, implementa el sistema de Ligas Competitivas:
+
+SISTEMA DE LIGAS:
+
+5 Ligas (de menor a mayor):
+1. 🥉 LIGA BRONCE - Rangos: Estudiante, Enfermera
+2. 🥈 LIGA PLATA - Rangos: Enfermera Senior, Supervisora
+3. 🥇 LIGA ORO - Rangos: Coordinadora, Subdirectora
+4. 💎 LIGA PLATINO - Rangos: Directora, Directora Regional
+5. ⭐ LIGA LEYENDA - Rango: Ministra de Sanidad
+
+MECÁNICA:
+- Cada liga tiene TOP 10 jugadores de la semana
+- Los jugadores compiten con otros de su mismo rango/liga
+- Cada lunes se resetea el ranking semanal
+- Top 3 de cada liga ganan:
+  - 🥇 1° lugar: Badge exclusivo + 500 XP bonus
+  - 🥈 2° lugar: 300 XP bonus
+  - 🥉 3° lugar: 150 XP bonus
+
+UI EN DASHBOARD:
+- Nuevo botón "🏆 LIGAS" en top bar
+- Modal mostrando:
+  - Tu liga actual
+  - Tu posición en el ranking
+  - TOP 10 de tu liga con: posición, nombre, XP ganado esta semana
+  - Tiempo restante para fin de temporada
+  - Preview de la siguiente liga (si no estás en Leyenda)
+
+PERSISTENCIA:
+- localStorage con clave "leagueData"
+- Guardar: liga actual, XP semanal, timestamp de inicio de semana
+- Reset automático cada lunes
+
+GENERACIÓN DE RANKING:
+- Para demo/testing: genera 9 jugadores ficticios con nombres y XP variables
+- El usuario siempre aparece en el ranking con su XP real
+- Orden por XP ganado esta semana (descendente)
+
+DISEÑO:
+- Badge de liga con color correspondiente en el dashboard
+- Animación cuando subes de liga
+- Visual claro del TOP 3 (colores oro/plata/bronce)
+
+Importante: debe integrarse con el nuevo sistema de XP balanceado.
