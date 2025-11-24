@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import elevatorBg from '../assets/elevator-bg.png';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
   const [showRoadmap, setShowRoadmap] = useState(false); // Show/hide career roadmap
+  const [showVideo, setShowVideo] = useState(false); // Show/hide video modal
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
@@ -42,6 +43,41 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
     >
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/50"></div>
+
+      {/* Video Modal */}
+      {showVideo && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="bg-slate-900/95 backdrop-blur-xl border-2 border-red-500/50 rounded-3xl p-6 shadow-2xl shadow-red-500/30 w-full max-w-4xl mx-4 overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                  <Play className="w-6 h-6 text-white fill-white" />
+                </div>
+                Video Introductorio - La Gestora Enfermera
+              </h2>
+              <button
+                onClick={() => setShowVideo(false)}
+                className="text-slate-400 hover:text-white text-3xl font-bold transition-colors"
+              >
+                <X className="w-8 h-8" />
+              </button>
+            </div>
+
+            {/* Video Player */}
+            <div className="relative w-full bg-black rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/bL0e705JuZQ?autoplay=1&rel=0"
+                title="Video Introductorio - La Gestora Enfermera"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Career Roadmap Modal */}
       {showRoadmap && (
@@ -335,6 +371,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       <h2 className="text-2xl font-black text-white">{currentTopic.title}</h2>
                       {isCurrentCompleted && (
                         <span className="px-2 py-1 bg-emerald-500 text-white text-xs font-black rounded-full">✓ COMPLETADO</span>
+                      )}
+                      {selectedFloor === 1 && (
+                        <button
+                          onClick={() => setShowVideo(true)}
+                          className="p-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-lg transition-all transform hover:scale-110 shadow-lg hover:shadow-red-500/50"
+                          title="Ver video introductorio"
+                        >
+                          <Play className="w-5 h-5 text-white fill-white" />
+                        </button>
                       )}
                     </div>
                     <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
