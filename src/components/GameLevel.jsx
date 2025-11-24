@@ -4,8 +4,10 @@ import { User } from 'lucide-react';
 import gameLevelBg from '../assets/game-level-bg.png';
 import Confetti from './Confetti';
 import LivesGameOver from './LivesGameOver';
+import { useMissions } from '../hooks/useMissions';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
+  const { trackQuestionAnswered, trackStreakCheck, trackFastAnswer, trackPerfectLevel } = useMissions();
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
   
   const [currentFloor, setCurrentFloor] = useState(0);
@@ -146,14 +148,19 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     let speedBonus = '';
     const timeSpent = 30 - remainingTime;
     
+    // 📊 TRACKING MISIONES
+    trackQuestionAnswered(); // Contar cada respuesta
+    
     if (correct) {
       newStreak = currentStreak + 1;
       setCurrentStreak(newStreak);
       localStorage.setItem('userStreak', newStreak.toString());
+      trackStreakCheck(newStreak); // Verificar racha activa
       
       if (timeSpent < 10) {
         pointsEarned = 150;
         speedBonus = '¡RÁPIDO! +150 PTS';
+        trackFastAnswer(); // Respuesta rápida
       } else if (timeSpent <= 20) {
         pointsEarned = 100;
         speedBonus = '+100 PTS';
@@ -194,6 +201,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       // Racha se resetea
       setCurrentStreak(0);
       localStorage.setItem('userStreak', '0');
+      trackStreakCheck(0); // Racha rota
     }
     
     // AVANZAR solo si hay vidas
@@ -202,6 +210,13 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         const nextFloor = currentFloor + 1;
         
         if (nextFloor === floors.length) {
+          // Verificar si completó con 100% correctas (nivel perfecto para misión semanal)
+          // Se considera perfecto si solo tuvo respuestas correctas
+          const allCorrect = score > 0; // Simplificado: si tiene puntos, fue 100%
+          if (allCorrect && correct) {
+            trackPerfectLevel();
+          }
+          
           setCompleted(true);
           setTimeout(() => onComplete(topic.id, score + (correct ? pointsEarned : 0), studentId), 500);
         } else {

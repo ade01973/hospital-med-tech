@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
+import Missions from './Missions.jsx';
 import elevatorBg from '../assets/elevator-bg.png';
+import { useMissions } from '../hooks/useMissions';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
@@ -10,12 +12,16 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showVideo, setShowVideo] = useState(false); // Show/hide video modal
   const [showRewards, setShowRewards] = useState(false); // Show/hide rewards screen
   const [showRankAchievement, setShowRankAchievement] = useState(false); // Show rank achievement banner
+  const [showMissions, setShowMissions] = useState(false); // Show/hide missions modal
   const [newRank, setNewRank] = useState(null); // Store the new rank achieved
   const [previousScore, setPreviousScore] = useState(0); // Track previous score for comparison
   const [currentStreak, setCurrentStreak] = useState(() => {
     const saved = localStorage.getItem('userStreak');
     return saved ? parseInt(saved, 10) : 0;
   }); // Track current streak - initialized from localStorage
+  
+  // Hook para misiones
+  const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   
   // Video links for each topic
   const videoLinks = {
@@ -120,6 +126,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
       {/* Rewards Modal */}
       <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} userData={userData} />
+
+      {/* Missions Modal */}
+      <Missions 
+        isOpen={showMissions} 
+        onClose={() => setShowMissions(false)} 
+        dailyMissions={dailyMissions}
+        weeklyMission={weeklyMission}
+        onClaimReward={claimReward}
+      />
 
       {/* Rank Achievement Banner */}
       {showRankAchievement && newRank && (
@@ -335,6 +350,19 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               title="Ruta de la Gestora Enfermera"
             >
               <Map className="w-6 h-6 text-white" />
+            </button>
+
+            <button 
+              onClick={() => setShowMissions(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Ver Misiones"
+            >
+              <Target className="w-6 h-6 text-white" />
+              {getCompletedNotClaimed() > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white animate-pulse">
+                  {getCompletedNotClaimed()}
+                </div>
+              )}
             </button>
 
             <button 

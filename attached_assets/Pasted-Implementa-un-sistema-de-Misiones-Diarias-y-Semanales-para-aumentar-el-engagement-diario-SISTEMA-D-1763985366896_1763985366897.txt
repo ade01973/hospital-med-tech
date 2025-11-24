@@ -1,0 +1,62 @@
+Implementa un sistema de Misiones Diarias y Semanales para aumentar el engagement diario:
+
+SISTEMA DE MISIONES DIARIAS (se resetean cada 24h):
+
+3 misiones diarias:
+🎯 Misión 1: "Responde 10 preguntas" 
+   - Recompensa: +300 XP
+   - Progreso: 0/10 preguntas
+
+🔥 Misión 2: "Mantén tu racha activa"
+   - Recompensa: +200 XP
+   - Completada automáticamente si tienes racha >= 1
+
+⚡ Misión 3: "Consigue 5 respuestas rápidas (<10s)"
+   - Recompensa: 1 Power-up gratis
+   - Progreso: 0/5 respuestas rápidas
+
+SISTEMA DE MISIONES SEMANALES (se resetean cada lunes):
+
+🏆 Misión Semanal: "Completa 3 niveles con 3 estrellas"
+   - Recompensa: Insignia exclusiva "Estudiante Dedicado" + 1500 XP
+   - Progreso: 0/3 niveles con 3⭐
+
+UBICACION EN LA APP:
+- Nuevo botón en el dashboard: "🎯 MISIONES" (junto a trofeo, libro, regalo)
+- Al hacer clic: modal que muestra todas las misiones
+- Badge con número de misiones completadas hoy
+
+DISEÑO DEL MODAL DE MISIONES:
+
+Título: "🎯 MISIONES DIARIAS"
+
+Cada misión debe mostrar:
+- Icono de la misión
+- Nombre de la misión
+- Barra de progreso visual
+- Recompensa claramente visible
+- Estado: "En progreso" o "✅ COMPLETADA"
+
+Misiones completadas:
+- Fondo verde claro
+- Checkmark verde ✅
+- Botón "RECLAMAR RECOMPENSA" (si no se ha reclamado)
+- Una vez reclamada: "RECOMPENSA RECLAMADA ✅"
+
+Sección separada: "🏆 MISIÓN SEMANAL"
+
+PERSISTENCIA:
+- Guardar progreso en localStorage con clave "dailyMissions" y "weeklyMission"
+- Guardar timestamp de último reset: "lastMissionReset"
+- Al cargar app: verificar si han pasado 24h y resetear misiones diarias
+- Verificar si es lunes y resetear misión semanal
+
+LÓGICA DE TRACKING:
+- Misión 1: incrementar contador cada vez que se responde una pregunta
+- Misión 2: verificar si existe racha >= 1
+- Misión 3: incrementar cuando se responde en <10s
+- Misión Semanal: incrementar cuando un nivel se completa con 100% correctas
+
+NOTIFICACIONES:
+- Cuando completas una misión: toast/notificación "✅ ¡Misión completada!"
+- Badge en el botón de misiones con el número de misiones listas para reclamar

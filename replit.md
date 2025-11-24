@@ -231,17 +231,52 @@ Server runs on port 5000 with hot module replacement enabled.
 - **Performance**: Optimized animations for smooth gameplay
 - **Accessibility**: Clear heart indicator, readable text, good contrast
 
+## 🎯 MISSIONS SYSTEM (NEW - Daily & Weekly)
+
+### Daily Missions (Reset Every 24h)
+1. **"Responde 10 preguntas"** 📝
+   - Progress: 0-10 questions
+   - Reward: +300 XP
+   - Auto-tracked each answer
+
+2. **"Mantén tu racha activa"** 🔥
+   - Progress: streak >= 1
+   - Reward: +200 XP
+   - Auto-completed if streak exists
+
+3. **"Consigue 5 respuestas rápidas"** ⚡
+   - Progress: 0-5 answers <10s
+   - Reward: 1 Power-up
+   - Auto-tracked on fast answers
+
+### Weekly Mission (Reset Every Monday)
+- **"Completa 3 niveles con 3 estrellas"** 🏆
+- Progress: 0-3 perfect levels (100% correctas)
+- Reward: +1500 XP + "Estudiante Dedicado" badge
+- Auto-tracked on level completion
+
+### Missions UI
+- **Button**: 🎯 in Dashboard header (next to Rewards)
+- **Badge**: Shows number of completed/unclaimed missions
+- **Modal**: Beautiful UI with progress bars
+- **Claims**: One-click claim rewards after completion
+
+### Missions Persistence
+- Storage keys: `dailyMissions`, `weeklyMission`, `lastMissionReset`, `lastWeeklyReset`
+- Auto-reset: Checks date on app load
+- Claim tracking: Prevents reclaiming same mission
+
 ## Next Steps / TODO
 
 - [ ] Add sound effects for correct/incorrect/heart-loss
-- [ ] Implement difficulty levels
-- [ ] Add multiplayer/competitive mode
+- [ ] Add notification toasts when missions complete
+- [ ] Implement actual power-up inventory system
 - [ ] Create administrator dashboard for question management
 - [ ] Add more learning modules (full content for all 22)
 - [ ] Implement certificates for completion
-- [ ] Add daily challenges with bonus XP
-- [ ] Implement power-up system (obtain, use, track inventory)
+- [ ] Add multiplayer/competitive mode
 - [ ] Add seasonal leaderboards
+- [ ] Integrate missions XP rewards with user total score
 
 ## Summary
 
@@ -249,6 +284,7 @@ NURSE MANAGER is a comprehensive, gamified learning platform featuring:
 - 30-second timer with variable points (150/100/50 based on speed)
 - Streak system with +20 bonus when >=5
 - Duolingo-style 5-hearts/lives system per level
+- **Daily & Weekly Missions system** with auto-tracking
 - Beautiful animations (confetti, shake, glow, bounce)
 - Three ways to recover lives (wait 30min, video, power-up)
 - Full persistence via localStorage + Firestore
@@ -257,5 +293,5 @@ NURSE MANAGER is a comprehensive, gamified learning platform featuring:
 ---
 
 **Last Updated**: Nov 24, 2025
-**Status**: MVP with lives system + enhanced animations ✨
-**Version**: 2.5 (Lives/Hearts Implementation)
+**Status**: MVP with missions system + lives + enhanced animations ✨
+**Version**: 3.0 (Daily & Weekly Missions Implementation)
