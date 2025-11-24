@@ -1,0 +1,90 @@
+Implementa el Sistema de Calendario de Recompensas Diarias (Login Streak Calendar) para impulsar el engagement diario:
+
+SISTEMA DE RECOMPENSAS DE LOGIN DIARIO:
+
+CALENDARIO MENSUAL:
+- Muestra un calendario de 30 días
+- Cada día que haces login se marca con un checkmark ✅
+- Días consecutivos de login crean una "racha de login"
+- El día actual se destaca con un borde brillante
+
+RECOMPENSAS POR DÍA:
+Día 1: +50 XP 🌟
+Día 2: +75 XP 🌟
+Día 3: +100 XP 🌟
+Día 4: +125 XP 🌟
+Día 5: +150 XP + 1 Power-up 🎉
+Día 6: +175 XP 🌟
+Día 7: +200 XP + Badge "Dedicación Semanal" 🏆
+Día 14: +400 XP + 2 Power-ups 🎉
+Día 21: +600 XP + Badge "Estudiante Constante" 🏆
+Día 30: +1000 XP + Badge "Maestría Mensual" + 3 Power-ups 🎉🏆
+
+MECÁNICA:
+- Al hacer login cada día, automáticamente se marca el día y se otorga la recompensa
+- Si pierdes un día, la racha se reinicia a Día 1
+- Modal de notificación al abrir la app: "¡Bienvenido! Has recibido tu recompensa del Día X"
+- Botón "RECLAMAR" para confirmar y ver qué ganaste
+
+UBICACION:
+- Nuevo botón "📅 CALENDARIO" en el dashboard (junto a Misiones, Ligas, Recompensas)
+- Al hacer clic: modal mostrando:
+  * Calendario del mes actual con días marcados
+  * Tu racha actual (ej: "Día 7 🔥")
+  * Próxima recompensa (ej: "Mañana: +175 XP")
+  * Historial de badges ganados por login
+
+DISEÑO DEL MODAL:
+Título: "📅 CALENDARIO DE RECOMPENSAS"
+
+Sección 1: "TU RACHA ACTUAL"
+- Icono de fuego 🔥 con el número de días consecutivos
+- Barra de progreso hacia la siguiente recompensa especial
+- Mensaje motivacional: "No pierdas tu racha!"
+
+Sección 2: "CALENDARIO DEL MES"
+- Grid de 30 días (6 filas x 5 columnas)
+- Días completados: ✅ con fondo verde claro
+- Día actual: Borde dorado brillante
+- Días futuros: Gris claro
+- Tooltip al hacer hover: muestra qué recompensa corresponde a ese día
+
+Sección 3: "PRÓXIMAS RECOMPENSAS"
+- Lista de los próximos 3 días con sus recompensas
+- Iconos visuales (XP, power-ups, badges)
+
+Sección 4: "BADGES GANADOS"
+- Muestra los badges especiales ganados por logins (Día 7, 14, 21, 30)
+
+PERSISTENCIA:
+- localStorage con clave "dailyCalendar"
+- Guardar:
+  * Array de días con login: ["2025-01-15", "2025-01-16", ...]
+  * Racha actual: número de días consecutivos
+  * Último login: timestamp
+  * Badges ganados por calendar
+
+LÓGICA:
+1. Al abrir la app, verificar la fecha actual
+2. Si es un día nuevo desde el último login:
+   a) Verificar si es consecutivo (racha continúa) o hubo gap (reset racha)
+   b) Marcar el día actual como completado
+   c) Otorgar la recompensa correspondiente al día de la racha
+   d) Mostrar modal de notificación automáticamente
+3. Si ya hiciste login hoy, solo mostrar el calendario sin modal
+
+NOTIFICACIONES:
+- Modal automático al login: "🎉 ¡Recompensa del Día X reclamada!"
+- Muestra lo que ganaste: XP, power-ups, badges
+- Botón "GENIAL" para cerrar y continuar
+- Si perdiste la racha: mensaje de ánimo "Tu racha se reinició, ¡comienza de nuevo!"
+
+BADGE EN DASHBOARD:
+- En el botón de calendario, mostrar un badge con el número de racha actual
+- Ej: "📅 7" (indicando 7 días consecutivos)
+
+Importante:
+- Debe integrarse con el sistema de XP existente (sumar XP automáticamente)
+- Debe ser compatible con el sistema de badges existente
+- El calendario debe ajustarse al mes actual dinámicamente
+- Manejo correcto de cambios de mes

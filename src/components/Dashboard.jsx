@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
 import Leagues from './Leagues.jsx';
+import LoginCalendar from './LoginCalendar.jsx';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
+import { useLoginStreak } from '../hooks/useLoginStreak';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const [selectedFloor, setSelectedFloor] = useState(1);
@@ -16,6 +18,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showRankAchievement, setShowRankAchievement] = useState(false);
   const [showMissions, setShowMissions] = useState(false);
   const [showLeagues, setShowLeagues] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(() => {
@@ -24,6 +27,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   });
   
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
+  const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
@@ -108,6 +112,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         daysLeft={getDaysUntilWeekEnd()}
       />
 
+      {/* Login Calendar Modal */}
+      <LoginCalendar
+        isOpen={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        calendarData={calendarData}
+        currentStreakDay={currentStreakDay}
+        daysInMonth={getDaysInCurrentMonth()}
+      />
+
       {/* Rewards Modal */}
       <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} userData={userData} />
 
@@ -139,6 +152,19 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               {playerPosition && playerPosition <= 3 && (
                 <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white">
                   {playerPosition === 1 ? '🥇' : playerPosition === 2 ? '🥈' : '🥉'}
+                </div>
+              )}
+            </button>
+
+            <button 
+              onClick={() => setShowCalendar(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Calendario de Recompensas"
+            >
+              <Calendar className="w-6 h-6 text-white" />
+              {currentStreakDay > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-orange-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white">
+                  {currentStreakDay}
                 </div>
               )}
             </button>

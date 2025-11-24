@@ -7,7 +7,9 @@ import Dashboard from './components/Dashboard';
 import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
 import ElevatorDoors from './components/ElevatorDoors';
+import LoginRewardNotification from './components/LoginRewardNotification';
 import { auth, db, appId } from './firebase.js';
+import { useLoginStreak } from './hooks/useLoginStreak';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -16,6 +18,10 @@ export default function App() {
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
   const [showElevatorDoors, setShowElevatorDoors] = useState(false);
+  const [rewardNotification, setRewardNotification] = useState(null);
+  const [showRewardNotification, setShowRewardNotification] = useState(false);
+  
+  const { processLogin } = useLoginStreak();
 
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
@@ -23,6 +29,13 @@ export default function App() {
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
       if (u && !user) {
         console.log('✓ Nuevo login detectado, ir a bienvenida');
+        // 🔔 Procesar login y mostrar recompensa si hay
+        const rewardData = processLogin();
+        if (rewardData) {
+          console.log('🎉 Recompensa de login:', rewardData);
+          setRewardNotification(rewardData);
+          setShowRewardNotification(true);
+        }
         setView('welcome');
       }
       setUser(u);
@@ -32,7 +45,7 @@ export default function App() {
       }
     });
     return () => unsubscribe();
-  }, [user]);
+  }, [user, processLogin]);
 
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
@@ -122,6 +135,13 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen bg-slate-950">
+      {/* Login Reward Notification */}
+      <LoginRewardNotification
+        isOpen={showRewardNotification}
+        onClose={() => setShowRewardNotification(false)}
+        rewardData={rewardNotification}
+      />
+      
       {showElevatorDoors && (
         <ElevatorDoors 
           onComplete={() => {

@@ -9,9 +9,12 @@ This is an interactive quiz-based learning application designed for nursing mana
 - Firebase authentication (anonymous login)
 - Real-time Firestore database for progress tracking and leaderboards
 - Progressive unlocking system with 22 learning modules
-- Rank progression system with XP (23,000 max points)
+- Exponential XP curve rank progression (2000-80000 points, 2-3 weeks to max level)
+- Competitive league system (5 tiers with weekly rankings and rewards)
+- Login streak calendar with daily rewards (Day 1-30 with milestone badges)
 - Variable point scoring based on response speed
 - Streak bonuses and life/heart system (Duolingo-style)
+- Daily/Weekly missions with localStorage persistence
 - Beautiful animated UI with confetti effects and smooth transitions
 - Gamified "hospital tower" interface for quiz levels
 
@@ -21,6 +24,7 @@ This is an interactive quiz-based learning application designed for nursing mana
 - **Styling**: Tailwind CSS v3 (with custom animations)
 - **Icons**: Lucide React
 - **Backend**: Firebase (Auth + Firestore)
+- **State**: localStorage for missions, leagues, login streak
 - **Build Tool**: Vite
 - **Animations**: CSS Keyframes + Custom Tailwind configs
 
@@ -28,308 +32,157 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ```
 /src/
-├── App.jsx                    # Main application component
-├── index.css                  # Tailwind imports
-├── firebase.js                # Firebase configuration
-├── components/
-│   ├── GameLevel.jsx          # Quiz game interface with lives system
-│   ├── LivesGameOver.jsx      # Modal for when lives run out
-│   ├── Dashboard.jsx          # Module selection and progress
-│   ├── Rewards.jsx            # Milestone rewards system
-│   ├── ElevatorDoors.jsx      # Door animation component
-│   └── Confetti.jsx           # Confetti particles effect
-├── data/
-│   └── constants.js           # Quiz questions and module data
-└── assets/
-    └── game-level-bg.png      # Game background image
+  /components/
+    - Dashboard.jsx (main hub with 5 buttons: Misiones, Ligas, Calendario, Progresión, Recompensas)
+    - GameLevel.jsx (quiz interface with timed questions)
+    - LoginCalendar.jsx (NEW: monthly calendar modal with streak tracking)
+    - LoginRewardNotification.jsx (NEW: modal de recompensas automáticas)
+    - Missions.jsx (daily/weekly mission tracker)
+    - Leagues.jsx (competitive league rankings)
+    - Rewards.jsx (badges and achievements display)
+    - LeaderBoard.jsx (global rankings)
+    - ElevatorDoors.jsx (visual transition animation)
+    - AuthScreen.jsx
+    - WelcomeScreen.jsx
+  /hooks/
+    - useMissions.js (mission tracking logic)
+    - useLeagues.js (league system with rank-based assignment)
+    - useLoginStreak.js (NEW: login streak and daily rewards logic)
+  /data/
+    - constants.js (TOPICS, NURSING_RANKS, LEAGUE_SYSTEM, DAILY_REWARDS)
+  /assets/
+    - elevator-bg.png (background image)
+  - App.jsx (main app component with routing)
+  - firebase.js (Firebase config)
 ```
 
-## Features
+## Recent Changes (November 24, 2025)
 
-### 22 Learning Modules with Dynamic Content
-- Each module has 10 questions (Module 22 has 20)
-- Sequential unlocking system
-- Progress persisted in Firestore
-- Video resources for Planta 1 & 2
+### 🐛 Bug Fixes
+- **Fixed Modal Ligas not opening**: Added null/undefined handling in useLeagues hook with default to BRONCE league
+- **Fixed GameLevel blank screen**: Corrected setLevel to pass full TOPIC object instead of just ID number
+- **Fixed useEffect dependency error**: Added useCallback to processLogin function to stabilize dependencies
 
-### Gamification System
-- **Variable Points**: <10s=150pts | 10-20s=100pts | >20s=50pts
-- **Streak System**: Resets on incorrect, shows at >=3, bonus at >=5
-- **XP Ranks**: 8 levels up to 23,000 max points
-- **Milestone Rewards**: 12 reward tiers (every 2000 points)
-- **Leaderboard**: Global top performers ranking
-- **Lives System**: 5 corazones per level (Duolingo-style)
+### ✨ New Features
 
-### Timer System
-- 30-second countdown per question
-- Auto-fails at 0 seconds (costs 1 life)
-- Pauses when answer submitted
-- Visual progress bar with dynamic colors
+#### 1. Login Streak Calendar System
+**Files Created:**
+- `src/hooks/useLoginStreak.js` - Complete login streak logic
+- `src/components/LoginCalendar.jsx` - Beautiful modal with:
+  - 30-day calendar with login tracking
+  - Streak counter with fire emoji (🔥)
+  - Progress bar to next milestone
+  - Upcoming rewards preview (next 3 days)
+  - Badges earned display
+- `src/components/LoginRewardNotification.jsx` - Auto-notification modal:
+  - Shows reward earned on login
+  - Displays XP, power-ups, badges
+  - Motivational messages
 
-### Lives/Hearts System (NEW - Duolingo-style)
-- **Start**: 5 corazones per level (❤️❤️❤️❤️❤️)
-- **On Incorrect Answer**: Lose 1 corazón (💔)
-- **Game Over**: When lives reach 0, show modal with options
-- **Recovery Options**:
-  1. **Esperar 30 minutos**: Auto-recover 5 corazones after timer
-  2. **Ver Video de Repaso**: Watch educational video → recover 2 corazones
-  3. **Usar Power-Up**: Use power-up item → recover 5 corazones instantly
-- **Persistence**: Lives saved in localStorage per module
-- **Visual Indicator**: Header shows ❤️❤️💔💔💔 (2/5 example)
+#### 2. Daily Rewards System (Day 1-30)
+- Day 1-6: Increasing XP (50→175)
+- Day 5: +1 Power-up
+- Day 7: +200 XP + Badge "Dedicación Semanal" 🏆
+- Day 14: +400 XP + 2 Power-ups 🎉 + Badge "Consistencia Extrema"
+- Day 21: +600 XP + Badge "Estudiante Constante" ⭐
+- Day 30: +1000 XP + 3 Power-ups + Badge "Maestría Mensual" 👑
 
-### Enhanced Animations
-- **Confetti Effect**: Particles falling on correct answers
-- **Points Animation**: Zoom + bounce + glow (0.8s duration)
-- **Shake Animation**: 0.3s shake on incorrect answers
-- **Stagger Effect**: Options slide-in with 50ms delays
-- **Glow Effects**: Color-coded pulsing (green/red/cyan)
-- **Heart Loss Animation**: Shake animation when losing a heart
-- **Hover States**: Scale 1.02 with elevated shadow (200ms)
-- **Smooth Transitions**: Fade in/out between questions (300ms)
+#### 3. Integration with Dashboard
+- New 5th button: 📅 CALENDARIO (cyan-teal gradient)
+- Badge showing current streak day (e.g., "📅 7")
+- Auto-popup notification when login detected
+- Streak resets if missed >1 day
 
-## Recent Changes
+**Persistence:**
+- localStorage key: `dailyCalendar`
+- Stores: loginDays array, currentStreak, lastLoginDate, badgesEarned, monthYear
+- Auto-resets on month change
 
-### Latest Session (Nov 24, 2025) - Lives/Hearts System
-- ✅ Implemented 5-hearts system per level
-- ✅ Added 1-heart loss per incorrect answer
-- ✅ Created LivesGameOver modal component
-- ✅ Implemented 30-minute timer for recovery (localStorage)
-- ✅ Added video recovery option (+2 hearts)
-- ✅ Added power-up recovery system (5 hearts)
-- ✅ Integrated heart indicator in header
-- ✅ Added shake animation for heart loss
-- ✅ Implemented localStorage persistence per module
-- ✅ Compatible with streak system (racha NO affected by lives)
-- ✅ Modal shows all 3 recovery options elegantly
+### Existing Features (Previous Sessions)
 
-### Previous Session (Nov 24, 2025) - Animations & Timer
-- ✅ Implemented 30-second timer with auto-fail at 0s
-- ✅ Added variable point system (150/100/50 based on speed)
-- ✅ Integrated timer pause when user responds
-- ✅ Added visual progress bar (green/yellow/red colors)
-- ✅ Implemented confetti particle system
-- ✅ Added zoom + bounce animation for points display
-- ✅ Implemented shake animation for incorrect answers
-- ✅ Added stagger effect (0-150ms delays) for options
-- ✅ Enhanced glow effects with custom keyframes
-- ✅ Improved hover states with smooth transitions
-- ✅ Added drop-shadow effects to feedback text
-- ✅ Created Confetti.jsx component for particle effects
-- ✅ Extended tailwind.config.js with custom animations
+#### XP Balance (Exponential Curve)
+- Estudiante → Enfermera: 2,000 XP (~3-4 days)
+- Enfermera → Referente: +3,000 XP (~5 days)
+- Referente → Supervisora: +5,000 XP (~7 days)
+- Supervisora → Coordinadora: +8,000 XP (~10 days)
+- Coordinadora → Directora: +12,000 XP (~15 days)
+- Directora → Regional: +20,000 XP (~25 days)
+- Regional → Ministra: +30,000 XP (aspirational)
 
-## Files Added/Modified
+#### Competitive League System (5 Tiers)
+- 🥉 LIGA BRONCE: Estudiante, Enfermera, Referente (500/300/150 XP rewards)
+- 🥈 LIGA PLATA: Supervisora, Coordinadora (800/500/200 XP rewards)
+- 🥇 LIGA ORO: Directora Enfermería (1200/700/300 XP rewards)
+- 💎 LIGA PLATINO: Directora Regional (1500/900/400 XP rewards)
+- ⭐ LIGA LEYENDA: Ministra Sanidad (2000/1200/600 XP rewards)
 
-### New Files (Latest)
-- `src/components/LivesGameOver.jsx` - Modal for lives game over
+Features:
+- Top 10 weekly rankings
+- Automatic Monday reset
+- Demo players + real player
+- Rewards for Top 3
 
-### Previously New Files
-- `src/components/Confetti.jsx` - Confetti particle system
+#### Mission System
+- Daily missions (5 types tracked via localStorage)
+- Weekly mission (counter)
+- XP rewards per completion
+- Real-time sync between components
 
-### Modified Files
-- `src/components/GameLevel.jsx` - Full integration of lives system + timer + animations
-- `tailwind.config.js` - Custom keyframes and animations
-- `replit.md` - Updated documentation
+## Dashboard Navigation
 
-### Custom Animations (Tailwind)
-- `shake` - Horizontal tremor (0.3s)
-- `glow-pulse` - Cyan glow effect
-- `glow-pulse-green` - Green glow effect
-- `glow-pulse-red` - Red glow effect
-- `points-bounce` - Zoom + bounce (0.8s)
-- `slide-in-left` - Options entrance (0.3s)
-- `confetti-fall` - Particle gravity (3s)
+The dashboard now has 5 interactive buttons in top bar:
 
-## Game Mechanics - Complete Flow
+1. **🎯 MISIONES** (cyan-blue): Daily/weekly missions tracker
+2. **🏆 LIGAS** (purple-pink): Competitive league rankings
+3. **📅 CALENDARIO** (cyan-teal): Login streak calendar ⬅️ NEW
+4. **🎁 RECOMPENSAS** (yellow-orange): Badges and achievements
+5. **⚡ XP Counter**: Display total experience points
 
-### Question Flow with Lives
-1. Start level with 5 corazones
-2. Timer starts: 30s countdown
-3. User selects answer
-4. If correct:
-   - Points calculated: base (speed) + bonus (streak if >=5)
-   - Confetti effect, animations
-   - Advance to next question
-5. If incorrect:
-   - Lose 1 corazón (heart loss animation)
-   - If lives > 0: advance to next question
-   - If lives == 0: show LivesGameOver modal with 3 options
-6. If timeout (0 seconds):
-   - Counted as incorrect
-   - Lose 1 corazón
-   - Same flow as incorrect
+Plus **Salir** (Logout) button in top-right
 
-### Point Calculation
-```
-IF time < 10s: +150 base points (¡RÁPIDO!)
-IF time 10-20s: +100 base points
-IF time > 20s: +50 base points (¡MÁS RÁPIDO!)
-IF streak >= 5: +20 bonus points
-Total = base + bonus
-```
+## How to Test Login Calendar
 
-### Streak System
-- Increments on correct answer
-- Resets to 0 on incorrect answer or timeout
-- Displays when >=3 (🔥 RACHA x[N])
-- Bonus (+20) when >=5 (⭐ +20 BONUS RACHA!)
-- Persists via localStorage key: `userStreak`
-- **Important**: Racha NOT affected by running out of lives
+1. Go to Dashboard
+2. Click 📅 CALENDARIO button
+3. See:
+   - Your current streak day
+   - Full 30-day calendar
+   - Days with login marked ✅
+   - Next 3 rewards preview
+   - Any earned badges
+4. On new login: Auto-popup shows reward earned for that day
 
-### Lives System Details
-- **Storage Key**: `gameLives_${topicId}` in localStorage
-- **Recovery Timer Key**: `livesRecoveryTime_${topicId}` in localStorage
-- **Max Lives**: 5 per level
-- **Recovery Timer**: 30 minutes (1,800,000 ms)
-- **Heart Loss**: 1 heart per incorrect answer or timeout
-- **Video Recovery**: +2 hearts (one-time, per level)
-- **Power-Up**: +5 hearts (if available)
+## Fixes Applied This Session
 
-## Firebase Configuration
+| Issue | Root Cause | Solution | Status |
+|-------|-----------|----------|--------|
+| Modal Ligas no abrirse | userData.rank undefined al inicio | Added default 'Estudiante' + BRONCE fallback | ✅ Fixed |
+| GameLevel pantalla blanca | setLevel pasaba ID en lugar de TOPIC object | Cambiar `setLevel(currentTopic.id)` → `setLevel(currentTopic)` | ✅ Fixed |
+| useEffect dependency error | processLogin redefinida en cada render | Wrap con useCallback([]) | ✅ Fixed |
 
-The app uses Firebase for:
-- Anonymous authentication
-- Firestore database for user progress
-- Real-time leaderboard
-- Persistent progress tracking
+## User Preferences
+- Fast development pace
+- Exponential XP curve (not linear)
+- Competitive elements important (leagues, leaderboards)
+- Gamification elements (badges, streaks, ranks)
+- Beautiful animations preferred
+- Spanish language UI
 
-**Note**: Firebase anonymous auth must be enabled in Firebase Console.
+## Known Limitations
+- Anonymous Firebase login (no persistent accounts across devices)
+- Mock leaderboard with demo players (for testing)
+- No real-time multiplayer (demo only)
+- localStorage limited to device (no cloud sync for calendar)
 
-## Development
-
-To run the dev server:
-```bash
-npm run dev
-```
-
-Server runs on port 5000 with hot module replacement enabled.
-
-## Performance Optimizations
-
-- CSS animations use GPU acceleration (transform-gpu)
-- Confetti particles limited to 30 per trigger
-- Animations use ease-out/ease-in-out for smoothness
-- No animation blocking - all transitions are non-blocking
-- Heart animation uses efficient CSS shake effect
-
-## User Interface Highlights
-
-- **Login Screen**: Gradient effects, anonymous login
-- **Dashboard**: Module grid with lock icons, progress bars
-- **Game Level**: Hospital tower with animated doors
-- **Question Modal**: Timer bar, options with stagger, feedback panel
-- **Hearts Indicator**: ❤️❤️❤️❤️❤️ / 💔 in header
-- **Lives Game Over**: Beautiful modal with 3 recovery options
-- **Completion**: Celebration animation with score display
-- **Leaderboard**: Real-time player rankings
-
-## Design Principles
-
-- **Gamification**: Points, streaks, ranks, rewards, lives
-- **Feedback**: Immediate visual response to all actions
-- **Progression**: Clear unlocking and achievement system
-- **Aesthetics**: Futuristic hospital theme with smooth animations
-- **Performance**: Optimized animations for smooth gameplay
-- **Accessibility**: Clear heart indicator, readable text, good contrast
-
-## 🎯 MISSIONS SYSTEM (NEW - Daily & Weekly)
-
-### Daily Missions (Reset Every 24h)
-1. **"Responde 10 preguntas"** 📝
-   - Progress: 0-10 questions
-   - Reward: +300 XP
-   - Auto-tracked each answer
-
-2. **"Mantén tu racha activa"** 🔥
-   - Progress: streak >= 1
-   - Reward: +200 XP
-   - Auto-completed if streak exists
-
-3. **"Consigue 5 respuestas rápidas"** ⚡
-   - Progress: 0-5 answers <10s
-   - Reward: 1 Power-up
-   - Auto-tracked on fast answers
-
-### Weekly Mission (Reset Every Monday)
-- **"Completa 3 niveles con 3 estrellas"** 🏆
-- Progress: 0-3 perfect levels (100% correctas)
-- Reward: +1500 XP + "Estudiante Dedicado" badge
-- Auto-tracked on level completion
-
-### Missions UI
-- **Button**: 🎯 in Dashboard header (next to Rewards)
-- **Badge**: Shows number of completed/unclaimed missions
-- **Modal**: Beautiful UI with progress bars
-- **Claims**: One-click claim rewards after completion
-
-### Missions Persistence
-- Storage keys: `dailyMissions`, `weeklyMission`, `lastMissionReset`, `lastWeeklyReset`
-- Auto-reset: Checks date on app load
-- Claim tracking: Prevents reclaiming same mission
-
-## Next Steps / TODO
-
-- [ ] Add sound effects for correct/incorrect/heart-loss
-- [ ] Add notification toasts when missions complete
-- [ ] Implement actual power-up inventory system
-- [ ] Create administrator dashboard for question management
-- [ ] Add more learning modules (full content for all 22)
-- [ ] Implement certificates for completion
-- [ ] Add multiplayer/competitive mode
-- [ ] Add seasonal leaderboards
-- [ ] Integrate missions XP rewards with user total score
-
-## Summary
-
-NURSE MANAGER is a comprehensive, gamified learning platform featuring:
-- 30-second timer with variable points (150/100/50 based on speed)
-- Streak system with +20 bonus when >=5
-- Duolingo-style 5-hearts/lives system per level
-- **Daily & Weekly Missions system** with auto-tracking
-- Beautiful animations (confetti, shake, glow, bounce)
-- Three ways to recover lives (wait 30min, video, power-up)
-- Full persistence via localStorage + Firestore
-- Professional UI with smooth transitions
+## Next Potential Features
+- Power-up system implementation
+- Achievement badges display enhancement
+- Educational video integration (currently has placeholders)
+- Animated confetti/effects on achievements
+- Mobile app optimization
+- Dark mode toggle
+- Sound effects
 
 ---
 
-## ✅ TAREAS COMPLETADAS
-
-### TAREA 1: Balance de XP (COMPLETADO)
-- ✅ Revisados rangos originales
-- ✅ Curva exponencial ajustada:
-  - Estudiante → Enfermera: 2000 XP (~3-4 días)
-  - Enfermera → Referente: +3000 XP (5 días)
-  - Referente → Supervisora: +5000 XP (7 días)
-  - Supervisora → Coordinadora: +8000 XP (10 días)
-  - Coordinadora → Directora: +12000 XP (15 días)
-  - Directora → Regional: +20000 XP (25 días)
-  - Regional → Ministra: +30000 XP (aspiracional 30+ días)
-- ✅ Cada rango ahora requiere esfuerzo sostenido
-
-### TAREA 2: Sistema de Ligas Competitivas (COMPLETADO)
-- ✅ 5 Ligas creadas con colores y recompensas:
-  - 🥉 BRONCE (Estudiante, Enfermera, Referente)
-  - 🥈 PLATA (Supervisora, Coordinadora)
-  - 🥇 ORO (Directora de Enfermería)
-  - 💎 PLATINO (Directora Regional)
-  - ⭐ LEYENDA (Ministra de Sanidad)
-- ✅ Hook useLeagues.js implementado:
-  - Genera Top 10 ranking semanal
-  - Jugadores ficticios demo (9 + jugador real)
-  - Reset automático cada lunes
-  - Cálculo de posición y XP semanal
-- ✅ Componente Leagues.jsx creado:
-  - Modal profesional con tema de colores de liga
-  - Muestra tu posición + Top 10
-  - Preview de siguiente liga
-  - Info de recompensas (Top 3)
-- ✅ Integración en Dashboard:
-  - Nuevo botón 🏆 LIGAS
-  - Badge con posición (Top 3)
-  - Acceso rápido desde header
-
----
-
-**Last Updated**: Nov 24, 2025
-**Status**: MVP con sistema de XP balanceado + Ligas Competitivas ✨
-**Version**: 4.0 (Competitive League System)
+**Last Updated:** November 24, 2025 - Login Streak Calendar System Implemented
