@@ -5,6 +5,7 @@ import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
 import Leagues from './Leagues.jsx';
 import LoginCalendar from './LoginCalendar.jsx';
+import ShareModal from './ShareModal';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -17,6 +18,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareData, setShareData] = useState(null);
   const [showRankAchievement, setShowRankAchievement] = useState(false);
   const [showMissions, setShowMissions] = useState(false);
   const [showLeagues, setShowLeagues] = useState(false);
@@ -27,10 +30,10 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
     const saved = localStorage.getItem('userStreak');
     return saved ? parseInt(saved, 10) : 0;
   });
-  
+
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
-  
+
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
     currentRank, 
@@ -46,10 +49,23 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   useEffect(() => {
     if (userData?.rank && previousScore !== userData.totalScore) {
       const nextRank = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
-      if (nextRank && nextRank !== newRank) {
+      if (nextRank) {
         setNewRank(nextRank);
         setShowRankAchievement(true);
-        setTimeout(() => setShowRankAchievement(false), 3000);
+
+        // Preparar datos para compartir
+        const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+        setShareData({
+          rankTitle: nextRank.title,
+          score: userData.totalScore,
+          streak: currentStreak,
+        });
+
+        // Mostrar modal de compartir después del banner de logro
+        setTimeout(() => {
+          setShowRankAchievement(false);
+          setShowShareModal(true);
+        }, 3000);
       }
       setPreviousScore(userData.totalScore);
     }
@@ -124,11 +140,25 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       />
 
       {/* Rewards Modal */}
-      <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} userData={userData} />
+      <Rewards
+        isOpen={showRewards}
+        onClose={() => setShowRewards(false)}
+        userData={userData}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        moduleTitle={shareData?.rankTitle}
+        score={shareData?.score}
+        streak={shareData?.streak}
+        rankTitle={shareData?.rankTitle}
+      />
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto p-6 max-w-7xl">
-        
+
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
@@ -216,7 +246,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left - Elevator */}
           <div>
             <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
@@ -229,7 +259,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 {TOPICS.map((topic) => {
                   const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
                   const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
-                  
+
                   return (
                     <button
                       key={topic.id}
@@ -311,7 +341,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           <div>
             <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
               <h3 className="text-lg font-black text-white mb-4">Rango Actual</h3>
-              
+
               {currentRankData && (
                 <div className="text-center mb-6 p-4 bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl border-2 border-cyan-500/30">
                   <p className="text-4xl mb-2">{currentRankData.icon}</p>

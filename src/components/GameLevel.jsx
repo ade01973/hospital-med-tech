@@ -18,6 +18,7 @@ import { useBadges } from "../hooks/useBadges";
 import useSoundEffects from "../../useSoundEffects";
 import ReactConfetti from "react-confetti";
 import useConfetti from "../hooks/useConfetti";
+import ShareModal from "./ShareModal";
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const {
@@ -53,6 +54,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [showLivesGameOver, setShowLivesGameOver] = useState(false);
   const [loseHeartAnimation, setLoseHeartAnimation] = useState(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Hook de efectos de sonido
   const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } = useSoundEffects();
@@ -443,6 +445,14 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           </div>
 
           <button
+            onClick={() => setShowShareModal(true)}
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-black py-4 rounded-xl transition-all transform hover:scale-105 shadow-lg mb-3 flex items-center justify-center gap-2"
+          >
+            <span className="text-xl">📢</span>
+            COMPARTIR LOGRO
+          </button>
+
+          <button
             onClick={onExit}
             className="w-full bg-white text-slate-900 hover:bg-slate-200 font-black py-4 rounded-xl transition-all transform hover:-translate-y-1 shadow-lg"
           >
@@ -726,6 +736,15 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           hasPowerUp={false}
         />
       )}
+
+      {/* Modal de Compartir */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        moduleTitle={topic?.title}
+        score={score}
+        streak={currentStreak}
+      />
     </div>
   );
 };
