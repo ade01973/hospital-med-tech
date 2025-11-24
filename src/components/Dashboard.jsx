@@ -12,7 +12,10 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showRankAchievement, setShowRankAchievement] = useState(false); // Show rank achievement banner
   const [newRank, setNewRank] = useState(null); // Store the new rank achieved
   const [previousScore, setPreviousScore] = useState(0); // Track previous score for comparison
-  const [currentStreak, setCurrentStreak] = useState(0); // Track current streak
+  const [currentStreak, setCurrentStreak] = useState(() => {
+    const saved = localStorage.getItem('userStreak');
+    return saved ? parseInt(saved, 10) : 0;
+  }); // Track current streak - initialized from localStorage
   
   // Video links for each topic
   const videoLinks = {
@@ -20,12 +23,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
     2: "eb1nlMUK3-c"
   };
   
-  // Load streak from localStorage
+  // Load streak from localStorage whenever dashboard mounts
   useEffect(() => {
     const savedStreak = localStorage.getItem('userStreak');
-    if (savedStreak) {
-      setCurrentStreak(parseInt(savedStreak, 10));
-    }
+    const streakValue = savedStreak ? parseInt(savedStreak, 10) : 0;
+    setCurrentStreak(streakValue);
+    console.log('📊 Streak cargado del localStorage:', streakValue);
   }, []);
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
