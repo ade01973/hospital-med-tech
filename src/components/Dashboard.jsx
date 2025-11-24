@@ -64,6 +64,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           rankTitle: nextRank.title,
           score: userData.totalScore,
           streak: currentStreak,
+          achievementType: 'rank',
         });
 
         // Mostrar modal de compartir después del banner de logro
@@ -79,6 +80,36 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   useEffect(() => {
     setCurrentStreak(parseInt(localStorage.getItem('userStreak') || '0', 10));
   }, []);
+
+  // Monitorear cambios en misión semanal completada
+  useEffect(() => {
+    if (weeklyMission?.completed && !weeklyMission?.claimed) {
+      const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+      setShareData({
+        score: userData.totalScore,
+        streak: currentStreak,
+        achievementType: 'mission',
+      });
+      setTimeout(() => {
+        setShowShareModal(true);
+      }, 500);
+    }
+  }, [weeklyMission?.completed]);
+
+  // Monitorear racha de 30 días
+  useEffect(() => {
+    if (currentStreakDay === 30) {
+      const currentScore = userData.totalScore || 0;
+      setShareData({
+        score: currentScore,
+        streak: 30,
+        achievementType: 'streak',
+      });
+      setTimeout(() => {
+        setShowShareModal(true);
+      }, 1000);
+    }
+  }, [currentStreakDay]);
 
   if (!userData) {
     return (
@@ -155,10 +186,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       <ShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
-        moduleTitle={shareData?.rankTitle}
+        moduleTitle={shareData?.moduleTitle}
         score={shareData?.score}
         streak={shareData?.streak}
         rankTitle={shareData?.rankTitle}
+        achievementType={shareData?.achievementType || 'module'}
       />
 
       {/* Shop Modal */}

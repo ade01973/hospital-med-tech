@@ -825,6 +825,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
         moduleTitle={topic?.title}
         score={score}
         streak={currentStreak}
+        rankTitle={userData?.rank}
+        achievementType="module"
       />
     </div>
   );

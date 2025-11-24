@@ -1,33 +1,67 @@
-
 import React, { useState } from 'react';
-import { X, Twitter, Linkedin, Facebook, MessageCircle, Link, Check } from 'lucide-react';
+import { X, Twitter, Linkedin, Facebook, MessageCircle, Link, Check, Share2 } from 'lucide-react';
 
-const ShareModal = ({ isOpen, onClose, moduleTitle, score, streak, rankTitle }) => {
+/**
+ * Modal de compartir logros en redes sociales
+ * Apoya Web Share API, Twitter, LinkedIn, Facebook, WhatsApp
+ */
+const ShareModal = ({ 
+  isOpen, 
+  onClose, 
+  moduleTitle, 
+  score, 
+  streak, 
+  rankTitle,
+  achievementType = 'module' // 'module', 'rank', 'mission', 'streak'
+}) => {
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  // URL base de la aplicación (actualizar con tu dominio real)
   const appUrl = window.location.origin;
   
-  // Mensaje personalizado
+  // Generar mensaje personalizado según tipo de logro
   const getMessage = () => {
-    if (rankTitle) {
-      return `¡Alcancé el rango ${rankTitle} en Hospital Gest-Tech! 🏥 Puntuación total: ${score} pts ⭐ Racha: 🔥${streak} días #EnfermeríaDigital #GestiónSanitaria`;
+    switch(achievementType) {
+      case 'rank':
+        return `¡Alcancé el rango ${rankTitle} en Hospital Gest-Tech! 🏥 Puntuación total: ${score} pts ⭐ Racha: 🔥 ${streak} días #EnfermeríaDigital #GestiónSanitaria #Gamificación`;
+      case 'mission':
+        return `¡Completé la misión semanal en Hospital Gest-Tech! 🏥 Puntuación: ${score} pts ⭐ Racha: 🔥 ${streak} días #EnfermeríaDigital #GestiónSanitaria`;
+      case 'streak':
+        return `¡Llegué a ${streak} días de racha en Hospital Gest-Tech! 🔥 Puntuación: ${score} pts ⭐ ¡Siguiendo firme en mi formación! 🏥 #EnfermeríaDigital #GestiónSanitaria`;
+      case 'module':
+      default:
+        return `¡Completé el módulo "${moduleTitle}" en Hospital Gest-Tech! 🏥 Puntuación: ${score} pts ⭐ Racha: 🔥 ${streak} días #EnfermeríaDigital #GestiónSanitaria #Gamificación`;
     }
-    return `¡Completé el módulo "${moduleTitle}" en Hospital Gest-Tech! 🏥 Puntuación: ${score} pts ⭐ Racha: 🔥${streak} días #EnfermeríaDigital #GestiónSanitaria`;
   };
 
   const message = getMessage();
   const encodedMessage = encodeURIComponent(message);
   const encodedUrl = encodeURIComponent(appUrl);
 
-  // URLs de compartir
+  // URLs de compartir para cada red social
   const shareLinks = {
     twitter: `https://twitter.com/intent/tweet?text=${encodedMessage}&url=${encodedUrl}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&summary=${encodedMessage}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedMessage}`,
     whatsapp: `https://wa.me/?text=${encodedMessage}%20${encodedUrl}`,
+  };
+
+  // Web Share API para móviles
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Hospital Gest-Tech - Logro Desbloqueado',
+          text: message,
+          url: appUrl,
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      }
+    }
   };
 
   const handleShare = (platform) => {
@@ -36,11 +70,20 @@ const ShareModal = ({ isOpen, onClose, moduleTitle, score, streak, rankTitle }) 
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(`${message} ${appUrl}`);
+      await navigator.clipboard.writeText(`${message}\n${appUrl}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Error al copiar:', err);
+    }
+  };
+
+  const getTitle = () => {
+    switch(achievementType) {
+      case 'rank': return '🎖️ Nuevo Rango';
+      case 'mission': return '🎯 Misión Completada';
+      case 'streak': return '🔥 Racha Épica';
+      default: return '📢 Compartir Logro';
     }
   };
 
@@ -54,7 +97,7 @@ const ShareModal = ({ isOpen, onClose, moduleTitle, score, streak, rankTitle }) 
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
               📢
             </div>
-            <h2 className="text-xl font-black text-white">COMPARTIR LOGRO</h2>
+            <h2 className="text-xl font-black text-white">{getTitle()}</h2>
           </div>
           <button 
             onClick={onClose} 
@@ -75,6 +118,17 @@ const ShareModal = ({ isOpen, onClose, moduleTitle, score, streak, rankTitle }) 
           {/* Social Media Buttons */}
           <div className="space-y-3">
             <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Compartir en:</p>
+            
+            {/* Web Share API (Móvil) */}
+            {navigator.share && (
+              <button
+                onClick={handleNativeShare}
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-4 py-3 rounded-xl transition-all transform hover:scale-102 flex items-center gap-3 font-bold"
+              >
+                <Share2 className="w-5 h-5" />
+                <span>Compartir (Sistema)</span>
+              </button>
+            )}
             
             {/* Twitter/X */}
             <button
@@ -133,6 +187,13 @@ const ShareModal = ({ isOpen, onClose, moduleTitle, score, streak, rankTitle }) 
                 </>
               )}
             </button>
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-3">
+            <p className="text-xs text-cyan-300">
+              <span className="font-bold">💡 Consejo:</span> Compartir tus logros inspira a otros a seguir aprendiendo y mejorando en gestión sanitaria.
+            </p>
           </div>
         </div>
 

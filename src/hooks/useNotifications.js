@@ -58,8 +58,7 @@ const useNotifications = () => {
         notificationService.notifyDailyMissionAvailable();
       }
       if (notificationService.checkWeeklyProgressTime()) {
-        const score = parseInt(localStorage.getItem('userTotalScore') || '0');
-        notificationService.checkNearRankUp(score, 5000);
+        notificationService.notifyRankProgress('Estudiante', 'Enfermera', 5);
       }
     }, 60000);
     return () => clearInterval(interval);
