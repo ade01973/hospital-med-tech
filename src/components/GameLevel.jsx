@@ -19,7 +19,7 @@ import useSoundEffects from "../hooks/useSoundEffects";
 import ReactConfetti from "react-confetti";
 import useConfetti from "../hooks/useConfetti";
 import ShareModal from "./ShareModal";
-import { useMediCoins } from "../hooks/useMediCoins";
+import { useGestCoins } from "../hooks/useGestCoins";
 import ConfettiCelebration from "./ConfettiCelebration";
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
@@ -66,8 +66,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   // Hook de confeti
   const { isActive: isConfettiActive, triggerConfetti: triggerConfettiEffect } = useConfetti();
 
-  // Hook de MediCoins
-  const { earnCoins, useConsumable, getItemCount, hasUpgrade } = useMediCoins();
+  // Hook de GestCoins
+  const { earnCoins, useConsumable, getItemCount, hasUpgrade } = useGestCoins();
 
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {

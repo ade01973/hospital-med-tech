@@ -58,8 +58,8 @@ const ShopModal = ({ isOpen, onClose, balance, onBuyConsumable, onBuyUpgrade, in
               🛍️
             </div>
             <div>
-              <h2 className="text-2xl font-black text-white">Tienda MediCoins</h2>
-              <p className="text-cyan-300 font-mono text-sm">Balance: 💸 {balance} MediCoins</p>
+              <h2 className="text-2xl font-black text-white">Tienda GestCoins</h2>
+              <p className="text-cyan-300 font-mono text-sm">Balance: 💸 {balance} GestCoins</p>
             </div>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">

@@ -184,11 +184,11 @@ export const useMissions = () => {
         localStorage.setItem('dailyMissions', JSON.stringify(missions));
         setDailyMissions(missions);
         
-        // Award MediCoins for claiming mission
-        const savedCoins = localStorage.getItem('mediCoins');
+        // Award GestCoins for claiming mission
+        const savedCoins = localStorage.getItem('gestCoins');
         const currentCoins = savedCoins ? parseInt(savedCoins, 10) : 0;
-        localStorage.setItem('mediCoins', (currentCoins + 200).toString());
-        console.log('💰 +200 MediCoins por misión reclamada');
+        localStorage.setItem('gestCoins', (currentCoins + 200).toString());
+        console.log('💰 +200 GestCoins por misión reclamada');
       }
     } else if (missionType === 'weekly') {
       const saved = localStorage.getItem('weeklyMission');
@@ -201,11 +201,11 @@ export const useMissions = () => {
         localStorage.setItem('weeklyMission', JSON.stringify(mission));
         setWeeklyMission(mission);
         
-        // Award MediCoins for claiming weekly mission
-        const savedCoins = localStorage.getItem('mediCoins');
+        // Award GestCoins for claiming weekly mission
+        const savedCoins = localStorage.getItem('gestCoins');
         const currentCoins = savedCoins ? parseInt(savedCoins, 10) : 0;
-        localStorage.setItem('mediCoins', (currentCoins + 200).toString());
-        console.log('💰 +200 MediCoins por misión semanal reclamada');
+        localStorage.setItem('gestCoins', (currentCoins + 200).toString());
+        console.log('💰 +200 GestCoins por misión semanal reclamada');
       }
     }
   };

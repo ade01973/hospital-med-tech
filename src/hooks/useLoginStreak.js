@@ -158,11 +158,11 @@ export const useLoginStreak = () => {
     setCurrentStreakDay(streakDay);
     setClaimedToday(true);
     
-    // Award MediCoins for daily login
-    const savedCoins = localStorage.getItem('mediCoins');
+    // Award GestCoins for daily login
+    const savedCoins = localStorage.getItem('gestCoins');
     const currentCoins = savedCoins ? parseInt(savedCoins, 10) : 0;
-    localStorage.setItem('mediCoins', (currentCoins + 50).toString());
-    console.log('💰 +50 MediCoins por racha diaria');
+    localStorage.setItem('gestCoins', (currentCoins + 50).toString());
+    console.log('💰 +50 GestCoins por racha diaria');
     
     // Retornar notificación de recompensa
     return {

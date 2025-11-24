@@ -1,18 +1,18 @@
 
 import { useState, useEffect } from 'react';
 
-const MEDICOINS_KEY = 'mediCoins';
-const INVENTORY_KEY = 'mediCoinsInventory';
-const UPGRADES_KEY = 'mediCoinsUpgrades';
+const GESTCOINS_KEY = 'gestCoins';
+const INVENTORY_KEY = 'gestCoinsInventory';
+const UPGRADES_KEY = 'gestCoinsUpgrades';
 
-export const useMediCoins = () => {
+export const useGestCoins = () => {
   const [balance, setBalance] = useState(0);
   const [inventory, setInventory] = useState({});
   const [upgrades, setUpgrades] = useState({});
 
   // Cargar datos iniciales
   useEffect(() => {
-    const savedBalance = localStorage.getItem(MEDICOINS_KEY);
+    const savedBalance = localStorage.getItem(GESTCOINS_KEY);
     const savedInventory = localStorage.getItem(INVENTORY_KEY);
     const savedUpgrades = localStorage.getItem(UPGRADES_KEY);
 
@@ -24,7 +24,7 @@ export const useMediCoins = () => {
   // Guardar balance
   const saveBalance = (newBalance) => {
     setBalance(newBalance);
-    localStorage.setItem(MEDICOINS_KEY, newBalance.toString());
+    localStorage.setItem(GESTCOINS_KEY, newBalance.toString());
   };
 
   // Guardar inventario
@@ -43,7 +43,7 @@ export const useMediCoins = () => {
   const earnCoins = (amount, reason = '') => {
     const newBalance = balance + amount;
     saveBalance(newBalance);
-    console.log(`💰 Ganaste ${amount} MediCoins! Razón: ${reason}`);
+    console.log(`💰 Ganaste ${amount} GestCoins! Razón: ${reason}`);
     return newBalance;
   };
 

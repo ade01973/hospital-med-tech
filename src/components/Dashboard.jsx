@@ -11,12 +11,12 @@ import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
 import { useLoginStreak } from '../hooks/useLoginStreak';
 import useNotifications from '../hooks/useNotifications';
-import { useMediCoins } from '../hooks/useMediCoins';
+import { useGestCoins } from '../hooks/useGestCoins';
 import ShopModal from './ShopModal';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
-  const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useMediCoins();
+  const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useGestCoins();
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showShop, setShowShop] = useState(false);
