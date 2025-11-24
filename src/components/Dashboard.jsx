@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import elevatorBg from '../assets/elevator-bg.png';
 
@@ -7,6 +7,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [selectedFloor, setSelectedFloor] = useState(1); // Track current selected floor
   const [showRoadmap, setShowRoadmap] = useState(false); // Show/hide career roadmap
   const [showVideo, setShowVideo] = useState(false); // Show/hide video modal
+  const [showRankAchievement, setShowRankAchievement] = useState(false); // Show rank achievement banner
+  const [newRank, setNewRank] = useState(null); // Store the new rank achieved
+  const [previousScore, setPreviousScore] = useState(0); // Track previous score for comparison
   
   // Video links for each topic
   const videoLinks = {
@@ -16,6 +19,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
+  
+  // Detect rank changes and show achievement modal
+  useEffect(() => {
+    const currentScore = userData?.totalScore || 0;
+    if (previousScore > 0 && currentScore > previousScore) {
+      const currentRankObj = NURSING_RANKS.slice().reverse().find(r => currentScore >= r.minScore) || NURSING_RANKS[0];
+      const previousRankObj = NURSING_RANKS.slice().reverse().find(r => previousScore >= r.minScore) || NURSING_RANKS[0];
+      
+      // Check if rank changed
+      if (currentRankObj.title !== previousRankObj.title) {
+        setNewRank(currentRankObj);
+        setShowRankAchievement(true);
+      }
+    }
+    setPreviousScore(currentScore);
+  }, [userData?.totalScore]);
   
   const progressPercent = nextRank 
     ? (((userData?.totalScore || 0) - currentRank.minScore) / (nextRank.minScore - currentRank.minScore)) * 100 
@@ -80,6 +99,61 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen={true}
               ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rank Achievement Banner */}
+      {showRankAchievement && newRank && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md mx-4">
+            {/* Glow effect background */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${newRank.color} rounded-3xl blur-3xl opacity-40 animate-pulse`}></div>
+            
+            {/* Main banner */}
+            <div className={`relative bg-gradient-to-br ${newRank.color} backdrop-blur-xl border-2 border-white/30 rounded-3xl p-8 shadow-2xl overflow-hidden`}>
+              {/* Decorative stars */}
+              <div className="absolute top-4 left-4 text-yellow-300 text-2xl animate-bounce">⭐</div>
+              <div className="absolute bottom-4 right-4 text-yellow-300 text-2xl animate-bounce" style={{animationDelay: '0.2s'}}>⭐</div>
+              
+              {/* Content */}
+              <div className="text-center space-y-6">
+                {/* Icon */}
+                <div className="flex justify-center">
+                  <div className={`w-24 h-24 rounded-2xl bg-white/20 flex items-center justify-center text-6xl animate-pulse shadow-2xl border-2 border-white/40`}>
+                    {newRank.icon}
+                  </div>
+                </div>
+                
+                {/* Title */}
+                <div>
+                  <h2 className="text-sm font-bold text-white/80 uppercase tracking-widest mb-2">¡FELICIDADES!</h2>
+                  <h1 className="text-4xl font-black text-white drop-shadow-lg mb-2">
+                    {newRank.title}
+                  </h1>
+                  <p className="text-white/80 font-bold">Rango Alcanzado</p>
+                </div>
+                
+                {/* Score info */}
+                <div className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-4">
+                  <p className="text-white/90 text-sm mb-1">Puntuación Total</p>
+                  <p className="text-2xl font-black text-white">{userData?.totalScore || 0} / 23.000 pts</p>
+                </div>
+                
+                {/* Message */}
+                <p className="text-white/80 text-sm leading-relaxed">
+                  Has completado con éxito los requisitos para ascender a <span className="font-black text-white">{newRank.title}</span>. ¡Sigue adelante para alcanzar el siguiente nivel!
+                </p>
+                
+                {/* Close button */}
+                <button
+                  onClick={() => setShowRankAchievement(false)}
+                  className="w-full bg-white text-gray-900 font-black py-3 rounded-xl uppercase tracking-wider hover:bg-white/90 transition-all transform hover:scale-105 shadow-lg"
+                >
+                  🎮 Continuar Jugando
+                </button>
+              </div>
             </div>
           </div>
         </div>
