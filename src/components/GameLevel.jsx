@@ -148,19 +148,22 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     let speedBonus = '';
     const timeSpent = 30 - remainingTime;
     
-    // 📊 TRACKING MISIONES
-    trackQuestionAnswered(); // Contar cada respuesta
+    // 📊 TRACKING MISIONES - SIEMPRE se cuenta cada respuesta
+    trackQuestionAnswered(); 
+    console.log(`🎯 Contador actualizado: verificar localStorage['dailyMissions']`);
     
     if (correct) {
       newStreak = currentStreak + 1;
       setCurrentStreak(newStreak);
       localStorage.setItem('userStreak', newStreak.toString());
       trackStreakCheck(newStreak); // Verificar racha activa
+      console.log(`🔥 Racha tracking llamado con valor: ${newStreak}`);
       
       if (timeSpent < 10) {
         pointsEarned = 150;
         speedBonus = '¡RÁPIDO! +150 PTS';
-        trackFastAnswer(); // Respuesta rápida
+        trackFastAnswer(); // Respuesta rápida (<10s)
+        console.log(`⚡ Respuesta rápida tracking llamado`);
       } else if (timeSpent <= 20) {
         pointsEarned = 100;
         speedBonus = '+100 PTS';
@@ -201,7 +204,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       // Racha se resetea
       setCurrentStreak(0);
       localStorage.setItem('userStreak', '0');
-      trackStreakCheck(0); // Racha rota
+      trackStreakCheck(0); // Racha rota a 0
+      console.log(`🔥 Racha rota - tracking con valor: 0`);
     }
     
     // AVANZAR solo si hay vidas
@@ -215,6 +219,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           const allCorrect = score > 0; // Simplificado: si tiene puntos, fue 100%
           if (allCorrect && correct) {
             trackPerfectLevel();
+            console.log(`🏆 Nivel perfecto completado - tracking llamado`);
           }
           
           setCompleted(true);
