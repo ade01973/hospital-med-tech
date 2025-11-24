@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Zap, Trophy, Activity, Lock, CheckCircle, Play } from 'lucide-react';
 import { User } from 'lucide-react';
 import gameLevelBg from '../assets/game-level-bg.png';
+import Confetti from './Confetti';
 
 const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   console.log('🎮 GameLevel cargado con topic:', topic?.id, topic?.title, 'Preguntas:', topic?.questions?.length);
@@ -18,6 +19,8 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [remainingTime, setRemainingTime] = useState(30); // Timer de 30 segundos
   const [timeBonus, setTimeBonus] = useState(''); // Texto de bonus por velocidad
   const [showTimeBonus, setShowTimeBonus] = useState(false);
+  const [triggerConfetti, setTriggerConfetti] = useState(false); // Trigger para confetti
+  const [pointsToShow, setPointsToShow] = useState(''); // Puntos para mostrar animación
   
   // Cargar streak del localStorage al iniciar
   useEffect(() => {
@@ -144,6 +147,11 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       setShowTimeBonus(true);
       setTimeout(() => setShowTimeBonus(false), 1500);
       
+      // Triggerear confetti para respuesta correcta
+      setTriggerConfetti(true);
+      setPointsToShow(`+${pointsEarned}`);
+      setTimeout(() => setTriggerConfetti(false), 3500);
+      
       setScore(prev => prev + pointsEarned);
       console.log(`✅ CORRECTO! Tiempo: ${timeSpent}s, Velocidad: ${speedBonus}, Racha: ${newStreak}, Puntos: ${pointsEarned}`);
     } else {
@@ -214,6 +222,18 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     >
       {/* Dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/60 -z-10"></div>
+      
+      {/* Confetti Effect */}
+      <Confetti trigger={triggerConfetti} />
+      
+      {/* Animated Points */}
+      {triggerConfetti && pointsToShow && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[200]">
+          <div className="animate-points-bounce text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-400 to-cyan-400 drop-shadow-[0_0_20px_rgba(16,185,129,0.8)]">
+            {pointsToShow}
+          </div>
+        </div>
+      )}
 
       {/* HUD Superior */}
       <div className="bg-slate-900/80 backdrop-blur-md p-4 flex justify-between items-center z-50 border-b border-white/10">
@@ -297,21 +317,24 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
                     type="button"
                     onClick={() => handleAnswer(idx)}
                     disabled={selectedOption !== null}
+                    style={{
+                      animation: selectedOption === null ? `slide-in-left 0.3s ease-out ${idx * 50}ms both` : 'none',
+                    }}
                     className={`w-full text-left p-5 rounded-xl border-2 transition-all text-base font-bold relative overflow-hidden group ${
                       selectedOption === null 
-                        ? 'bg-slate-800/50 border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-cyan-400 hover:text-white hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]'
+                        ? 'bg-slate-800/50 border-slate-600 text-slate-200 hover:scale-102 hover:bg-slate-700 hover:border-cyan-400 hover:text-white hover:shadow-[0_8px_32px_rgba(34,211,238,0.4)] cursor-pointer active:scale-95'
                         : selectedOption === idx
                           ? isCorrect 
-                            ? 'bg-emerald-900/60 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-500/30'
-                            : 'bg-red-900/60 border-red-500 text-red-300 shadow-lg shadow-red-500/30'
+                            ? `bg-emerald-900/60 border-emerald-500 text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.5)] animate-glow-pulse-green ${!isCorrect ? 'animate-shake' : ''}`
+                            : `bg-red-900/60 border-red-500 text-red-300 shadow-[0_0_30px_rgba(239,68,68,0.5)] animate-shake`
                           : idx === topic.questions[currentFloor].correct 
-                            ? 'bg-emerald-900/40 border-emerald-500/50 text-emerald-400' 
+                            ? 'bg-emerald-900/40 border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
                             : 'opacity-30 border-transparent text-slate-500'
                     }`}
                   >
                     <div className="relative z-10 flex items-center gap-5">
-                        <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-sm font-black flex-shrink-0 ${
-                         selectedOption === idx ? 'border-current bg-current/10' : 'border-slate-500 text-slate-400 group-hover:border-cyan-400 group-hover:text-cyan-400 group-hover:bg-cyan-400/10'
+                        <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-sm font-black flex-shrink-0 transition-all ${
+                         selectedOption === idx ? 'border-current bg-current/10' : 'border-slate-500 text-slate-400 group-hover:border-cyan-400 group-hover:text-cyan-400 group-hover:bg-cyan-400/10 group-hover:scale-110'
                        }`}>
                          {String.fromCharCode(65 + idx)}
                        </div>
@@ -322,23 +345,35 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               </div>
               
               {selectedOption !== null && (
-                <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 ${isCorrect ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'}`}>
-                  {isCorrect ? "✅ CORRECTO" : "❌ INCORRECTO"}
+                <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 transition-all ${
+                  isCorrect 
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.2)]' 
+                    : 'bg-red-500/10 text-red-400 border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
+                }`}>
+                  <div className={`text-lg mb-2 transition-all ${isCorrect ? 'animate-bounce' : 'animate-shake'}`}>
+                    {isCorrect ? "✅ CORRECTO" : "❌ INCORRECTO"}
+                  </div>
                   
-                  {/* Feedback de velocidad */}
+                  {/* Feedback de velocidad con animación */}
                   {showTimeBonus && (
-                    <div className="text-sm text-cyan-300 mt-2 font-bold animate-bounce">{timeBonus}</div>
+                    <div className="text-sm text-cyan-300 mt-2 font-bold animate-bounce drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">
+                      ⚡ {timeBonus}
+                    </div>
                   )}
                   
                   {/* Feedback de racha */}
                   {isCorrect && currentStreak >= 3 && (
-                    <div className="text-xs text-orange-400 mt-2 font-bold">🔥 RACHA x{currentStreak}</div>
+                    <div className="text-xs text-orange-400 mt-2 font-bold drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]">
+                      🔥 RACHA x{currentStreak}
+                    </div>
                   )}
                   {showStreakBonus && (
-                    <div className="text-xs text-yellow-400 mt-1 font-bold animate-bounce">+20 BONUS RACHA!</div>
+                    <div className="text-xs text-yellow-400 mt-1 font-bold animate-bounce drop-shadow-[0_0_10px_rgba(250,204,21,0.6)]">
+                      ⭐ +20 BONUS RACHA!
+                    </div>
                   )}
                   
-                  <div className="text-xs text-slate-400 mt-3">Siguiente pregunta en 1.5s...</div>
+                  <div className="text-xs text-slate-400 mt-3 opacity-75">Siguiente pregunta en 1.5s...</div>
                 </div>
               )}
             </div>
