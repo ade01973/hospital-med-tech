@@ -22,9 +22,15 @@ export default function App() {
   const [showElevatorDoors, setShowElevatorDoors] = useState(false);
   const [rewardNotification, setRewardNotification] = useState(null);
   const [showRewardNotification, setShowRewardNotification] = useState(false);
+  const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   
   const { processLogin } = useLoginStreak();
-  const { newBadge, showBadgeNotification, setShowBadgeNotification } = useBadges(userData);
+  const { 
+    newBadge, 
+    showBadgeNotification, 
+    setShowBadgeNotification,
+    checkLevelBadges
+  } = useBadges(userData);
 
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
@@ -79,6 +85,25 @@ export default function App() {
 
     return () => unsubscribe();
   }, [user]);
+
+  // 🏆 DETECTAR COMPLETACIÓN DE NIVELES Y DESBLOQUEAR BADGES
+  useEffect(() => {
+    if (!userData || !checkLevelBadges) return;
+    
+    const currentCompletedCount = Object.values(userData.completedLevels || {}).filter(Boolean).length;
+    
+    // Ejecutar si el contador cambió
+    if (currentCompletedCount > prevCompletedCount) {
+      console.log(`📊 Niveles completados: ${currentCompletedCount}`);
+      setPrevCompletedCount(currentCompletedCount);
+      
+      // Detectar badges desbloqueados
+      const badgeUnlocked = checkLevelBadges();
+      if (badgeUnlocked) {
+        console.log(`🏆 ¡BADGE DESBLOQUEADO! ${badgeUnlocked}`);
+      }
+    }
+  }, [userData, checkLevelBadges, prevCompletedCount]);
 
   // 🟣 GUARDAR PUNTOS Y DESBLOQUEAR NIVEL
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {

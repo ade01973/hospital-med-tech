@@ -1,208 +1,98 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { BADGES_DATABASE } from '../data/BADGES_CONFIG';
 
 const BADGES_KEY = 'badges';
 
 export const useBadges = (userData) => {
-  const [badges, setBadges] = useState(null);
+  const [badges, setBadges] = useState(() => {
+    const saved = localStorage.getItem(BADGES_KEY);
+    return saved ? JSON.parse(saved) : { ...BADGES_DATABASE };
+  });
   const [newBadge, setNewBadge] = useState(null);
   const [showBadgeNotification, setShowBadgeNotification] = useState(false);
 
-  // Cargar badges del localStorage
-  const loadBadges = useCallback(() => {
-    const saved = localStorage.getItem(BADGES_KEY);
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    // Inicializar con todos los badges sin obtener
-    return { ...BADGES_DATABASE };
-  }, []);
-
-  // Guardar badges en localStorage
-  const saveBadges = useCallback((badgesData) => {
+  const saveBadges = (badgesData) => {
     localStorage.setItem(BADGES_KEY, JSON.stringify(badgesData));
     setBadges(badgesData);
-  }, []);
+  };
 
-  // Inicializar
-  useEffect(() => {
-    const loaded = loadBadges();
-    setBadges(loaded);
-  }, [loadBadges]);
+  const checkLevelBadges = () => {
+    if (!badges || !userData) return null;
 
-  // Desbloquear badge
-  const unlockBadge = useCallback((badgeId) => {
-    if (!badges) return false;
-    
-    const badge = badges[badgeId];
-    if (!badge || badge.obtained) {
-      return false;
+    const completedCount = Object.values(userData.completedLevels || {}).filter(Boolean).length;
+    if (completedCount === 0) return null;
+
+    const updatedBadges = { ...badges };
+    let badgeUnlocked = null;
+
+    // Check badges based on completed levels
+    const checksToPerform = [
+      { count: 1, key: 'primera_victoria', name: 'Primera Victoria' },
+      { count: 5, key: 'aprendiz_dedicado', name: 'Aprendiz Dedicado' },
+      { count: 10, key: 'experto_formacion', name: 'Experto en Formación' },
+      { count: 22, key: 'maestro', name: 'Maestro' }
+    ];
+
+    for (const check of checksToPerform) {
+      if (completedCount === check.count && !badges[check.key]?.obtained) {
+        updatedBadges[check.key] = {
+          ...badges[check.key],
+          obtained: true,
+          obtainedDate: new Date().toISOString().split('T')[0]
+        };
+        saveBadges(updatedBadges);
+        setNewBadge(updatedBadges[check.key]);
+        setShowBadgeNotification(true);
+        console.log(`✨ Badge desbloqueado: ${check.name}`);
+        badgeUnlocked = check.key;
+        break;
+      }
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    return badgeUnlocked;
+  };
+
+  const getObtainedBadges = () => {
+    if (!badges) return [];
+    return Object.values(badges)
+      .filter(b => b.obtained)
+      .sort((a, b) => {
+        if (!a.obtainedDate || !b.obtainedDate) return 0;
+        return new Date(b.obtainedDate) - new Date(a.obtainedDate);
+      });
+  };
+
+  const getLockedBadges = () => {
+    if (!badges) return [];
+    return Object.values(badges).filter(b => !b.obtained);
+  };
+
+  const getObtainedCount = () => {
+    if (!badges) return 0;
+    return Object.values(badges).filter(b => b.obtained).length;
+  };
+
+  const getRecentBadges = () => {
+    return getObtainedBadges().slice(0, 3);
+  };
+
+  const unlockBadge = (badgeId) => {
+    if (!badges || badges[badgeId]?.obtained) return false;
+
     const updatedBadges = {
       ...badges,
       [badgeId]: {
-        ...badge,
+        ...badges[badgeId],
         obtained: true,
-        obtainedDate: today
+        obtainedDate: new Date().toISOString().split('T')[0]
       }
     };
 
     saveBadges(updatedBadges);
-    setNewBadge(badges[badgeId]);
+    setNewBadge(updatedBadges[badgeId]);
     setShowBadgeNotification(true);
-
     return true;
-  }, [badges, saveBadges]);
-
-  // Verificar logros después de completar un nivel
-  const checkLevelBadges = useCallback((levelId, isCorrect, perfectScore) => {
-    if (!badges) return;
-
-    const completedCount = Object.values(userData?.completedLevels || {}).filter(Boolean).length;
-    const updatedBadges = { ...badges };
-    let badgesUnlocked = [];
-
-    // Primera Victoria
-    if (completedCount === 1 && !badges.primera_victoria.obtained) {
-      updatedBadges.primera_victoria = { ...badges.primera_victoria, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      badgesUnlocked.push('primera_victoria');
-    }
-
-    // Aprendiz Dedicado
-    if (completedCount === 5 && !badges.aprendiz_dedicado.obtained) {
-      updatedBadges.aprendiz_dedicado = { ...badges.aprendiz_dedicado, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      badgesUnlocked.push('aprendiz_dedicado');
-    }
-
-    // Experto en Formación
-    if (completedCount === 10 && !badges.experto_formacion.obtained) {
-      updatedBadges.experto_formacion = { ...badges.experto_formacion, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      badgesUnlocked.push('experto_formacion');
-    }
-
-    // Maestro
-    if (completedCount === 22 && !badges.maestro.obtained) {
-      updatedBadges.maestro = { ...badges.maestro, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      badgesUnlocked.push('maestro');
-    }
-
-    // Perfeccionista
-    if (perfectScore && !badges.perfeccionista.obtained) {
-      updatedBadges.perfeccionista = { ...badges.perfeccionista, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      badgesUnlocked.push('perfeccionista');
-    }
-
-    if (badgesUnlocked.length > 0) {
-      saveBadges(updatedBadges);
-      // Retornar el primer badge desbloqueado
-      return badgesUnlocked[0];
-    }
-
-    return null;
-  }, [badges, userData, saveBadges]);
-
-  // Verificar streak badges
-  const checkStreakBadges = useCallback((streakValue) => {
-    if (!badges) return;
-
-    const updatedBadges = { ...badges };
-    let badgeUnlocked = null;
-
-    // Racha Legendaria
-    if (streakValue >= 10 && !badges.racha_legendaria.obtained) {
-      updatedBadges.racha_legendaria = { ...badges.racha_legendaria, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      saveBadges(updatedBadges);
-      setNewBadge(updatedBadges.racha_legendaria);
-      setShowBadgeNotification(true);
-      badgeUnlocked = 'racha_legendaria';
-    }
-
-    return badgeUnlocked;
-  }, [badges, saveBadges]);
-
-  // Verificar login streak badges
-  const checkLoginStreakBadges = useCallback((loginStreakValue) => {
-    if (!badges) return;
-
-    const updatedBadges = { ...badges };
-    let badgeUnlocked = null;
-
-    // Semana Perfecta
-    if (loginStreakValue === 7 && !badges.semana_perfecta.obtained) {
-      updatedBadges.semana_perfecta = { ...badges.semana_perfecta, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      saveBadges(updatedBadges);
-      setNewBadge(updatedBadges.semana_perfecta);
-      setShowBadgeNotification(true);
-      badgeUnlocked = 'semana_perfecta';
-    }
-
-    // Mes Completo
-    if (loginStreakValue === 30 && !badges.mes_completo.obtained) {
-      updatedBadges.mes_completo = { ...badges.mes_completo, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      saveBadges(updatedBadges);
-      setNewBadge(updatedBadges.mes_completo);
-      setShowBadgeNotification(true);
-      badgeUnlocked = 'mes_completo';
-    }
-
-    // Inquebrantable
-    if (loginStreakValue === 100 && !badges.inquebrantable.obtained) {
-      updatedBadges.inquebrantable = { ...badges.inquebrantable, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      saveBadges(updatedBadges);
-      setNewBadge(updatedBadges.inquebrantable);
-      setShowBadgeNotification(true);
-      badgeUnlocked = 'inquebrantable';
-    }
-
-    return badgeUnlocked;
-  }, [badges, saveBadges]);
-
-  // Verificar rank badge (VIP)
-  const checkRankBadges = useCallback((currentRank) => {
-    if (!badges) return;
-
-    const updatedBadges = { ...badges };
-    let badgeUnlocked = null;
-
-    // VIP - Ministra de Sanidad
-    if (currentRank === 'Ministra de Sanidad' && !badges.vip.obtained) {
-      updatedBadges.vip = { ...badges.vip, obtained: true, obtainedDate: new Date().toISOString().split('T')[0] };
-      saveBadges(updatedBadges);
-      setNewBadge(updatedBadges.vip);
-      setShowBadgeNotification(true);
-      badgeUnlocked = 'vip';
-    }
-
-    return badgeUnlocked;
-  }, [badges, saveBadges]);
-
-  // Obtener badges obtenidos
-  const getObtainedBadges = useCallback(() => {
-    if (!badges) return [];
-    return Object.values(badges).filter(b => b.obtained).sort((a, b) => {
-      if (!a.obtainedDate || !b.obtainedDate) return 0;
-      return new Date(b.obtainedDate) - new Date(a.obtainedDate);
-    });
-  }, [badges]);
-
-  // Obtener badges bloqueados
-  const getLockedBadges = useCallback(() => {
-    if (!badges) return [];
-    return Object.values(badges).filter(b => !b.obtained);
-  }, [badges]);
-
-  // Contar badges obtenidos
-  const getObtainedCount = useCallback(() => {
-    if (!badges) return 0;
-    return Object.values(badges).filter(b => b.obtained).length;
-  }, [badges]);
-
-  // Obtener últimos 3 badges
-  const getRecentBadges = useCallback(() => {
-    return getObtainedBadges().slice(0, 3);
-  }, [getObtainedBadges]);
+  };
 
   return {
     badges,
@@ -211,9 +101,6 @@ export const useBadges = (userData) => {
     setShowBadgeNotification,
     unlockBadge,
     checkLevelBadges,
-    checkStreakBadges,
-    checkLoginStreakBadges,
-    checkRankBadges,
     getObtainedBadges,
     getLockedBadges,
     getObtainedCount,
