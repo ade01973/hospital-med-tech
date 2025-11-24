@@ -299,18 +299,18 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           <ArrowLeft size={16}/> <span className="hidden sm:inline">Abandonar</span>
         </button>
         
-        {/* Corazones */}
-        <div className={`flex items-center gap-2 transition-all ${loseHeartAnimation ? 'animate-shake' : ''}`}>
+        {/* Corazones - Indicador en HUD */}
+        <div className={`flex items-center gap-1.5 transition-all ${loseHeartAnimation ? 'animate-shake' : ''}`}>
           {[...Array(5)].map((_, i) => (
             <div key={i} className="relative">
               {i < lives ? (
-                <span className="text-lg drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]">❤️</span>
+                <span className="text-xl drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">❤️</span>
               ) : (
-                <span className="text-lg opacity-40">💔</span>
+                <span className="text-xl opacity-30">💔</span>
               )}
             </div>
           ))}
-          <span className="text-xs font-mono text-slate-400 ml-1">{lives}/5</span>
+          <span className="text-xs font-mono text-slate-300 ml-2 font-bold">{lives}/5</span>
         </div>
 
         <div className="flex flex-col items-center">
@@ -355,16 +355,31 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
             </div>
             
             {/* Header del Modal */}
-            <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 p-6 border-b border-cyan-500/20 flex justify-between items-center relative overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 border-b border-cyan-500/20 relative overflow-hidden">
                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 shadow-lg"></div>
-               <div className="flex items-center gap-3">
-                 <div className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></div>
-                 <span className="text-cyan-300 font-mono text-sm tracking-widest uppercase font-bold">
-                    Protocolo de Respuesta
-                 </span>
+               
+               {/* Primera fila: Protocolo + Vidas */}
+               <div className="p-4 flex justify-between items-center">
+                 <div className="flex items-center gap-3">
+                   <div className="w-3 h-3 bg-cyan-500 rounded-full animate-pulse"></div>
+                   <span className="text-cyan-300 font-mono text-sm tracking-widest uppercase font-bold">
+                      Protocolo de Respuesta
+                   </span>
+                 </div>
+                 
+                 {/* Corazones prominentes en Modal */}
+                 <div className={`flex items-center gap-1.5 transition-all ${loseHeartAnimation ? 'animate-shake' : ''}`}>
+                   {[...Array(5)].map((_, i) => (
+                     <span key={i} className={`text-xl drop-shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-all ${i < lives ? 'scale-100' : 'scale-75 opacity-40'}`}>
+                       {i < lives ? '❤️' : '💔'}
+                     </span>
+                   ))}
+                 </div>
                </div>
-               <div className="flex items-center gap-4">
-                 <span className="text-slate-400 font-mono text-sm">PREGUNTA {String(currentFloor + 1).padStart(2, '0')}</span>
+               
+               {/* Segunda fila: Pregunta + Timer */}
+               <div className="px-4 pb-4 flex justify-between items-center">
+                 <span className="text-slate-400 font-mono text-sm">PREGUNTA {String(currentFloor + 1).padStart(2, '0')} / {String(topic.questions.length).padStart(2, '0')}</span>
                  <div className={`px-3 py-1 rounded-full font-black text-sm font-mono ${
                    remainingTime > 20 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50' :
                    remainingTime > 10 ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50' :
