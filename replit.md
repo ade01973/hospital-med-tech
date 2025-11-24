@@ -275,6 +275,101 @@ Línea 510-516: Componente en gameplay
 - Confeti de victoria: Azul + Verde (tema médico)
 - Confeti de racha: Rojo + Oro + Naranja (vibrante)
 
+---
+
+## 🔔 SISTEMA DE NOTIFICACIONES PUSH (Nov 24 - Implementado)
+
+### Archivos Creados
+- `src/services/NotificationService.js` (328 líneas) - Servicio completo de notificaciones
+- Hook `src/hooks/useNotifications.js` mejorado (98 líneas)
+
+### Características
+
+**5 Tipos de Notificaciones:**
+1. 🔥 **Racha en Riesgo** - Si no juega en 20 horas
+   - Mensaje: "¡Tu racha está en riesgo! 🔥 No pierdas tu racha de X días"
+   - Throttle: Máx 1 por hora
+
+2. 🎯 **Misión Diaria** - Cada día a las 9:00 AM
+   - Mensaje: "¡Nueva misión diaria disponible! 🎯"
+   - Auto-notifica cuando usuario abre app
+
+3. 📚 **Progreso de Rango** - Cada lunes
+   - Mensaje: "¡Casi lo logras! 📚 Te quedan X módulos para subir de rango"
+   - Throttle: 1 por semana
+
+4. 🏆 **Badge Desbloqueado** - Al conseguir logro
+   - Mensaje: "¡Logro desbloqueado! [ICONO]"
+   - Preparado para integrar con badge system
+
+5. 👑 **Victoria en Liga** - Al ganar liga semanal
+   - Mensaje: "¡Eres #1 en [LIGA]! 👑"
+   - Notificación de celebración
+
+### Características Técnicas
+
+✅ **Web Push API** - Notificaciones del navegador
+✅ **Permisos Inteligentes** - Pide permiso automáticamente
+✅ **localStorage** - Guarda preferencias del usuario
+✅ **Throttling** - Máx 1 notificación por tipo/hora
+✅ **Timestamps** - Tracking de última notificación
+✅ **Clickeable** - Abre app al hacer clic
+✅ **Auto-closing** - Se cierra automáticamente
+
+### Integración
+
+**En App.jsx:**
+- Line 18: Hook useNotifications
+- Line 104-121: Detección automática de rank up
+
+**En useNotifications:**
+- Auto-detecta cambios de racha cada minuto
+- Verifica misiones diarias cada minuto
+- Verifica progreso semanal cada hora
+
+### Cómo Funciona
+
+```
+1. Usuario completa módulo
+   ↓
+2. Se le pide permiso para notificaciones
+3. Si acepta, se guarda en localStorage
+4. Sistema verifica automáticamente:
+   - Racha en riesgo: cada 30 minutos
+   - Misión diaria: cada minuto (a las 9 AM)
+   - Progreso semanal: cada hora (lunes)
+5. Notificación aparece en navegador
+6. Usuario hace clic → abre app
+7. Notificación se guarda en historial
+```
+
+### Testing Notificaciones
+
+**Test 1: Racha en Riesgo**
+- Simular: cambiar `lastVisitTimestamp` a 20 horas atrás
+- Resultado: Notificación "¡Tu racha está en riesgo! 🔥"
+
+**Test 2: Misión Diaria**
+- A las 9:00 AM: aparecerá notificación automáticamente
+- O cambiar hora del sistema
+
+**Test 3: Permiso**
+- Primer módulo completo → pide permiso
+- Aceptar → notificaciones activas
+- Rechazar → puede activarlas después en settings
+
+### Configuración localStorage
+
+```javascript
+// Preferencias
+localStorage.getItem('notificationsEnabled') // 'true' | 'false'
+
+// Últimas notificaciones
+localStorage.getItem('lastNotif_streak')     // timestamp
+localStorage.getItem('lastNotif_mission')    // timestamp
+localStorage.getItem('lastNotif_rank')       // timestamp
+```
+
 ### Next Potential Features
 - Power-up system implementation
 - Achievement badges display enhancement
@@ -283,7 +378,7 @@ Línea 510-516: Componente en gameplay
 
 ---
 
-**Last Updated:** November 24, 2025 - Sound Effects + Confetti System Implemented 🎉✨
+**Last Updated:** November 24, 2025 - Sound Effects + Confetti + Push Notifications Implemented 🎉✨🔔
 
 ---
 
@@ -397,8 +492,8 @@ El sistema está completamente integrado pero LISTO para conectar con:
 
 ---
 
-**Last Updated**: November 24, 2025 - Sound Effects + Confetti System Added 🎉✨
-**Status**: MVP with Full Gamification System (Ranks, Leagues, Login Streak, Badges, Sound Effects, Confetti) 🎉🚀
+**Last Updated**: November 24, 2025 - Sound Effects + Confetti + Push Notifications Added 🎉✨🔔
+**Status**: MVP with FULL Gamification System (Ranks, Leagues, Login Streak, Badges, Sound Effects, Confetti, Notifications) 🎉🚀
 
 ---
 

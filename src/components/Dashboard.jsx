@@ -37,6 +37,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
+  const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
