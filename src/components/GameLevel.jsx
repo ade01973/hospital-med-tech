@@ -13,6 +13,16 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [showStreakBonus, setShowStreakBonus] = useState(false);
+  
+  // Cargar streak del localStorage al iniciar
+  useEffect(() => {
+    const savedStreak = localStorage.getItem('userStreak');
+    if (savedStreak) {
+      setCurrentStreak(parseInt(savedStreak, 10));
+    }
+  }, []);
   
   // Cuando cambiamos de pregunta, forzamos que el modal se recargue
   useEffect(() => {
@@ -57,9 +67,31 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     setIsCorrect(correct);
     
     let pointsEarned = 0;
+    let newStreak = currentStreak;
+    
     if (correct) {
+      // Incrementar racha
+      newStreak = currentStreak + 1;
+      setCurrentStreak(newStreak);
+      localStorage.setItem('userStreak', newStreak.toString());
+      
+      // Puntos base
       pointsEarned = 100;
+      
+      // Bonus si racha >= 5
+      if (newStreak >= 5) {
+        pointsEarned += 20;
+        setShowStreakBonus(true);
+        setTimeout(() => setShowStreakBonus(false), 1500);
+      }
+      
       setScore(prev => prev + pointsEarned);
+      console.log(`✅ CORRECTO! Racha: ${newStreak}, Puntos: ${pointsEarned}`);
+    } else {
+      // Resetear racha cuando falla
+      setCurrentStreak(0);
+      localStorage.setItem('userStreak', '0');
+      console.log(`❌ INCORRECTO! Racha reseteada a 0`);
     }
     
     // 🔄 SIEMPRE AVANZAR - correcta o incorrecta
@@ -210,7 +242,13 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
               
               {selectedOption !== null && (
                 <div className={`mt-6 p-4 rounded-lg text-center font-black text-sm tracking-widest uppercase animate-in slide-in-from-bottom-2 ${isCorrect ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'}`}>
-                  {isCorrect ? "✅ CORRECTO - +100 PTS" : "❌ INCORRECTO"}
+                  {isCorrect ? `✅ CORRECTO - +${showStreakBonus ? 120 : 100} PTS` : "❌ INCORRECTO"}
+                  {isCorrect && currentStreak >= 3 && (
+                    <div className="text-xs text-orange-400 mt-2 font-bold">🔥 RACHA x{currentStreak}</div>
+                  )}
+                  {showStreakBonus && (
+                    <div className="text-xs text-yellow-400 mt-2 font-bold animate-bounce">+20 BONUS RACHA!</div>
+                  )}
                   <div className="text-xs text-slate-400 mt-2">Siguiente pregunta en 1.5s...</div>
                 </div>
               )}

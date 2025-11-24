@@ -12,12 +12,21 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showRankAchievement, setShowRankAchievement] = useState(false); // Show rank achievement banner
   const [newRank, setNewRank] = useState(null); // Store the new rank achieved
   const [previousScore, setPreviousScore] = useState(0); // Track previous score for comparison
+  const [currentStreak, setCurrentStreak] = useState(0); // Track current streak
   
   // Video links for each topic
   const videoLinks = {
     1: "bL0e705JuZQ",
     2: "eb1nlMUK3-c"
   };
+  
+  // Load streak from localStorage
+  useEffect(() => {
+    const savedStreak = localStorage.getItem('userStreak');
+    if (savedStreak) {
+      setCurrentStreak(parseInt(savedStreak, 10));
+    }
+  }, []);
   
   const currentRank = NURSING_RANKS.slice().reverse().find(r => (userData?.totalScore || 0) >= r.minScore) || NURSING_RANKS[0];
   const nextRank = NURSING_RANKS.find(r => r.minScore > (userData?.totalScore || 0));
@@ -296,7 +305,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-cyan-400 font-bold uppercase tracking-wider">Rango</span>
-              <span className="text-sm font-black text-white">{currentRank.title}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black text-white">{currentRank.title}</span>
+                {currentStreak >= 3 && (
+                  <div className="inline-flex items-center gap-1 px-2 py-1 bg-orange-500/20 border border-orange-500/50 rounded-full animate-pulse">
+                    <span className="text-lg">🔥</span>
+                    <span className="text-xs font-black text-orange-400">Racha x{currentStreak}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
