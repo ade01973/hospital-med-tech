@@ -107,7 +107,10 @@ const LivesGameOver = ({ topic, onContinue, onWatchVideo, onUsePowerUp, hasPower
           )}
 
           <button
-            onClick={onWatchVideo}
+            onClick={() => {
+              console.log(`🎬 Botón "VER VIDEO" clickeado`);
+              onWatchVideo();
+            }}
             className="w-full mb-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/40 hover:to-blue-500/40 border-2 border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-cyan-200 p-4 rounded-xl transition-all"
           >
             <div className="flex items-center justify-center gap-2 mb-1">

@@ -247,13 +247,20 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
       2: 'https://youtu.be/eb1nlMUK3-c',
     }[topic.id];
 
+    console.log(`🎥 handleWatchVideo ejecutado - Módulo: ${topic.id}, URL:`, videoUrl);
+    
     if (videoUrl) {
+      console.log(`✅ Abriendo video en nueva ventana:`, videoUrl);
       window.open(videoUrl, '_blank');
+      
       // Simular cierre del video después de un tiempo (en producción, detectar cuando cierre)
       setTimeout(() => {
+        console.log(`⏰ Agregando 2 corazones después de ver video`);
         setLives(prev => Math.min(prev + 2, 5)); // +2 corazones, máximo 5
         setShowLivesGameOver(false);
       }, 5000);
+    } else {
+      console.log(`❌ No hay URL de video para el módulo ${topic.id}`);
     }
   };
 
