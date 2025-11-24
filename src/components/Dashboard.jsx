@@ -277,13 +277,13 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             <button 
               onClick={() => setShowShop(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
-              title="Tienda MediCoins"
+              title="Tienda GestCoins"
             >
               <span className="text-2xl">🛍️</span>
             </button>
 
             <div className="flex flex-col items-center">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">MediCoins</span>
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">GestCoins</span>
               <div className="flex items-center gap-1">
                 <span className="text-lg">💸</span>
                 <span className="text-lg font-black text-yellow-300">{balance}</span>

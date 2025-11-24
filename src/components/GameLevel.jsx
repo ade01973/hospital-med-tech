@@ -255,7 +255,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
 
       setScore((prev) => prev + pointsEarned);
       
-      // Ganar MediCoins por respuesta correcta
+      // Ganar GestCoins por respuesta correcta
       earnCoins(10, 'Respuesta correcta');
       
       console.log(
