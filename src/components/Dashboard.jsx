@@ -302,22 +302,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-white/10 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${currentRank.color} flex items-center justify-center text-xl shadow-lg shadow-cyan-500/30`}>
               {currentRank.icon}
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-cyan-400 font-bold uppercase tracking-wider">Rango</span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black text-white">{currentRank.title}</span>
-                {currentStreak >= 3 && (
-                  <div className="inline-flex items-center gap-1 px-2 py-1 bg-orange-500/20 border border-orange-500/50 rounded-full animate-pulse">
-                    <span className="text-lg">🔥</span>
-                    <span className="text-xs font-black text-orange-400">Racha x{currentStreak}</span>
-                  </div>
-                )}
-              </div>
+              <span className="text-sm font-black text-white">{currentRank.title}</span>
             </div>
+            
+            {/* RACHA BADGE - VISIBLE AND PROMINENT */}
+            {currentStreak >= 3 && (
+              <div className="ml-4 px-3 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 border-2 border-yellow-300 shadow-lg shadow-orange-500/50 animate-pulse flex items-center gap-2">
+                <span className="text-xl">🔥</span>
+                <span className="text-sm font-black text-white">Racha x{currentStreak}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-6">
