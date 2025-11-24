@@ -9,8 +9,10 @@ import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
 import { useLoginStreak } from '../hooks/useLoginStreak';
+import useNotifications from '../hooks/useNotifications';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
+  const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
@@ -130,6 +132,18 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
+            <button 
+              onClick={toggleNotifications}
+              className={`w-12 h-12 rounded-full ${
+                notificationsEnabled 
+                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:shadow-green-500/50' 
+                  : 'bg-gradient-to-br from-slate-600 to-slate-700 hover:shadow-lg hover:shadow-slate-500/50'
+              } flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative`}
+              title={notificationsEnabled ? "Desactivar notificaciones" : "Activar notificaciones"}
+            >
+              <span className="text-2xl">{notificationsEnabled ? '🔔' : '🔕'}</span>
+            </button>
+
             <button 
               onClick={() => setShowMissions(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"

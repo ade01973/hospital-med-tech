@@ -12,8 +12,10 @@ import BadgeNotification from './components/BadgeNotification';
 import { auth, db, appId } from './firebase.js';
 import { useLoginStreak } from './hooks/useLoginStreak';
 import { useBadges } from './hooks/useBadges';
+import useNotifications from './hooks/useNotifications';
 
 export default function App() {
+  const { checkNearRankUp } = useNotifications();
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [view, setView] = useState('auth');
@@ -96,6 +98,27 @@ export default function App() {
       checkLevelBadges();
     }
   }, [userData?.completedLevels, checkLevelBadges, prevCompletedCount]);
+
+  // 🔔 VERIFICAR SI ESTÁ CERCA DE SUBIR DE RANGO
+  useEffect(() => {
+    if (!userData?.totalScore || !checkNearRankUp) return;
+    
+    const NURSING_RANKS = [
+      { minScore: 0 },
+      { minScore: 2000 },
+      { minScore: 5000 },
+      { minScore: 12000 },
+      { minScore: 23000 },
+      { minScore: 40000 },
+      { minScore: 60000 },
+      { minScore: 80000 },
+    ];
+    
+    const nextRank = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
+    if (nextRank) {
+      checkNearRankUp(userData.totalScore, nextRank.minScore);
+    }
+  }, [userData?.totalScore, checkNearRankUp]);
 
   // 🟣 GUARDAR PUNTOS Y DESBLOQUEAR NIVEL
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {

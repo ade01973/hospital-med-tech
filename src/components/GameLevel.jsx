@@ -58,7 +58,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
   const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } = useSoundEffects();
 
   // Hook de confeti
-  const { isActive: isConfettiActive, triggerConfetti } = useConfetti();
+  const { isActive: isConfettiActive, triggerConfetti: triggerConfettiEffect } = useConfetti();
 
   // Cargar streak y lives del localStorage al iniciar
   useEffect(() => {
@@ -237,7 +237,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
 
       // Activar confeti por racha de 3 respuestas correctas
       if (newStreak === 3) {
-        triggerConfetti();
+        triggerConfettiEffect();
       }
 
       setScore((prev) => prev + pointsEarned);
@@ -280,7 +280,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
           }
 
           playVictory(); // 🏆 Sonido de módulo completado
-          triggerConfetti(); // 🎉 Confeti por completar módulo
+          triggerConfettiEffect(); // 🎉 Confeti por completar módulo
           setCompleted(true);
           setTimeout(
             () =>
