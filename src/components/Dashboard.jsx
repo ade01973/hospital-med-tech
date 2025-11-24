@@ -375,11 +375,25 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       {selectedFloor === 1 && (
                         <button
                           onClick={() => setShowVideo(true)}
-                          className="flex items-center gap-2 px-3 py-1 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-red-500/50"
+                          className="group relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 via-red-600 to-rose-600 hover:from-red-400 hover:via-red-500 hover:to-rose-500 rounded-xl transition-all duration-300 transform hover:scale-110 hover:shadow-[0_0_30px_rgba(239,68,68,0.8)] border border-red-400/50 hover:border-red-300 font-black"
                           title="Ver video introductorio"
                         >
-                          <Play className="w-5 h-5 text-white fill-white" />
-                          <span className="text-xs font-black text-white uppercase tracking-wider">Ver resumen del Tema</span>
+                          {/* Glow effect background */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-red-600 to-rose-600 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 animate-pulse"></div>
+                          
+                          {/* Play Icon with animation */}
+                          <div className="relative flex items-center justify-center">
+                            <Play className="w-5 h-5 text-white fill-white group-hover:scale-125 transition-transform duration-300" />
+                            <div className="absolute inset-0 bg-white/20 rounded-full group-hover:animate-ping"></div>
+                          </div>
+                          
+                          {/* Text */}
+                          <span className="text-sm text-white uppercase tracking-widest font-black group-hover:scale-105 transition-transform duration-300">
+                            Ver resumen del Tema
+                          </span>
+                          
+                          {/* Right accent */}
+                          <div className="ml-1 w-1 h-1 bg-white/60 rounded-full group-hover:w-4 group-hover:h-4 transition-all duration-300"></div>
                         </button>
                       )}
                     </div>
