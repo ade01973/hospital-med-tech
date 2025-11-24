@@ -41,9 +41,12 @@ export const useBadges = (userData) => {
           obtainedDate: new Date().toISOString().split('T')[0]
         };
         saveBadges(updatedBadges);
-        setNewBadge(updatedBadges[check.key]);
+        
+        const badgeToShow = updatedBadges[check.key];
+        setNewBadge(badgeToShow);
         setShowBadgeNotification(true);
-        console.log(`✨ Badge desbloqueado: ${check.name}`);
+        console.log(`✨ Badge desbloqueado: ${check.name}`, badgeToShow);
+        
         badgeUnlocked = check.key;
         break;
       }

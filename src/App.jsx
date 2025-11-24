@@ -86,24 +86,16 @@ export default function App() {
     return () => unsubscribe();
   }, [user]);
 
-  // 🏆 DETECTAR COMPLETACIÓN DE NIVELES Y DESBLOQUEAR BADGES
+  // 🏆 DETECTAR BADGES COMO FALLBACK
   useEffect(() => {
-    if (!userData || !checkLevelBadges) return;
+    if (!userData?.completedLevels || !checkLevelBadges) return;
     
     const currentCompletedCount = Object.values(userData.completedLevels || {}).filter(Boolean).length;
-    
-    // Ejecutar si el contador cambió
     if (currentCompletedCount > prevCompletedCount) {
-      console.log(`📊 Niveles completados: ${currentCompletedCount}`);
       setPrevCompletedCount(currentCompletedCount);
-      
-      // Detectar badges desbloqueados
-      const badgeUnlocked = checkLevelBadges();
-      if (badgeUnlocked) {
-        console.log(`🏆 ¡BADGE DESBLOQUEADO! ${badgeUnlocked}`);
-      }
+      checkLevelBadges();
     }
-  }, [userData, checkLevelBadges, prevCompletedCount]);
+  }, [userData?.completedLevels, checkLevelBadges, prevCompletedCount]);
 
   // 🟣 GUARDAR PUNTOS Y DESBLOQUEAR NIVEL
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
@@ -156,6 +148,16 @@ export default function App() {
       }, { merge: true });
 
       console.log('✅ Progreso guardado exitosamente');
+      
+      // 🏆 DETECTAR BADGES INMEDIATAMENTE DESPUÉS DE GUARDAR
+      const completedCount = Object.values(newCompletedLevels || {}).filter(Boolean).length;
+      console.log(`🎯 Verificando badges - Niveles completados: ${completedCount}`);
+      if (checkLevelBadges) {
+        const badgeUnlocked = checkLevelBadges();
+        if (badgeUnlocked) {
+          console.log(`🏆 ¡BADGE DESBLOQUEADO EXITOSAMENTE! ${badgeUnlocked}`);
+        }
+      }
     } catch (error) {
       console.error('❌ Error al guardar progreso:', error);
     }
