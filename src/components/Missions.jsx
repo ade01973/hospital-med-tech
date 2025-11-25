@@ -3,6 +3,11 @@ import { X, CheckCircle2, Clock, Zap, Target, Trophy } from 'lucide-react';
 
 const Missions = ({ isOpen, onClose, dailyMissions, weeklyMission, onClaimReward }) => {
   if (!isOpen) return null;
+  
+  // Asegurar que weeklyMission tiene estructura correcta
+  const safeWeeklyMission = weeklyMission?.perfect_levels ? weeklyMission : {
+    perfect_levels: { progress: 0, target: 3, completed: false, claimed: false, reward: 1500, badge: 'Estudiante Dedicado' }
+  };
 
   const getMissionIcon = (type) => {
     const icons = {
@@ -139,13 +144,13 @@ const Missions = ({ isOpen, onClose, dailyMissions, weeklyMission, onClaimReward
               </div>
               <h3 className="text-xl font-black text-white">Misión Semanal</h3>
               <div className="text-xs text-slate-400 font-bold ml-auto">
-                {weeklyMission.perfect_levels.completed && !weeklyMission.perfect_levels.claimed ? 'Lista para reclamar' : ''}
+                {safeWeeklyMission.perfect_levels.completed && !safeWeeklyMission.perfect_levels.claimed ? 'Lista para reclamar' : ''}
               </div>
             </div>
 
             <div
               className={`p-6 rounded-xl border-2 transition-all ${
-                weeklyMission.perfect_levels.completed
+                safeWeeklyMission.perfect_levels.completed
                   ? 'bg-purple-900/30 border-purple-500/50'
                   : 'bg-slate-800/30 border-slate-700/50'
               }`}
@@ -160,7 +165,7 @@ const Missions = ({ isOpen, onClose, dailyMissions, weeklyMission, onClaimReward
                     <h4 className="font-black text-white text-sm uppercase tracking-wide">
                       Completa 3 niveles con 3 estrellas
                     </h4>
-                    {weeklyMission.perfect_levels.completed && (
+                    {safeWeeklyMission.perfect_levels.completed && (
                       <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                     )}
                   </div>
@@ -174,35 +179,35 @@ const Missions = ({ isOpen, onClose, dailyMissions, weeklyMission, onClaimReward
                     <div className="w-full h-3 bg-slate-700/50 rounded-full overflow-hidden border border-slate-700">
                       <div
                         className={`h-full transition-all duration-300 ${
-                          weeklyMission.perfect_levels.completed
+                          safeWeeklyMission.perfect_levels.completed
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500'
                             : 'bg-gradient-to-r from-purple-500 to-violet-500'
                         }`}
                         style={{
-                          width: `${Math.min(100, (weeklyMission.perfect_levels.progress / weeklyMission.perfect_levels.target) * 100)}%`
+                          width: `${Math.min(100, (safeWeeklyMission.perfect_levels.progress / safeWeeklyMission.perfect_levels.target) * 100)}%`
                         }}
                       ></div>
                     </div>
                     <div className="flex justify-between mt-2">
                       <span className="text-xs text-slate-400">
-                        {weeklyMission.perfect_levels.progress} / {weeklyMission.perfect_levels.target}
+                        {safeWeeklyMission.perfect_levels.progress} / {safeWeeklyMission.perfect_levels.target}
                       </span>
                       <span className="text-xs font-bold text-purple-300">
-                        +{weeklyMission.perfect_levels.reward} XP
+                        +{safeWeeklyMission.perfect_levels.reward} XP
                       </span>
                     </div>
                   </div>
 
                   {/* Action Button */}
                   <div className="flex items-center gap-3">
-                    {weeklyMission.perfect_levels.completed && !weeklyMission.perfect_levels.claimed ? (
+                    {safeWeeklyMission.perfect_levels.completed && !safeWeeklyMission.perfect_levels.claimed ? (
                       <button
                         onClick={() => handleClaimWeekly('perfect_levels')}
                         className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-black text-sm rounded-lg transition-all transform hover:scale-105"
                       >
                         RECLAMAR RECOMPENSA
                       </button>
-                    ) : weeklyMission.perfect_levels.claimed ? (
+                    ) : safeWeeklyMission.perfect_levels.claimed ? (
                       <div className="px-6 py-2 bg-slate-700/50 text-slate-300 font-black text-sm rounded-lg">
                         ✓ RECOMPENSA RECLAMADA
                       </div>
