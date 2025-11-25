@@ -15,7 +15,6 @@ import { useBadges } from './hooks/useBadges';
 import useNotifications from './hooks/useNotifications';
 
 export default function App() {
-  const { checkNearRankUp } = useNotifications();
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [view, setView] = useState('auth');
@@ -99,26 +98,6 @@ export default function App() {
     }
   }, [userData?.completedLevels, checkLevelBadges, prevCompletedCount]);
 
-  // 🔔 VERIFICAR SI ESTÁ CERCA DE SUBIR DE RANGO
-  useEffect(() => {
-    if (!userData?.totalScore || !checkNearRankUp) return;
-    
-    const NURSING_RANKS = [
-      { minScore: 0 },
-      { minScore: 2000 },
-      { minScore: 5000 },
-      { minScore: 12000 },
-      { minScore: 23000 },
-      { minScore: 40000 },
-      { minScore: 60000 },
-      { minScore: 80000 },
-    ];
-    
-    const nextRank = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
-    if (nextRank) {
-      checkNearRankUp(userData.totalScore, nextRank.minScore);
-    }
-  }, [userData?.totalScore, checkNearRankUp]);
 
   // 🟣 GUARDAR PUNTOS Y DESBLOQUEAR NIVEL
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
@@ -182,6 +161,7 @@ export default function App() {
       // Dar tiempo para que React renderice el modal del badge
       setTimeout(() => {
         console.log('➡️ Navegando a dashboard');
+        setCurrentLevel(null);
         setView('dashboard');
       }, 500);
     } catch (error) {
@@ -222,7 +202,7 @@ export default function App() {
           user={user}
           userData={userData}
           studentId={userData?.studentId || localStorage.getItem('studentId')}
-          onExit={() => setView('dashboard')}
+          onExit={() => { setCurrentLevel(null); setView('dashboard'); }}
           onComplete={handleLevelComplete}
         />
       )}
