@@ -219,7 +219,8 @@ export default function App() {
       {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 
           topic={currentLevel} 
-          user={user} 
+          user={user}
+          userData={userData}
           studentId={userData?.studentId || localStorage.getItem('studentId')}
           onExit={() => setView('dashboard')}
           onComplete={handleLevelComplete}

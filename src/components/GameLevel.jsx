@@ -22,7 +22,7 @@ import ShareModal from "./ShareModal";
 import { useGestCoins } from "../hooks/useGestCoins";
 import ConfettiCelebration from "./ConfettiCelebration";
 
-const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
+const GameLevel = ({ topic, user, userData, studentId, onExit, onComplete }) => {
   const {
     trackQuestionAnswered,
     trackStreakCheck,
