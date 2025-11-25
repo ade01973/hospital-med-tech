@@ -329,6 +329,7 @@ const GameLevel = ({ topic, user, studentId, onExit, onComplete }) => {
     const videoUrl = {
       1: "https://youtu.be/bL0e705JuZQ",
       2: "https://youtu.be/eb1nlMUK3-c",
+      3: "https://youtu.be/ThHodVUzC9c",
     }[topic.id];
 
     console.log(
