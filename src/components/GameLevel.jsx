@@ -334,6 +334,7 @@ const GameLevel = ({ topic, user, userData, studentId, onExit, onComplete }) => 
       5: "https://youtu.be/yUOPtM_yEHc",
       6: "https://youtu.be/NMY7SwEgC50",
       7: "https://youtu.be/TU9VF7sWh-w",
+      8: "https://youtu.be/7yo2d-MtgBw",
     }[topic.id];
 
     console.log(
