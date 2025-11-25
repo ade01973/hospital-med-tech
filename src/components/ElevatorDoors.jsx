@@ -36,7 +36,7 @@ const ElevatorDoors = ({ onComplete }) => {
 
         osc2.frequency.setValueAtTime(800, audioContext.currentTime);
         gain2.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0, audioContext.currentTime + 0.3);
+        gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
 
         osc2.start(audioContext.currentTime);
         osc2.stop(audioContext.currentTime + 0.3);
