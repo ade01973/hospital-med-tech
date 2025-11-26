@@ -60,8 +60,8 @@ export default function ReviewOrDashboard({ isOpen, score, totalQuestions, topic
           {/* Dashboard Button */}
           <button
             onClick={() => {
-              onGoToDashboard();
               onClose();
+              setTimeout(() => onGoToDashboard(), 50);
             }}
             className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-3 shadow-lg hover:shadow-cyan-500/50"
           >
