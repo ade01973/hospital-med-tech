@@ -1,0 +1,233 @@
+// question: 0  name: Switch category to $course$/top/Por defecto en 1105027/Examen
+$CATEGORY: $course$/top/Por defecto en 1105027/Examen
+
+
+// question: 0  name: Switch category to $course$/top/Por defecto en 1105027/Examen/Tema 2
+$CATEGORY: $course$/top/Por defecto en 1105027/Examen/Tema 2
+
+
+// question: 1036076  name: Pregunta 1
+::Pregunta 1::[html]¿Cuál es el principal enfoque del liderazgo en enfermería?{
+	=[moodle]Influencia positiva y motivación hacia la excelencia en el cuidado de los pacientes.
+	~%-33.33333%[moodle]Administración de recursos financieros.
+	~%-33.33333%[moodle]Implementación de procesos administrativos rigurosos.
+	~%-33.33333%[moodle]Supervisión directa de todas las actividades clínicas.
+}
+
+
+// question: 1036077  name: Pregunta 10
+::Pregunta 10::[html]¿Cómo se adapta el liderazgo situacional en la gestión de enfermería?{
+	=[moodle]Ajustando el estilo de liderazgo según las necesidades del equipo y la situación.
+	~%-33.33333%[moodle]Aplicando un único estilo de liderazgo en todas las situaciones.
+	~%-33.33333%[moodle]Centrándose exclusivamente en el liderazgo transaccional.
+	~%-33.33333%[moodle]Ignorando las dinámicas del equipo y el entorno de trabajo.
+}
+
+
+// question: 1036078  name: Pregunta 11
+::Pregunta 11::[html]¿Cuál es una ventaja del liderazgo autocrático en enfermería?{
+	=[moodle]Eficaz en situaciones de emergencia por su rapidez en la toma de decisiones.
+	~%-33.33333%[moodle]Fomenta la creatividad del equipo.
+	~%-33.33333%[moodle]Reduce la moral del equipo a largo plazo.
+	~%-33.33333%[moodle]Promueve un alto nivel de participación del equipo.
+}
+
+
+// question: 1036079  name: Pregunta 12
+::Pregunta 12::[html]¿Qué caracteriza al liderazgo democrático?{
+	=[moodle]Inclusión del equipo en el proceso de toma de decisiones.
+	~%-33.33333%[moodle]Toma de decisiones sin consultar al equipo.
+	~%-33.33333%[moodle]Delegación completa de responsabilidades.
+	~%-33.33333%[moodle]Enfoque exclusivo en la ejecución de tareas.
+}
+
+
+// question: 1036081  name: Pregunta 13
+::Pregunta 13::[html]¿Cómo afecta el liderazgo Laissez-Faire a la gestión de enfermería?{
+	=[moodle]Promueve la autonomía y potencialmente la innovación.
+	~%-33.33333%[moodle]Garantiza la ejecución rápida de tareas.
+	~%-33.33333%[moodle]Mejora la eficiencia en situaciones de crisis.
+	~%-33.33333%[moodle]Aumenta la dependencia del equipo en el líder.
+}
+
+
+// question: 1036082  name: Pregunta 14
+::Pregunta 14::[html]¿Qué busca el liderazgo transformacional en su equipo?{
+	=[moodle]Exceder sus propias expectativas y trabajar por un bien mayor.
+	~%-33.33333%[moodle]Adherencia estricta a las normas sin cuestionar.
+	~%-33.33333%[moodle]Cumplimiento de tareas con mínima interacción.
+	~%-33.33333%[moodle]Independencia total del liderazgo.
+}
+
+
+// question: 1036085  name: Pregunta 15
+::Pregunta 15::[html]¿En qué se basa principalmente el liderazgo transaccional?{
+	=[moodle]Claridad de roles y uso de recompensas y sanciones.
+	~%-33.33333%[moodle]Fomento de la autonomía sin directrices claras.
+	~%-33.33333%[moodle]Participación activa de todos en la toma de decisiones.
+	~%-33.33333%[moodle]Desarrollo personal y profesional sin objetivos específicos.
+}
+
+
+// question: 1036083  name: Pregunta 16
+::Pregunta 16::[html]¿Cuál es un desafío potencial del liderazgo Laissez-Faire?{
+	=[moodle]Posibilidad de confusión y falta de dirección.
+	~%-33.33333%[moodle]Excesiva dependencia en el líder para la toma de decisiones.
+	~%-33.33333%[moodle]Demasiada rigidez en los procedimientos operativos.
+	~%-33.33333%[moodle]Limitación en la creatividad y la innovación del equipo.
+}
+
+
+// question: 1036086  name: Pregunta 17
+::Pregunta 17::[html]¿Qué elemento NO es característico del liderazgo situacional?{
+	=[moodle]Un único estilo de liderazgo aplicado en todas las situaciones.
+	~%-33.33333%[moodle]Evaluación constante del contexto para adaptar el estilo de liderazgo.
+	~%-33.33333%[moodle]Flexibilidad y adaptabilidad según las necesidades del equipo.
+	~%-33.33333%[moodle]Balance entre conductas directivas y de apoyo.
+}
+
+
+// question: 1036087  name: Pregunta 18
+::Pregunta 18::[html]¿Cómo contribuye el liderazgo democrático a la gestión de enfermería?{
+	=[moodle]Fomentando la colaboración y aumentando la satisfacción del equipo.
+	~%-33.33333%[moodle]Simplificando los procesos de toma de decisiones.
+	~%-33.33333%[moodle]Acelerando las respuestas en situaciones de emergencia.
+	~%-33.33333%[moodle]Limitando la participación del equipo en decisiones importantes.
+}
+
+
+// question: 1036088  name: Pregunta 19
+::Pregunta 19::[html]¿Qué resultado puede tener un liderazgo autocrático aplicado de manera prolongada?{
+	=[moodle]Alta rotación de personal debido a la disminución de la satisfacción laboral.
+	~%-33.33333%[moodle]Aumento de la creatividad y la innovación en el equipo.
+	~%-33.33333%[moodle]Mejora continua en la satisfacción y la motivación del equipo.
+	~%-33.33333%[moodle]Desarrollo profesional y personal significativo de los miembros del equipo.
+}
+
+
+// question: 1036089  name: Pregunta 2
+::Pregunta 2::[html]¿Qué define principalmente al liderazgo en el contexto de la enfermería?{
+	=[moodle]La capacidad para inspirar y guiar al equipo hacia objetivos comunes.
+	~%-33.33333%[moodle]La posición jerárquica y el poder.
+	~%-33.33333%[moodle]El seguimiento estricto de protocolos y procedimientos.
+	~%-33.33333%[moodle]La gestión de la documentación y el registro de pacientes.
+}
+
+
+// question: 1036090  name: Pregunta 20
+::Pregunta 20::[html]¿Qué estrategia es clave para el liderazgo transformacional?{
+	=[moodle]Inspirar al equipo hacia una visión compartida de excelencia.
+	~%-33.33333%[moodle]Imposición de objetivos sin considerar las opiniones del equipo.
+	~%-33.33333%[moodle]Delegación de todas las tareas para promover la autonomía.
+	~%-33.33333%[moodle]Mantenimiento de una estructura jerárquica estricta.
+}
+
+
+// question: 1036091  name: Pregunta 21
+::Pregunta 21::[html]¿Qué factor es crucial para el éxito del liderazgo situacional?{
+	=[moodle]Capacidad del líder para ajustar su enfoque según las necesidades del equipo.
+	~%-33.33333%[moodle]Aplicación de un estilo de liderazgo constante.
+	~%-33.33333%[moodle]Enfoque exclusivo en el desarrollo profesional del equipo.
+	~%-33.33333%[moodle]Aislamiento del líder del resto del equipo.
+}
+
+
+// question: 1036092  name: Pregunta 22
+::Pregunta 22::[html]¿Qué beneficio principal ofrece el liderazgo democrático en la enfermería?{
+	=[moodle]Mayor compromiso del equipo mediante la participación en la toma de decisiones.
+	~%-33.33333%[moodle]Decisiones rápidas sin consulta.
+	~%-33.33333%[moodle]Implementación inmediata de cambios sin resistencia.
+	~%-33.33333%[moodle]Reducción de la necesidad de supervisión del equipo.
+}
+
+
+// question: 1036093  name: Pregunta 23
+::Pregunta 23::[html]¿Cuál es un potencial riesgo del liderazgo autocrático en la gestión de enfermería?{
+	=[moodle]Disminución de la moral y la satisfacción laboral.
+	~%-33.33333%[moodle]Excesiva dependencia del equipo en el liderazgo para la innovación.
+	~%-33.33333%[moodle]Aumento de la autonomía y la motivación del equipo.
+	~%-33.33333%[moodle]Mejora de la comunicación y relaciones dentro del equipo.
+}
+
+
+// question: 1036094  name: Pregunta 24
+::Pregunta 24::[html]¿Qué estilo de liderazgo fomenta la autonomía y la toma de decisiones independiente?{
+	=[moodle]Liderazgo Laissez-Faire.
+	~%-33.33333%[moodle]Liderazgo transformacional.
+	~%-33.33333%[moodle]Liderazgo transaccional.
+	~%-33.33333%[moodle]Liderazgo situacional.
+}
+
+
+// question: 1036095  name: Pregunta 25
+::Pregunta 25::[html]¿En qué se diferencia el liderazgo transaccional del transformacional?{
+	=[moodle]El transaccional se basa en recompensas y castigos, mientras que el transformacional inspira y motiva.
+	~%-33.33333%[moodle]El transaccional se enfoca en la innovación, mientras que el transformacional en las recompensas.
+	~%-33.33333%[moodle]El transaccional promueve la autonomía, mientras que el transformacional la dirección clara.
+	~%-33.33333%[moodle]No hay diferencias significativas entre ambos estilos.
+}
+
+
+// question: 1036096  name: Pregunta 3
+::Pregunta 3::[html]¿Por qué es vital un liderazgo fuerte en la enfermería?{
+	=[moodle]Para afrontar retos como la mejora de la calidad del cuidado y la gestión de recursos.
+	~%-33.33333%[moodle]Para reducir los costos operativos exclusivamente.
+	~%-33.33333%[moodle]Para limitar la participación del personal en la toma de decisiones.
+	~%-33.33333%[moodle]Para aumentar la carga de trabajo del personal de enfermería.
+}
+
+
+// question: 1036097  name: Pregunta 4
+::Pregunta 4::[html]Según las teorías clásicas, ¿qué postulan las teorías de rasgos sobre el liderazgo?{
+	=[moodle]Los líderes nacen con ciertos atributos que predisponen al liderazgo.
+	~%-33.33333%[moodle]El liderazgo se basa únicamente en la experiencia y el aprendizaje.
+	~%-33.33333%[moodle]Los líderes son efectivos solo si tienen conocimientos técnicos avanzados.
+	~%-33.33333%[moodle]El liderazgo es exclusivo de quienes ocupan altos cargos administrativos.
+}
+
+
+// question: 1036098  name: Pregunta 5
+::Pregunta 5::[html]¿Cuál es una característica del liderazgo centrado en las tareas?{
+	=[moodle]Enfocarse en la planificación y ejecución de tareas específicas.
+	~%-33.33333%[moodle]Priorizar el bienestar emocional del equipo sobre las metas organizacionales.
+	~%-33.33333%[moodle]Fomentar un ambiente de trabajo relacional y de apoyo mutuo.
+	~%-33.33333%[moodle]Delegar todas las decisiones importantes al equipo.
+}
+
+
+// question: 1036099  name: Pregunta 6
+::Pregunta 6::[html]¿Qué estilo de liderazgo se enfoca en el apoyo y desarrollo de los miembros del equipo?{
+	=[moodle]Liderazgo orientado a las relaciones.
+	~%-33.33333%[moodle]Liderazgo autocrático.
+	~%-33.33333%[moodle]Liderazgo centrado en las tareas.
+	~%-33.33333%[moodle]Liderazgo transaccional.
+}
+
+
+// question: 1036100  name: Pregunta 7
+::Pregunta 7::[html]¿Qué implica el liderazgo transformacional?{
+	=[moodle]Inspirar y motivar al equipo para exceder sus expectativas.
+	~%-33.33333%[moodle]Mantener la estructura organizativa sin cambios.
+	~%-33.33333%[moodle]Implementar recompensas y castigos para lograr objetivos.
+	~%-33.33333%[moodle]Delegar todas las responsabilidades importantes.
+}
+
+
+// question: 1036101  name: Pregunta 8
+::Pregunta 8::[html]¿En qué se centra el liderazgo transaccional?{
+	=[moodle]En la claridad de las tareas y el uso de recompensas y castigos.
+	~%-33.33333%[moodle]En la creatividad y la innovación sin límites.
+	~%-33.33333%[moodle]En evitar cualquier forma de dirección o control.
+	~%-33.33333%[moodle]En la toma de decisiones compartida en todas las situaciones.
+}
+
+
+// question: 1036102  name: Pregunta 9
+::Pregunta 9::[html]¿Qué tipo de liderazgo es más adecuado en situaciones que requieren decisiones rápidas?{
+	=[moodle]Liderazgo autocrático.
+	~%-33.33333%[moodle]Liderazgo democrático.
+	~%-33.33333%[moodle]Liderazgo Laissez-Faire.
+	~%-33.33333%[moodle]Liderazgo transformacional.
+}
+
+
