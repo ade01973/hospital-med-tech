@@ -66,6 +66,7 @@ const GameLevel = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const [triggerVictoryConfetti, setTriggerVictoryConfetti] = useState(false);
   const [triggerStreakConfetti, setTriggerStreakConfetti] = useState(false);
+  const [randomizedQuestions, setRandomizedQuestions] = useState([]);
 
   // Hook de efectos de sonido
   const { playSuccess, playError, playVictory, soundEnabled, setSoundEnabled } =
