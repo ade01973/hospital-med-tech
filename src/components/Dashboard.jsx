@@ -151,7 +151,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30" style={{backgroundImage: `url(${elevatorBg})`}}></div>
+      <div className="absolute inset-0 opacity-40 bg-cover bg-center" style={{backgroundImage: `url(/images/hospital-bg.png)`}}></div>
 
       {/* Rank Achievement Banner */}
       {showRankAchievement && newRank && (
