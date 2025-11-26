@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Twitter, Linkedin, Facebook, MessageCircle, Link, Check, Share2 } from 'lucide-react';
+import { X, Twitter, Linkedin, Facebook, MessageCircle, Link, Check, Share2, Heart, Music } from 'lucide-react';
 
 /**
  * Modal de compartir logros en redes sociales
@@ -45,6 +45,34 @@ const ShareModal = ({
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&summary=${encodedMessage}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedMessage}`,
     whatsapp: `https://wa.me/?text=${encodedMessage}%20${encodedUrl}`,
+    instagram: `https://www.instagram.com/`,
+    tiktok: `https://www.tiktok.com/`,
+  };
+
+  // Manejar compartir en Instagram (copiar y abrir)
+  const handleInstagramShare = async () => {
+    try {
+      await navigator.clipboard.writeText(`${message}\n${encodedUrl}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      // Intentar abrir Instagram
+      window.open('https://www.instagram.com/', '_blank');
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+
+  // Manejar compartir en TikTok (copiar y abrir)
+  const handleTiktokShare = async () => {
+    try {
+      await navigator.clipboard.writeText(`${message}\n${encodedUrl}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      // Intentar abrir TikTok
+      window.open('https://www.tiktok.com/', '_blank');
+    } catch (err) {
+      console.error('Error:', err);
+    }
   };
 
   // Web Share API para móviles
@@ -155,6 +183,24 @@ const ShareModal = ({
             >
               <Facebook className="w-5 h-5" />
               <span>Facebook</span>
+            </button>
+
+            {/* Instagram */}
+            <button
+              onClick={handleInstagramShare}
+              className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] hover:from-[#7E38B4] hover:via-[#E81D1D] hover:to-[#FD9D45] text-white px-4 py-3 rounded-xl transition-all transform hover:scale-102 flex items-center gap-3 font-bold"
+            >
+              <Heart className="w-5 h-5" />
+              <span>Instagram (Copiar)</span>
+            </button>
+
+            {/* TikTok */}
+            <button
+              onClick={handleTiktokShare}
+              className="w-full bg-gradient-to-r from-[#000000] to-[#25F4EE] hover:from-[#0D0D0D] hover:to-[#1FD4E6] text-white px-4 py-3 rounded-xl transition-all transform hover:scale-102 flex items-center gap-3 font-bold"
+            >
+              <Music className="w-5 h-5" />
+              <span>TikTok (Copiar)</span>
             </button>
 
             {/* WhatsApp */}
