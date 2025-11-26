@@ -64,6 +64,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [isCompleted, setIsCompleted] = useState(false);
   const [showReviewChoice, setShowReviewChoice] = useState(false);
   const [showReviewVideo, setShowReviewVideo] = useState(false);
+  const [videoFromCompletion, setVideoFromCompletion] = useState(false);
 
   // 🎮 GAMIFICACIÓN
   const [lives, setLives] = useState(5);
@@ -312,6 +313,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         onWatchVideo={() => {
           console.log('🎬 Usuario eligió ver video desde GameOver');
           setShowReviewVideo(true);
+          setVideoFromCompletion(false);
           setLives(2);
         }}
         onUsePowerUp={() => {
@@ -350,14 +352,23 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const handleViewReview = () => {
     setShowReviewChoice(false);
     setShowReviewVideo(true);
+    setVideoFromCompletion(true);
   };
 
   const handleCloseReviewVideo = () => {
     setShowReviewVideo(false);
-    setAnswered(false);
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setTimeLeft(15);
+    
+    // Si el video viene de la pantalla de completación, volver a mostrar el resumen
+    if (videoFromCompletion) {
+      setShowReviewChoice(true);
+      setVideoFromCompletion(false);
+    } else {
+      // Si viene de sin energía, limpiar estados para continuar jugando
+      setAnswered(false);
+      setShowResult(false);
+      setSelectedAnswer(null);
+      setTimeLeft(15);
+    }
   };
 
   return (
