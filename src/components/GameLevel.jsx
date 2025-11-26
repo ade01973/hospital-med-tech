@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useGestCoins } from '../hooks/useGestCoins';
@@ -11,9 +11,11 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
+  const [isCompleted, setIsCompleted] = useState(false);
 
-  const { playSuccess, playError } = useSoundEffects();
+  const { playSuccess, playError, playVictory } = useSoundEffects();
   const { earnCoins } = useGestCoins();
+  const completedRef = useRef(false);
 
   // Preparar 10 preguntas aleatorias SOLO del módulo actual
   useEffect(() => {
@@ -37,38 +39,48 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setAnswered(false);
     setSelectedAnswer(null);
     setTimeLeft(15);
+    setIsCompleted(false);
+    completedRef.current = false;
   }, [topic]);
 
   const currentQuestion = questions[currentIndex];
 
-  // Auto-avance con useCallback - actualizar solo cuando es necesario
-  const handleNextQuestion = useCallback(() => {
-    setCurrentIndex(prev => {
-      const nextIndex = prev + 1;
-      if (nextIndex >= questions.length) {
-        // Completar el módulo - calcular puntos
+  // Función para avanzar a la siguiente pregunta
+  const advanceQuestion = () => {
+    const nextIndex = currentIndex + 1;
+    
+    // Si es la última pregunta, completar el módulo
+    if (nextIndex >= questions.length) {
+      if (!completedRef.current) {
+        completedRef.current = true;
+        setIsCompleted(true);
+        playVictory();
         const pointsEarned = score * 100;
         earnCoins(score * 10, `Respuestas correctas: ${score}/10`);
-        onComplete(topic.id, pointsEarned, studentId);
-        return prev; // No cambiar índice
+        
+        // Llamar onComplete después de un pequeño delay para que se vean los efectos
+        setTimeout(() => {
+          onComplete(topic.id, pointsEarned, studentId);
+        }, 1000);
       }
-      return nextIndex;
-    });
+      return;
+    }
     
+    setCurrentIndex(nextIndex);
     setSelectedAnswer(null);
     setAnswered(false);
     setShowResult(false);
     setTimeLeft(15);
-  }, [questions.length, score, topic.id, studentId, onComplete, earnCoins]);
+  };
 
-  // Cronómetro - solo cuando NO ha respondido
+  // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
   useEffect(() => {
-    if (answered || questions.length === 0 || !currentQuestion) return;
+    if (answered || isCompleted || questions.length === 0 || !currentQuestion) return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          handleNextQuestion();
+          advanceQuestion();
           return 15;
         }
         return prev - 1;
@@ -76,29 +88,31 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [answered, currentQuestion, questions.length, handleNextQuestion]);
+  }, [answered, isCompleted, currentQuestion, questions.length]);
 
   // Auto-avance 2 segundos después de responder
   useEffect(() => {
-    if (!answered || questions.length === 0) return;
+    if (!answered || isCompleted || questions.length === 0) return;
 
     const timer = setTimeout(() => {
-      handleNextQuestion();
+      advanceQuestion();
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [answered, questions.length, handleNextQuestion]);
+  }, [answered, isCompleted, questions.length]);
 
   const handleAnswer = (optionIndex) => {
+    if (answered || isCompleted) return;
+
     setSelectedAnswer(optionIndex);
     setShowResult(true);
     setAnswered(true);
 
     if (optionIndex === currentQuestion.correct) {
       setScore(prev => prev + 1);
-      playSuccess();
+      setTimeout(() => playSuccess(), 100);
     } else {
-      playError();
+      setTimeout(() => playError(), 100);
     }
   };
 
@@ -126,6 +140,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             <button
               onClick={onExit}
               className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+              disabled={isCompleted}
             >
               ← Salir
             </button>
@@ -155,7 +170,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
-                onClick={() => !answered && handleAnswer(index)}
+                onClick={() => handleAnswer(index)}
                 disabled={answered}
                 className={`w-full p-4 text-left rounded-lg font-semibold transition-all ${
                   !answered
