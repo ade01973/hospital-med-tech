@@ -6,6 +6,7 @@ import Missions from './Missions.jsx';
 import Leagues from './Leagues.jsx';
 import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
+import VideoOrGameChoice from './VideoOrGameChoice.jsx';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -20,7 +21,10 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showShop, setShowShop] = useState(false);
+  const [showVideoChoice, setShowVideoChoice] = useState(false);
+  const [selectedLevelForChoice, setSelectedLevelForChoice] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState(null);
   const [showRewards, setShowRewards] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareData, setShareData] = useState(null);
@@ -68,6 +72,21 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
     19: "p2qaUIymS9M",
     20: "w_YbsjGtn1s",
     21: "hvI5afYV9kM",
+  };
+
+  const handleStartLevel = (topic) => {
+    setSelectedLevelForChoice(topic);
+    setShowVideoChoice(true);
+  };
+
+  const handlePlayVideo = (topic) => {
+    setCurrentVideoId(videoLinks[topic.id]);
+    setShowVideo(true);
+  };
+
+  const handlePlayGame = (topic) => {
+    setLevel(topic);
+    setShowElevatorDoors(true);
   };
 
   useEffect(() => {
@@ -222,6 +241,43 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         inventory={inventory}
         upgrades={upgrades}
       />
+
+      {/* Video or Game Choice Modal */}
+      <VideoOrGameChoice
+        isOpen={showVideoChoice}
+        topic={selectedLevelForChoice}
+        videoId={videoLinks[selectedLevelForChoice?.id]}
+        onPlayVideo={() => handlePlayVideo(selectedLevelForChoice)}
+        onPlayGame={() => handlePlayGame(selectedLevelForChoice)}
+        onClose={() => setShowVideoChoice(false)}
+      />
+
+      {/* Video Modal */}
+      {showVideo && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="w-full h-full max-w-4xl mx-auto p-4 flex items-center justify-center">
+            <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl">
+              <button
+                onClick={() => setShowVideo(false)}
+                className="absolute top-4 right-4 z-50 p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-all text-white font-bold"
+              >
+                Cerrar ✕
+              </button>
+              <div className="aspect-video">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1`}
+                  title="Video educativo"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto p-6 max-w-7xl">
@@ -405,7 +461,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {!isCurrentCompleted && (
                 <button
-                  onClick={() => { setLevel(currentTopic); setShowElevatorDoors(true); }}
+                  onClick={() => handleStartLevel(currentTopic)}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
                 >
                   Iniciar Nivel →
