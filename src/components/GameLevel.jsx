@@ -97,6 +97,26 @@ const GameLevel = ({
     }
   }, [topic?.id, hasUpgrade]);
 
+  // 🎲 SHUFFLE QUESTIONS - Generar preguntas aleatorias cada vez que entra
+  useEffect(() => {
+    if (!topic || !topic.questions || topic.questions.length === 0) return;
+
+    const shuffleArray = (array) => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
+    // Mezclar todas las preguntas y seleccionar máximo 10
+    const shuffled = shuffleArray(topic.questions);
+    const selected = shuffled.slice(0, 10);
+    setRandomizedQuestions(selected);
+    console.log(`🎲 Preguntas aleatorizadas: ${selected.length} de ${topic.questions.length}`);
+  }, [topic?.id, topic?.questions]);
+
   // Guardar lives en localStorage cuando cambien
   useEffect(() => {
     if (topic?.id) {
@@ -118,7 +138,7 @@ const GameLevel = ({
 
           setTimeout(() => {
             const nextFloor = currentFloor + 1;
-            if (nextFloor === topic.questions.length) {
+            if (nextFloor === randomizedQuestions.length) {
               setCompleted(true);
               setTimeout(() => onComplete(topic.id, score, studentId), 500);
             } else {
@@ -150,7 +170,7 @@ const GameLevel = ({
     selectedOption,
     completed,
     currentFloor,
-    topic.questions.length,
+    randomizedQuestions.length,
     score,
     studentId,
     onComplete,
@@ -170,8 +190,8 @@ const GameLevel = ({
     setShowModal(true);
   }, [currentFloor]);
 
-  if (!topic || !topic.questions || topic.questions.length === 0) {
-    console.error("❌ Topic inválido:", topic);
+  if (randomizedQuestions.length === 0) {
+    console.error("❌ Sin preguntas aleatorizadas:", topic?.title);
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
         <div className="text-center">
@@ -189,7 +209,7 @@ const GameLevel = ({
     );
   }
 
-  const floors = [...topic.questions];
+  const floors = [...randomizedQuestions];
 
   const handleDoorClick = (floorIndex) => {
     if (floorIndex === currentFloor) {
@@ -208,7 +228,7 @@ const GameLevel = ({
       `📍 Respuesta en pregunta ${currentFloor + 1}: opción ${optionIndex}`,
     );
     setSelectedOption(optionIndex);
-    const correct = topic.questions[currentFloor].correct === optionIndex;
+    const correct = randomizedQuestions[currentFloor].correct === optionIndex;
     setIsCorrect(correct);
 
     let pointsEarned = 0;
