@@ -3,7 +3,6 @@ import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useGestCoins } from '../hooks/useGestCoins';
 import LivesGameOver from './LivesGameOver';
-import ReviewOrDashboard from './ReviewOrDashboard';
 
 // Componente de puntos flotantes
 const FloatingPoints = ({ points, isCorrect, x, y }) => {
