@@ -1,0 +1,233 @@
+// question: 0  name: Switch category to $course$/top/Por defecto en 1105027/Examen
+$CATEGORY: $course$/top/Por defecto en 1105027/Examen
+
+
+// question: 0  name: Switch category to $course$/top/Por defecto en 1105027/Examen/Tema 1
+$CATEGORY: $course$/top/Por defecto en 1105027/Examen/Tema 1
+
+
+// question: 1035530  name: Pregunta 1
+::Pregunta 1::[html]¿Qué implica la gestión en enfermería?{
+	=[moodle]Liderazgo, toma de decisiones basada en evidencia, y promoción de la calidad asistencial.
+	~%-33.33333%[moodle]Únicamente la administración de recursos materiales.
+	~%-33.33333%[moodle]Supervisión de tareas sin implicar liderazgo.
+	~%-33.33333%[moodle]Exclusivamente el desarrollo de estrategias financieras.
+}
+
+
+// question: 1035532  name: Pregunta 10
+::Pregunta 10::[html]¿Cómo impacta la gestora enfermera en la satisfacción del paciente?{
+	=[moodle]Influyendo en la percepción del paciente a través de la calidad de la atención recibida.
+	~%-33.33333%[moodle]Limitando la comunicación directa con los pacientes.
+	~%-33.33333%[moodle]Reduciendo el número de personal de enfermería.
+	~%-33.33333%[moodle]Aumentando exclusivamente los recursos materiales.
+}
+
+
+// question: 1035533  name: Pregunta 11
+::Pregunta 11::[html]En el contexto de la gestión de enfermería, ¿qué importancia tiene la "gestión de relaciones"?{
+	=[moodle]Es clave para entender las dinámicas entre individuos y equipos.
+	~%-33.33333%[moodle]Se centra en las relaciones con proveedores externos únicamente.
+	~%-33.33333%[moodle]Tiene poca relevancia en la práctica diaria.
+	~%-33.33333%[moodle]Solo es aplicable a la gestión financiera.
+}
+
+
+// question: 1035535  name: Pregunta 12
+::Pregunta 12::[html]¿Qué caracteriza el liderazgo en la gestión de enfermería?{
+	=[moodle]La capacidad de gestionar conflictos y fomentar la colaboración.
+	~%-33.33333%[moodle]Evitar tomar decisiones difíciles.
+	~%-33.33333%[moodle]Mantener una estructura jerárquica rígida.
+	~%-33.33333%[moodle]Centrarse exclusivamente en las tareas administrativas.
+}
+
+
+// question: 1035536  name: Pregunta 13
+::Pregunta 13::[html]¿Cómo se desarrollan y mejoran las competencias de una gestora enfermera?{
+	=[moodle]A través de la experiencia práctica y la formación continua.
+	~%-33.33333%[moodle]Ignorando el feedback de colegas y pacientes.
+	~%-33.33333%[moodle]Manteniendo una perspectiva estrecha y resistiéndose al cambio.
+	~%-33.33333%[moodle]Concentrándose solo en la administración de recursos materiales.
+}
+
+
+// question: 1035537  name: Pregunta 14
+::Pregunta 14::[html]¿Cuál es el propósito de la evaluación continua en la gestión de servicios de enfermería?{
+	=[moodle]Garantizar que la organización y los pacientes alcancen resultados óptimos.
+	~%-33.33333%[moodle]Reducir los costos operativos al mínimo.
+	~%-33.33333%[moodle]Limitar la participación del personal en la toma de decisiones.
+	~%-33.33333%[moodle]Evitar el desarrollo profesional del equipo de enfermería.
+}
+
+
+// question: 1035538  name: Pregunta 15
+::Pregunta 15::[html]¿Qué NO es un aspecto de la gestión operativa en enfermería?{
+	=[moodle]Desarrollar políticas sanitarias a nivel nacional.
+	~%-33.33333%[moodle]Liderar y planificar la atención de enfermería.
+	~%-33.33333%[moodle]Asegurar la ejecución eficaz de los procesos asistenciales.
+	~%-33.33333%[moodle]Gestionar los recursos a su disposición.
+}
+
+
+// question: 1035539  name: Pregunta 16
+::Pregunta 16::[html]¿Qué implica la alta dirección en la gestión de enfermería?{
+	=[moodle]Dirigir y establecer estrategias a nivel organizacional.
+	~%-33.33333%[moodle]Trabajar exclusivamente con tareas administrativas básicas.
+	~%-33.33333%[moodle]Limitar el desarrollo profesional continuo.
+	~%-33.33333%[moodle]Evitar la colaboración con otros departamentos.
+}
+
+
+// question: 1035541  name: Pregunta 17
+::Pregunta 17::[html]¿Cómo afecta el liderazgo transformacional de la gestora enfermera al equipo de enfermería?{
+	=[moodle]Inspirando y guiando hacia la mejora continua e innovación.
+	~%-33.33333%[moodle]Reduciendo la motivación y el compromiso del equipo.
+	~%-33.33333%[moodle]Manteniendo una distancia profesional estricta.
+	~%-33.33333%[moodle]Concentrándose en tareas sin considerar el bienestar del equipo.
+}
+
+
+// question: 1035543  name: Pregunta 18
+::Pregunta 18::[html]¿Qué estrategia NO es utilizada por la gestora enfermera para mejorar la calidad asistencial?{
+	=[moodle]Limitación del desarrollo profesional del personal de enfermería.
+	~%-33.33333%[moodle]Promoción de un ambiente de trabajo colaborativo.
+	~%-33.33333%[moodle]Toma de decisiones basada en evidencia.
+	~%-33.33333%[moodle]Fomento de la seguridad del paciente.
+}
+
+
+// question: 1035544  name: Pregunta 19
+::Pregunta 19::[html]¿Cuál es el resultado de una gestión eficaz en enfermería según el documento?{
+	=[moodle]Armonización de los aspectos técnicos y humanísticos de la atención.
+	~%-33.33333%[moodle]Aumento de la burocracia en los procesos de atención.
+	~%-33.33333%[moodle]Disminución de la importancia del liderazgo.
+	~%-33.33333%[moodle]Enfoque exclusivo en la eficiencia operativa sin considerar la calidad.
+}
+
+
+// question: 1035545  name: Pregunta 2
+::Pregunta 2::[html]¿Cuál es una competencia clave de la gestora enfermera?{
+	=[moodle]Habilidades de comunicación efectiva.
+	~%-33.33333%[moodle]Capacidades matemáticas avanzadas.
+	~%-33.33333%[moodle]Conocimientos de ingeniería.
+	~%-33.33333%[moodle]Expertise en tecnologías de la información.
+}
+
+
+// question: 1035546  name: Pregunta 20
+::Pregunta 20::[html]¿Qué importancia tiene la comunicación asertiva en la gestión de enfermería?{
+	=[moodle]Facilita un intercambio fluido de información y comprensión empática.
+	~%-33.33333%[moodle]Se limita a la comunicación escrita.
+	~%-33.33333%[moodle]No es relevante para la gestión de conflictos.
+	~%-33.33333%[moodle]Es menos importante que la gestión de recursos materiales.
+}
+
+
+// question: 1035547  name: Pregunta 21
+::Pregunta 21::[html]¿Cuál es el impacto de la gestora enfermera en el diseño de políticas sanitarias?{
+	=[moodle]Contribuye al diseño y reforma de los sistemas de salud para afrontar futuros retos.
+	~%-33.33333%[moodle]Ninguno, ya que no participa en procesos externos.
+	~%-33.33333%[moodle]Es relevante solo en el contexto de atención directa al paciente.
+	~%-33.33333%[moodle]Se centra en la reducción de la autonomía del personal de enfermería.
+}
+
+
+// question: 1035548  name: Pregunta 22
+::Pregunta 22::[html]¿Qué NO forma parte del proceso continuo de mejora de competencias de la gestora enfermera?{
+	=[moodle]Evitar la retroalimentación y el mentorazgo.
+	~%-33.33333%[moodle]Participación en programas de liderazgo.
+	~%-33.33333%[moodle]Búsqueda activa de desarrollo profesional.
+	~%-33.33333%[moodle]Reflexión crítica sobre la práctica propia.
+}
+
+
+// question: 1035549  name: Pregunta 23
+::Pregunta 23::[html]¿Cuál de las siguientes es una responsabilidad de la gestora enfermera en la alta dirección?{
+	=[moodle]Desarrollo de estrategias de cuidados y planificación.
+	~%-33.33333%[moodle]Atención directa y personalizada a cada paciente.
+	~%-33.33333%[moodle]Realización de tareas administrativas menores.
+	~%-33.33333%[moodle]Supervisión directa de todas las intervenciones de enfermería.
+}
+
+
+// question: 1035550  name: Pregunta 24
+::Pregunta 24::[html]¿Cuál es el efecto de una gestión enfermera orientada a la participación y la evaluación?{
+	=[moodle]Mejora la dinámica de los equipos de enfermería e influye en la satisfacción del paciente.
+	~%-33.33333%[moodle]Disminuye la eficiencia en la atención al paciente.
+	~%-33.33333%[moodle]Aumenta la dependencia de la tecnología en la atención.
+	~%-33.33333%[moodle]Restringe la comunicación dentro del equipo de enfermería.
+}
+
+
+// question: 1035551  name: Pregunta 25
+::Pregunta 25::[html]¿Qué se considera esencial para la toma de decisiones informadas en la gestión de enfermería?{
+	=[moodle]Integración de conocimientos, habilidades y motivaciones intrínsecas.
+	~%-33.33333%[moodle]Exclusividad en el uso de datos cualitativos.
+	~%-33.33333%[moodle]Dependencia de decisiones externas sin análisis interno.
+	~%-33.33333%[moodle]Enfoque en la intuición más que en la evidencia.
+}
+
+
+// question: 1035553  name: Pregunta 3
+::Pregunta 3::[html]¿Qué nivel de gestión se encarga de la planificación y atención directa junto al paciente?{
+	=[moodle]Gestión operativa.
+	~%-33.33333%[moodle]Alta dirección.
+	~%-33.33333%[moodle]Gestión logística.
+	~%-33.33333%[moodle]Gestión estratégica.
+}
+
+
+// question: 1035555  name: Pregunta 4
+::Pregunta 4::[html]¿Cuál es el rol de la gestión logística en enfermería?{
+	=[moodle]Coordinar distintas áreas dentro de la organización para lograr metas comunes.
+	~%-33.33333%[moodle]Tratar directamente con los pacientes.
+	~%-33.33333%[moodle]Realizar tareas administrativas básicas.
+	~%-33.33333%[moodle]Desarrollar el currículo educativo para enfermeras.
+}
+
+
+// question: 1035557  name: Pregunta 5
+::Pregunta 5::[html]¿Qué representa la alta dirección en la estructura de gestión de enfermería?{
+	=[moodle]Liderazgo institucional y desarrollo de estrategias organizacionales.
+	~%-33.33333%[moodle]Supervisión de la atención directa al paciente.
+	~%-33.33333%[moodle]Gestión de recursos materiales exclusivamente.
+	~%-33.33333%[moodle]Entrenamiento y desarrollo profesional de enfermeras.
+}
+
+
+// question: 1035559  name: Pregunta 6
+::Pregunta 6::[html]¿Qué refleja la transición de un enfoque de "controlar y mandar" a "liderar y desarrollar"?{
+	=[moodle]Una evolución en el rol de la gestora enfermera hacia un liderazgo más colaborativo.
+	~%-33.33333%[moodle]Un decrecimiento en la calidad de la atención.
+	~%-33.33333%[moodle]La necesidad de reducir costos operativos.
+	~%-33.33333%[moodle]La disminución de responsabilidades de la gestora enfermera.
+}
+
+
+// question: 1035560  name: Pregunta 7
+::Pregunta 7::[html]¿Cómo se puede mejorar la toma de decisiones en la gestión de enfermería?{
+	=[moodle]Evaluando tanto datos cuantitativos como cualitativos.
+	~%-33.33333%[moodle]Ignorando los datos cuantitativos.
+	~%-33.33333%[moodle]Basándose únicamente en la intuición.
+	~%-33.33333%[moodle]Evitando la retroalimentación del equipo de enfermería.
+}
+
+
+// question: 1035562  name: Pregunta 8
+::Pregunta 8::[html]¿Cuál de las siguientes NO es una competencia de la gestora enfermera?{
+	=[moodle]Gestión de redes sociales.
+	~%-33.33333%[moodle]Liderazgo ético.
+	~%-33.33333%[moodle]Sensibilidad cultural.
+	~%-33.33333%[moodle]Comunicación efectiva.
+}
+
+
+// question: 1035563  name: Pregunta 9
+::Pregunta 9::[html]¿Qué es fundamental para el desarrollo profesional continuo de la gestora enfermera?{
+	=[moodle]Formación académica y experiencia práctica.
+	~%-33.33333%[moodle]Concentrarse únicamente en tareas administrativas.
+	~%-33.33333%[moodle]Evitar la participación en foros profesionales.
+	~%-33.33333%[moodle]Mantenerse aislado de las innovaciones en el campo.
+}
+
+
