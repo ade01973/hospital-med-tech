@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
@@ -22,10 +21,10 @@ const FloatingPoints = ({ points, isCorrect, x, y }) => {
 // Componente de mensaje de racha
 const StreakMessage = ({ streak }) => {
   if (streak < 2) return null;
-  
+
   let message = '';
   let color = '';
-  
+
   if (streak >= 5) {
     message = '¡IMPARABLE! 🔥';
     color = 'from-orange-500 to-red-500';
@@ -39,7 +38,7 @@ const StreakMessage = ({ streak }) => {
     message = '¡2 SEGUIDAS!';
     color = 'from-blue-400 to-blue-500';
   }
-  
+
   return (
     <div className={`bg-gradient-to-r ${color} text-white px-6 py-2 rounded-full font-black text-lg shadow-lg animate-bounce`}>
       {message}
@@ -56,7 +55,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
   const [isCompleted, setIsCompleted] = useState(false);
-  
+
   // 🎮 GAMIFICACIÓN
   const [lives, setLives] = useState(5);
   const [streak, setStreak] = useState(0);
@@ -78,13 +77,13 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
     const allQuestions = [...currentModule.questions];
     const selectedQuestions = [];
-    
+
     for (let i = 0; i < Math.min(10, allQuestions.length); i++) {
       const randomIndex = Math.floor(Math.random() * (allQuestions.length - i)) + i;
       [allQuestions[i], allQuestions[randomIndex]] = [allQuestions[randomIndex], allQuestions[i]];
       selectedQuestions.push(allQuestions[i]);
     }
-    
+
     setQuestions(selectedQuestions);
     setCurrentIndex(0);
     setScore(0);
@@ -105,9 +104,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     const rect = event.target.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top;
-    
+
     setFloatingPoints(prev => [...prev, { id, points, isCorrect, x, y }]);
-    
+
     setTimeout(() => {
       setFloatingPoints(prev => prev.filter(p => p.id !== id));
     }, 1500);
@@ -116,7 +115,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   // Función para avanzar a la siguiente pregunta
   const advanceQuestion = () => {
     const nextIndex = currentIndex + 1;
-    
+
     // Si es la última pregunta, completar el módulo
     if (nextIndex >= questions.length) {
       if (!completedRef.current) {
@@ -125,7 +124,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         playVictory();
         const pointsEarned = score;
         earnCoins(score / 10, `Respuestas correctas en ${topic.title}`);
-        
+
         // Llamar onComplete después de un pequeño delay para que se vean los efectos
         setTimeout(() => {
           onComplete(topic.id, pointsEarned, studentId);
@@ -133,7 +132,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
       }
       return;
     }
-    
+
     setCurrentIndex(nextIndex);
     setSelectedAnswer(null);
     setAnswered(false);
@@ -163,20 +162,20 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   // Manejar timeout (tiempo agotado)
   const handleTimeOut = () => {
     if (answered) return;
-    
+
     setAnswered(true);
     setShowResult(true);
     setSelectedAnswer(null);
-    
+
     // Perder vida y resetear racha
     const newLives = lives - 1;
     setLives(newLives);
     setStreak(0);
     setShakeLife(true);
     setTimeout(() => setShakeLife(false), 500);
-    
+
     playError();
-    
+
     // Auto-avance después de 2 segundos
     setTimeout(() => {
       if (newLives <= 0) {
@@ -208,20 +207,20 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setAnswered(true);
 
     const isCorrect = optionIndex === currentQuestion.correct;
-    
+
     if (isCorrect) {
       // 🎯 RESPUESTA CORRECTA
-      
+
       // Incrementar racha
       const newStreak = streak + 1;
       setStreak(newStreak);
-      
+
       // Mostrar mensaje de racha
       if (newStreak >= 2) {
         setShowStreakMessage(true);
         setTimeout(() => setShowStreakMessage(false), 2000);
       }
-      
+
       // Calcular puntos según tiempo restante
       let basePoints = 100;
       if (timeLeft > 10) {
@@ -229,37 +228,37 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
       } else if (timeLeft > 5) {
         basePoints = 150;
       }
-      
+
       // Bonificación por racha
       let bonusPoints = 0;
       if (newStreak >= 3) {
         bonusPoints = 50;
       }
-      
+
       const totalPoints = basePoints + bonusPoints;
       setScore(prev => prev + totalPoints);
-      
+
       // Mostrar puntos flotantes
       showFloatingPoints(totalPoints, true, event);
-      
+
       setTimeout(() => playSuccess(), 100);
     } else {
       // ❌ RESPUESTA INCORRECTA
-      
+
       // Perder vida
       const newLives = lives - 1;
       setLives(newLives);
-      
+
       // Resetear racha
       setStreak(0);
-      
+
       // Animación de shake
       setShakeLife(true);
       setTimeout(() => setShakeLife(false), 500);
-      
+
       // Mostrar puntos negativos
       showFloatingPoints(-50, false, event);
-      
+
       setTimeout(() => playError(), 100);
     }
   };
@@ -314,6 +313,13 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   if (timeLeft <= 5) timerColor = 'text-red-500';
   else if (timeLeft <= 10) timerColor = 'text-yellow-400';
 
+  const handleGoToDashboard = () => {
+    // Guardar el progreso antes de salir
+    onComplete(topic.id, score, studentId);
+    // Luego salir al dashboard
+    onExit();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
       {/* Puntos flotantes */}
@@ -326,19 +332,19 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           y={fp.y}
         />
       ))}
-      
+
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8 pt-4">
           <div className="flex justify-between items-center mb-4">
             <button
-              onClick={onExit}
+              onClick={handleGoToDashboard}
               className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
               disabled={isCompleted}
             >
               ← Salir
             </button>
-            
+
             {/* Vidas */}
             <div className={`flex gap-1 ${shakeLife ? 'animate-shake' : ''}`}>
               {Array.from({ length: 5 }).map((_, i) => (
@@ -347,7 +353,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
                 </span>
               ))}
             </div>
-            
+
             <div className={`text-3xl font-bold ${timerColor} w-16 text-center`}>
               {timeLeft}s
             </div>
@@ -426,8 +432,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
               ? 'bg-orange-900 text-orange-200'
               : 'bg-red-900 text-red-200'
           }`}>
-            {selectedAnswer === currentQuestion.correct 
-              ? '✓ ¡Correcto!' 
+            {selectedAnswer === currentQuestion.correct
+              ? '✓ ¡Correcto!'
               : selectedAnswer === null
               ? '⏱️ ¡Tiempo agotado!'
               : '✗ Respuesta incorrecta'}
