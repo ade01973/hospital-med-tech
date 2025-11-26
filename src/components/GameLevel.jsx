@@ -37,9 +37,10 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setTimeLeft(15);
   }, [topic]);
 
-  // Cronómetro de 15 segundos
+  // Cronómetro de 15 segundos - INICIA EN TODAS LAS PREGUNTAS
   useEffect(() => {
-    if (answered || !currentIndex || questions.length === 0) return;
+    // NO debe haber condición que impida el timer en la primera pregunta
+    if (answered || questions.length === 0) return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -55,12 +56,21 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     return () => clearInterval(timer);
   }, [answered, currentIndex, questions.length]);
 
+  // Auto-avance después de responder (2 segundos para ver la respuesta)
+  useEffect(() => {
+    if (!answered || questions.length === 0) return;
+
+    const timer = setTimeout(() => {
+      handleNextQuestion();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [answered, currentIndex, questions.length]);
+
   // Reset timer cuando cambia la pregunta
   useEffect(() => {
-    if (!answered) {
-      setTimeLeft(15);
-    }
-  }, [currentIndex, answered]);
+    setTimeLeft(15);
+  }, [currentIndex]);
 
   const currentQuestion = questions[currentIndex];
 
@@ -99,7 +109,6 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   }
 
   const progress = ((currentIndex + 1) / 10) * 100;
-  const isLastQuestion = currentIndex === questions.length - 1;
 
   // Color del cronómetro según tiempo restante
   let timerColor = 'text-blue-400';
@@ -187,14 +196,11 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           </p>
         </div>
 
-        {/* Next button */}
+        {/* Auto-advance message */}
         {answered && (
-          <button
-            onClick={handleNextQuestion}
-            className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition"
-          >
-            {isLastQuestion ? '🏁 Completar' : 'Siguiente →'}
-          </button>
+          <div className="text-center text-slate-400 text-sm">
+            Avanzando a la siguiente pregunta...
+          </div>
         )}
       </div>
     </div>
