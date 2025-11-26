@@ -310,14 +310,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           setTimeLeft(15);
         }}
         onWatchVideo={() => {
-          console.log('🎬 Usuario eligió ver video');
-          // Aquí se puede implementar la lógica del video
-          // Por ahora, recuperamos 2 vidas
+          console.log('🎬 Usuario eligió ver video desde GameOver');
+          setShowReviewVideo(true);
           setLives(2);
-          setAnswered(false);
-          setShowResult(false);
-          setSelectedAnswer(null);
-          setTimeLeft(15);
         }}
         onUsePowerUp={() => {
           console.log('⚡ Usuario usó power-up');
@@ -359,7 +354,10 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
   const handleCloseReviewVideo = () => {
     setShowReviewVideo(false);
-    setShowReviewChoice(true);
+    setAnswered(false);
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setTimeLeft(15);
   };
 
   return (
