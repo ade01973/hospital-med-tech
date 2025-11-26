@@ -322,22 +322,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   if (timeLeft <= 5) timerColor = 'text-red-500';
   else if (timeLeft <= 10) timerColor = 'text-yellow-400';
 
-
-    // Handlers para el modal de revisión
-    const handleWatchReviewVideo = () => {
-      setShowReviewChoice(false);
-      setShowReviewVideo(true);
-    };
-
-    const handleCloseReviewVideo = () => {
-      setShowReviewVideo(false);
-      setShowReviewChoice(true);
-    };
-
   const handleGoToDashboard = () => {
-    // Guardar el progreso antes de salir
     onComplete(topic.id, score, studentId);
-    // Luego salir al dashboard
     onExit();
   };
 
@@ -463,36 +449,4 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
       </div>
     </div>
   );
-
-    {/* Modal de revisión o dashboard */}
-    {showReviewChoice && (
-      <ReviewOrDashboard
-        onWatchVideo={handleWatchReviewVideo}
-        onGoToDashboard={handleGoToDashboard}
-        onClose={() => setShowReviewChoice(false)}
-      />
-    )}
-
-    {/* Video de repaso */}
-    {showReviewVideo && topic.reviewVideoId && (
-      <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
-        <div className="relative w-full h-full max-w-6xl max-h-screen p-8">
-          <button
-            onClick={handleCloseReviewVideo}
-            className="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 z-10"
-          >
-            ×
-          </button>
-          <iframe
-            className="w-full h-full rounded-lg"
-            src={`https://www.youtube.com/embed/${topic.reviewVideoId}?autoplay=1`}
-            title="Video de Repaso"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      </div>
-    )}
-
 }
