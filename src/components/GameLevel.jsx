@@ -72,6 +72,31 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [floatingPoints, setFloatingPoints] = useState([]);
   const [shakeLife, setShakeLife] = useState(false);
 
+  // Videos de repaso por módulo
+  const videoLinks = {
+    1: "bL0e705JuZQ",
+    2: "eb1nlMUK3-c",
+    3: "ThHodVUzC9c",
+    4: "oB4ol3EYEIs",
+    5: "yUOPtM_yEHc",
+    6: "NMY7SwEgC50",
+    7: "TU9VF7sWh-w",
+    8: "7yo2d-MtgBw",
+    9: "rTJXMJqkUSw",
+    10: "pem8VkjbNA4",
+    11: "iJNKzYCRoEw",
+    12: "VvHqG2ec744",
+    13: "scs2OI7IB2c",
+    14: "HBnbjZKqyjA",
+    15: "5KbUJ6fDVRA",
+    16: "DVlSigTdaoQ",
+    17: "e0AbDC1DlLI",
+    18: "pvOTsv6alS8",
+    19: "p2qaUIymS9M",
+    20: "w_YbsjGtn1s",
+    21: "hvI5afYV9kM",
+  };
+
   const { playSuccess, playError, playVictory } = useSoundEffects();
   const { earnCoins } = useGestCoins();
   const completedRef = useRef(false);
@@ -506,7 +531,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
       )}
 
       {/* MODAL: Video de Repaso */}
-      {showReviewVideo && topic.reviewVideoId && (
+      {showReviewVideo && videoLinks[topic.id] && (
         <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4">
           <div className="w-full h-full max-w-6xl max-h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
@@ -521,7 +546,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             <div className="flex-1">
               <iframe
                 className="w-full h-full rounded-lg"
-                src={`https://www.youtube.com/embed/${topic.reviewVideoId}?autoplay=1`}
+                src={`https://www.youtube.com/embed/${videoLinks[topic.id]}?autoplay=1`}
                 title="Video de Repaso"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
