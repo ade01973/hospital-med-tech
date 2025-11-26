@@ -54,7 +54,7 @@ const GameLevel = ({
   const [completed, setCompleted] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(30);
+  const [remainingTime, setRemainingTime] = useState(15);
   const [timeBonus, setTimeBonus] = useState("");
   const [showTimeBonus, setShowTimeBonus] = useState(false);
   const [triggerConfetti, setTriggerConfetti] = useState(false);
@@ -155,7 +155,7 @@ const GameLevel = ({
               setCurrentFloor(nextFloor);
               setSelectedOption(null);
               setIsCorrect(null);
-              setRemainingTime(30);
+              setRemainingTime(15);
             }
           }, 1500);
 
@@ -181,7 +181,7 @@ const GameLevel = ({
   // Resetear timer cuando cambia la pregunta
   useEffect(() => {
     if (selectedOption === null) {
-      setRemainingTime(30);
+      setRemainingTime(15);
     }
   }, [currentFloor]);
 
@@ -718,13 +718,13 @@ const GameLevel = ({
             <div className="w-full h-2 bg-slate-800 overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${
-                  remainingTime > 20
+                  remainingTime > 10
                     ? "bg-gradient-to-r from-emerald-500 to-green-400"
-                    : remainingTime > 10
+                    : remainingTime > 5
                       ? "bg-gradient-to-r from-yellow-500 to-orange-400"
                       : "bg-gradient-to-r from-red-600 to-rose-500 animate-pulse"
                 }`}
-                style={{ width: `${(remainingTime / 30) * 100}%` }}
+                style={{ width: `${(remainingTime / 15) * 100}%` }}
               ></div>
             </div>
 
@@ -764,9 +764,9 @@ const GameLevel = ({
                 </span>
                 <div
                   className={`px-3 py-1 rounded-full font-black text-sm font-mono ${
-                    remainingTime > 20
+                    remainingTime > 10
                       ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50"
-                      : remainingTime > 10
+                      : remainingTime > 5
                         ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/50"
                         : "bg-red-500/20 text-red-300 border border-red-500/50 animate-pulse"
                   }`}
