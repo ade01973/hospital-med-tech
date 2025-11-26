@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useGestCoins } from '../hooks/useGestCoins';
+import ReviewOrDashboard from './ReviewOrDashboard';
 
-export default function GameLevel({ topic, user, userData, studentId, onExit, onComplete }) {
+export default function GameLevel({ topic, user, userData, studentId, onExit, onComplete, videoId }) {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -12,6 +13,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [showReviewChoice, setShowReviewChoice] = useState(false);
+  const [showReviewVideo, setShowReviewVideo] = useState(false);
 
   const { playSuccess, playError, playVictory } = useSoundEffects();
   const { earnCoins } = useGestCoins();
@@ -55,12 +58,11 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         completedRef.current = true;
         setIsCompleted(true);
         playVictory();
-        const pointsEarned = score * 100;
         earnCoins(score * 10, `Respuestas correctas: ${score}/10`);
         
-        // Llamar onComplete después de un pequeño delay para que se vean los efectos
+        // Mostrar pantalla de elección después de un pequeño delay
         setTimeout(() => {
-          onComplete(topic.id, pointsEarned, studentId);
+          setShowReviewChoice(true);
         }, 1000);
       }
       return;
@@ -71,6 +73,15 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setAnswered(false);
     setShowResult(false);
     setTimeLeft(15);
+  };
+
+  const handleViewReview = () => {
+    setShowReviewVideo(true);
+  };
+
+  const handleGoToDashboard = () => {
+    const pointsEarned = score * 100;
+    onComplete(topic.id, pointsEarned, studentId);
   };
 
   // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
@@ -126,6 +137,38 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     );
   }
 
+  // Mostrar video de repaso si se seleccionó esa opción
+  if (showReviewVideo && videoId) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-4xl">
+          <button
+            onClick={() => {
+              const pointsEarned = score * 100;
+              onComplete(topic.id, pointsEarned, studentId);
+            }}
+            className="mb-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+          >
+            ← Finalizar
+          </button>
+          <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
+            <div className="aspect-video">
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                title="Video de repaso"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const progress = ((currentIndex + 1) / 10) * 100;
   let timerColor = 'text-blue-400';
   if (timeLeft <= 5) timerColor = 'text-red-500';
@@ -133,6 +176,18 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4">
+      {/* Review Choice Modal */}
+      <ReviewOrDashboard
+        isOpen={showReviewChoice}
+        score={score}
+        totalQuestions={questions.length}
+        topic={topic}
+        videoId={videoId}
+        onViewVideo={handleViewReview}
+        onGoToDashboard={handleGoToDashboard}
+        onClose={() => setShowReviewChoice(false)}
+      />
+
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8 pt-4">
