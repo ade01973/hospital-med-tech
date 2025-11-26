@@ -617,7 +617,7 @@ const GameLevel = ({
           </span>
           <span className="text-cyan-400 font-black text-xl tracking-widest">
             0{currentFloor + 1} /{" "}
-            {String(topic.questions.length).padStart(2, "0")}
+            {String(randomizedQuestions.length).padStart(2, "0")}
           </span>
         </div>
 
@@ -760,7 +760,7 @@ const GameLevel = ({
               <div className="px-4 pb-4 flex justify-between items-center">
                 <span className="text-slate-400 font-mono text-sm">
                   PREGUNTA {String(currentFloor + 1).padStart(2, "0")} /{" "}
-                  {String(topic.questions.length).padStart(2, "0")}
+                  {String(randomizedQuestions.length).padStart(2, "0")}
                 </span>
                 <div
                   className={`px-3 py-1 rounded-full font-black text-sm font-mono ${
@@ -778,11 +778,11 @@ const GameLevel = ({
 
             <div className="p-8">
               <h3 className="text-2xl font-black text-white mb-10 leading-snug">
-                {topic.questions[currentFloor].q}
+                {randomizedQuestions[currentFloor].q}
               </h3>
 
               <div className="space-y-4">
-                {topic.questions[currentFloor].options.map((opt, idx) => (
+                {randomizedQuestions[currentFloor].options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -801,7 +801,7 @@ const GameLevel = ({
                           ? isCorrect
                             ? `bg-emerald-900/60 border-emerald-500 text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.5)] animate-glow-pulse-green ${!isCorrect ? "animate-shake" : ""}`
                             : `bg-red-900/60 border-red-500 text-red-300 shadow-[0_0_30px_rgba(239,68,68,0.5)] animate-shake`
-                          : idx === topic.questions[currentFloor].correct
+                          : idx === randomizedQuestions[currentFloor].correct
                             ? "bg-emerald-900/40 border-emerald-500/50 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
                             : "opacity-30 border-transparent text-slate-500"
                     }`}
