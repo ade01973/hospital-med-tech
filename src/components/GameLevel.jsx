@@ -146,15 +146,23 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-4xl">
-          <button
-            onClick={() => {
-              const pointsEarned = score * 100;
-              onComplete(topic.id, pointsEarned, studentId);
-            }}
-            className="mb-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
-          >
-            ← Finalizar
-          </button>
+          <div className="flex gap-3 mb-4">
+            <button
+              onClick={() => setShowReviewVideo(false)}
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+            >
+              ← Volver
+            </button>
+            <button
+              onClick={() => {
+                const pointsEarned = score * 100;
+                onComplete(topic.id, pointsEarned, studentId);
+              }}
+              className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition"
+            >
+              ✓ Finalizar
+            </button>
+          </div>
           <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
             <div className="aspect-video">
               <iframe
