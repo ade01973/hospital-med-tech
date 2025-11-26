@@ -25,6 +25,30 @@ export default function App() {
   const [showRewardNotification, setShowRewardNotification] = useState(false);
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   
+  const videoLinks = {
+    1: "bL0e705JuZQ",
+    2: "eb1nlMUK3-c",
+    3: "ThHodVUzC9c",
+    4: "oB4ol3EYEIs",
+    5: "yUOPtM_yEHc",
+    6: "NMY7SwEgC50",
+    7: "TU9VF7sWh-w",
+    8: "7yo2d-MtgBw",
+    9: "rTJXMJqkUSw",
+    10: "pem8VkjbNA4",
+    11: "iJNKzYCRoEw",
+    12: "VvHqG2ec744",
+    13: "scs2OI7IB2c",
+    14: "HBnbjZKqyjA",
+    15: "5KbUJ6fDVRA",
+    16: "DVlSigTdaoQ",
+    17: "e0AbDC1DlLI",
+    18: "pvOTsv6alS8",
+    19: "p2qaUIymS9M",
+    20: "w_YbsjGtn1s",
+    21: "hvI5afYV9kM",
+  };
+  
   const { processLogin } = useLoginStreak();
   const { 
     newBadge, 
@@ -202,6 +226,7 @@ export default function App() {
           user={user}
           userData={userData}
           studentId={userData?.studentId || localStorage.getItem('studentId')}
+          videoId={videoLinks[currentLevel.id]}
           onExit={() => { setCurrentLevel(null); setView('dashboard'); }}
           onComplete={handleLevelComplete}
         />

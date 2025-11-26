@@ -76,12 +76,16 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   };
 
   const handleViewReview = () => {
+    setShowReviewChoice(false);
     setShowReviewVideo(true);
   };
 
   const handleGoToDashboard = () => {
+    setShowReviewChoice(false);
     const pointsEarned = score * 100;
-    onComplete(topic.id, pointsEarned, studentId);
+    setTimeout(() => {
+      onComplete(topic.id, pointsEarned, studentId);
+    }, 100);
   };
 
   // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
