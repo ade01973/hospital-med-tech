@@ -8,32 +8,59 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(15);
 
-  // Mezclar y preparar preguntas aleatoriamente
+  // Preparar 10 preguntas aleatorias SOLO del módulo actual
   useEffect(() => {
     if (!topic) return;
 
-    // Obtener módulos 1 y 2
-    const module1 = TOPICS.find(t => t.id === 1);
-    const module2 = TOPICS.find(t => t.id === 2);
-    
-    if (!module1 || !module2) return;
+    // Buscar el módulo específico
+    const currentModule = TOPICS.find(t => t.id === topic.id);
+    if (!currentModule || !currentModule.questions) return;
 
-    // Combinar preguntas de ambos módulos
-    const allQuestions = [...module1.questions, ...module2.questions];
+    // Seleccionar 10 preguntas aleatorias del módulo
+    const allQuestions = [...currentModule.questions];
+    const selectedQuestions = [];
     
-    // Limitar a 25 preguntas totales
-    const limitedQuestions = allQuestions.slice(0, 25);
+    // Fisher-Yates shuffle para seleccionar 10 aleatorias
+    for (let i = 0; i < Math.min(10, allQuestions.length); i++) {
+      const randomIndex = Math.floor(Math.random() * (allQuestions.length - i)) + i;
+      [allQuestions[i], allQuestions[randomIndex]] = [allQuestions[randomIndex], allQuestions[i]];
+      selectedQuestions.push(allQuestions[i]);
+    }
     
-    // Barajar aleatoriamente
-    const shuffled = [...limitedQuestions].sort(() => Math.random() - 0.5);
-    
-    setQuestions(shuffled);
+    setQuestions(selectedQuestions);
     setCurrentIndex(0);
     setScore(0);
     setAnswered(false);
     setSelectedAnswer(null);
+    setTimeLeft(15);
   }, [topic]);
+
+  // Cronómetro de 15 segundos
+  useEffect(() => {
+    if (answered || !currentIndex || questions.length === 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          // Pasar automáticamente a la siguiente pregunta
+          handleNextQuestion();
+          return 15;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [answered, currentIndex, questions.length]);
+
+  // Reset timer cuando cambia la pregunta
+  useEffect(() => {
+    if (!answered) {
+      setTimeLeft(15);
+    }
+  }, [currentIndex, answered]);
 
   const currentQuestion = questions[currentIndex];
 
@@ -47,20 +74,21 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     }
   };
 
-  const handleNext = () => {
+  const handleNextQuestion = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
       setAnswered(false);
       setShowResult(false);
+      setTimeLeft(15);
     } else {
-      // Calcular puntos (1 punto por pregunta correcta)
+      // Completar el módulo
       const pointsEarned = score * 100;
       onComplete(topic.id, pointsEarned, studentId);
     }
   };
 
-  if (!currentQuestion) {
+  if (!currentQuestion || questions.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
         <div className="text-center text-white">
@@ -70,8 +98,13 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     );
   }
 
-  const progress = ((currentIndex + 1) / questions.length) * 100;
+  const progress = ((currentIndex + 1) / 10) * 100;
   const isLastQuestion = currentIndex === questions.length - 1;
+
+  // Color del cronómetro según tiempo restante
+  let timerColor = 'text-blue-400';
+  if (timeLeft <= 5) timerColor = 'text-red-500';
+  else if (timeLeft <= 10) timerColor = 'text-yellow-400';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4">
@@ -86,8 +119,11 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
               ← Salir
             </button>
             <span className="text-white font-bold text-lg">
-              Pregunta {currentIndex + 1}/{questions.length}
+              Pregunta {currentIndex + 1}/10
             </span>
+            <div className={`text-3xl font-bold ${timerColor} w-16 text-center`}>
+              {timeLeft}s
+            </div>
           </div>
 
           {/* Progress bar */}
@@ -147,14 +183,14 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         {/* Score display */}
         <div className="text-center mb-6">
           <p className="text-white text-lg font-semibold">
-            Puntuación: <span className="text-blue-400">{score}/{questions.length}</span>
+            Puntuación: <span className="text-blue-400">{score}/10</span>
           </p>
         </div>
 
         {/* Next button */}
         {answered && (
           <button
-            onClick={handleNext}
+            onClick={handleNextQuestion}
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition"
           >
             {isLastQuestion ? '🏁 Completar' : 'Siguiente →'}
