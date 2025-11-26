@@ -11,7 +11,14 @@ const FloatingPoints = ({ points, isCorrect, x, y }) => {
       className="fixed pointer-events-none z-50 animate-float-up"
       style={{ left: `${x}px`, top: `${y}px` }}
     >
-      <div className={`text-3xl font-black ${isCorrect ? 'text-green-400' : 'text-red-400'} drop-shadow-lg`}>
+      <div 
+        className={`text-4xl font-black ${
+          isCorrect ? 'text-green-400' : 'text-[#FF3B3B]'
+        } drop-shadow-[0_0_8px_rgba(0,0,0,0.8)]`}
+        style={!isCorrect ? {
+          textShadow: '0 0 10px rgba(255, 59, 59, 0.8), 0 0 20px rgba(255, 59, 59, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.9)'
+        } : {}}
+      >
         {isCorrect ? '+' : ''}{points}
       </div>
     </div>
