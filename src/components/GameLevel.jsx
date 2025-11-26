@@ -327,6 +327,16 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     onExit();
   };
 
+  const handleViewReview = () => {
+    setShowReviewChoice(false);
+    setShowReviewVideo(true);
+  };
+
+  const handleCloseReviewVideo = () => {
+    setShowReviewVideo(false);
+    setShowReviewChoice(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
       {/* Puntos flotantes */}
@@ -447,6 +457,88 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           </div>
         )}
       </div>
+
+      {/* MODAL: Opciones después de completar el módulo */}
+      {showReviewChoice && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 max-w-md w-full border-2 border-purple-500 shadow-2xl">
+            {/* Título */}
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-2">
+                ¡Módulo Completado! 🎉
+              </h2>
+              <p className="text-gray-300">{topic.title}</p>
+            </div>
+
+            {/* Datos de lo conseguido */}
+            <div className="bg-slate-700 rounded-lg p-4 mb-6 space-y-3">
+              <div className="flex justify-between items-center text-white">
+                <span className="font-semibold">Puntos Totales:</span>
+                <span className="text-2xl font-black text-yellow-400">{score * 100}</span>
+              </div>
+              <div className="flex justify-between items-center text-white">
+                <span className="font-semibold">GestCoins Ganados:</span>
+                <span className="text-2xl font-black text-green-400">+{Math.floor(score / 10)}</span>
+              </div>
+              <div className="flex justify-between items-center text-white">
+                <span className="font-semibold">Racha Máxima:</span>
+                <span className="text-2xl font-black text-orange-400">{streak} 🔥</span>
+              </div>
+            </div>
+
+            {/* Botones */}
+            <div className="space-y-3">
+              <button
+                onClick={handleViewReview}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg"
+              >
+                📹 Ver Video de Repaso
+              </button>
+              <button
+                onClick={handleGoToDashboard}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg"
+              >
+                📚 Volver a Módulos
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: Video de Repaso */}
+      {showReviewVideo && topic.reviewVideoId && (
+        <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4">
+          <div className="w-full h-full max-w-6xl max-h-screen flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-white font-black text-xl">Video de Repaso: {topic.title}</h3>
+              <button
+                onClick={handleCloseReviewVideo}
+                className="bg-red-600 hover:bg-red-700 text-white font-black py-2 px-4 rounded-lg transition text-2xl"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1">
+              <iframe
+                className="w-full h-full rounded-lg"
+                src={`https://www.youtube.com/embed/${topic.reviewVideoId}?autoplay=1`}
+                title="Video de Repaso"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <div className="mt-4 text-center">
+              <button
+                onClick={handleCloseReviewVideo}
+                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black py-2 px-8 rounded-lg transition"
+              >
+                Finalizar Video
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
