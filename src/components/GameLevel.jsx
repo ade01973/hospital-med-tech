@@ -3,6 +3,8 @@ import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useGestCoins } from '../hooks/useGestCoins';
 import LivesGameOver from './LivesGameOver';
+import ReviewOrDashboard from './ReviewOrDashboard';
+import VideoPlayer from './VideoPlayer';
 
 // Componente de puntos flotantes
 const FloatingPoints = ({ points, isCorrect, x, y }) => {
@@ -69,6 +71,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showStreakMessage, setShowStreakMessage] = useState(false);
   const [floatingPoints, setFloatingPoints] = useState([]);
   const [shakeLife, setShakeLife] = useState(false);
+  const [showReviewChoice, setShowReviewChoice] = useState(false);
+  const [showReviewVideo, setShowReviewVideo] = useState(false);
 
   const { playSuccess, playError, playVictory } = useSoundEffects();
   const { earnCoins } = useGestCoins();
@@ -132,9 +136,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         const pointsEarned = score;
         earnCoins(score / 10, `Respuestas correctas en ${topic.title}`);
 
-        // Llamar onComplete después de un pequeño delay para que se vean los efectos
+        // Mostrar el modal de opciones después de un pequeño delay
         setTimeout(() => {
-          onComplete(topic.id, pointsEarned, studentId);
+          setShowReviewChoice(true);
         }, 1000);
       }
       return;
@@ -320,9 +324,16 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   if (timeLeft <= 5) timerColor = 'text-red-500';
   else if (timeLeft <= 10) timerColor = 'text-yellow-400';
 
+  const handleViewReview = () => {
+    setShowReviewChoice(false);
+    setShowReviewVideo(true);
+  };
+
   const handleGoToDashboard = () => {
-    // Guardar el progreso antes de salir
-    onComplete(topic.id, score, studentId);
+    setShowReviewChoice(false);
+    setShowReviewVideo(false);
+    const pointsEarned = score * 100;
+    onComplete(topic.id, pointsEarned, studentId);
     // Luego salir al dashboard
     onExit();
   };
@@ -447,6 +458,28 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           </div>
         )}
       </div>
+
+      {/* Modal de elección: Ver video o ir a módulos */}
+      {showReviewChoice && (
+        <ReviewOrDashboard
+          isOpen={showReviewChoice}
+          onClose={() => setShowReviewChoice(false)}
+          onViewReview={handleViewReview}
+          onGoToDashboard={handleGoToDashboard}
+        />
+      )}
+
+      {/* Modal de video de repaso */}
+      {showReviewVideo && topic.reviewVideoId && (
+        <VideoPlayer
+          videoId={topic.reviewVideoId}
+          onClose={() => {
+            setShowReviewVideo(false);
+            setShowReviewChoice(true);
+          }}
+          title={`Video de Repaso: ${topic.title}`}
+        />
+      )}
     </div>
   );
 }
