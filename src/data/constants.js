@@ -868,6 +868,236 @@ export const TOPICS = [
         ],
         correct: 1,
       },
+      {
+        q: "¿Cuál es el principal enfoque del liderazgo en enfermería?",
+        options: [
+          "Administración de recursos financieros",
+          "Influencia positiva y motivación hacia la excelencia en el cuidado de los pacientes",
+          "Implementación de procesos administrativos rigurosos",
+          "Supervisión directa de todas las actividades clínicas",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué define principalmente al liderazgo en el contexto de la enfermería?",
+        options: [
+          "La posición jerárquica y el poder",
+          "La capacidad para inspirar y guiar al equipo hacia objetivos comunes",
+          "El seguimiento estricto de protocolos y procedimientos",
+          "La gestión de la documentación y el registro de pacientes",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Por qué es vital un liderazgo fuerte en la enfermería?",
+        options: [
+          "Para reducir los costos operativos exclusivamente",
+          "Para afrontar retos como la mejora de la calidad del cuidado y la gestión de recursos",
+          "Para limitar la participación del personal en la toma de decisiones",
+          "Para aumentar la carga de trabajo del personal de enfermería",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo impacta el liderazgo transformacional en la motivación del equipo?",
+        options: [
+          "Reduce la motivación mediante control estricto",
+          "Inspira cambio positivo e impulsa el compromiso personal hacia la excelencia",
+          "Solo afecta los salarios",
+          "No tiene impacto relevante",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué característica es esencial en un líder para manejar crisis en enfermería?",
+        options: [
+          "Evitar tomar decisiones rápidas",
+          "Capacidad de mantener calma, claridad y decisión informada bajo presión",
+          "Delegar toda responsabilidad inmediatamente",
+          "Esperar a que se resuelva sin intervención",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es el rol del líder enfermero en la retención de personal?",
+        options: [
+          "Es irrelevante para la retención",
+          "Crear un ambiente positivo, reconocer logros y facilitar desarrollo profesional",
+          "Solo aumentar salarios",
+          "Implementar políticas punitivas",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué significa liderazgo distribuido en enfermería?",
+        options: [
+          "Concentrar poder en un solo líder",
+          "Compartir responsabilidades y empoderar a múltiples miembros del equipo",
+          "Eliminar la estructura jerárquica completamente",
+          "Reducir la cantidad de líderes",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo puede un líder de enfermería promover la cultura de seguridad del paciente?",
+        options: [
+          "Culpando al personal por errores",
+          "Fomentando la transparencia, reportaje de incidentes y mejora continua",
+          "Ignorando los problemas de seguridad",
+          "Sobreprotegiendo al paciente",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es la importancia de la comunicación clara en el liderazgo de enfermería?",
+        options: [
+          "Es opcional e innecesaria",
+          "Es fundamental para alinear objetivos, evitar errores y generar confianza",
+          "Solo importante en reuniones formales",
+          "No tiene impacto en el desempeño",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué habilidad blanda es crítica para el liderazgo efectivo en enfermería?",
+        options: [
+          "Solo conocimiento técnico avanzado",
+          "Empatía, escucha activa y capacidad de entender perspectivas diferentes",
+          "Autoritarismo absoluto",
+          "Aislamiento del equipo",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo debe un líder enfermero responder ante el agotamiento del personal?",
+        options: [
+          "Aumentando las exigencias de trabajo",
+          "Reconociendo el problema, mejorando turnos y promoviendo bienestar integral",
+          "Reemplazando al personal agotado",
+          "Ignorando el problema",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué papel juega la formación continua en el liderazgo de enfermería?",
+        options: [
+          "Es un gasto innecesario",
+          "Actualiza competencias y mejora la capacidad de adaptación a cambios",
+          "Solo para personal nuevo",
+          "No mejora el liderazgo",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es la diferencia entre autoridad formal y autoridad ganada en liderazgo?",
+        options: [
+          "No hay diferencia",
+          "Formal es por posición; ganada se obtiene por confianza, respeto y credibilidad",
+          "La ganada es menos importante",
+          "La formal es irrelevante",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo puede un líder enfermero fomentar la innovación en la práctica clínica?",
+        options: [
+          "Prohibiendo nuevas ideas",
+          "Creando espacios seguros para experimentar, aprender de errores y mejorar procesos",
+          "Manteniendo métodos antiguos",
+          "Centralizando todas las decisiones",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué importancia tiene la transparencia en el liderazgo de enfermería?",
+        options: [
+          "Es irrelevante",
+          "Genera confianza, reduce incertidumbre y fortalece la credibilidad del líder",
+          "Solo en situaciones positivas",
+          "Debilita la autoridad",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es el impacto de un liderazgo negativo en el equipo de enfermería?",
+        options: [
+          "Mejora el rendimiento",
+          "Aumenta estrés, disminuye satisfacción, eleva rotación de personal y compromete calidad",
+          "No tiene efectos",
+          "Solo afecta economía",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo debe un líder enfermero manejar los conflictos interpersonales?",
+        options: [
+          "Ignorándolos hasta que desaparezcan",
+          "Mediando con imparcialidad, escuchando y buscando soluciones colaborativas",
+          "Tomando partido automaticamente",
+          "Castigando a ambas partes",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué significa liderar con integridad en enfermería?",
+        options: [
+          "Cambiar valores según conveniencia",
+          "Actuar consistentemente conforme a principios éticos, siendo modelo para el equipo",
+          "Ocultar decisiones difíciles",
+          "Priorizar beneficio personal",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es la relación entre liderazgo y accountability en enfermería?",
+        options: [
+          "El líder no debe asumir responsabilidades",
+          "El líder modela accountability siendo responsable de decisiones y resultados",
+          "Accountability solo aplica al personal",
+          "No están relacionados",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo puede un líder enfermero apoyar el desarrollo de futuros líderes?",
+        options: [
+          "Evitando delegar responsabilidades",
+          "Mentorando, delegando autoridad y creando oportunidades de crecimiento",
+          "Limitando el aprendizaje",
+          "Criticando constantemente",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Qué rol tiene la empatía en el liderazgo de enfermería?",
+        options: [
+          "Es una debilidad",
+          "Facilita comprensión, apoyo emocional y relaciones positivas con el equipo",
+          "Solo para situaciones especiales",
+          "Reduce efectividad",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cómo debe un líder enfermero adaptar su estilo ante cambios organizacionales?",
+        options: [
+          "Resistiendo cambios",
+          "Siendo flexible, comunicando claramente y guiando al equipo en la transición",
+          "Culpando a otros",
+          "Abdicando responsabilidades",
+        ],
+        correct: 1,
+      },
+      {
+        q: "¿Cuál es el impacto del feedback constructivo en el desarrollo del equipo?",
+        options: [
+          "Disminuye motivación",
+          "Mejora desempeño, acelera aprendizaje y fortalece confianza cuando se entrega bien",
+          "Solo genera conflictos",
+          "Es innecesario",
+        ],
+        correct: 1,
+      },
     ],
   },
   {
