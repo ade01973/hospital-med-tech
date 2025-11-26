@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { TOPICS } from '../data/constants';
-import useSoundEffects from '../hooks/useSoundEffects';
-import { useGestCoins } from '../hooks/useGestCoins';
-import LivesGameOver from './LivesGameOver';
+import React, { useState, useEffect, useRef } from "react";
+import { TOPICS } from "../data/constants";
+import useSoundEffects from "../hooks/useSoundEffects";
+import { useGestCoins } from "../hooks/useGestCoins";
+import LivesGameOver from "./LivesGameOver";
+import ConfettiCelebration from "./ConfettiCelebration";
 
 // Componente de puntos flotantes
 const FloatingPoints = ({ points, isCorrect, x, y }) => {
@@ -11,15 +12,21 @@ const FloatingPoints = ({ points, isCorrect, x, y }) => {
       className="fixed pointer-events-none z-50 animate-float-up"
       style={{ left: `${x}px`, top: `${y}px` }}
     >
-      <div 
+      <div
         className={`text-4xl font-black ${
-          isCorrect ? 'text-green-400' : 'text-[#FF3B3B]'
+          isCorrect ? "text-green-400" : "text-[#FF3B3B]"
         } drop-shadow-[0_0_8px_rgba(0,0,0,0.8)]`}
-        style={!isCorrect ? {
-          textShadow: '0 0 10px rgba(255, 59, 59, 0.8), 0 0 20px rgba(255, 59, 59, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.9)'
-        } : {}}
+        style={
+          !isCorrect
+            ? {
+                textShadow:
+                  "0 0 10px rgba(255, 59, 59, 0.8), 0 0 20px rgba(255, 59, 59, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.9)",
+              }
+            : {}
+        }
       >
-        {isCorrect ? '+' : ''}{points}
+        {isCorrect ? "+" : ""}
+        {points}
       </div>
     </div>
   );
@@ -29,31 +36,40 @@ const FloatingPoints = ({ points, isCorrect, x, y }) => {
 const StreakMessage = ({ streak }) => {
   if (streak < 2) return null;
 
-  let message = '';
-  let color = '';
+  let message = "";
+  let color = "";
 
   if (streak >= 5) {
-    message = '¡IMPARABLE! 🔥';
-    color = 'from-orange-500 to-red-500';
+    message = "¡IMPARABLE! 🔥";
+    color = "from-orange-500 to-red-500";
   } else if (streak === 4) {
-    message = '¡4 SEGUIDAS! 🔥';
-    color = 'from-yellow-500 to-orange-500';
+    message = "¡4 SEGUIDAS! 🔥";
+    color = "from-yellow-500 to-orange-500";
   } else if (streak === 3) {
-    message = '¡3 EN RACHA! 🔥';
-    color = 'from-yellow-400 to-yellow-500';
+    message = "¡3 EN RACHA! 🔥";
+    color = "from-yellow-400 to-yellow-500";
   } else if (streak === 2) {
-    message = '¡2 SEGUIDAS!';
-    color = 'from-blue-400 to-blue-500';
+    message = "¡2 SEGUIDAS!";
+    color = "from-blue-400 to-blue-500";
   }
 
   return (
-    <div className={`bg-gradient-to-r ${color} text-white px-6 py-2 rounded-full font-black text-lg shadow-lg animate-bounce`}>
+    <div
+      className={`bg-gradient-to-r ${color} text-white px-6 py-2 rounded-full font-black text-lg shadow-lg animate-bounce`}
+    >
       {message}
     </div>
   );
 };
 
-export default function GameLevel({ topic, user, userData, studentId, onExit, onComplete }) {
+export default function GameLevel({
+  topic,
+  user,
+  userData,
+  studentId,
+  onExit,
+  onComplete,
+}) {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -72,6 +88,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showStreakMessage, setShowStreakMessage] = useState(false);
   const [floatingPoints, setFloatingPoints] = useState([]);
   const [shakeLife, setShakeLife] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Videos de repaso por módulo
   const videoLinks = {
@@ -107,15 +124,19 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   useEffect(() => {
     if (!topic) return;
 
-    const currentModule = TOPICS.find(t => t.id === topic.id);
+    const currentModule = TOPICS.find((t) => t.id === topic.id);
     if (!currentModule || !currentModule.questions) return;
 
     const allQuestions = [...currentModule.questions];
     const selectedQuestions = [];
 
     for (let i = 0; i < Math.min(10, allQuestions.length); i++) {
-      const randomIndex = Math.floor(Math.random() * (allQuestions.length - i)) + i;
-      [allQuestions[i], allQuestions[randomIndex]] = [allQuestions[randomIndex], allQuestions[i]];
+      const randomIndex =
+        Math.floor(Math.random() * (allQuestions.length - i)) + i;
+      [allQuestions[i], allQuestions[randomIndex]] = [
+        allQuestions[randomIndex],
+        allQuestions[i],
+      ];
       selectedQuestions.push(allQuestions[i]);
     }
 
@@ -140,10 +161,10 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     const x = rect.left + rect.width / 2;
     const y = rect.top;
 
-    setFloatingPoints(prev => [...prev, { id, points, isCorrect, x, y }]);
+    setFloatingPoints((prev) => [...prev, { id, points, isCorrect, x, y }]);
 
     setTimeout(() => {
-      setFloatingPoints(prev => prev.filter(p => p.id !== id));
+      setFloatingPoints((prev) => prev.filter((p) => p.id !== id));
     }, 1500);
   };
 
@@ -157,6 +178,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         completedRef.current = true;
         setIsCompleted(true);
         playVictory();
+        setShowConfetti(true);
         const pointsEarned = score;
         earnCoins(score / 10, `Respuestas correctas en ${topic.title}`);
 
@@ -178,10 +200,11 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
   // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
   useEffect(() => {
-    if (answered || isCompleted || questions.length === 0 || !currentQuestion) return;
+    if (answered || isCompleted || questions.length === 0 || !currentQuestion)
+      return;
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
           // Tiempo agotado: contar como respuesta incorrecta
           handleTimeOut();
@@ -271,7 +294,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
       }
 
       const totalPoints = basePoints + bonusPoints;
-      setScore(prev => prev + totalPoints);
+      setScore((prev) => prev + totalPoints);
 
       // Mostrar puntos flotantes
       showFloatingPoints(totalPoints, true, event);
@@ -311,13 +334,13 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           setTimeLeft(15);
         }}
         onWatchVideo={() => {
-          console.log('🎬 Usuario eligió ver video desde GameOver');
+          console.log("🎬 Usuario eligió ver video desde GameOver");
           setShowReviewVideo(true);
           setVideoFromCompletion(false);
           setLives(2);
         }}
         onUsePowerUp={() => {
-          console.log('⚡ Usuario usó power-up');
+          console.log("⚡ Usuario usó power-up");
           setLives(5);
           setAnswered(false);
           setShowResult(false);
@@ -340,9 +363,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   }
 
   const progress = ((currentIndex + 1) / 10) * 100;
-  let timerColor = 'text-blue-400';
-  if (timeLeft <= 5) timerColor = 'text-red-500';
-  else if (timeLeft <= 10) timerColor = 'text-yellow-400';
+  let timerColor = "text-blue-400";
+  if (timeLeft <= 5) timerColor = "text-red-500";
+  else if (timeLeft <= 10) timerColor = "text-yellow-400";
 
   const handleGoToDashboard = () => {
     onComplete(topic.id, score, studentId);
@@ -357,7 +380,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
   const handleCloseReviewVideo = () => {
     setShowReviewVideo(false);
-    
+
     // Si el video viene de la pantalla de completación, volver a mostrar el resumen
     if (videoFromCompletion) {
       setShowReviewChoice(true);
@@ -374,7 +397,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
       {/* Puntos flotantes */}
-      {floatingPoints.map(fp => (
+      {floatingPoints.map((fp) => (
         <FloatingPoints
           key={fp.id}
           points={fp.points}
@@ -397,15 +420,17 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             </button>
 
             {/* Vidas */}
-            <div className={`flex gap-1 ${shakeLife ? 'animate-shake' : ''}`}>
+            <div className={`flex gap-1 ${shakeLife ? "animate-shake" : ""}`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i} className="text-2xl">
-                  {i < lives ? '❤️' : '🤍'}
+                  {i < lives ? "❤️" : "🤍"}
                 </span>
               ))}
             </div>
 
-            <div className={`text-3xl font-bold ${timerColor} w-16 text-center`}>
+            <div
+              className={`text-3xl font-bold ${timerColor} w-16 text-center`}
+            >
               {timeLeft}s
             </div>
           </div>
@@ -455,12 +480,12 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
                 disabled={answered}
                 className={`w-full p-4 text-left rounded-lg font-semibold transition-all ${
                   !answered
-                    ? 'bg-slate-700 hover:bg-slate-600 text-white cursor-pointer transform hover:scale-[1.02]'
+                    ? "bg-slate-700 hover:bg-slate-600 text-white cursor-pointer transform hover:scale-[1.02]"
                     : index === currentQuestion.correct
-                    ? 'bg-green-600 text-white scale-[1.02]'
-                    : index === selectedAnswer
-                    ? 'bg-red-600 text-white'
-                    : 'bg-slate-700 text-slate-400'
+                      ? "bg-green-600 text-white scale-[1.02]"
+                      : index === selectedAnswer
+                        ? "bg-red-600 text-white"
+                        : "bg-slate-700 text-slate-400"
                 }`}
               >
                 <div className="flex items-center">
@@ -476,18 +501,20 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
         {/* Result feedback */}
         {showResult && (
-          <div className={`p-4 rounded-lg mb-6 font-semibold text-lg ${
-            selectedAnswer === currentQuestion.correct
-              ? 'bg-green-900 text-green-200'
-              : selectedAnswer === null
-              ? 'bg-orange-900 text-orange-200'
-              : 'bg-red-900 text-red-200'
-          }`}>
+          <div
+            className={`p-4 rounded-lg mb-6 font-semibold text-lg ${
+              selectedAnswer === currentQuestion.correct
+                ? "bg-green-900 text-green-200"
+                : selectedAnswer === null
+                  ? "bg-orange-900 text-orange-200"
+                  : "bg-red-900 text-red-200"
+            }`}
+          >
             {selectedAnswer === currentQuestion.correct
-              ? '✓ ¡Correcto!'
+              ? "✓ ¡Correcto!"
               : selectedAnswer === null
-              ? '⏱️ ¡Tiempo agotado!'
-              : '✗ Respuesta incorrecta'}
+                ? "⏱️ ¡Tiempo agotado!"
+                : "✗ Respuesta incorrecta"}
           </div>
         )}
       </div>
@@ -508,15 +535,21 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             <div className="bg-slate-700 rounded-lg p-4 mb-6 space-y-3">
               <div className="flex justify-between items-center text-white">
                 <span className="font-semibold">Puntos Totales:</span>
-                <span className="text-2xl font-black text-yellow-400">{score * 100}</span>
+                <span className="text-2xl font-black text-yellow-400">
+                  {score * 100}
+                </span>
               </div>
               <div className="flex justify-between items-center text-white">
                 <span className="font-semibold">GestCoins Ganados:</span>
-                <span className="text-2xl font-black text-green-400">+{Math.floor(score / 10)}</span>
+                <span className="text-2xl font-black text-green-400">
+                  +{Math.floor(score / 10)}
+                </span>
               </div>
               <div className="flex justify-between items-center text-white">
                 <span className="font-semibold">Racha Máxima:</span>
-                <span className="text-2xl font-black text-orange-400">{streak} 🔥</span>
+                <span className="text-2xl font-black text-orange-400">
+                  {streak} 🔥
+                </span>
               </div>
             </div>
 
@@ -544,7 +577,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4">
           <div className="w-full h-full max-w-6xl max-h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-black text-xl">Video de Repaso: {topic.title}</h3>
+              <h3 className="text-white font-black text-xl">
+                Video de Repaso: {topic.title}
+              </h3>
               <button
                 onClick={handleCloseReviewVideo}
                 className="bg-red-600 hover:bg-red-700 text-white font-black py-2 px-4 rounded-lg transition text-2xl"
@@ -572,6 +607,14 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             </div>
           </div>
         </div>
+      )}
+
+      {/* Confeti de celebración */}
+      {showConfetti && (
+        <ConfettiCelebration
+          trigger={true}
+          onComplete={() => setShowConfetti(false)}
+        />
       )}
     </div>
   );
