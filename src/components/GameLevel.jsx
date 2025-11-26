@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TOPICS } from '../data/constants';
+import useSoundEffects from '../hooks/useSoundEffects';
+import { useGestCoins } from '../hooks/useGestCoins';
 
 export default function GameLevel({ topic, user, userData, studentId, onExit, onComplete }) {
   const [questions, setQuestions] = useState([]);
@@ -10,19 +12,19 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
 
+  const { playSuccess, playError } = useSoundEffects();
+  const { addCoins } = useGestCoins();
+
   // Preparar 10 preguntas aleatorias SOLO del módulo actual
   useEffect(() => {
     if (!topic) return;
 
-    // Buscar el módulo específico
     const currentModule = TOPICS.find(t => t.id === topic.id);
     if (!currentModule || !currentModule.questions) return;
 
-    // Seleccionar 10 preguntas aleatorias del módulo
     const allQuestions = [...currentModule.questions];
     const selectedQuestions = [];
     
-    // Fisher-Yates shuffle para seleccionar 10 aleatorias
     for (let i = 0; i < Math.min(10, allQuestions.length); i++) {
       const randomIndex = Math.floor(Math.random() * (allQuestions.length - i)) + i;
       [allQuestions[i], allQuestions[randomIndex]] = [allQuestions[randomIndex], allQuestions[i]];
@@ -37,15 +39,28 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setTimeLeft(15);
   }, [topic]);
 
-  // Cronómetro de 15 segundos - INICIA EN TODAS LAS PREGUNTAS
+  // Auto-avance con useCallback
+  const handleNextQuestion = useCallback(() => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setSelectedAnswer(null);
+      setAnswered(false);
+      setShowResult(false);
+      setTimeLeft(15);
+    } else {
+      const pointsEarned = score * 100;
+      addCoins(score * 10);
+      onComplete(topic.id, pointsEarned, studentId);
+    }
+  }, [currentIndex, questions.length, score, topic.id, studentId, onComplete, addCoins]);
+
+  // Cronómetro - solo cuando NO ha respondido
   useEffect(() => {
-    // NO debe haber condición que impida el timer en la primera pregunta
     if (answered || questions.length === 0) return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          // Pasar automáticamente a la siguiente pregunta
           handleNextQuestion();
           return 15;
         }
@@ -54,9 +69,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [answered, currentIndex, questions.length]);
+  }, [answered, handleNextQuestion, questions.length]);
 
-  // Auto-avance después de responder (2 segundos para ver la respuesta)
+  // Auto-avance 2 segundos después de responder
   useEffect(() => {
     if (!answered || questions.length === 0) return;
 
@@ -65,12 +80,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [answered, currentIndex, questions.length]);
-
-  // Reset timer cuando cambia la pregunta
-  useEffect(() => {
-    setTimeLeft(15);
-  }, [currentIndex]);
+  }, [answered, handleNextQuestion, questions.length]);
 
   const currentQuestion = questions[currentIndex];
 
@@ -81,20 +91,9 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
     if (optionIndex === currentQuestion.correct) {
       setScore(score + 1);
-    }
-  };
-
-  const handleNextQuestion = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
-      setShowResult(false);
-      setTimeLeft(15);
+      playSuccess();
     } else {
-      // Completar el módulo
-      const pointsEarned = score * 100;
-      onComplete(topic.id, pointsEarned, studentId);
+      playError();
     }
   };
 
@@ -109,8 +108,6 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   }
 
   const progress = ((currentIndex + 1) / 10) * 100;
-
-  // Color del cronómetro según tiempo restante
   let timerColor = 'text-blue-400';
   if (timeLeft <= 5) timerColor = 'text-red-500';
   else if (timeLeft <= 10) timerColor = 'text-yellow-400';
@@ -135,7 +132,6 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             </div>
           </div>
 
-          {/* Progress bar */}
           <div className="w-full bg-slate-700 rounded-full h-2">
             <div
               className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
@@ -150,7 +146,6 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             {currentQuestion.q}
           </h2>
 
-          {/* Options */}
           <div className="space-y-3">
             {currentQuestion.options.map((option, index) => (
               <button
@@ -195,13 +190,6 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             Puntuación: <span className="text-blue-400">{score}/10</span>
           </p>
         </div>
-
-        {/* Auto-advance message */}
-        {answered && (
-          <div className="text-center text-slate-400 text-sm">
-            Avanzando a la siguiente pregunta...
-          </div>
-        )}
       </div>
     </div>
   );
