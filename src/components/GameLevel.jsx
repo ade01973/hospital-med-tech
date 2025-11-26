@@ -82,6 +82,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
 
   const handleGoToDashboard = () => {
     setShowReviewChoice(false);
+    setShowReviewVideo(false);
     const pointsEarned = score * 100;
     setTimeout(() => {
       onComplete(topic.id, pointsEarned, studentId);
