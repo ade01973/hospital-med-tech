@@ -1,7 +1,51 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { TOPICS } from '../data/constants';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useGestCoins } from '../hooks/useGestCoins';
+import LivesGameOver from './LivesGameOver';
+
+// Componente de puntos flotantes
+const FloatingPoints = ({ points, isCorrect, x, y }) => {
+  return (
+    <div
+      className="fixed pointer-events-none z-50 animate-float-up"
+      style={{ left: `${x}px`, top: `${y}px` }}
+    >
+      <div className={`text-3xl font-black ${isCorrect ? 'text-green-400' : 'text-red-400'} drop-shadow-lg`}>
+        {isCorrect ? '+' : ''}{points}
+      </div>
+    </div>
+  );
+};
+
+// Componente de mensaje de racha
+const StreakMessage = ({ streak }) => {
+  if (streak < 2) return null;
+  
+  let message = '';
+  let color = '';
+  
+  if (streak >= 5) {
+    message = '¡IMPARABLE! 🔥';
+    color = 'from-orange-500 to-red-500';
+  } else if (streak === 4) {
+    message = '¡4 SEGUIDAS! 🔥';
+    color = 'from-yellow-500 to-orange-500';
+  } else if (streak === 3) {
+    message = '¡3 EN RACHA! 🔥';
+    color = 'from-yellow-400 to-yellow-500';
+  } else if (streak === 2) {
+    message = '¡2 SEGUIDAS!';
+    color = 'from-blue-400 to-blue-500';
+  }
+  
+  return (
+    <div className={`bg-gradient-to-r ${color} text-white px-6 py-2 rounded-full font-black text-lg shadow-lg animate-bounce`}>
+      {message}
+    </div>
+  );
+};
 
 export default function GameLevel({ topic, user, userData, studentId, onExit, onComplete }) {
   const [questions, setQuestions] = useState([]);
@@ -12,10 +56,18 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
   const [isCompleted, setIsCompleted] = useState(false);
+  
+  // 🎮 GAMIFICACIÓN
+  const [lives, setLives] = useState(5);
+  const [streak, setStreak] = useState(0);
+  const [showStreakMessage, setShowStreakMessage] = useState(false);
+  const [floatingPoints, setFloatingPoints] = useState([]);
+  const [shakeLife, setShakeLife] = useState(false);
 
   const { playSuccess, playError, playVictory } = useSoundEffects();
   const { earnCoins } = useGestCoins();
   const completedRef = useRef(false);
+  const floatingPointsIdRef = useRef(0);
 
   // Preparar 10 preguntas aleatorias SOLO del módulo actual
   useEffect(() => {
@@ -40,10 +92,26 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setSelectedAnswer(null);
     setTimeLeft(15);
     setIsCompleted(false);
+    setLives(5);
+    setStreak(0);
     completedRef.current = false;
   }, [topic]);
 
   const currentQuestion = questions[currentIndex];
+
+  // Función para mostrar puntos flotantes
+  const showFloatingPoints = (points, isCorrect, event) => {
+    const id = floatingPointsIdRef.current++;
+    const rect = event.target.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top;
+    
+    setFloatingPoints(prev => [...prev, { id, points, isCorrect, x, y }]);
+    
+    setTimeout(() => {
+      setFloatingPoints(prev => prev.filter(p => p.id !== id));
+    }, 1500);
+  };
 
   // Función para avanzar a la siguiente pregunta
   const advanceQuestion = () => {
@@ -55,8 +123,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
         completedRef.current = true;
         setIsCompleted(true);
         playVictory();
-        const pointsEarned = score * 100;
-        earnCoins(score * 10, `Respuestas correctas: ${score}/10`);
+        const pointsEarned = score;
+        earnCoins(score / 10, `Respuestas correctas en ${topic.title}`);
         
         // Llamar onComplete después de un pequeño delay para que se vean los efectos
         setTimeout(() => {
@@ -71,6 +139,7 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     setAnswered(false);
     setShowResult(false);
     setTimeLeft(15);
+    setShowStreakMessage(false);
   };
 
   // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
@@ -80,7 +149,8 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          advanceQuestion();
+          // Tiempo agotado: contar como respuesta incorrecta
+          handleTimeOut();
           return 15;
         }
         return prev - 1;
@@ -88,33 +158,146 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [answered, isCompleted, currentQuestion, questions.length]);
+  }, [answered, isCompleted, currentQuestion, questions.length, currentIndex]);
+
+  // Manejar timeout (tiempo agotado)
+  const handleTimeOut = () => {
+    if (answered) return;
+    
+    setAnswered(true);
+    setShowResult(true);
+    setSelectedAnswer(null);
+    
+    // Perder vida y resetear racha
+    const newLives = lives - 1;
+    setLives(newLives);
+    setStreak(0);
+    setShakeLife(true);
+    setTimeout(() => setShakeLife(false), 500);
+    
+    playError();
+    
+    // Auto-avance después de 2 segundos
+    setTimeout(() => {
+      if (newLives <= 0) {
+        // Game Over se maneja en el render
+        return;
+      }
+      advanceQuestion();
+    }, 2000);
+  };
 
   // Auto-avance 2 segundos después de responder
   useEffect(() => {
     if (!answered || isCompleted || questions.length === 0) return;
 
     const timer = setTimeout(() => {
-      advanceQuestion();
+      if (lives > 0) {
+        advanceQuestion();
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [answered, isCompleted, questions.length]);
+  }, [answered, isCompleted, questions.length, lives]);
 
-  const handleAnswer = (optionIndex) => {
+  const handleAnswer = (optionIndex, event) => {
     if (answered || isCompleted) return;
 
     setSelectedAnswer(optionIndex);
     setShowResult(true);
     setAnswered(true);
 
-    if (optionIndex === currentQuestion.correct) {
-      setScore(prev => prev + 1);
+    const isCorrect = optionIndex === currentQuestion.correct;
+    
+    if (isCorrect) {
+      // 🎯 RESPUESTA CORRECTA
+      
+      // Incrementar racha
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      
+      // Mostrar mensaje de racha
+      if (newStreak >= 2) {
+        setShowStreakMessage(true);
+        setTimeout(() => setShowStreakMessage(false), 2000);
+      }
+      
+      // Calcular puntos según tiempo restante
+      let basePoints = 100;
+      if (timeLeft > 10) {
+        basePoints = 200;
+      } else if (timeLeft > 5) {
+        basePoints = 150;
+      }
+      
+      // Bonificación por racha
+      let bonusPoints = 0;
+      if (newStreak >= 3) {
+        bonusPoints = 50;
+      }
+      
+      const totalPoints = basePoints + bonusPoints;
+      setScore(prev => prev + totalPoints);
+      
+      // Mostrar puntos flotantes
+      showFloatingPoints(totalPoints, true, event);
+      
       setTimeout(() => playSuccess(), 100);
     } else {
+      // ❌ RESPUESTA INCORRECTA
+      
+      // Perder vida
+      const newLives = lives - 1;
+      setLives(newLives);
+      
+      // Resetear racha
+      setStreak(0);
+      
+      // Animación de shake
+      setShakeLife(true);
+      setTimeout(() => setShakeLife(false), 500);
+      
+      // Mostrar puntos negativos
+      showFloatingPoints(-50, false, event);
+      
       setTimeout(() => playError(), 100);
     }
   };
+
+  // 💔 GAME OVER - Mostrar modal de vidas
+  if (lives <= 0 && !isCompleted) {
+    return (
+      <LivesGameOver
+        topic={topic}
+        onContinue={(recoveredLives) => {
+          setLives(recoveredLives);
+          setAnswered(false);
+          setShowResult(false);
+          setSelectedAnswer(null);
+          setTimeLeft(15);
+        }}
+        onWatchVideo={() => {
+          console.log('🎬 Usuario eligió ver video');
+          // Aquí se puede implementar la lógica del video
+          // Por ahora, recuperamos 2 vidas
+          setLives(2);
+          setAnswered(false);
+          setShowResult(false);
+          setSelectedAnswer(null);
+          setTimeLeft(15);
+        }}
+        onUsePowerUp={() => {
+          console.log('⚡ Usuario usó power-up');
+          setLives(5);
+          setAnswered(false);
+          setShowResult(false);
+          setSelectedAnswer(null);
+          setTimeLeft(15);
+        }}
+        hasPowerUp={false} // Aquí se puede conectar con el sistema de power-ups real
+      />
+    );
+  }
 
   if (!currentQuestion || questions.length === 0) {
     return (
@@ -132,7 +315,18 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
   else if (timeLeft <= 10) timerColor = 'text-yellow-400';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
+      {/* Puntos flotantes */}
+      {floatingPoints.map(fp => (
+        <FloatingPoints
+          key={fp.id}
+          points={fp.points}
+          isCorrect={fp.isCorrect}
+          x={fp.x}
+          y={fp.y}
+        />
+      ))}
+      
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8 pt-4">
@@ -144,19 +338,49 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             >
               ← Salir
             </button>
-            <span className="text-white font-bold text-lg">
-              Pregunta {currentIndex + 1}/10
-            </span>
+            
+            {/* Vidas */}
+            <div className={`flex gap-1 ${shakeLife ? 'animate-shake' : ''}`}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i} className="text-2xl">
+                  {i < lives ? '❤️' : '🤍'}
+                </span>
+              ))}
+            </div>
+            
             <div className={`text-3xl font-bold ${timerColor} w-16 text-center`}>
               {timeLeft}s
             </div>
           </div>
 
-          <div className="w-full bg-slate-700 rounded-full h-2">
-            <div
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            ></div>
+          {/* Badge de racha */}
+          {streak > 0 && (
+            <div className="flex justify-center mb-3">
+              <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-1 rounded-full font-bold text-sm">
+                🔥 {streak} en racha
+              </div>
+            </div>
+          )}
+
+          {/* Mensaje de racha */}
+          {showStreakMessage && (
+            <div className="flex justify-center mb-3">
+              <StreakMessage streak={streak} />
+            </div>
+          )}
+
+          {/* Progreso */}
+          <div className="mb-2">
+            <div className="flex justify-between text-white text-sm mb-1">
+              <span>Pregunta {currentIndex + 1}/10</span>
+              <span className="font-bold text-yellow-400">{score} pts</span>
+            </div>
+            <div className="w-full bg-slate-700 rounded-full h-2">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
           </div>
         </div>
 
@@ -170,13 +394,13 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
-                onClick={() => handleAnswer(index)}
+                onClick={(e) => handleAnswer(index, e)}
                 disabled={answered}
                 className={`w-full p-4 text-left rounded-lg font-semibold transition-all ${
                   !answered
-                    ? 'bg-slate-700 hover:bg-slate-600 text-white cursor-pointer'
+                    ? 'bg-slate-700 hover:bg-slate-600 text-white cursor-pointer transform hover:scale-[1.02]'
                     : index === currentQuestion.correct
-                    ? 'bg-green-600 text-white'
+                    ? 'bg-green-600 text-white scale-[1.02]'
                     : index === selectedAnswer
                     ? 'bg-red-600 text-white'
                     : 'bg-slate-700 text-slate-400'
@@ -198,18 +422,17 @@ export default function GameLevel({ topic, user, userData, studentId, onExit, on
           <div className={`p-4 rounded-lg mb-6 font-semibold text-lg ${
             selectedAnswer === currentQuestion.correct
               ? 'bg-green-900 text-green-200'
+              : selectedAnswer === null
+              ? 'bg-orange-900 text-orange-200'
               : 'bg-red-900 text-red-200'
           }`}>
-            {selectedAnswer === currentQuestion.correct ? '✓ ¡Correcto!' : '✗ Respuesta incorrecta'}
+            {selectedAnswer === currentQuestion.correct 
+              ? '✓ ¡Correcto!' 
+              : selectedAnswer === null
+              ? '⏱️ ¡Tiempo agotado!'
+              : '✗ Respuesta incorrecta'}
           </div>
         )}
-
-        {/* Score display */}
-        <div className="text-center mb-6">
-          <p className="text-white text-lg font-semibold">
-            Puntuación: <span className="text-blue-400">{score}/10</span>
-          </p>
-        </div>
       </div>
     </div>
   );
