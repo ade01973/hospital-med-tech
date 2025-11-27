@@ -34,7 +34,7 @@ export default function AvatarCustomization({ onComplete }) {
       <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-3xl w-full">
         
         <div className="text-center mb-10">
-          <h1 className="text-5xl font-black text-white mb-2">Crea tu Avatar</h1>
+          <h1 className="text-5xl font-black text-white mb-2">Crea tu Gestora Enfermera</h1>
           <p className="text-cyan-400 font-bold">Personaliza tu perfil profesional</p>
         </div>
 
@@ -53,7 +53,7 @@ export default function AvatarCustomization({ onComplete }) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ej: Dra. García..."
+                placeholder="Ingresa tu nombre"
                 maxLength={30}
                 className="w-full px-4 py-3 bg-slate-700 border-2 border-slate-600 text-white placeholder-slate-400 rounded-lg focus:border-cyan-500 focus:outline-none font-bold"
               />
