@@ -1,80 +1,42 @@
-// Import base images
-import femaleBase from '../assets/avatar/base/female.png';
-import maleBase from '../assets/avatar/base/male.png';
-
-// Import skin images
-import lightSkin from '../assets/avatar/skin/light.png';
-import mediumSkin from '../assets/avatar/skin/medium.png';
-import darkSkin from '../assets/avatar/skin/dark.png';
-
-// Import hair images
-import shortHair from '../assets/avatar/hair/short.png';
-import longHair from '../assets/avatar/hair/long.png';
-import curlyHair from '../assets/avatar/hair/curly.png';
-import maleShortHair from '../assets/avatar/hair/male_short.png';
-import maleFadeHair from '../assets/avatar/hair/male_fade.png';
-import curlyMaleHair from '../assets/avatar/hair/curly_male.png';
-import baldHair from '../assets/avatar/hair/bald.png';
-
-// Import eyes images
-import brownEyes from '../assets/avatar/eyes/brown.png';
-import blueEyes from '../assets/avatar/eyes/blue.png';
-import greenEyes from '../assets/avatar/eyes/green.png';
-
-// Import mouth images
-import smileMouth from '../assets/avatar/mouth/smile.png';
-import seriousMouth from '../assets/avatar/mouth/serious.png';
-import laughMouth from '../assets/avatar/mouth/laugh.png';
-
-// Import uniform images
-import nurseBlueUniform from '../assets/avatar/uniform/nurse_blue.png';
-import nurseWhiteUniform from '../assets/avatar/uniform/nurse_white.png';
-import managerUniform from '../assets/avatar/uniform/manager.png';
-
-// Import accessory images
-import glassesAccessory from '../assets/avatar/accessory/glasses.png';
-import stethoscopeAccessory from '../assets/avatar/accessory/stethoscope.png';
-import badgeManagerAccessory from '../assets/avatar/accessory/badge_manager.png';
-import noneAccessory from '../assets/avatar/accessory/none.png';
-
+// Avatar options - using public URLs for Vite
 export const avatarOptions = {
   base: [
-    { label: 'Female', value: 'female', img: femaleBase },
-    { label: 'Male', value: 'male', img: maleBase },
+    { label: 'Female', value: 'female', img: '/assets/avatar/base/female.png' },
+    { label: 'Male', value: 'male', img: '/assets/avatar/base/male.png' },
   ],
   skin: [
-    { label: 'Light', value: 'light', img: lightSkin },
-    { label: 'Medium', value: 'medium', img: mediumSkin },
-    { label: 'Dark', value: 'dark', img: darkSkin },
+    { label: 'Light', value: 'light', img: '/assets/avatar/skin/light.png' },
+    { label: 'Medium', value: 'medium', img: '/assets/avatar/skin/medium.png' },
+    { label: 'Dark', value: 'dark', img: '/assets/avatar/skin/dark.png' },
   ],
   hair: [
-    { label: 'Short', value: 'short', img: shortHair },
-    { label: 'Long', value: 'long', img: longHair },
-    { label: 'Curly', value: 'curly', img: curlyHair },
-    { label: 'Male Short', value: 'male_short', img: maleShortHair },
-    { label: 'Male Fade', value: 'male_fade', img: maleFadeHair },
-    { label: 'Male Curly', value: 'curly_male', img: curlyMaleHair },
-    { label: 'Bald', value: 'bald', img: baldHair },
+    { label: 'Short', value: 'short', img: '/assets/avatar/hair/short.png' },
+    { label: 'Long', value: 'long', img: '/assets/avatar/hair/long.png' },
+    { label: 'Curly', value: 'curly', img: '/assets/avatar/hair/curly.png' },
+    { label: 'Male Short', value: 'male_short', img: '/assets/avatar/hair/male_short.png' },
+    { label: 'Male Fade', value: 'male_fade', img: '/assets/avatar/hair/male_fade.png' },
+    { label: 'Male Curly', value: 'curly_male', img: '/assets/avatar/hair/curly_male.png' },
+    { label: 'Bald', value: 'bald', img: '/assets/avatar/hair/bald.png' },
   ],
   eyes: [
-    { label: 'Brown', value: 'brown', img: brownEyes },
-    { label: 'Blue', value: 'blue', img: blueEyes },
-    { label: 'Green', value: 'green', img: greenEyes },
+    { label: 'Brown', value: 'brown', img: '/assets/avatar/eyes/brown.png' },
+    { label: 'Blue', value: 'blue', img: '/assets/avatar/eyes/blue.png' },
+    { label: 'Green', value: 'green', img: '/assets/avatar/eyes/green.png' },
   ],
   mouth: [
-    { label: 'Smile', value: 'smile', img: smileMouth },
-    { label: 'Serious', value: 'serious', img: seriousMouth },
-    { label: 'Laugh', value: 'laugh', img: laughMouth },
+    { label: 'Smile', value: 'smile', img: '/assets/avatar/mouth/smile.png' },
+    { label: 'Serious', value: 'serious', img: '/assets/avatar/mouth/serious.png' },
+    { label: 'Laugh', value: 'laugh', img: '/assets/avatar/mouth/laugh.png' },
   ],
   uniform: [
-    { label: 'Nurse Blue', value: 'nurse_blue', img: nurseBlueUniform },
-    { label: 'Nurse White', value: 'nurse_white', img: nurseWhiteUniform },
-    { label: 'Manager', value: 'manager', img: managerUniform },
+    { label: 'Nurse Blue', value: 'nurse_blue', img: '/assets/avatar/uniform/nurse_blue.png' },
+    { label: 'Nurse White', value: 'nurse_white', img: '/assets/avatar/uniform/nurse_white.png' },
+    { label: 'Manager', value: 'manager', img: '/assets/avatar/uniform/manager.png' },
   ],
   accessory: [
-    { label: 'Glasses', value: 'glasses', img: glassesAccessory },
-    { label: 'Stethoscope', value: 'stethoscope', img: stethoscopeAccessory },
-    { label: 'Badge Manager', value: 'badge_manager', img: badgeManagerAccessory },
-    { label: 'None', value: 'none', img: noneAccessory },
+    { label: 'Glasses', value: 'glasses', img: '/assets/avatar/accessory/glasses.png' },
+    { label: 'Stethoscope', value: 'stethoscope', img: '/assets/avatar/accessory/stethoscope.png' },
+    { label: 'Badge Manager', value: 'badge_manager', img: '/assets/avatar/accessory/badge_manager.png' },
+    { label: 'None', value: 'none', img: '/assets/avatar/accessory/none.png' },
   ],
 };

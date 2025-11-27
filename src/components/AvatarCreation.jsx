@@ -15,40 +15,34 @@ export default function AvatarCreation({ onComplete, onLogout }) {
     accessory: avatarOptions.accessory[0]?.img || "",
   });
 
-  // 🎵 Música de fondo
   useEffect(() => {
     try {
       const audio = new Audio("/audio/avatar-theme.mp3");
       audio.loop = true;
       audio.volume = 0.3;
-      
-      // Intentar reproducir
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => console.log("Autoplay bloqueado por navegador"));
+        playPromise.catch(() => console.log("Autoplay bloqueado"));
       }
-      
       return () => {
         audio.pause();
         audio.currentTime = 0;
       };
     } catch (err) {
-      console.log("Error con audio:", err);
+      console.log("Error audio:", err);
     }
   }, []);
 
   const handleSelect = (category, img) => {
-    console.log(`🎨 Seleccionando ${category}: ${img}`);
     setAvatar(prev => ({ ...prev, [category]: img }));
   };
 
   const handleFinish = () => {
     if (!name.trim()) {
-      alert("Por favor ingresa un nombre para tu avatar");
+      alert("Por favor ingresa un nombre");
       return;
     }
-    
-    const fullAvatarData = {
+    const fullData = {
       name: name.trim(),
       base: avatar.base,
       skin: avatar.skin,
@@ -58,15 +52,12 @@ export default function AvatarCreation({ onComplete, onLogout }) {
       uniform: avatar.uniform,
       accessory: avatar.accessory,
     };
-    
-    console.log("✅ Avatar guardado:", fullAvatarData);
-    localStorage.setItem("playerAvatar", JSON.stringify(fullAvatarData));
+    localStorage.setItem("playerAvatar", JSON.stringify(fullData));
     onComplete();
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex flex-col items-center justify-center p-4">
-      {/* Botón logout */}
       {onLogout && (
         <button
           onClick={onLogout}
@@ -76,23 +67,16 @@ export default function AvatarCreation({ onComplete, onLogout }) {
         </button>
       )}
 
-      {/* Contenedor principal */}
       <div className="bg-slate-900 border border-cyan-500 rounded-lg p-8 max-w-4xl w-full">
-        
-        {/* Título */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Crea tu Avatar</h1>
           <p className="text-cyan-400">Personaliza tu profesional médico</p>
         </div>
 
-        {/* Grid: Preview + Selectores */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Avatar Preview */}
           <div className="flex flex-col items-center">
             <AvatarPreview avatar={avatar} />
             
-            {/* Campo de nombre */}
             <div className="w-full max-w-xs mt-6">
               <label className="text-white font-bold mb-2 block">Tu nombre:</label>
               <input
@@ -107,7 +91,6 @@ export default function AvatarCreation({ onComplete, onLogout }) {
             </div>
           </div>
 
-          {/* Selectores de capas */}
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {Object.entries(avatarOptions).map(([category, options]) => (
               <div key={category}>
@@ -133,7 +116,6 @@ export default function AvatarCreation({ onComplete, onLogout }) {
           </div>
         </div>
 
-        {/* Botón confirmar */}
         <button
           onClick={handleFinish}
           className="w-full mt-8 bg-cyan-500 text-black font-bold py-3 rounded-lg hover:bg-cyan-400 flex items-center justify-center gap-2"
