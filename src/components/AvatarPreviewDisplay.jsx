@@ -1,4 +1,6 @@
 import React from "react";
+import femaleBase from "../assets/avatar/base/female.png";
+import maleBase from "../assets/avatar/base/male.png";
 
 export default function AvatarPreviewDisplay({ avatar, size = "large" }) {
   const sizeClasses = {
@@ -7,24 +9,19 @@ export default function AvatarPreviewDisplay({ avatar, size = "large" }) {
     large: "w-48 h-48",
   };
 
-  // Simple avatar display - uses initials or emoji for now
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+  // Get the base image based on gender
+  const getBaseImage = () => {
+    return avatar.base === "male" ? maleBase : femaleBase;
   };
 
   return (
-    <div
-      className={`${sizeClasses[size]} mx-auto flex items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border-2 border-cyan-500/30 text-white font-black text-4xl`}
-    >
-      <div className="text-center">
-        <div className="text-6xl mb-2">👤</div>
-        <div className="text-sm">{avatar.base === "female" ? "👩‍⚕️" : "👨‍⚕️"}</div>
-      </div>
+    <div className={`${sizeClasses[size]} mx-auto relative rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border-2 border-cyan-500/20 overflow-hidden`}>
+      {/* Base Layer */}
+      <img 
+        src={getBaseImage()} 
+        alt="Avatar base" 
+        className="w-full h-full object-contain"
+      />
     </div>
   );
 }
