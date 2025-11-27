@@ -76,29 +76,35 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 **Status**: Avatar creation page with silhouette selection now active after Welcome screen, before Dashboard.
 
-#### ✅ Silhouettes Deployed (Nov 27 - Latest)
+#### ✅ Silhouettes & Skin Tones Deployed (Nov 27 - Latest)
 
-**10 Torso Silhouettes Generated:**
-- 5 Female silhouettes: `female_torso_silhouette_1.png` through `5.png`
-- 5 Male silhouettes: `male_torso_silhouette_1.png` through `5.png`
+**10 Realistic Base Silhouettes:**
+- 5 Female silhouettes: `female_silhouette_base_1.png` through `5.png`
+- 5 Male silhouettes: `male_silhouette_base_1.png` through `5.png`
 - Located in: `src/assets/avatar/base/`
-- Pure silhouettes ONLY: Head, neck, upper torso (no facial features, no hair, no clothing)
-- Different proportions for each variation (shoulder width, head shape, torso length variations)
-- Ready for layered customization (face, eyes, hair, clothing, etc.)
+- Pure black silhouettes with realistic human proportions
+
+**8 Interactive Skin Tone Layers:**
+- Very Pale, Fair Light, Light Beige, Warm Medium, Olive Tan, Medium Brown, Deep Dark Brown, Very Dark
+- Located in: `src/assets/avatar/skin/`
+- PNG overlays applied with multiply blend mode for realistic color
+- Real-time preview updates when user selects skin tone
 
 #### Files in Use
-- ✅ `src/components/AvatarCustomization.jsx` - Simplified creation page with:
+- ✅ `src/components/AvatarCustomization.jsx` - Interactive creation page with:
   - Title: "Crea tu Gestora Enfermera"
   - Gender selector (👩 Mujer / 👨 Hombre)
   - Silhouette selector (5 variations per gender)
+  - **Skin tone selector (8 interactive color circles)**
   - Name input field (30 chars max)
+  - Real-time avatar preview with selected silhouette + skin tone
   - Confirm button saves to localStorage
 
-- ✅ `src/components/AvatarPreviewDisplay.jsx` - Displays selected silhouette:
-  - Shows silhouette based on selected gender
+- ✅ `src/components/AvatarPreviewDisplay.jsx` - Layered avatar renderer:
+  - Shows silhouette base layer
+  - Applies skin tone overlay with multiply blend mode
   - 3 size options: small (w-24), medium (w-32), large (w-48)
-  - Gradient background with cyan border
-  - Prepared for layering system (will add face, skin, hair, etc. on top)
+  - Prepared for adding face, eyes, hair, accessories later
 
 #### Current App Flow
 - **Route**: Auth → Welcome → **Avatar Creation** → Dashboard
@@ -109,26 +115,26 @@ This is an interactive quiz-based learning application designed for nursing mana
 ```javascript
 {
   name: string,
-  gender: string,           // 'male' | 'female'
-  silhouetteIndex: number,  // 1-5 (silhouette variation)
+  gender: string,              // 'male' | 'female'
+  silhouetteIndex: number,     // 1-5 (silhouette variation)
+  skinToneIndex: number,       // 1-8 (skin tone variation)
   // Future customization layers (currently null):
-  face: null,               // 1-5 variations per gender
-  skinColor: null,          // 'light' | 'medium' | 'dark' | etc.
-  eyeColor: null,           // 'brown' | 'blue' | 'green' | etc.
-  eyeShape: null,           // Different eye shapes
-  noseType: null,           // Different nose types
-  mouth: null,              // 'smile' | 'serious' | 'laugh' | etc.
-  hairType: null,           // 'short' | 'long' | 'curly' | etc.
-  hairColor: null,          // Hair color variations
-  uniform: null,            // Clothing options
-  accessory: null           // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
+  face: null,                  // 1-5 variations per gender
+  eyeColor: null,              // 'brown' | 'blue' | 'green' | etc.
+  eyeShape: null,              // Different eye shapes
+  noseType: null,              // Different nose types
+  mouth: null,                 // 'smile' | 'serious' | 'laugh' | etc.
+  hairType: null,              // 'short' | 'long' | 'curly' | etc.
+  hairColor: null,             // Hair color variations
+  uniform: null,               // Clothing options
+  accessory: null              // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
 }
 ```
 
-#### Customization Layers to Add (Incremental)
+#### Customization Layers (Incremental Development)
 - ✅ PHASE 1: Silhouettes (5 female + 5 male) ← COMPLETE
-- PHASE 2: Face variations (5 per gender)
-- PHASE 3: Skin color layer
+- ✅ PHASE 2: Skin tones (8 variations) ← COMPLETE
+- PHASE 3: Face variations (5 per gender)
 - PHASE 4: Eye color/shape selector
 - PHASE 5: Hair type/color selector
 - PHASE 6: Mouth expression selector

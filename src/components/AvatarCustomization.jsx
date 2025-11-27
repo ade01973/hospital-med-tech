@@ -2,23 +2,41 @@ import React, { useState } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 
+const SKIN_TONES = [
+  { index: 1, label: "Muy Pálido", color: "bg-yellow-50" },
+  { index: 2, label: "Claro", color: "bg-yellow-100" },
+  { index: 3, label: "Beige Claro", color: "bg-yellow-200" },
+  { index: 4, label: "Medio Cálido", color: "bg-yellow-600" },
+  { index: 5, label: "Oliva", color: "bg-orange-600" },
+  { index: 6, label: "Marrón Medio", color: "bg-orange-700" },
+  { index: 7, label: "Marrón Oscuro", color: "bg-amber-900" },
+  { index: 8, label: "Muy Oscuro", color: "bg-gray-900" },
+];
+
 export default function AvatarCustomization({ onComplete }) {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("female");
   const [silhouetteIndex, setSilhouetteIndex] = useState(1);
+  const [skinToneIndex, setSkinToneIndex] = useState(3);
   const [avatar, setAvatar] = useState({
     gender: "female",
     silhouetteIndex: 1,
+    skinToneIndex: 3,
   });
 
   const handleGenderChange = (newGender) => {
     setGender(newGender);
-    setAvatar({ gender: newGender, silhouetteIndex });
+    setAvatar({ gender: newGender, silhouetteIndex, skinToneIndex });
   };
 
   const handleSilhouetteChange = (index) => {
     setSilhouetteIndex(index);
-    setAvatar({ gender, silhouetteIndex: index });
+    setAvatar({ gender, silhouetteIndex: index, skinToneIndex });
+  };
+
+  const handleSkinToneChange = (index) => {
+    setSkinToneIndex(index);
+    setAvatar({ gender, silhouetteIndex, skinToneIndex: index });
   };
 
   const handleFinish = () => {
@@ -31,9 +49,9 @@ export default function AvatarCustomization({ onComplete }) {
       name: name.trim(),
       gender,
       silhouetteIndex,
+      skinToneIndex,
       // Placeholders para características futuras
       face: null,
-      skinColor: null,
       eyeColor: null,
       eyeShape: null,
       noseType: null,
@@ -90,7 +108,7 @@ export default function AvatarCustomization({ onComplete }) {
 
           {/* Silhouette Selector */}
           <div className="w-full">
-            <p className="text-white font-bold mb-3">Tipo de silueta:</p>
+            <p className="text-white font-bold mb-3 text-sm">Tipo de silueta:</p>
             <div className="flex gap-2 justify-center flex-wrap">
               {[1, 2, 3, 4, 5].map((index) => (
                 <button
@@ -104,6 +122,25 @@ export default function AvatarCustomization({ onComplete }) {
                 >
                   {index}
                 </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Skin Tone Selector */}
+          <div className="w-full">
+            <p className="text-white font-bold mb-3 text-sm">Tono de piel: {SKIN_TONES.find(t => t.index === skinToneIndex)?.label}</p>
+            <div className="flex gap-2 justify-center flex-wrap">
+              {SKIN_TONES.map((tone) => (
+                <button
+                  key={tone.index}
+                  onClick={() => handleSkinToneChange(tone.index)}
+                  className={`w-10 h-10 rounded-full border-2 transition-all ${
+                    skinToneIndex === tone.index
+                      ? `${tone.color} border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.5)]`
+                      : `${tone.color} border-slate-600 hover:border-slate-500`
+                  }`}
+                  title={tone.label}
+                />
               ))}
             </div>
           </div>
