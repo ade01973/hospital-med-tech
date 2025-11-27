@@ -1226,9 +1226,313 @@ export const TOPICS = [
         ],
         correct: 0,
       },
-    ],
-  },
-  {
+      {
+            q: "¿Qué promete la transformación digital en el cuidado de la salud?",
+            options: [
+              "Mejora de eficiencia y personalización de la experiencia del paciente.",
+              "Reducción de personal en la salud.",
+              "Aumento de la carga de trabajo para los enfermeros.",
+              "Disminución de la importancia de las competencias digitales."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cuál de las siguientes afirmaciones sobre la inteligencia artificial (IA) fuerte es correcta?",
+            options: [
+              "Posee capacidades cognitivas humanas y puede, en teoría, realizar cualquier tarea intelectual como un ser humano.",
+              "Está diseñada para tareas específicas como la clasificación de imágenes o el reconocimiento de voz.",
+              "Es la IA más utilizada actualmente en la práctica clínica.",
+              "Se basa exclusivamente en reglas predefinidas sin capacidad de aprendizaje."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cuál de los siguientes enunciados define con mayor precisión la competencia digital en el ámbito enfermero?",
+            options: [
+              "El conjunto de habilidades y conocimientos necesarios para utilizar TICs de forma efectiva y ética en el cuidado de la salud, mejorando la calidad y seguridad del paciente.",
+              "La capacidad exclusiva de manejar software administrativo en el hospital.",
+              "La habilidad para acceder a internet desde cualquier dispositivo móvil.",
+              "El conocimiento sobre redes sociales y su uso profesional."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cuál de las siguientes opciones describe con mayor precisión la competencia digital en enfermería?",
+            options: [
+              "Es el conjunto de habilidades y conocimientos necesarios para utilizar efectivamente las tecnologías de la información y comunicación en el contexto del cuidado de la salud.",
+              "Es la habilidad de usar redes sociales para comunicarse con pacientes.",
+              "Se refiere a la automatización total de las tareas asistenciales por parte de sistemas informáticos.",
+              "Es el dominio exclusivo de software estadístico avanzado para investigación."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cómo se define la competencia digital en enfermería?",
+            options: [
+              "Habilidades para usar TIC en cuidado de salud.",
+              "Exclusivamente la habilidad para programar en IA.",
+              "Capacidad para evitar el uso de tecnología.",
+              "Enfoque en el uso de dispositivos manuales."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué enfoque educativo se recomienda para asegurar el desarrollo de competencias digitales en enfermería?",
+            options: [
+              "Participación en formación continua, redes profesionales y proyectos de innovación tecnológica.",
+              "Restricción del aprendizaje digital al periodo universitario inicial.",
+              "Acceso exclusivo a formación presencial sin contenidos digitales.",
+              "Fomento de prácticas clínicas tradicionales sin intervención tecnológica."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cuál es el impacto potencial de la IA en la calidad y eficiencia del cuidado enfermero?",
+            options: [
+              "Mejorar la precisión diagnóstica, personalizar tratamientos y liberar tiempo para la atención directa al paciente.",
+              "Reducir la necesidad de formación profesional continua.",
+              "Generar mayor burocracia sin beneficio clínico.",
+              "Impedir el acceso de los pacientes a información relevante."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué escenario representa un desafío técnico para la adopción de IA en enfermería?",
+            options: [
+              "La falta de interoperabilidad entre sistemas y la necesidad de infraestructuras de datos robustas.",
+              "La presencia de equipos multidisciplinares en el ámbito sanitario.",
+              "El incremento de la formación digital entre los profesionales.",
+              "El uso de registros electrónicos de salud compatibles entre centros."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué representa la integración de tecnología digital en enfermería?",
+            options: [
+              "Desafíos y oportunidades para mejorar el cuidado.",
+              "Un reto sin beneficios claros.",
+              "Un movimiento hacia la reducción del contacto humano.",
+              "Exclusivamente un aumento en la carga de trabajo."
+            ],
+            correct: 0,
+          },
+          {
+            q: "El reto ético fundamental en la integración de IA en salud radica en:",
+            options: [
+              "Asegurar la privacidad, la autonomía del paciente y el uso transparente y explicable de los algoritmos.",
+              "Reducir los costes operativos y el tiempo de consulta.",
+              "Automatizar todos los procesos clínicos sin supervisión profesional.",
+              "Imponer un modelo único de atención estandarizada."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué papel pueden desempeñar las enfermeras en la evaluación de nuevas soluciones de IA en salud?",
+            options: [
+              "Evaluar la usabilidad, eficacia y seguridad de la tecnología, monitorizar resultados y sugerir mejoras basadas en la experiencia clínica.",
+              "Prohibir la utilización de cualquier tecnología que no hayan creado personalmente.",
+              "Desentenderse de la formación continua en nuevas tecnologías.",
+              "Limitarse a la recogida pasiva de datos sin intervención."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Cuál es el papel de la enfermería en el equipo multidisciplinar de IA?",
+            options: [
+              "Colaborar en el desarrollo de soluciones tecnológicas.",
+              "Solamente ejecutar órdenes médicas.",
+              "Mantenerse al margen del desarrollo tecnológico.",
+              "Enfocarse únicamente en tareas administrativas."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué estrategia favorece el desarrollo profesional continuo en competencias digitales en enfermería?",
+            options: [
+              "Participación en proyectos de innovación, formación formal e informal y colaboración en redes profesionales.",
+              "Exclusiva autoformación autodidacta sin actualización externa.",
+              "Desconexión temporal de la tecnología para evitar estrés digital.",
+              "Asistencia solo a cursos de ofimática básica."
+            ],
+            correct: 0,
+          },
+          {
+            q: "Entre los desafíos éticos en la adopción de IA en enfermería, se incluye:",
+            options: [
+              "Garantizar la privacidad y seguridad de la información, evitar sesgos y mantener la confianza en la IA.",
+              "Evitar la formación continua en competencias digitales.",
+              "Favorecer la transparencia de todos los algoritmos aunque no sean de salud.",
+              "Priorizar la automatización sobre la autonomía del paciente."
+            ],
+            correct: 0,
+          },
+          {
+            q: "¿Qué es esencial para la adopción de IA en enfermería?",
+            options: [
+              "Formación en competencias digitales y colaboración.",
+              "Evitar cualquier cambio en la práctica actual.",
+              "Incorporarse a equipos de innovación tecnológica.",
+              "Competir con especialistas en tecnología."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "En transformación digital, ¿qué papel es clave para las enfermeras?",
+            options: [
+              "Ser líderes en la integración tecnológica, facilitadoras del cambio y participantes activas en la toma de decisiones.",
+              "Ser usuarias pasivas de tecnología.",
+              "Ejecutoras de tareas sin participar en innovación.",
+              "Centrarse solo en tareas tradicionales."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué ventaja aporta la IA al análisis de datos clínicos?",
+            options: [
+              "Detectar patrones clínicos no evidentes para el ojo humano.",
+              "Aumentar la burocracia del personal de enfermería.",
+              "Sustituir el juicio clínico.",
+              "Reducir la personalización de cuidados."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué aspecto es crítico en la gestión de datos de pacientes?",
+            options: [
+              "Protección de la privacidad y seguridad.",
+              "Uso de papel y lápiz.",
+              "Almacenamiento físico de archivos.",
+              "Comunicación exclusiva por email."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué desafío técnico dificulta la implementación de IA?",
+            options: [
+              "Falta de interoperabilidad entre plataformas digitales.",
+              "Sobrecualificación del personal asistencial.",
+              "Exceso de formación continua.",
+              "Redundancia de diagnósticos."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué tipo de tecnología ha transformado la práctica clínica?",
+            options: [
+              "Sistemas de registros electrónicos de salud.",
+              "Dispositivos manuales de registro.",
+              "Sistemas analógicos de comunicación.",
+              "Herramientas manuales diagnósticas."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué competencia permite evaluar sistemas de IA clínicos?",
+            options: [
+              "Conocimiento ético, técnico y clínico de sistemas de inteligencia artificial.",
+              "Programación de algoritmos predictivos.",
+              "Software de gestión financiera.",
+              "Conocimiento de redes sociales."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué diferencia existe entre IA débil y fuerte?",
+            options: [
+              "La débil realiza tareas específicas; la fuerte tendría capacidades cognitivas humanas generales.",
+              "La IA fuerte se usa actualmente en hospitales.",
+              "La débil no puede analizar imágenes.",
+              "Ambas se usan indistintamente."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Por qué es fundamental que las enfermeras desarrollen competencias digitales?",
+            options: [
+              "Para garantizar uso seguro y eficiente de tecnología en beneficio del paciente.",
+              "Para delegar decisiones clínicas a sistemas automatizados.",
+              "Para programar IA desde cero.",
+              "Solo para cumplir requisitos legales."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Cómo pueden las enfermeras liderar la transformación digital?",
+            options: [
+              "Abogando por tecnologías que mejoren el cuidado del paciente.",
+              "Evitando cualquier nueva tecnología.",
+              "Manteniendo prácticas obsoletas.",
+              "Reduciendo la colaboración interdisciplinar."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué importancia tiene la colaboración interdisciplinar en IA?",
+            options: [
+              "Es clave para diseñar soluciones centradas en el paciente.",
+              "No tiene relevancia.",
+              "Debe evitarse.",
+              "Reduce la eficacia del cuidado."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué desafío representa la privacidad de datos en la era digital?",
+            options: [
+              "Asegurar la confidencialidad y seguridad de la información del paciente.",
+              "Facilitar el acceso indiscriminado a los datos.",
+              "Ignorar regulaciones.",
+              "Centrarse solo en almacenamiento físico."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Cuál es el impacto de la IA en el diagnóstico?",
+            options: [
+              "Mejora la precisión en interpretación de imágenes médicas.",
+              "Disminuye la confiabilidad diagnóstica.",
+              "Elimina revisión humana.",
+              "Reduce inversión tecnológica."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Qué se requiere para integrar IA efectivamente en enfermería?",
+            options: [
+              "Capacitación en competencias digitales y éticas.",
+              "Rechazo a tecnología.",
+              "Dependencia total de IA.",
+              "Solo tareas clínicas básicas."
+            ],
+            correct: 0,
+          },
+
+          {
+            q: "¿Cómo se relaciona el liderazgo enfermero con IA?",
+            options: [
+              "Guiando la adopción ética y efectiva de tecnologías para mejorar el cuidado.",
+              "Manteniendo perspectiva tradicional.",
+              "Delegando responsabilidades tecnológicas.",
+              "Ignorando tendencias digitales."
+            ],
+            correct: 0,
+    },
+      ],
+    },
+    {
     id: 4,
     title: "Gestión de la Comunicación",
     subtitle: "Efectiva y asertiva",

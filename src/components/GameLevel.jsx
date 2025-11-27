@@ -5,6 +5,36 @@ import { useGestCoins } from "../hooks/useGestCoins";
 import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
 
+// 🔀 Shuffle básico tipo Fisher-Yates
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// 🔀 Barajar las opciones manteniendo cuál es la correcta
+function shuffleQuestionOptions(question) {
+  const indexed = question.options.map((text, originalIndex) => ({
+    text,
+    originalIndex,
+  }));
+
+  const mixed = shuffleArray(indexed);
+
+  const newCorrectIndex = mixed.findIndex(
+    (opt) => opt.originalIndex === question.correct
+  );
+
+  return {
+    ...question,
+    options: mixed.map((o) => o.text),
+    correct: newCorrectIndex,
+  };
+}
+
 // Componente de puntos flotantes
 const FloatingPoints = ({ points, isCorrect, x, y }) => {
   return (
@@ -61,6 +91,61 @@ const StreakMessage = ({ streak }) => {
     </div>
   );
 };
+// 🎲 Frases y emojis aleatorios estilo Duolingo
+const FEEDBACK = {
+  correct: {
+    emojis: ["💪", "🔥", "😎", "🤩", "👏", "✨", "🏆"],
+    messages: [
+      "¡Excelente!",
+      "¡Perfecto!",
+      "¡Muy bien!",
+      "¡Así se hace!",
+      "¡Genial!",
+      "¡Sigue así!",
+      "¡Brutal!",
+    ],
+  },
+  wrong: {
+    emojis: ["😢", "😖", "💀", "🥺", "😬", "☹️"],
+    messages: [
+      "Casi…",
+      "Vamos a por la siguiente…",
+      "No pasa nada, tú puedes.",
+      "¡Ánimo!",
+      "Inténtalo de nuevo.",
+      "Respira… y seguimos.",
+    ],
+  },
+};
+
+// 🔥 Pantalla estilo Duolingo al responder
+const AnswerFeedback = ({ isCorrect, onComplete }) => {
+  const type = isCorrect ? "correct" : "wrong";
+  const emoji =
+    FEEDBACK[type].emojis[
+      Math.floor(Math.random() * FEEDBACK[type].emojis.length)
+    ];
+  const message =
+    FEEDBACK[type].messages[
+      Math.floor(Math.random() * FEEDBACK[type].messages.length)
+    ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => onComplete(), 1200);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <div
+      className={`fixed inset-0 flex flex-col items-center justify-center z-[9999] bg-opacity-90 ${
+        isCorrect ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      <div className="text-8xl mb-4 animate-bounce">{emoji}</div>
+      <div className="text-white text-4xl font-black">{message}</div>
+    </div>
+  );
+};
 
 export default function GameLevel({
   topic,
@@ -89,6 +174,9 @@ export default function GameLevel({
   const [floatingPoints, setFloatingPoints] = useState([]);
   const [shakeLife, setShakeLife] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  // 🟩 Feedback tipo Duolingo
+  const [showAnswerFeedback, setShowAnswerFeedback] = useState(false);
+  const [answerFeedbackCorrect, setAnswerFeedbackCorrect] = useState(false);
 
   // Videos de repaso por módulo
   const videoLinks = {
@@ -127,20 +215,21 @@ export default function GameLevel({
     const currentModule = TOPICS.find((t) => t.id === topic.id);
     if (!currentModule || !currentModule.questions) return;
 
-    const allQuestions = [...currentModule.questions];
-    const selectedQuestions = [];
+    // 1. Barajar todas las preguntas
+    const shuffledQuestions = shuffleArray(currentModule.questions);
 
-    for (let i = 0; i < Math.min(10, allQuestions.length); i++) {
-      const randomIndex =
-        Math.floor(Math.random() * (allQuestions.length - i)) + i;
-      [allQuestions[i], allQuestions[randomIndex]] = [
-        allQuestions[randomIndex],
-        allQuestions[i],
-      ];
-      selectedQuestions.push(allQuestions[i]);
-    }
+    // 2. Seleccionar solo 10
+    let selectedQuestions = shuffledQuestions.slice(0, 10);
 
+    // 3. Barajar las opciones dentro de cada pregunta
+    selectedQuestions = selectedQuestions.map((q) =>
+      shuffleQuestionOptions(q)
+    );
+
+    // 4. Guardar en estado
     setQuestions(selectedQuestions);
+
+    // 5. Resetear el estado del juego
     setCurrentIndex(0);
     setScore(0);
     setAnswered(false);
@@ -152,6 +241,7 @@ export default function GameLevel({
     completedRef.current = false;
   }, [topic]);
 
+    
   const currentQuestion = questions[currentIndex];
 
   // Función para mostrar puntos flotantes
@@ -263,6 +353,9 @@ export default function GameLevel({
     setSelectedAnswer(optionIndex);
     setShowResult(true);
     setAnswered(true);
+    // 🔥 Mostrar pantalla Duolingo
+    setAnswerFeedbackCorrect(isCorrect);
+    setShowAnswerFeedback(true);
 
     const isCorrect = optionIndex === currentQuestion.correct;
 
@@ -396,6 +489,13 @@ export default function GameLevel({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
+      {/* Pantalla tipo Duolingo */}
+      {showAnswerFeedback && (
+        <AnswerFeedback
+          isCorrect={answerFeedbackCorrect}
+          onComplete={() => setShowAnswerFeedback(false)}
+        />
+      )}
       {/* Puntos flotantes */}
       {floatingPoints.map((fp) => (
         <FloatingPoints
