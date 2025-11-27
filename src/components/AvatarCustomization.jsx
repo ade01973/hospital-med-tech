@@ -4,16 +4,22 @@ import { ChevronRight } from "lucide-react";
 
 export default function AvatarCustomization({ onComplete }) {
   const [name, setName] = useState("");
+  const [gender, setGender] = useState("female");
+  const [silhouetteIndex, setSilhouetteIndex] = useState(1);
   const [avatar, setAvatar] = useState({
-    base: "female",
-    face: 1,
-    skin: "light",
-    hair: "long",
-    eyes: "brown",
-    mouth: "smile",
-    uniform: "teal",
-    accessory: "none",
+    gender: "female",
+    silhouetteIndex: 1,
   });
+
+  const handleGenderChange = (newGender) => {
+    setGender(newGender);
+    setAvatar({ gender: newGender, silhouetteIndex });
+  };
+
+  const handleSilhouetteChange = (index) => {
+    setSilhouetteIndex(index);
+    setAvatar({ gender, silhouetteIndex: index });
+  };
 
   const handleFinish = () => {
     if (!name.trim()) {
@@ -23,7 +29,19 @@ export default function AvatarCustomization({ onComplete }) {
 
     const avatarData = {
       name: name.trim(),
-      ...avatar,
+      gender,
+      silhouetteIndex,
+      // Placeholders para características futuras
+      face: null,
+      skinColor: null,
+      eyeColor: null,
+      eyeShape: null,
+      noseType: null,
+      mouth: null,
+      hairType: null,
+      hairColor: null,
+      uniform: null,
+      accessory: null,
     };
 
     localStorage.setItem("playerAvatar", JSON.stringify(avatarData));
@@ -46,6 +64,50 @@ export default function AvatarCustomization({ onComplete }) {
             <AvatarPreviewDisplay avatar={avatar} size="large" />
           </div>
           
+          {/* Gender Selector */}
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => handleGenderChange("female")}
+              className={`px-6 py-2 rounded-lg font-bold transition-all ${
+                gender === "female"
+                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
+                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+              }`}
+            >
+              👩 Mujer
+            </button>
+            <button
+              onClick={() => handleGenderChange("male")}
+              className={`px-6 py-2 rounded-lg font-bold transition-all ${
+                gender === "male"
+                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
+                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+              }`}
+            >
+              👨 Hombre
+            </button>
+          </div>
+
+          {/* Silhouette Selector */}
+          <div className="w-full">
+            <p className="text-white font-bold mb-3">Tipo de silueta:</p>
+            <div className="flex gap-2 justify-center flex-wrap">
+              {[1, 2, 3, 4, 5].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSilhouetteChange(index)}
+                  className={`px-4 py-2 rounded-lg font-bold transition-all ${
+                    silhouetteIndex === index
+                      ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  }`}
+                >
+                  {index}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Name Input */}
           <div className="w-full max-w-xs">
             <label className="text-white font-bold mb-2 block text-sm">Tu nombre:</label>

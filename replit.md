@@ -72,31 +72,33 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ## Recent Changes (November 27, 2025)
 
-### 👤 AVATAR SYSTEM (IN-GAME CREATION) - UPDATED
+### 👤 AVATAR SYSTEM (IN-GAME CREATION) - SILHOUETTE PHASE COMPLETE
 
-**Status**: Avatar creation page now appears after Welcome screen, before Dashboard.
+**Status**: Avatar creation page with silhouette selection now active after Welcome screen, before Dashboard.
 
-#### New Base Layers (Nov 27 - Latest)
-- ✅ **Realistic Base Layers** - Deployed high-resolution PNG images:
-  - Female: `src/assets/avatar/base/female.png` (922KB) - Head, neck, upper torso with light blue scrubs
-  - Male: `src/assets/avatar/base/male.png` (966KB) - Head, neck, upper torso with light blue scrubs
-  - NO facial features, NO hair, NO accessories (designed for layer overlays)
-  - Perfectly aligned with identical proportions
-  - Realistic medical aesthetic with modern hospital uniforms
-  - Soft natural lighting, front-facing neutral pose
+#### ✅ Silhouettes Deployed (Nov 27 - Latest)
+
+**10 Torso Silhouettes Generated:**
+- 5 Female silhouettes: `female_torso_silhouette_1.png` through `5.png`
+- 5 Male silhouettes: `male_torso_silhouette_1.png` through `5.png`
+- Located in: `src/assets/avatar/base/`
+- Pure silhouettes ONLY: Head, neck, upper torso (no facial features, no hair, no clothing)
+- Different proportions for each variation (shoulder width, head shape, torso length variations)
+- Ready for layered customization (face, eyes, hair, clothing, etc.)
 
 #### Files in Use
-- ✅ `src/components/AvatarCustomization.jsx` - Avatar creation page with:
+- ✅ `src/components/AvatarCustomization.jsx` - Simplified creation page with:
   - Title: "Crea tu Gestora Enfermera"
+  - Gender selector (👩 Mujer / 👨 Hombre)
+  - Silhouette selector (5 variations per gender)
   - Name input field (30 chars max)
-  - Gender selector (Hombre/Mujer)
-  - Avatar preview display with realistic base layers
   - Confirm button saves to localStorage
 
-- ✅ `src/components/AvatarPreviewDisplay.jsx` - Renders base layer + face layer:
-  - Displays base layer PNG based on selected gender
+- ✅ `src/components/AvatarPreviewDisplay.jsx` - Displays selected silhouette:
+  - Shows silhouette based on selected gender
   - 3 size options: small (w-24), medium (w-32), large (w-48)
   - Gradient background with cyan border
+  - Prepared for layering system (will add face, skin, hair, etc. on top)
 
 #### Current App Flow
 - **Route**: Auth → Welcome → **Avatar Creation** → Dashboard
@@ -107,37 +109,32 @@ This is an interactive quiz-based learning application designed for nursing mana
 ```javascript
 {
   name: string,
-  base: string,      // 'male' | 'female'
-  face: number,      // 1-5 (face variation)
-  skin: string,      // 'light' | 'medium' | 'dark'
-  hair: string,      // 'short' | 'long' | 'curly'
-  eyes: string,      // 'brown' | 'blue' | 'green'
-  mouth: string,     // 'smile' | 'serious' | 'laugh'
-  uniform: string,   // 'teal' | 'white'
-  accessory: string  // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
+  gender: string,           // 'male' | 'female'
+  silhouetteIndex: number,  // 1-5 (silhouette variation)
+  // Future customization layers (currently null):
+  face: null,               // 1-5 variations per gender
+  skinColor: null,          // 'light' | 'medium' | 'dark' | etc.
+  eyeColor: null,           // 'brown' | 'blue' | 'green' | etc.
+  eyeShape: null,           // Different eye shapes
+  noseType: null,           // Different nose types
+  mouth: null,              // 'smile' | 'serious' | 'laugh' | etc.
+  hairType: null,           // 'short' | 'long' | 'curly' | etc.
+  hairColor: null,          // Hair color variations
+  uniform: null,            // Clothing options
+  accessory: null           // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
 }
 ```
 
-#### Recent Updates
-- ✅ **Skin Tone Layer System** - 5 skin tone variations deployed:
-  - skin_1: Very light (pale)
-  - skin_2: Light (fair)
-  - skin_3: Medium (beige)
-  - skin_4: Olive/Tan (warm)
-  - skin_5: Dark (deep)
-  - All perfectly aligned and layered on base
-  - Interactive selector with 5 buttons in customization page
-
-#### Next Steps
-- Develop customization options one by one:
-  1. ✅ Base selector (male/female)
-  2. ✅ Skin tone selector (5 variations)
-  3. Face selector (5 variations per gender)
-  4. Hair style selector
-  5. Eyes color selector
-  6. Mouth expression selector
-  7. Uniform selector
-  8. Accessory selector
+#### Customization Layers to Add (Incremental)
+- ✅ PHASE 1: Silhouettes (5 female + 5 male) ← COMPLETE
+- PHASE 2: Face variations (5 per gender)
+- PHASE 3: Skin color layer
+- PHASE 4: Eye color/shape selector
+- PHASE 5: Hair type/color selector
+- PHASE 6: Mouth expression selector
+- PHASE 7: Nose type selector
+- PHASE 8: Clothing/uniform selector
+- PHASE 9: Accessories selector
 
 ---
 
