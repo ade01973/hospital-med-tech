@@ -333,7 +333,7 @@ export default function GameLevel({
     }, 2000);
   };
 
-  // Auto-cerrar feedback después de 1.2 segundos y avanzar pregunta
+  // Auto-cerrar feedback después de 1.2 segundos
   useEffect(() => {
     if (!showAnswerFeedback) return;
 
@@ -348,6 +348,16 @@ export default function GameLevel({
       if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
     };
   }, [showAnswerFeedback]);
+
+  // Auto-avance después de que se cierra el feedback
+  useEffect(() => {
+    if (answered && !showAnswerFeedback && !isCompleted && lives > 0) {
+      const timer = setTimeout(() => {
+        advanceQuestion();
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [answered, showAnswerFeedback]);
 
   const handleAnswer = (optionIndex, event) => {
     if (answered || isCompleted) return;
