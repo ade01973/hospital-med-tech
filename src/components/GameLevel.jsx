@@ -494,7 +494,10 @@ export default function GameLevel({
   else if (timeLeft <= 10) timerColor = "text-yellow-400";
 
   const handleGoToDashboard = () => {
-    onComplete(topic.id, score, studentId);
+    // Solo completar el módulo si realmente está completado
+    if (isCompleted) {
+      onComplete(topic.id, score, studentId);
+    }
     onExit();
   };
 
