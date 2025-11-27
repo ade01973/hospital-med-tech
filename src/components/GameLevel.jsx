@@ -600,8 +600,8 @@ export default function GameLevel({
           </div>
         </div>
 
-        {/* Result feedback */}
-        {showResult && (
+        {/* Result feedback - Solo mostrar si no está el AnswerFeedback */}
+        {showResult && !showAnswerFeedback && (
           <div
             className={`p-4 rounded-lg mb-6 font-semibold text-lg ${
               selectedAnswer === currentQuestion.correct
