@@ -117,9 +117,9 @@ This is an interactive quiz-based learning application designed for nursing mana
 #### Total Avatar Combinations
 **2 × 3 × 7 × 3 × 3 × 3 × 4 = 5,040 unique avatars possible!**
 
-#### 🎨 COMPLETE AVATAR LAYER SYSTEM - ALL LAYERS GENERATED & TESTED ✅
+#### 🎨 COMPLETE AVATAR LAYER SYSTEM - ALL LAYERS DEPLOYED ✅
 
-**Deployed Layers (25 PNG files):**
+**Deployed Layers (25 PNG files in `/public/assets/avatar/`):**
 - ✅ **BASE (2):** female, male - Semi-realistic futuristic medical silhouettes with teal glow
 - ✅ **SKIN (3):** light, medium, dark - Diverse skin tone coverage
 - ✅ **HAIR (7):** short, long, curly, male_short, male_fade, curly_male, bald - Full range including bald option
@@ -128,13 +128,21 @@ This is an interactive quiz-based learning application designed for nursing mana
 - ✅ **UNIFORM (3):** nurse_blue, nurse_white, manager - Medical professional outfits
 - ✅ **ACCESSORY (4):** glasses, stethoscope, badge_manager, none - Medical equipment + empty layer
 
+**Image Loading & Rendering:**
+- ✅ All 25 PNGs copied to `/public/assets/avatar/` (accessible via `/assets/avatar/...` URLs)
+- ✅ **AvatarOptions.js** - Uses public paths: `/assets/avatar/category/image.png`
+- ✅ **AvatarPreview.jsx** - Renders 7 layers with `object-cover` for full viewport
+- ✅ **AvatarCreation.jsx** - Clean component, handles selection and saves to localStorage
+
 **Background Music:**
 - ✅ `/public/audio/avatar-theme.mp3` - Futuristic ambient medical music, loopable, volume 0.3, autoplay with error handling
 
-**Components Fixed & Working:**
-- ✅ **AvatarCreation.jsx** - Simplified, debugged, all event handlers functional
-- ✅ **AvatarPreview.jsx** - Fixed layering, proper rendering of 7 PNG layers
-- ✅ **avatarOptions.js** - All 30 images properly imported and configured
+**Usage Flow:**
+1. Login → Welcome Screen → Click "CONTINUAR" → Avatar Creation Screen
+2. Click on any layer category (Base, Skin, Hair, etc.) to select options
+3. Avatar preview updates in real-time on the left
+4. Enter name (max 30 characters)
+5. Click "Confirmar Avatar" → Saves to localStorage and proceeds to Dashboard
 
 ---
 
