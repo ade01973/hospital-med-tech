@@ -92,7 +92,7 @@ export default function AvatarCreation({ onComplete, onLogout }) {
             
             {/* Campo de nombre */}
             <div className="w-full max-w-xs">
-              <label className="text-white font-bold mb-2 block text-sm">📝 Tu nombre de jugador:</label>
+              <label className="text-white font-bold mb-2 block text-sm">Tu nombre de jugador:</label>
               <input
                 type="text"
                 value={name}
@@ -110,14 +110,7 @@ export default function AvatarCreation({ onComplete, onLogout }) {
             {Object.entries(avatarOptions).map(([category, options]) => (
               <div key={category}>
                 <p className="font-black mb-3 uppercase text-cyan-400 text-sm tracking-wider">
-                  {category === 'base' && '👤'} 
-                  {category === 'skin' && '🎨'}
-                  {category === 'hair' && '💇'}
-                  {category === 'eyes' && '👀'}
-                  {category === 'mouth' && '😊'}
-                  {category === 'uniform' && '👗'}
-                  {category === 'accessory' && '✨'}
-                  {' '}{category}
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </p>
                 <div className={`grid gap-2 ${category === 'base' ? 'grid-cols-2' : category === 'hair' ? 'grid-cols-5' : 'grid-cols-4'}`}>
                   {options.map(opt => (
