@@ -309,11 +309,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Experiencia</span>
+            <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
+              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
               <div className="flex items-center gap-1">
-                <Zap className="w-5 h-5 text-yellow-400" />
-                <span className="text-lg font-black text-yellow-300">{userData?.totalScore || 0}</span>
+                <span className="text-2xl">⭐</span>
+                <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
               </div>
             </div>
           </div>
