@@ -350,14 +350,14 @@ export default function GameLevel({
   const handleAnswer = (optionIndex, event) => {
     if (answered || isCompleted) return;
 
+    const isCorrect = optionIndex === currentQuestion.correct;
+
     setSelectedAnswer(optionIndex);
     setShowResult(true);
     setAnswered(true);
     // 🔥 Mostrar pantalla Duolingo
     setAnswerFeedbackCorrect(isCorrect);
     setShowAnswerFeedback(true);
-
-    const isCorrect = optionIndex === currentQuestion.correct;
 
     if (isCorrect) {
       // 🎯 RESPUESTA CORRECTA
