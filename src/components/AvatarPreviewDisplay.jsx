@@ -9,7 +9,7 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
 
   const gender = avatar.gender || "female";
   const silhouetteIndex = avatar.silhouetteIndex || 1;
-  const silhouetteImage = `/src/assets/avatar/base/${gender}_torso_silhouette_${silhouetteIndex}.png`;
+  const silhouetteImage = `/src/assets/avatar/base/${gender}_silhouette_base_${silhouetteIndex}.png`;
 
   return (
     <div className={`${sizeClasses[size]} mx-auto relative rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border-2 border-cyan-500/20 overflow-hidden flex items-center justify-center`}>
