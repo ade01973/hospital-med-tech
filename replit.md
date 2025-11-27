@@ -87,13 +87,34 @@ This is an interactive quiz-based learning application designed for nursing mana
 - Logout button available on avatar creation page
 
 #### Features
-✅ Multiple options per category (5 customization categories)  
+✅ Multiple options per category (7 customization categories)  
+✅ Layered modular avatar system (base, skin, hair, eyes, mouth, uniform, accessory)
+✅ Real-time avatar preview component (AvatarPreview.jsx)
 ✅ Player name input field (up to 30 characters)
 ✅ Visual feedback with cyan glow on selected items  
+✅ Checkmark on selected avatar parts
 ✅ Persistent avatar storage in localStorage with name  
 ✅ Name displayed in Dashboard (top-left with avatar)
 ✅ Name displayed in GameLevel (during questions)
+✅ Futuristic dark + cyan UI with backdrop blur
+✅ Responsive grid layout (mobile optimized)
 ✅ Smooth navigation flow  
+
+#### Files Added/Updated
+- **`src/components/AvatarCreation.jsx`** - Completely rebuilt with layered avatar support
+- **`src/components/AvatarPreview.jsx`** (NEW) - Renders layered avatar with 7 PNG layers
+- **`src/data/avatarOptions.js`** (NEW) - Avatar configuration with all 30 PNG imports
+- **`src/assets/avatar/`** (NEW) - Folder structure with 7 categories:
+  - base/ (female, male)
+  - skin/ (light, medium, dark)
+  - hair/ (short, long, curly, male_short, male_fade)
+  - eyes/ (brown, blue, green)
+  - mouth/ (smile, serious, laugh)
+  - uniform/ (nurse_blue, nurse_white, manager)
+  - accessory/ (glasses, stethoscope, badge_manager, none)
+
+#### Total Avatar Combinations
+**2 × 3 × 5 × 3 × 3 × 3 × 4 = 3,240 unique avatars possible!**
 
 ---
 

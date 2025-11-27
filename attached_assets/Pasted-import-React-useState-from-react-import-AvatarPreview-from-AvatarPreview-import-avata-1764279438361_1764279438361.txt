@@ -1,0 +1,75 @@
+import React, { useState } from "react";
+import AvatarPreview from "./AvatarPreview";
+import { avatarOptions } from "../data/avatarOptions";
+import { ChevronRight } from "lucide-react";
+
+export default function AvatarCreation({ onComplete }) {
+  const [name, setName] = useState("");
+  const [avatar, setAvatar] = useState({
+    base: avatarOptions.base[0].img,
+    skin: avatarOptions.skin[0].img,
+    hair: avatarOptions.hair[0].img,
+    eyes: avatarOptions.eyes[0].img,
+    mouth: avatarOptions.mouth[0].img,
+    uniform: avatarOptions.uniform[0].img,
+    accessory: avatarOptions.accessory[0].img,
+  });
+
+  const handleSelect = (category, img) => {
+    setAvatar(prev => ({ ...prev, [category]: img }));
+  };
+
+  const handleFinish = () => {
+    if (!name.trim()) {
+      alert("Introduce tu nombre");
+      return;
+    }
+    localStorage.setItem("playerAvatar", JSON.stringify({ name, ...avatar }));
+    onComplete();
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-white p-6">
+      <h1 className="text-4xl font-black text-center mb-6">
+        Crea tu Avatar Futurista
+      </h1>
+
+      <AvatarPreview avatar={avatar} />
+
+      <div className="mt-6 max-w-xl mx-auto">
+        <input
+          className="w-full p-3 rounded bg-slate-700 text-lg mb-4"
+          placeholder="Nombre del jugador"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+
+        {Object.entries(avatarOptions).map(([category, options]) => (
+          <div key={category} className="mb-6">
+            <p className="font-semibold mb-2 uppercase text-cyan-400">
+              {category}
+            </p>
+            <div className="grid grid-cols-4 gap-3">
+              {options.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => handleSelect(category, opt.img)}
+                  className="p-2 rounded bg-slate-700 hover:bg-slate-600 border border-slate-600"
+                >
+                  <img src={opt.img} alt="" className="w-full h-full" />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <button
+          onClick={handleFinish}
+          className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-black py-4 rounded-xl mt-4 flex items-center justify-center gap-2"
+        >
+          Confirmar Avatar <ChevronRight />
+        </button>
+      </div>
+    </div>
+  );
+}
