@@ -13,6 +13,8 @@ import longHair from '../assets/avatar/hair/long.png';
 import curlyHair from '../assets/avatar/hair/curly.png';
 import maleShortHair from '../assets/avatar/hair/male_short.png';
 import maleFadeHair from '../assets/avatar/hair/male_fade.png';
+import curlyMaleHair from '../assets/avatar/hair/curly_male.png';
+import baldHair from '../assets/avatar/hair/bald.png';
 
 // Import eyes images
 import brownEyes from '../assets/avatar/eyes/brown.png';
@@ -51,6 +53,8 @@ export const avatarOptions = {
     { label: 'Curly', value: 'curly', img: curlyHair },
     { label: 'Male Short', value: 'male_short', img: maleShortHair },
     { label: 'Male Fade', value: 'male_fade', img: maleFadeHair },
+    { label: 'Male Curly', value: 'curly_male', img: curlyMaleHair },
+    { label: 'Bald', value: 'bald', img: baldHair },
   ],
   eyes: [
     { label: 'Brown', value: 'brown', img: brownEyes },
