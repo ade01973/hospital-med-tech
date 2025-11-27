@@ -70,6 +70,53 @@ This is an interactive quiz-based learning application designed for nursing mana
   - firebase.js (Firebase config)
 ```
 
+## Recent Changes (November 27, 2025)
+
+### 👤 AVATAR CREATION SYSTEM (NEW - Implemented)
+
+#### New Component
+- **`src/components/AvatarCreation.jsx`** - Avatar customization page with:
+  - 5 customization categories: Skin tone, Hair, Eyes, Mouth expression, Accessories
+  - Real-time preview with emoji avatar
+  - Beautiful gradient UI matching the game aesthetic
+  - Saved to localStorage as `playerAvatar` JSON
+
+#### App Flow Updated
+- **New Route**: Welcome → Avatar Creation → Dashboard (game starts after avatar)
+- Avatar selection is required before accessing the game
+- Logout button available on avatar creation page
+
+#### Features
+✅ Multiple options per category  
+✅ Visual feedback with cyan glow on selected items  
+✅ Persistent avatar storage in localStorage  
+✅ Smooth navigation flow  
+
+---
+
+### 🖼️ HOSPITAL BACKGROUNDS IMPROVEMENTS
+
+**Files Updated:**
+- `src/components/ElevatorDoors.jsx` - Random hospital background on elevator animation
+- `src/components/Dashboard.jsx` - Reduced overlay opacity from 40% to 20%
+- Background images updated: hospital-1.png, hospital-2.png, hospital-3.png
+
+**Changes:**
+✅ Hospital background visible on elevator animation  
+✅ Dashboard background now clearly visible (20% overlay)  
+✅ Better visual consistency throughout the game  
+
+---
+
+### 🐛 BUG FIXES
+
+**Module Completion Logic**
+- Fixed: Module now only marked as complete if ALL 10 questions answered
+- Fixed: Exiting mid-module no longer marks it as completed
+- Users must complete full module to unlock next level
+
+---
+
 ## Recent Changes (November 24, 2025)
 
 ### 📱 SOCIAL SHARING SYSTEM (NEW - Implemented)
