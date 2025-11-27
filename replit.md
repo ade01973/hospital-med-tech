@@ -72,22 +72,53 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ## Recent Changes (November 27, 2025)
 
-### 👤 AVATAR CREATION SYSTEM (REMOVED)
+### 👤 AVATAR SYSTEM (IN-GAME CREATION)
 
-**Status**: All avatar creation pages have been completely removed from the application.
+**Status**: Avatar creation page now appears after Welcome screen, before Dashboard.
 
-#### Removed Files (Nov 27)
-- ❌ `src/components/AvatarCreation.jsx` - Initial avatar creation (removed earlier)
-- ❌ `src/components/AvatarPreview.jsx` - Avatar preview component
-- ❌ `src/data/avatarOptions.js` - Avatar configuration
-- ❌ `src/components/NurseManagerAvatarCreation.jsx` - Nurse manager avatar creation (removed today)
-- ❌ `src/data/avatarNurseOptions.js` - Nurse avatar options
-- ❌ `src/assets/nurse_avatar/` - Nurse avatar assets folder
-- ❌ `src/assets/avatar/` - Generic avatar assets folder
-- ❌ `public/audio/avatar-theme.mp3` - Background music
+#### Files Created (Nov 27 - Latest)
+- ✅ `src/components/AvatarCustomization.jsx` - Avatar creation page with:
+  - Title: "Crea tu Avatar"
+  - Name input field (30 chars max)
+  - Avatar preview display (left side)
+  - Placeholder for customization options (right side - to be developed later)
+  - Confirm button saves to localStorage
 
-#### Final App Flow
-- **Route**: Auth → Welcome → Dashboard (direct navigation, no avatar creation step)
+- ✅ `src/components/AvatarPreviewDisplay.jsx` - Reusable avatar preview component with:
+  - 3 size options: small (w-24), medium (w-32), large (w-48)
+  - Display gender-based emoji (👩‍⚕️ or 👨‍⚕️)
+  - Gradient background with cyan border
+  - Used in both AvatarCustomization and Dashboard
+
+#### Current App Flow
+- **Route**: Auth → Welcome → **Avatar Creation** → Dashboard
+- Avatar data saved to localStorage as `playerAvatar`
+- Avatar displayed in Dashboard top-left with name and rank
+
+#### Avatar Data Structure
+```javascript
+{
+  name: string,
+  base: string,      // 'male' | 'female'
+  skin: string,      // 'light' | 'medium' | 'dark'
+  hair: string,      // 'short' | 'long' | 'curly'
+  eyes: string,      // 'brown' | 'blue' | 'green'
+  mouth: string,     // 'smile' | 'serious' | 'laugh'
+  uniform: string,   // 'teal' | 'white'
+  accessory: string  // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
+}
+```
+
+#### Next Steps
+- Develop customization options one by one:
+  1. Base selector (male/female)
+  2. Skin tone selector
+  3. Hair style selector
+  4. Eyes color selector
+  5. Mouth expression selector
+  6. Uniform selector
+  7. Accessory selector
+  8. Generate/integrate avatar images for each option
 
 ---
 
