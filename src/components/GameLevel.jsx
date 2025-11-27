@@ -39,7 +39,7 @@ function shuffleQuestionOptions(question) {
 const FloatingPoints = ({ points, isCorrect, x, y }) => {
   return (
     <div
-      className="fixed pointer-events-none z-50 animate-float-up"
+      className="fixed pointer-events-none z-[10000] animate-float-up"
       style={{ left: `${x}px`, top: `${y}px` }}
     >
       <div
@@ -573,9 +573,11 @@ export default function GameLevel({
 
           {/* Progreso */}
           <div className="mb-2">
-            <div className="flex justify-between text-white text-sm mb-1">
-              <span>Pregunta {currentIndex + 1}/10</span>
-              <span className="font-bold text-yellow-400">{score} pts</span>
+            <div className="flex justify-between items-center text-white mb-3">
+              <span className="text-sm">Pregunta {currentIndex + 1}/10</span>
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 rounded-lg">
+                <span className="font-bold text-lg text-white">💰 {score} pts</span>
+              </div>
             </div>
             <div className="w-full bg-slate-700 rounded-full h-2">
               <div
