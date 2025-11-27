@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AvatarPreview from "./AvatarPreview";
 import { avatarOptions } from "../data/avatarOptions";
 import { ChevronRight, LogOut } from "lucide-react";
@@ -14,6 +14,19 @@ export default function AvatarCreation({ onComplete, onLogout }) {
     uniform: avatarOptions.uniform[0].img,
     accessory: avatarOptions.accessory[0].img,
   });
+
+  // 🎵 Background music during avatar creation
+  useEffect(() => {
+    const audio = new Audio("/audio/avatar-theme.mp3");
+    audio.loop = true;
+    audio.volume = 0.3;
+    audio.play().catch(err => console.log("Audio autoplay blocked:", err));
+    
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, []);
 
   const handleSelect = (category, img) => {
     setAvatar(prev => ({ ...prev, [category]: img }));
