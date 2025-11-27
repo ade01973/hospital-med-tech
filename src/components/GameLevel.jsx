@@ -637,7 +637,15 @@ export default function GameLevel({
                 }`}
               >
                 <div className="flex items-center">
-                  <span className="inline-flex items-center justify-center w-8 h-8 bg-opacity-20 bg-white rounded-full mr-3">
+                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                    !answered
+                      ? "bg-opacity-20 bg-white text-slate-300"
+                      : index === currentQuestion.correct
+                        ? "bg-green-400 text-white font-black"
+                        : index === selectedAnswer
+                          ? "bg-red-400 text-white font-black"
+                          : "bg-slate-600 text-slate-400"
+                  }`}>
                     {String.fromCharCode(65 + index)}
                   </span>
                   {option}
