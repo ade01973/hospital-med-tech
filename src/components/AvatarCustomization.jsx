@@ -15,6 +15,14 @@ export default function AvatarCustomization({ onComplete }) {
     accessory: "none",
   });
 
+  const skinTones = [
+    { id: "very-light", label: "Muy Claro", emoji: "🟡" },
+    { id: "light", label: "Claro", emoji: "🟠" },
+    { id: "medium", label: "Medio", emoji: "🟠" },
+    { id: "olive-tan", label: "Aceitunado", emoji: "🟠" },
+    { id: "dark", label: "Oscuro", emoji: "⚫" },
+  ];
+
   const handleFinish = () => {
     if (!name.trim()) {
       alert("Por favor ingresa tu nombre");
@@ -105,11 +113,37 @@ export default function AvatarCustomization({ onComplete }) {
               </div>
             </div>
 
+            {/* Skin Tone Selection */}
+            <div>
+              <p className="font-black mb-3 uppercase text-cyan-400 text-sm tracking-wider">Tono de piel</p>
+              <div className="grid grid-cols-5 gap-2">
+                {skinTones.map((tone) => (
+                  <button
+                    key={tone.id}
+                    onClick={() => setAvatar(prev => ({ ...prev, skin: tone.id }))}
+                    className={`relative p-3 rounded-lg transition-all transform hover:scale-110 border-2 flex flex-col items-center justify-center gap-1 ${
+                      avatar.skin === tone.id
+                        ? 'bg-cyan-600/20 border-cyan-400 shadow-lg shadow-cyan-500/50'
+                        : 'bg-slate-700 border-slate-600 hover:border-slate-500'
+                    }`}
+                    title={tone.label}
+                  >
+                    <div className="text-2xl">{tone.emoji}</div>
+                    <p className="text-white text-xs font-bold text-center leading-tight">{tone.label}</p>
+                    {avatar.skin === tone.id && (
+                      <div className="absolute top-1 right-1 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs">
+                        ✓
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Other Options Placeholder */}
             <div className="text-center text-slate-400">
               <p className="text-sm font-bold">Más opciones próximamente:</p>
               <div className="mt-3 space-y-1 text-xs text-slate-500">
-                <p>• Piel</p>
                 <p>• Cabello</p>
                 <p>• Ojos</p>
                 <p>• Boca</p>

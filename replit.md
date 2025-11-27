@@ -118,11 +118,21 @@ This is an interactive quiz-based learning application designed for nursing mana
 }
 ```
 
+#### Recent Updates
+- ✅ **Skin Tone Layer System** - 5 skin tone variations deployed:
+  - skin_1: Very light (pale)
+  - skin_2: Light (fair)
+  - skin_3: Medium (beige)
+  - skin_4: Olive/Tan (warm)
+  - skin_5: Dark (deep)
+  - All perfectly aligned and layered on base
+  - Interactive selector with 5 buttons in customization page
+
 #### Next Steps
 - Develop customization options one by one:
   1. ✅ Base selector (male/female)
-  2. Face selector (5 variations per gender)
-  3. Skin tone selector
+  2. ✅ Skin tone selector (5 variations)
+  3. Face selector (5 variations per gender)
   4. Hair style selector
   5. Eyes color selector
   6. Mouth expression selector

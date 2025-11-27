@@ -2,6 +2,13 @@ import React from "react";
 import femaleBase from "../assets/avatar/base/female.png";
 import maleBase from "../assets/avatar/base/male.png";
 
+// Skin tones
+import skin1 from "../assets/avatar/skin/skin_1.png";
+import skin2 from "../assets/avatar/skin/skin_2.png";
+import skin3 from "../assets/avatar/skin/skin_3.png";
+import skin4 from "../assets/avatar/skin/skin_4.png";
+import skin5 from "../assets/avatar/skin/skin_5.png";
+
 // Female faces
 import femaleFace1 from "../assets/avatar/faces/female/face_1.png";
 import femaleFace2 from "../assets/avatar/faces/female/face_2.png";
@@ -23,12 +30,21 @@ export default function AvatarPreviewDisplay({ avatar, size = "large" }) {
     large: "w-48 h-48",
   };
 
-  // Get the base image based on gender
   const getBaseImage = () => {
     return avatar.base === "male" ? maleBase : femaleBase;
   };
 
-  // Get face image based on gender and face selection
+  const getSkinImage = () => {
+    const skinToneMap = {
+      "very-light": skin1,
+      light: skin2,
+      medium: skin3,
+      "olive-tan": skin4,
+      dark: skin5,
+    };
+    return skinToneMap[avatar.skin] || skin2;
+  };
+
   const getFaceImage = () => {
     const faceNum = avatar.face || 1;
     const faces = {
@@ -45,6 +61,12 @@ export default function AvatarPreviewDisplay({ avatar, size = "large" }) {
       <img 
         src={getBaseImage()} 
         alt="Avatar base" 
+        className="w-full h-full object-contain absolute inset-0"
+      />
+      {/* Skin Tone Layer */}
+      <img 
+        src={getSkinImage()} 
+        alt="Avatar skin tone" 
         className="w-full h-full object-contain absolute inset-0"
       />
       {/* Face Layer */}
