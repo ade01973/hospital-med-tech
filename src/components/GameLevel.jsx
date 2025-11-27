@@ -496,6 +496,7 @@ export default function GameLevel({
       {/* Pantalla tipo Duolingo */}
       {showAnswerFeedback && (
         <AnswerFeedback
+          key={`feedback-${currentIndex}`}
           isCorrect={answerFeedbackCorrect}
           onComplete={() => setShowAnswerFeedback(false)}
         />
