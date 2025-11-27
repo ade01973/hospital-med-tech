@@ -1,143 +1,122 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
 const ElevatorDoors = ({ onComplete }) => {
   const audioContextRef = useRef(null);
+  const [randomBg, setRandomBg] = useState("");
 
   useEffect(() => {
-    // Crear sonido de apertura de puertas usando Web Audio API
+    // 🖼️ Seleccionar fondo aleatorio del hospital
+    const backgrounds = [
+      "/images/hospital-1.png",
+      "/images/hospital-2.png",
+      "/images/hospital-3.png"
+    ];
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    setRandomBg(backgrounds[randomIndex]);
+    // Sonido futurista más suave tipo “pshhh”
     try {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       audioContextRef.current = audioContext;
 
-      // Crear sonido de "whoosh" para apertura de puertas
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
 
-      // Sonido descendente (apertura)
-      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.05, audioContext.currentTime + 0.5);
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+      osc.frequency.setValueAtTime(600, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, audioContext.currentTime + 0.7);
 
-      // Segundo sonido de "ding" (opcional, suena después)
-      setTimeout(() => {
-        const osc2 = audioContext.createOscillator();
-        const gain2 = audioContext.createGain();
-        
-        osc2.connect(gain2);
-        gain2.connect(audioContext.destination);
+      gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.7);
 
-        osc2.frequency.setValueAtTime(800, audioContext.currentTime);
-        gain2.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+      osc.start(audioContext.currentTime);
+      osc.stop(audioContext.currentTime + 0.7);
+    } catch (e) {}
 
-        osc2.start(audioContext.currentTime);
-        osc2.stop(audioContext.currentTime + 0.3);
-      }, 500);
-    } catch (err) {
-      console.log('Audio context error:', err);
-    }
-
-    // Después de 2.5 segundos, completar la animación
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 2500);
-
+    const timer = setTimeout(() => onComplete(), 2400);
     return () => {
       clearTimeout(timer);
-      if (audioContextRef.current?.state === 'running') {
-        audioContextRef.current.close();
-      }
+      if (audioContextRef.current?.state === "running") audioContextRef.current.close();
     };
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black overflow-hidden">{/* Sonido generado por Web Audio API */}
+    <div 
+      className="fixed inset-0 z-[9999] overflow-hidden"
+      style={{
+        backgroundImage: `url(${randomBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* Fondo difuminado estilo hospital futurista con overlay oscuro */}
+      <div className="absolute inset-0 backdrop-blur-xl bg-black/60"></div>
 
-      {/* Puertas izquierda y derecha */}
+      {/* Puertas */}
       <div className="absolute inset-0 flex">
+
         {/* Puerta izquierda */}
         <div
-          className="w-1/2 h-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 border-r-4 border-cyan-400 shadow-2xl shadow-cyan-500/50"
-          style={{
-            animation: 'doorSlideLeft 2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-          }}
+          className="
+            w-1/2 h-full 
+            bg-gradient-to-r from-cyan-900/40 via-cyan-700/30 to-cyan-500/20 
+            border-r border-cyan-300/40
+            shadow-[inset_-20px_0_40px_rgba(0,255,255,0.15)]
+            backdrop-blur-2xl
+          "
+          style={{ animation: "doorLeft 2s ease-out forwards" }}
         >
-          {/* Líneas metálicas */}
-          <div className="h-full flex flex-col justify-around py-8 px-4 opacity-60">
-            {[...Array(15)].map((_, i) => (
-              <div
-                key={`left-${i}`}
-                className="h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent"
-              ></div>
-            ))}
-          </div>
+          {/* Bordes luminosos */}
+          <div className="absolute inset-y-0 right-0 w-1 bg-cyan-300/80 blur-sm"></div>
+          <div className="absolute inset-y-0 right-0 w-1 bg-white/40"></div>
         </div>
 
         {/* Puerta derecha */}
         <div
-          className="w-1/2 h-full bg-gradient-to-l from-slate-900 via-slate-800 to-slate-700 border-l-4 border-cyan-400 shadow-2xl shadow-cyan-500/50"
-          style={{
-            animation: 'doorSlideRight 2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-          }}
+          className="
+            w-1/2 h-full 
+            bg-gradient-to-l from-cyan-900/40 via-cyan-700/30 to-cyan-500/20  
+            border-l border-cyan-300/40
+            shadow-[inset_20px_0_40px_rgba(0,255,255,0.15)]
+            backdrop-blur-2xl
+          "
+          style={{ animation: "doorRight 2s ease-out forwards" }}
         >
-          {/* Líneas metálicas */}
-          <div className="h-full flex flex-col justify-around py-8 px-4 opacity-60">
-            {[...Array(15)].map((_, i) => (
-              <div
-                key={`right-${i}`}
-                className="h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent"
-              ></div>
-            ))}
-          </div>
+          {/* Bordes luminosos */}
+          <div className="absolute inset-y-0 left-0 w-1 bg-cyan-300/80 blur-sm"></div>
+          <div className="absolute inset-y-0 left-0 w-1 bg-white/40"></div>
         </div>
       </div>
 
-      {/* Efecto de luz */}
+      {/* Barra de luz tipo escáner */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-cyan-500/20 to-transparent pointer-events-none"
-        style={{
-          animation: 'lightFlash 2s ease-out forwards',
-        }}
-      ></div>
+        className="absolute inset-0 pointer-events-none"
+        style={{ animation: "scanLight 1.2s ease-out 0.4s forwards" }}
+      >
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-cyan-300/40 blur-md"></div>
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/40"></div>
+      </div>
 
-      {/* Estilos CSS con keyframes */}
+      {/* Keyframes */}
       <style>{`
-        @keyframes doorSlideLeft {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-100%);
-          }
+        @keyframes doorLeft {
+          0% { transform: translateX(0); }
+          90% { transform: translateX(-100%); }
+          100% { transform: translateX(-98%); } /* leve overshoot futurista */
         }
 
-        @keyframes doorSlideRight {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(100%);
-          }
+        @keyframes doorRight {
+          0% { transform: translateX(0); }
+          90% { transform: translateX(100%); }
+          100% { transform: translateX(98%); }
         }
 
-        @keyframes lightFlash {
-          0% {
-            opacity: 0;
-          }
-          30% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-          }
+        @keyframes scanLight {
+          0% { opacity: 0; transform: scaleY(0.2); }
+          20% { opacity: 1; transform: scaleY(1); }
+          80% { opacity: 1; }
+          100% { opacity: 0; transform: scaleY(0.2); }
         }
       `}</style>
     </div>
