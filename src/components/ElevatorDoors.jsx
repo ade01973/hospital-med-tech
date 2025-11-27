@@ -50,8 +50,8 @@ const ElevatorDoors = ({ onComplete }) => {
         backgroundPosition: 'center'
       }}
     >
-      {/* Fondo difuminado estilo hospital futurista con overlay oscuro */}
-      <div className="absolute inset-0 backdrop-blur-xl bg-black/60"></div>
+      {/* Fondo difuminado estilo hospital futurista con overlay ligero */}
+      <div className="absolute inset-0 backdrop-blur-sm bg-black/20"></div>
 
       {/* Puertas */}
       <div className="absolute inset-0 flex">
