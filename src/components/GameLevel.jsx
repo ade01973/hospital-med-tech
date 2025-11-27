@@ -133,7 +133,7 @@ const AnswerFeedback = ({ isCorrect, onComplete }) => {
   useEffect(() => {
     const timer = setTimeout(() => onComplete(), 1200);
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, []); // Sin dependencias para que solo se ejecute una vez
 
   return (
     <div
@@ -315,6 +315,9 @@ export default function GameLevel({
     setAnswered(true);
     setShowResult(true);
     setSelectedAnswer(null);
+    // Mostrar feedback de error
+    setAnswerFeedbackCorrect(false);
+    setShowAnswerFeedback(true);
 
     // Perder vida y resetear racha
     const newLives = lives - 1;
