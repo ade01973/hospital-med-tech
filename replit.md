@@ -72,23 +72,31 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 ## Recent Changes (November 27, 2025)
 
-### 👤 AVATAR SYSTEM (IN-GAME CREATION)
+### 👤 AVATAR SYSTEM (IN-GAME CREATION) - UPDATED
 
 **Status**: Avatar creation page now appears after Welcome screen, before Dashboard.
 
-#### Files Created (Nov 27 - Latest)
+#### New Base Layers (Nov 27 - Latest)
+- ✅ **Realistic Base Layers** - Deployed high-resolution PNG images:
+  - Female: `src/assets/avatar/base/female.png` (922KB) - Head, neck, upper torso with light blue scrubs
+  - Male: `src/assets/avatar/base/male.png` (966KB) - Head, neck, upper torso with light blue scrubs
+  - NO facial features, NO hair, NO accessories (designed for layer overlays)
+  - Perfectly aligned with identical proportions
+  - Realistic medical aesthetic with modern hospital uniforms
+  - Soft natural lighting, front-facing neutral pose
+
+#### Files in Use
 - ✅ `src/components/AvatarCustomization.jsx` - Avatar creation page with:
-  - Title: "Crea tu Avatar"
+  - Title: "Crea tu Gestora Enfermera"
   - Name input field (30 chars max)
-  - Avatar preview display (left side)
-  - Placeholder for customization options (right side - to be developed later)
+  - Gender selector (Hombre/Mujer)
+  - Avatar preview display with realistic base layers
   - Confirm button saves to localStorage
 
-- ✅ `src/components/AvatarPreviewDisplay.jsx` - Reusable avatar preview component with:
+- ✅ `src/components/AvatarPreviewDisplay.jsx` - Renders base layer + face layer:
+  - Displays base layer PNG based on selected gender
   - 3 size options: small (w-24), medium (w-32), large (w-48)
-  - Display gender-based emoji (👩‍⚕️ or 👨‍⚕️)
   - Gradient background with cyan border
-  - Used in both AvatarCustomization and Dashboard
 
 #### Current App Flow
 - **Route**: Auth → Welcome → **Avatar Creation** → Dashboard
@@ -100,6 +108,7 @@ This is an interactive quiz-based learning application designed for nursing mana
 {
   name: string,
   base: string,      // 'male' | 'female'
+  face: number,      // 1-5 (face variation)
   skin: string,      // 'light' | 'medium' | 'dark'
   hair: string,      // 'short' | 'long' | 'curly'
   eyes: string,      // 'brown' | 'blue' | 'green'
@@ -111,14 +120,14 @@ This is an interactive quiz-based learning application designed for nursing mana
 
 #### Next Steps
 - Develop customization options one by one:
-  1. Base selector (male/female)
-  2. Skin tone selector
-  3. Hair style selector
-  4. Eyes color selector
-  5. Mouth expression selector
-  6. Uniform selector
-  7. Accessory selector
-  8. Generate/integrate avatar images for each option
+  1. ✅ Base selector (male/female)
+  2. Face selector (5 variations per gender)
+  3. Skin tone selector
+  4. Hair style selector
+  5. Eyes color selector
+  6. Mouth expression selector
+  7. Uniform selector
+  8. Accessory selector
 
 ---
 
