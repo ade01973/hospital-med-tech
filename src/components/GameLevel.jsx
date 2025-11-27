@@ -492,6 +492,8 @@ export default function GameLevel({
   let timerColor = "text-blue-400";
   if (timeLeft <= 5) timerColor = "text-red-500";
   else if (timeLeft <= 10) timerColor = "text-yellow-400";
+  
+  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
   const handleGoToDashboard = () => {
     // Solo completar el módulo si realmente está completado
@@ -557,6 +559,15 @@ export default function GameLevel({
       ))}
 
       <div className="max-w-2xl mx-auto">
+        {/* Player Name Badge */}
+        {playerAvatar.name && (
+          <div className="text-center mb-4">
+            <div className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 px-4 py-2 rounded-full border border-cyan-500/50">
+              <p className="text-white font-bold text-sm">👤 {playerAvatar.name}</p>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="mb-8 pt-4">
           <div className="flex justify-between items-center mb-4">

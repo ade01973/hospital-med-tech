@@ -87,9 +87,12 @@ This is an interactive quiz-based learning application designed for nursing mana
 - Logout button available on avatar creation page
 
 #### Features
-✅ Multiple options per category  
+✅ Multiple options per category (5 customization categories)  
+✅ Player name input field (up to 30 characters)
 ✅ Visual feedback with cyan glow on selected items  
-✅ Persistent avatar storage in localStorage  
+✅ Persistent avatar storage in localStorage with name  
+✅ Name displayed in Dashboard (top-left with avatar)
+✅ Name displayed in GameLevel (during questions)
 ✅ Smooth navigation flow  
 
 ---

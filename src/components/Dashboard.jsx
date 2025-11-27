@@ -148,6 +148,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const isCurrentUnlocked = selectedFloor === 1 || (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
   const currentRankData = NURSING_RANKS.find(r => r.title === userData.rank);
   const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
+  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
@@ -228,6 +229,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
+            {/* Avatar Display */}
+            {playerAvatar.name && (
+              <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-full p-3 border-2 border-cyan-500/50 flex flex-col items-center">
+                <span className="text-3xl">😊</span>
+                <p className="text-white font-bold text-xs mt-1">{playerAvatar.name}</p>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             <button 
               onClick={toggleNotifications}

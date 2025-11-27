@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
 const AvatarCreation = ({ onComplete, onLogout }) => {
+  const [playerName, setPlayerName] = useState('');
   const [avatarData, setAvatarData] = useState({
     skin: 'light',
     hair: 'short',
@@ -18,8 +19,16 @@ const AvatarCreation = ({ onComplete, onLogout }) => {
   };
 
   const handleFinish = () => {
-    // Guardar avatar en localStorage
-    localStorage.setItem('playerAvatar', JSON.stringify(avatarData));
+    if (!playerName.trim()) {
+      alert('Por favor ingresa un nombre para tu avatar');
+      return;
+    }
+    // Guardar avatar en localStorage con el nombre
+    const fullAvatarData = {
+      ...avatarData,
+      name: playerName.trim()
+    };
+    localStorage.setItem('playerAvatar', JSON.stringify(fullAvatarData));
     onComplete();
   };
 
@@ -82,6 +91,20 @@ const AvatarCreation = ({ onComplete, onLogout }) => {
           <div className="w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-full flex items-center justify-center text-8xl border-4 border-cyan-500/50 shadow-lg shadow-cyan-500/30">
             {getAvatarEmoji()}
           </div>
+        </div>
+
+        {/* Campo de nombre */}
+        <div className="mb-6">
+          <label className="text-white font-bold mb-2 block">📝 Tu nombre de jugador:</label>
+          <input
+            type="text"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            placeholder="Ej: Dr. García, Enfermera Ana..."
+            maxLength={30}
+            className="w-full px-4 py-3 bg-slate-700 border-2 border-slate-600 text-white placeholder-slate-400 rounded-lg focus:border-cyan-500 focus:outline-none font-bold text-lg transition-all"
+          />
+          <p className="text-slate-400 text-xs mt-1">{playerName.length}/30 caracteres</p>
         </div>
 
         {/* Selector de características */}
