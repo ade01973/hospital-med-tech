@@ -6,6 +6,7 @@ export default function AvatarCustomization({ onComplete }) {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState({
     base: "female",
+    face: 1,
     skin: "light",
     hair: "long",
     eyes: "brown",
@@ -13,6 +14,23 @@ export default function AvatarCustomization({ onComplete }) {
     uniform: "teal",
     accessory: "none",
   });
+
+  const faceDescriptions = {
+    female: [
+      { num: 1, title: "Joven Amable", emoji: "😊" },
+      { num: 2, title: "Madura Segura", emoji: "👩‍⚕️" },
+      { num: 3, title: "Inteligente", emoji: "🤓" },
+      { num: 4, title: "Energética", emoji: "😄" },
+      { num: 5, title: "Seria Decidida", emoji: "💪" },
+    ],
+    male: [
+      { num: 1, title: "Joven Amable", emoji: "😊" },
+      { num: 2, title: "Maduro Autoridad", emoji: "👨‍⚕️" },
+      { num: 3, title: "Inteligente", emoji: "🤓" },
+      { num: 4, title: "Energético", emoji: "😄" },
+      { num: 5, title: "Serio Decidido", emoji: "💪" },
+    ],
+  };
 
   const handleFinish = () => {
     if (!name.trim()) {
@@ -102,6 +120,34 @@ export default function AvatarCustomization({ onComplete }) {
                   )}
                 </button>
               </div>
+            </div>
+
+            {/* Face Selection */}
+            <div>
+              <p className="font-black mb-4 uppercase text-cyan-400 text-sm tracking-wider">Selecciona tu cara</p>
+              <div className="grid grid-cols-5 gap-2">
+                {faceDescriptions[avatar.base].map((face) => (
+                  <button
+                    key={face.num}
+                    onClick={() => setAvatar(prev => ({ ...prev, face: face.num }))}
+                    className={`relative p-3 rounded-lg transition-all transform hover:scale-110 border-2 flex flex-col items-center justify-center gap-1 ${
+                      avatar.face === face.num
+                        ? 'bg-cyan-600/20 border-cyan-400 shadow-lg shadow-cyan-500/50'
+                        : 'bg-slate-700 border-slate-600 hover:border-slate-500'
+                    }`}
+                    title={face.title}
+                  >
+                    <div className="text-2xl">{face.emoji}</div>
+                    <p className="text-white text-xs font-bold text-center leading-tight">{face.num}</p>
+                    {avatar.face === face.num && (
+                      <div className="absolute top-1 right-1 w-4 h-4 bg-cyan-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs">
+                        ✓
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <p className="text-slate-400 text-xs mt-2">Selecciona una de {avatar.base === 'male' ? '5 opciones' : '5 opciones'} disponibles</p>
             </div>
 
             {/* Other Options Placeholder */}
