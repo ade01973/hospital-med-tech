@@ -61,13 +61,53 @@ export default function AvatarCustomization({ onComplete }) {
             </div>
           </div>
 
-          {/* Options Placeholder - to be developed later */}
-          <div className="flex items-center justify-center">
+          {/* Gender Selection */}
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="font-black mb-4 uppercase text-cyan-400 text-sm tracking-wider">Selecciona tu género</p>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Male Button */}
+                <button
+                  onClick={() => setAvatar(prev => ({ ...prev, base: 'male' }))}
+                  className={`relative p-6 rounded-xl transition-all transform hover:scale-105 border-2 ${
+                    avatar.base === 'male'
+                      ? 'bg-cyan-600/20 border-cyan-400 shadow-lg shadow-cyan-500/50'
+                      : 'bg-slate-700 border-slate-600 hover:border-slate-500'
+                  }`}
+                >
+                  <div className="text-5xl mb-2">👨‍⚕️</div>
+                  <p className="text-white font-bold">Hombre</p>
+                  {avatar.base === 'male' && (
+                    <div className="absolute top-2 right-2 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs">
+                      ✓
+                    </div>
+                  )}
+                </button>
+
+                {/* Female Button */}
+                <button
+                  onClick={() => setAvatar(prev => ({ ...prev, base: 'female' }))}
+                  className={`relative p-6 rounded-xl transition-all transform hover:scale-105 border-2 ${
+                    avatar.base === 'female'
+                      ? 'bg-cyan-600/20 border-cyan-400 shadow-lg shadow-cyan-500/50'
+                      : 'bg-slate-700 border-slate-600 hover:border-slate-500'
+                  }`}
+                >
+                  <div className="text-5xl mb-2">👩‍⚕️</div>
+                  <p className="text-white font-bold">Mujer</p>
+                  {avatar.base === 'female' && (
+                    <div className="absolute top-2 right-2 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs">
+                      ✓
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Other Options Placeholder */}
             <div className="text-center text-slate-400">
-              <p className="text-lg font-bold mb-4">Opciones de personalización</p>
-              <p className="text-sm">(Se desarrollarán próximamente)</p>
-              <div className="mt-6 space-y-2 text-xs text-slate-500">
-                <p>• Base</p>
+              <p className="text-sm font-bold">Más opciones próximamente:</p>
+              <div className="mt-3 space-y-1 text-xs text-slate-500">
                 <p>• Piel</p>
                 <p>• Cabello</p>
                 <p>• Ojos</p>
