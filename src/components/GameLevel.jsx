@@ -119,22 +119,7 @@ const FEEDBACK = {
 };
 
 // 🔥 Pantalla estilo Duolingo al responder
-const AnswerFeedback = ({ isCorrect, onComplete }) => {
-  const type = isCorrect ? "correct" : "wrong";
-  const emoji =
-    FEEDBACK[type].emojis[
-      Math.floor(Math.random() * FEEDBACK[type].emojis.length)
-    ];
-  const message =
-    FEEDBACK[type].messages[
-      Math.floor(Math.random() * FEEDBACK[type].messages.length)
-    ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => onComplete(), 1200);
-    return () => clearTimeout(timer);
-  }, []); // Sin dependencias para que solo se ejecute una vez
-
+const AnswerFeedback = ({ isCorrect, emoji, message }) => {
   return (
     <div
       className={`fixed inset-0 flex flex-col items-center justify-center z-[9999] pointer-events-none bg-opacity-90 ${
@@ -177,6 +162,9 @@ export default function GameLevel({
   // 🟩 Feedback tipo Duolingo
   const [showAnswerFeedback, setShowAnswerFeedback] = useState(false);
   const [answerFeedbackCorrect, setAnswerFeedbackCorrect] = useState(false);
+  const [feedbackEmoji, setFeedbackEmoji] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const feedbackTimeoutRef = useRef(null);
 
   // Videos de repaso por módulo
   const videoLinks = {
@@ -312,11 +300,18 @@ export default function GameLevel({
   const handleTimeOut = () => {
     if (answered) return;
 
+    // Generar emoji y mensaje para feedback de error
+    const type = "wrong";
+    const emoji = FEEDBACK[type].emojis[Math.floor(Math.random() * FEEDBACK[type].emojis.length)];
+    const message = FEEDBACK[type].messages[Math.floor(Math.random() * FEEDBACK[type].messages.length)];
+
     setAnswered(true);
     setShowResult(true);
     setSelectedAnswer(null);
     // Mostrar feedback de error
     setAnswerFeedbackCorrect(false);
+    setFeedbackEmoji(emoji);
+    setFeedbackMessage(message);
     setShowAnswerFeedback(true);
 
     // Perder vida y resetear racha
@@ -338,29 +333,39 @@ export default function GameLevel({
     }, 2000);
   };
 
-  // Auto-avance 2 segundos después de responder
+  // Auto-cerrar feedback después de 1.2 segundos y avanzar pregunta
   useEffect(() => {
-    if (!answered || isCompleted || questions.length === 0) return;
+    if (!showAnswerFeedback) return;
 
-    const timer = setTimeout(() => {
-      if (lives > 0) {
-        advanceQuestion();
-      }
-    }, 2000);
+    // Limpiar timeout anterior si existe
+    if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
 
-    return () => clearTimeout(timer);
-  }, [answered, isCompleted, questions.length, lives]);
+    feedbackTimeoutRef.current = setTimeout(() => {
+      setShowAnswerFeedback(false);
+    }, 1200);
+
+    return () => {
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+    };
+  }, [showAnswerFeedback]);
 
   const handleAnswer = (optionIndex, event) => {
     if (answered || isCompleted) return;
 
     const isCorrect = optionIndex === currentQuestion.correct;
 
+    // Generar emoji y mensaje para feedback
+    const type = isCorrect ? "correct" : "wrong";
+    const emoji = FEEDBACK[type].emojis[Math.floor(Math.random() * FEEDBACK[type].emojis.length)];
+    const message = FEEDBACK[type].messages[Math.floor(Math.random() * FEEDBACK[type].messages.length)];
+
     setSelectedAnswer(optionIndex);
     setShowResult(true);
     setAnswered(true);
     // 🔥 Mostrar pantalla Duolingo
     setAnswerFeedbackCorrect(isCorrect);
+    setFeedbackEmoji(emoji);
+    setFeedbackMessage(message);
     setShowAnswerFeedback(true);
 
     if (isCorrect) {
@@ -496,9 +501,9 @@ export default function GameLevel({
       {/* Pantalla tipo Duolingo */}
       {showAnswerFeedback && (
         <AnswerFeedback
-          key={`feedback-${currentIndex}`}
           isCorrect={answerFeedbackCorrect}
-          onComplete={() => setShowAnswerFeedback(false)}
+          emoji={feedbackEmoji}
+          message={feedbackMessage}
         />
       )}
       {/* Puntos flotantes */}
