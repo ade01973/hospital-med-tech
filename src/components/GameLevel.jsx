@@ -166,6 +166,9 @@ export default function GameLevel({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const feedbackTimeoutRef = useRef(null);
 
+  // 🖼️ Fondo aleatorio del módulo
+  const [randomBg, setRandomBg] = useState("");
+
   // Videos de repaso por módulo
   const videoLinks = {
     1: "bL0e705JuZQ",
@@ -195,6 +198,17 @@ export default function GameLevel({
   const { earnCoins } = useGestCoins();
   const completedRef = useRef(false);
   const floatingPointsIdRef = useRef(0);
+
+  // 🖼️ Seleccionar fondo aleatorio al cargar el módulo
+  useEffect(() => {
+    const backgrounds = [
+      "/images/hospital-1.png",
+      "/images/hospital-2.png",
+      "/images/hospital-3.png"
+    ];
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    setRandomBg(backgrounds[randomIndex]);
+  }, [topic?.id]);
 
   // Preparar 10 preguntas aleatorias SOLO del módulo actual
   useEffect(() => {
@@ -507,7 +521,19 @@ export default function GameLevel({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-4 relative">
+    <div 
+      className="min-h-screen p-4 relative"
+      style={{
+        backgroundImage: `url(${randomBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Overlay oscuro para mejorar legibilidad */}
+      <div className="absolute inset-0 bg-black/40 z-0"></div>
+      
+      <div className="relative z-10">
       {/* Pantalla tipo Duolingo */}
       {showAnswerFeedback && (
         <AnswerFeedback
@@ -738,6 +764,7 @@ export default function GameLevel({
           onComplete={() => setShowConfetti(false)}
         />
       )}
+      </div>
     </div>
   );
 }
