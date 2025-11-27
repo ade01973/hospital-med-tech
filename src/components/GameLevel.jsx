@@ -137,7 +137,7 @@ const AnswerFeedback = ({ isCorrect, onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 flex flex-col items-center justify-center z-[9999] bg-opacity-90 ${
+      className={`fixed inset-0 flex flex-col items-center justify-center z-[9999] pointer-events-none bg-opacity-90 ${
         isCorrect ? "bg-green-600" : "bg-red-600"
       }`}
     >
@@ -286,6 +286,7 @@ export default function GameLevel({
     setShowResult(false);
     setTimeLeft(15);
     setShowStreakMessage(false);
+    setShowAnswerFeedback(false);
   };
 
   // Cronómetro - solo cuando NO ha respondido y el quiz no está completado
