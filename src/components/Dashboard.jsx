@@ -251,8 +251,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                     <img 
                       src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
                       alt="Doctor avatar"
-                      className="w-full h-full object-contain"
-                      style={{ objectPosition: 'center 20%' }}
+                      className="w-full h-full object-cover"
+                      style={{ objectPosition: 'center top' }}
                     />
                   ) : (
                     <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
