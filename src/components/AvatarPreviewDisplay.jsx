@@ -10,20 +10,16 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const gender = avatar?.gender || "female";
   const skinToneIndex = avatar?.skinToneIndex || 2;
 
-  // Base layer images
+  // Base layer images (same for all genders, different silhouettes per gender)
   const baseImages = {
     female: "/src/assets/avatar/base/female_base.png",
     male: "/src/assets/avatar/base/male_base.png",
   };
 
-  // Skin tone layer images
-  const skinImages = {
-    female: `/src/assets/avatar/skin_layers/female_skin_layer_${skinToneIndex}.png`,
-    male: `/src/assets/avatar/skin_layers/male_skin_layer_${skinToneIndex}.png`,
-  };
+  // Skin tone color layers (universal, applies with multiply blend mode)
+  const skinColorLayer = `/src/assets/avatar/skin_layers/skin_tone_${skinToneIndex}.png`;
 
   const baseImage = baseImages[gender];
-  const skinImage = skinImages[gender];
 
   return (
     <div
@@ -39,13 +35,14 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
         />
       )}
 
-      {/* Skin Tone Layer */}
-      {skinImage && (
+      {/* Skin Tone Color Layer with Multiply Blend Mode */}
+      {skinColorLayer && (
         <img
-          src={skinImage}
-          alt="Avatar Skin"
+          src={skinColorLayer}
+          alt="Skin Tone"
           className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
-          key={`skin-${gender}-${skinToneIndex}`}
+          style={{ mixBlendMode: "multiply" }}
+          key={`skin-${skinToneIndex}`}
         />
       )}
     </div>
