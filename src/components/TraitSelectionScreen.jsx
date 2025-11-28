@@ -1,80 +1,180 @@
-import React from "react";
+import React, { useState } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 
-const SKIN_TONES = [
-  { index: 1, label: "Muy Pálido", color: "bg-yellow-50" },
-  { index: 2, label: "Claro", color: "bg-yellow-100" },
-  { index: 3, label: "Beige Claro", color: "bg-yellow-200" },
-  { index: 4, label: "Medio Cálido", color: "bg-yellow-600" },
-  { index: 5, label: "Oliva", color: "bg-orange-600" },
-  { index: 6, label: "Marrón Medio", color: "bg-orange-700" },
-  { index: 7, label: "Marrón Oscuro", color: "bg-amber-900" },
-  { index: 8, label: "Muy Oscuro", color: "bg-gray-900" },
-];
+const TraitSelectionScreen = ({ gender, onComplete, onBack }) => {
+  const [avatar, setAvatar] = useState({
+    gender: gender,
+    skinToneIndex: 3,
+    hair: gender === "female" ? "long" : "short",
+    eyes: "brown",
+  });
 
-export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
-  const [skinTone, setSkinTone] = React.useState(3);
+  const update = (prop, value) =>
+    setAvatar((prev) => ({ ...prev, [prop]: value }));
 
-  const avatar = { gender, skinToneIndex: skinTone };
+  const skinTones = [
+    { index: 1, label: "Muy Pálido" },
+    { index: 2, label: "Claro" },
+    { index: 3, label: "Beige Claro" },
+    { index: 4, label: "Medio Cálido" },
+    { index: 5, label: "Oliva" },
+  ];
+
+  const skinToneColors = {
+    1: "bg-yellow-50",
+    2: "bg-yellow-100",
+    3: "bg-yellow-200",
+    4: "bg-yellow-600",
+    5: "bg-orange-600",
+  };
+
+  const hairStylesFemale = [
+    { value: "long", label: "Largo" },
+    { value: "medium", label: "Medio" },
+    { value: "bun", label: "Moño" },
+    { value: "curly", label: "Rizado" },
+  ];
+
+  const hairStylesMale = [
+    { value: "short", label: "Corto" },
+    { value: "fade", label: "Fade" },
+    { value: "curly", label: "Rizado" },
+    { value: "buzz", label: "Rapado" },
+  ];
+
+  const eyeColors = [
+    { value: "brown", label: "Marrón" },
+    { value: "blue", label: "Azul" },
+    { value: "green", label: "Verde" },
+  ];
+
+  const handleComplete = () => {
+    onComplete({
+      gender: avatar.gender,
+      skinToneIndex: avatar.skinToneIndex,
+      hair: avatar.hair,
+      eyes: avatar.eyes,
+      silhouetteIndex: 1,
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex flex-col items-center justify-center p-4">
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex items-center justify-center p-4">
+      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl p-8">
+        
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-white mb-2">Personaliza tu Avatar</h1>
-          <p className="text-center text-cyan-400 font-semibold mb-6">
+          <h2 className="text-4xl font-black text-white mb-3">
+            Personaliza tu Avatar
+          </h2>
+          <p className="text-cyan-400 font-semibold">
             Paso 2: Rasgos y características
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-8">
-          {/* Avatar Preview */}
+        {/* Avatar Preview */}
+        <div className="flex justify-center mb-10">
           <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800">
             <AvatarPreviewDisplay avatar={avatar} size="large" />
           </div>
+        </div>
 
-          {/* Skin Tone Selector */}
-          <div className="w-full">
-            <p className="text-white font-bold mb-4 text-sm">
-              Tono de piel: {SKIN_TONES.find((t) => t.index === skinTone)?.label}
-            </p>
-            <div className="flex gap-2 justify-center flex-wrap">
-              {SKIN_TONES.map((tone) => (
-                <button
-                  key={tone.index}
-                  onClick={() => setSkinTone(tone.index)}
-                  className={`w-12 h-12 rounded-full border-4 transition-all ${
-                    skinTone === tone.index
-                      ? `${tone.color} border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.5)] scale-110`
-                      : `${tone.color} border-slate-600 hover:border-slate-500 hover:scale-105`
+        {/* SKIN TONES */}
+        <div className="mb-8">
+          <p className="font-bold text-white mb-4 flex items-center gap-2">
+            🎨 Tono de piel
+          </p>
+          <div className="flex gap-3 flex-wrap">
+            {skinTones.map((tone) => (
+              <button
+                key={tone.index}
+                onClick={() => update("skinToneIndex", tone.index)}
+                className={`flex flex-col items-center gap-2 transition-all ${
+                  avatar.skinToneIndex === tone.index
+                    ? "scale-110 opacity-100"
+                    : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                <div
+                  className={`w-14 h-14 rounded-full border-4 ${skinToneColors[tone.index]} transition-all ${
+                    avatar.skinToneIndex === tone.index
+                      ? "border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.5)]"
+                      : "border-slate-600"
                   }`}
-                  title={tone.label}
                 />
-              ))}
-            </div>
+                <span className="text-xs text-slate-300">{tone.label}</span>
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Buttons */}
-          <div className="w-full flex gap-3 mt-6">
-            {/* Back Button */}
-            <button
-              onClick={onBack}
-              className="w-1/3 bg-slate-700 text-white hover:bg-slate-600 font-black py-3 rounded-xl shadow-[0_0_10px_rgba(100,116,139,0.3)] hover:shadow-[0_0_20px_rgba(100,116,139,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-1 uppercase tracking-wide text-sm"
-            >
-              ← Atrás
-            </button>
-
-            {/* Confirm Button */}
-            <button
-              onClick={() => onComplete(avatar)}
-              className="flex-1 bg-white text-black hover:bg-cyan-50 font-black py-3 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-sm"
-            >
-              Crear Avatar <ChevronRight className="w-4 h-4" />
-            </button>
+        {/* HAIR STYLES */}
+        <div className="mb-8">
+          <p className="font-bold text-white mb-4 flex items-center gap-2">
+            💇 Estilo de cabello
+          </p>
+          <div className="grid grid-cols-4 gap-3">
+            {(gender === "female" ? hairStylesFemale : hairStylesMale).map(
+              (h) => (
+                <button
+                  key={h.value}
+                  onClick={() => update("hair", h.value)}
+                  className={`p-4 rounded-xl text-center transition-all font-semibold ${
+                    avatar.hair === h.value
+                      ? "bg-gradient-to-br from-cyan-500 to-blue-700 text-white shadow-[0_0_15px_rgba(0,255,255,0.4)] scale-105"
+                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  }`}
+                >
+                  {h.label}
+                </button>
+              )
+            )}
           </div>
+        </div>
+
+        {/* EYE COLORS */}
+        <div className="mb-10">
+          <p className="font-bold text-white mb-4 flex items-center gap-2">
+            👀 Color de ojos
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            {eyeColors.map((e) => (
+              <button
+                key={e.value}
+                onClick={() => update("eyes", e.value)}
+                className={`p-4 rounded-xl transition-all font-semibold ${
+                  avatar.eyes === e.value
+                    ? "bg-gradient-to-br from-cyan-500 to-blue-700 text-white shadow-[0_0_15px_rgba(0,255,255,0.4)] scale-105"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                }`}
+              >
+                {e.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* BUTTONS */}
+        <div className="flex gap-3">
+          {/* Back Button */}
+          <button
+            onClick={onBack}
+            className="flex-1 bg-slate-700 text-white hover:bg-slate-600 font-black py-4 rounded-xl shadow-[0_0_10px_rgba(100,116,139,0.3)] hover:shadow-[0_0_20px_rgba(100,116,139,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-wide"
+          >
+            ← Atrás
+          </button>
+
+          {/* Confirm Button */}
+          <button
+            onClick={handleComplete}
+            className="flex-1 bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest"
+          >
+            Crear Avatar <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default TraitSelectionScreen;
