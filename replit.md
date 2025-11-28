@@ -70,13 +70,42 @@ This is an interactive quiz-based learning application designed for nursing mana
   - firebase.js (Firebase config)
 ```
 
-## Recent Changes (November 27, 2025)
+## Recent Changes (November 28, 2025)
+
+### 👤 AVATAR SYSTEM - FEMALE CHARACTER ROSTER EXPANDED
+
+**Status**: Female character customization expanded from 39 to **49 unique gestoras enfermeras**.
+
+#### ✅ 49 Female Characters Deployed (Nov 28 - Latest)
+
+**Female Character Expansion:**
+- Gestoras 1-30: Original diverse roster (cabello tradicional, artístico, variados)
+- Gestoras 31-39: Cabello refinado (pelirrojas largas, pixie cuts, platino, etc.)
+- **Gestoras 40-49: Premium medical professionals** (NEW)
+  - 40: Gestora Pelirroja Corte Pixie
+  - 41: Gestora Rubia Ondulada Flequillo
+  - 42: Gestora Morena Trenzas
+  - 43: Gestora Negra Cabello Ultrashort
+  - 44: Gestora Negra Natural
+  - 45: Gestora Morena Rizada Volumen
+  - 46: Gestora Negra Dreadlocks Morado
+  - 47: Gestora Pelirroja Liso Suelto
+  - 48: Gestora Pelirroja Corte Boyish
+  - 49: Gestora Negra Afro Natural
+
+#### Character Database Updated
+- Female characters: **49 unique gestoras** ✅
+- Male characters: **60 gestores** ✅
+
+---
+
+## Previous Changes (November 27, 2025)
 
 ### 👤 AVATAR SYSTEM (IN-GAME CREATION) - SILHOUETTE PHASE COMPLETE
 
 **Status**: Avatar creation page with silhouette selection now active after Welcome screen, before Dashboard.
 
-#### ✅ Silhouettes & Skin Tones Deployed (Nov 27 - Latest)
+#### ✅ Silhouettes & Skin Tones Deployed (Nov 27)
 
 **10 Realistic Base Silhouettes:**
 - 5 Female silhouettes: `female_silhouette_base_1.png` through `5.png`

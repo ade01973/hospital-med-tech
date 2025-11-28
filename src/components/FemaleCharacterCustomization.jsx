@@ -42,6 +42,16 @@ const FEMALE_CHARACTERS = [
   { id: 37, name: "Gestora Negra Rizado Largo", type: "cabello", variant: "black-curly-long" },
   { id: 38, name: "Gestora Pelirroja Liso Largo", type: "cabello", variant: "red-straight-long" },
   { id: 39, name: "Gestora Negra Afro Volumen", type: "cabello", variant: "black-afro-volume" },
+  { id: 40, name: "Gestora Pelirroja Corte Pixie", type: "cabello", variant: "red-pixie-wavy" },
+  { id: 41, name: "Gestora Rubia Ondulada Flequillo", type: "cabello", variant: "blonde-wavy-bangs" },
+  { id: 42, name: "Gestora Morena Trenzas", type: "cabello", variant: "brown-braids" },
+  { id: 43, name: "Gestora Negra Cabello Ultrashort", type: "cabello", variant: "black-ultrashort" },
+  { id: 44, name: "Gestora Negra Natural", type: "cabello", variant: "black-natural" },
+  { id: 45, name: "Gestora Morena Rizada Volumen", type: "cabello", variant: "brown-curly-volume" },
+  { id: 46, name: "Gestora Negra Dreadlocks Morado", type: "cabello", variant: "black-dreadlocks-purple" },
+  { id: 47, name: "Gestora Pelirroja Liso Suelto", type: "cabello", variant: "red-straight-loose" },
+  { id: 48, name: "Gestora Pelirroja Corte Boyish", type: "cabello", variant: "red-boyish-cut" },
+  { id: 49, name: "Gestora Negra Afro Natural", type: "cabello", variant: "black-afro-natural" },
 ];
 
 const CHARACTER_CATEGORIES = {
