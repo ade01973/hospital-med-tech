@@ -58,6 +58,11 @@ const MALE_CHARACTERS = [
   { id: 53, name: "Gestor Sanitario Senior", type: "accessory", variant: "stethoscope-gray-alt" },
   { id: 54, name: "Gestor Clínico Rubio", type: "accessory", variant: "stethoscope-purple-alt-2" },
   { id: 55, name: "Gestor Médico Especialista", type: "accessory", variant: "stethoscope-orange-alt-2" },
+  { id: 56, name: "Gestor Sanitario Afrodescendiente", type: "accessory", variant: "stethoscope-teal" },
+  { id: 57, name: "Gestor Clínico Senior con Barba", type: "accessory", variant: "stethoscope-navy-alt" },
+  { id: 58, name: "Gestor Médico Joven Largo", type: "accessory", variant: "stethoscope-navy-alt-2" },
+  { id: 59, name: "Gestor Sanitario Joven Afro", type: "accessory", variant: "stethoscope-teal-alt" },
+  { id: 60, name: "Gestor Clínico Pelirrojo", type: "accessory", variant: "stethoscope-orange-alt-3" },
 ];
 
 const CHARACTER_CATEGORIES = {
