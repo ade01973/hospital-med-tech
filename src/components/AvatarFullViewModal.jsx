@@ -49,13 +49,6 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
                 </div>
               )}
             </div>
-
-            {/* Character Info */}
-            {playerAvatar.characterPreset && (
-              <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-cyan-400/40 w-full text-center mb-6">
-                <p className="text-cyan-200 text-sm font-semibold">Personaje #{playerAvatar.characterPreset}</p>
-              </div>
-            )}
           </div>
 
           {/* Close Button */}
