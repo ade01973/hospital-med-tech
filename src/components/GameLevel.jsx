@@ -4,6 +4,7 @@ import useSoundEffects from "../hooks/useSoundEffects";
 import { useGestCoins } from "../hooks/useGestCoins";
 import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
+import { useEncouragementMessages } from "../data/encouragementMessages";
 
 // 🔀 Shuffle básico tipo Fisher-Yates
 function shuffleArray(array) {
@@ -132,6 +133,44 @@ const AnswerFeedback = ({ isCorrect, emoji, message }) => {
   );
 };
 
+// 💬 Componente para mensajes de ánimo flotantes
+const EncouragementBubble = ({ message, isTimeWarning = false }) => {
+  return (
+    <div
+      className={`fixed animate-fade-in-out text-center z-[5000] pointer-events-none ${
+        isTimeWarning ? "top-1/3" : "bottom-20"
+      } left-1/2 transform -translate-x-1/2`}
+    >
+      <div
+        className={`px-6 py-3 rounded-full font-bold text-lg shadow-lg ${
+          isTimeWarning
+            ? "bg-red-600 text-white animate-pulse"
+            : "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
+        }`}
+      >
+        {message}
+      </div>
+    </div>
+  );
+};
+
+// 🖼️ Componente para mostrar avatar durante el quiz
+const QuizAvatar = ({ playerAvatar }) => {
+  if (!playerAvatar?.image) return null;
+
+  return (
+    <div className="flex justify-center mb-6">
+      <div className="w-32 h-40 rounded-lg border-2 border-cyan-500/40 bg-gradient-to-b from-slate-700 to-slate-800 overflow-hidden shadow-lg flex items-center justify-center">
+        <img
+          src={playerAvatar.image}
+          alt="Avatar"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function GameLevel({
   topic,
   user,
@@ -165,6 +204,14 @@ export default function GameLevel({
   const [feedbackEmoji, setFeedbackEmoji] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const feedbackTimeoutRef = useRef(null);
+
+  // 💬 Mensajes de ánimo
+  const [encouragementMessage, setEncouragementMessage] = useState("");
+  const [showEncouragement, setShowEncouragement] = useState(false);
+  const [isTimeWarning, setIsTimeWarning] = useState(false);
+  const encouragementTimeoutRef = useRef(null);
+  const { getGeneralEncouragement, getTimeWarning10, getTimeWarning5, getTimeUp } =
+    useEncouragementMessages();
 
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
@@ -303,6 +350,34 @@ export default function GameLevel({
           handleTimeOut();
           return 15;
         }
+
+        // Mostrar avisos de tiempo
+        if (prev === 6) {
+          // 5 segundos - aviso crítico
+          const msg = getTimeWarning5();
+          setEncouragementMessage(msg);
+          setIsTimeWarning(true);
+          setShowEncouragement(true);
+
+          if (encouragementTimeoutRef.current)
+            clearTimeout(encouragementTimeoutRef.current);
+          encouragementTimeoutRef.current = setTimeout(() => {
+            setShowEncouragement(false);
+          }, 1500);
+        } else if (prev === 11) {
+          // 10 segundos - aviso moderado
+          const msg = getTimeWarning10();
+          setEncouragementMessage(msg);
+          setIsTimeWarning(false);
+          setShowEncouragement(true);
+
+          if (encouragementTimeoutRef.current)
+            clearTimeout(encouragementTimeoutRef.current);
+          encouragementTimeoutRef.current = setTimeout(() => {
+            setShowEncouragement(false);
+          }, 1200);
+        }
+
         return prev - 1;
       });
     }, 1000);
@@ -318,6 +393,18 @@ export default function GameLevel({
     const type = "wrong";
     const emoji = FEEDBACK[type].emojis[Math.floor(Math.random() * FEEDBACK[type].emojis.length)];
     const message = FEEDBACK[type].messages[Math.floor(Math.random() * FEEDBACK[type].messages.length)];
+
+    // Mostrar aviso de tiempo agotado
+    const timeUpMsg = getTimeUp();
+    setEncouragementMessage(timeUpMsg);
+    setIsTimeWarning(true);
+    setShowEncouragement(true);
+
+    if (encouragementTimeoutRef.current)
+      clearTimeout(encouragementTimeoutRef.current);
+    encouragementTimeoutRef.current = setTimeout(() => {
+      setShowEncouragement(false);
+    }, 1500);
 
     setAnswered(true);
     setShowResult(true);
@@ -559,6 +646,17 @@ export default function GameLevel({
       ))}
 
       <div className="max-w-2xl mx-auto">
+        {/* Avatar del jugador */}
+        <QuizAvatar playerAvatar={playerAvatar} />
+
+        {/* Mensaje de ánimo */}
+        {showEncouragement && (
+          <EncouragementBubble
+            message={encouragementMessage}
+            isTimeWarning={isTimeWarning}
+          />
+        )}
+
         {/* Player Name Badge */}
         {playerAvatar.name && (
           <div className="text-center mb-4">

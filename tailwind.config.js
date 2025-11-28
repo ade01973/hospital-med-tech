@@ -35,6 +35,11 @@ export default {
         'confetti-fall': {
           'to': { transform: 'translateY(100vh) rotate(360deg)', opacity: '0' },
         },
+        'fade-in-out': {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '50%': { opacity: '1', transform: 'scale(1)' },
+          '100%': { opacity: '0', transform: 'scale(0.9)' },
+        },
       },
       animation: {
         'shake': 'shake 0.3s ease-in-out',
@@ -44,6 +49,7 @@ export default {
         'points-bounce': 'points-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'slide-in-left': 'slide-in-left 0.3s ease-out',
         'confetti-fall': 'confetti-fall 3s ease-in forwards',
+        'fade-in-out': 'fade-in-out 2s ease-in-out',
       },
       scale: {
         '102': '1.02',
