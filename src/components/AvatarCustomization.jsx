@@ -82,14 +82,10 @@ export default function AvatarCustomization({ onComplete }) {
             {/* MUJER */}
             <button
               onClick={() => { playClick(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
-              className={`
-                relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
-                transition-all duration-300 backdrop-blur-2xl
-                overflow-hidden group
-                ${gender === "female"
-                  ? "text-white bg-gradient-to-br from-cyan-500/40 to-blue-600/30 shadow-[0_0_25px_rgba(0,255,255,0.5)] scale-110"
-                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"
-                }
+              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
+                ${gender === "female" 
+                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse" 
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
               `}
             >
               {/* Glow animado interno */}
@@ -115,14 +111,10 @@ export default function AvatarCustomization({ onComplete }) {
             {/* HOMBRE */}
             <button
               onClick={() => { playClick(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
-              className={`
-                relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
-                transition-all duration-300 backdrop-blur-2xl
-                overflow-hidden group
+              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
                 ${gender === "male"
-                  ? "text-white bg-gradient-to-br from-cyan-500/40 to-blue-600/30 shadow-[0_0_25px_rgba(0,255,255,0.5)] scale-110"
-                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"
-                }
+                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse"
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
               `}
             >
               {/* Glow animado interno */}
