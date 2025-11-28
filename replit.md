@@ -98,3 +98,23 @@ The application is built with a modern web stack, focusing on a highly interacti
 - **Integration**: Dashboard.jsx activates background music on component load
 - **Auto-cleanup**: Music stops on component unmount
 
+
+---
+
+## Latest Update (November 28, 2025 - Female Avatar Video Preview)
+
+### 👩‍⚕️ Female Avatar Video Display
+- **File**: `avatar-female-preview.mp4` (860 KB)
+- **Location**: Avatar gender selection screen (AvatarCustomization.jsx)
+- **Behavior**: 
+  - Shows animated female avatar video when "Mujer" button is selected
+  - Replaces AvatarPreviewDisplay component
+  - Video: autoPlay, loop, muted (no sound)
+  - Smooth display with border matching the design
+- **Male Option**: Shows regular AvatarPreviewDisplay when "Hombre" is selected
+- **Size**: 256x256px (w-64 h-64) with rounded corners and object-cover fit
+
+### Technical Implementation
+- Import: `import avatarFemalePreview from "../assets/avatar-female-preview.mp4"`
+- Conditional rendering: `{gender === "female" ? <video> : <AvatarPreviewDisplay>}`
+

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
+import avatarFemalePreview from "../assets/avatar-female-preview.mp4";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
 
 export default function AvatarCustomization({ onComplete }) {
@@ -132,9 +133,20 @@ export default function AvatarCustomization({ onComplete }) {
 
         <div className="flex flex-col items-center justify-center gap-8">
           
-          {/* Avatar Preview - Empty Viewer */}
+          {/* Avatar Preview - Video for Female, AvatarDisplay for Male */}
           <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800">
-            <AvatarPreviewDisplay avatar={avatar} size="large" />
+            {gender === "female" ? (
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                className="w-64 h-64 rounded-lg object-cover"
+              >
+                <source src={avatarFemalePreview} type="video/mp4" />
+              </video>
+            ) : (
+              <AvatarPreviewDisplay avatar={avatar} size="large" />
+            )}
           </div>
 
           {/* Name Input */}
