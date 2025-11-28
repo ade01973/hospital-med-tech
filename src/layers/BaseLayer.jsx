@@ -1,33 +1,24 @@
 import React from "react";
+import femaleBase from "../assets/avatar/base/female_base.png";
+import maleBase from "../assets/avatar/base/male_base.png";
 
 /**
  * BaseLayer Component
  * Renderiza la capa base del avatar (cuerpo sin piel, ojos, cabello)
- * 
+ *
  * Props:
- * - gender: 'male' o 'female'
- * 
- * TODO: Completa este componente con SVG o Canvas para dibujar la capa base
+ * - gender: 'male' | 'female'
  */
 
 export default function BaseLayer({ gender = "female" }) {
+  const baseImg = gender === "male" ? maleBase : femaleBase;
+
   return (
-    <svg
-      viewBox="0 0 200 400"
-      width="200"
-      height="400"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* 
-        Aquí iría el código SVG para la capa base del avatar.
-        Dibuja el cuerpo, el uniforme médico, etc.
-        
-        Ejemplo placeholder:
-      */}
-      <rect x="0" y="0" width="200" height="400" fill="none" stroke="#ccc" />
-      <text x="100" y="200" textAnchor="middle" fill="#999">
-        Base Layer
-      </text>
-    </svg>
+    <img
+      src={baseImg}
+      alt="Base Avatar Layer"
+      className="w-full h-full object-contain pointer-events-none select-none"
+      draggable="false"
+    />
   );
 }
