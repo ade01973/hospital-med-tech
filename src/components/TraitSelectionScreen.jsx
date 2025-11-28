@@ -6,7 +6,7 @@ const TraitSelectionScreen = ({ gender, onComplete, onBack }) => {
   const [avatar, setAvatar] = useState({
     gender: gender,
     skinToneIndex: 3,
-    hair: gender === "female" ? "long" : "short",
+    hair: gender === "female" ? "long" : "male_short",
     eyes: "brown",
   });
 
@@ -31,16 +31,14 @@ const TraitSelectionScreen = ({ gender, onComplete, onBack }) => {
 
   const hairStylesFemale = [
     { value: "long", label: "Largo" },
-    { value: "medium", label: "Medio" },
-    { value: "bun", label: "Moño" },
+    { value: "short", label: "Corto" },
     { value: "curly", label: "Rizado" },
   ];
 
   const hairStylesMale = [
-    { value: "short", label: "Corto" },
-    { value: "fade", label: "Fade" },
+    { value: "male_short", label: "Corto" },
+    { value: "male_fade", label: "Fade" },
     { value: "curly", label: "Rizado" },
-    { value: "buzz", label: "Rapado" },
   ];
 
   const eyeColors = [
@@ -113,7 +111,7 @@ const TraitSelectionScreen = ({ gender, onComplete, onBack }) => {
           <p className="font-bold text-white mb-4 flex items-center gap-2">
             💇 Estilo de cabello
           </p>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {(gender === "female" ? hairStylesFemale : hairStylesMale).map(
               (h) => (
                 <button
