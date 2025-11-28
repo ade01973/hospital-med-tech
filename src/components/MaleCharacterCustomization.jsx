@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
-import useBackgroundMusic from "../hooks/useBackgroundMusic";
 
 const MALE_CHARACTERS = [
   { id: 1, name: "Gestor Joven", type: "hair", variant: "brown-short" },
@@ -75,9 +74,6 @@ const CHARACTER_CATEGORIES = {
 export default function MaleCharacterCustomization({ onComplete, onBack }) {
   const [selectedCharacter, setSelectedCharacter] = useState(1);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
-
-  // Música de fondo ambiental
-  useBackgroundMusic(true);
 
   const handleSelectCharacter = (id) => {
     setSelectedCharacter(id);

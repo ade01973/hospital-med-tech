@@ -77,3 +77,24 @@ The application is built with a modern web stack, focusing on a highly interacti
 - **Hook**: `useBackgroundMusic.js` - Reproduces MP3 with loop
 - **Auto-stop**: Music pauses and resets on component unmount
 
+
+---
+
+## Audio System Updated (November 28, 2025 - Dashboard Music)
+
+### 🎵 Dashboard Background Music
+- **File**: `dashboard-background-music.mp3` (3.6 MB - "Flowing Serenity" soundtrack)
+- **Volume**: 15% (Low audio level)
+- **Usage**: ONLY on Dashboard main screen
+- **Auto-stop**: Music pauses and resets when leaving dashboard
+
+### 🔇 Avatar Screens (NO MUSIC)
+- Selección de género: SILENT
+- Personalización de gestoras: SILENT
+- Personalización de gestores: SILENT
+
+### System Architecture
+- **Hook**: `useDashboardBackgroundMusic.js` - Reproduces "Flowing Serenity" MP3
+- **Integration**: Dashboard.jsx activates background music on component load
+- **Auto-cleanup**: Music stops on component unmount
+

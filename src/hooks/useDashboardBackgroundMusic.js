@@ -1,0 +1,59 @@
+import { useEffect, useRef } from 'react';
+import dashboardBackgroundMusic from '../assets/dashboard-background-music.mp3';
+
+/**
+ * Hook para reproducir música de fondo en el dashboard
+ * Usa archivo MP3 "Flowing Serenity" con volumen bajo
+ * Solo activa en el dashboard principal
+ */
+const useDashboardBackgroundMusic = (enabled = true) => {
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      return;
+    }
+
+    try {
+      // Crear elemento de audio si no existe
+      if (!audioRef.current) {
+        audioRef.current = new Audio(dashboardBackgroundMusic);
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.15; // Volumen bajo (15%)
+      }
+
+      // Reproducir música
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.debug('🔇 Música dashboard no pudo reproducirse:', error.message);
+        });
+      }
+    } catch (error) {
+      console.debug('🔇 Música de fondo dashboard no disponible:', error.message);
+    }
+
+    return () => {
+      // Detener música completamente al desmontar
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, [enabled]);
+
+  return {
+    stop: () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    },
+  };
+};
+
+export default useDashboardBackgroundMusic;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
-import useBackgroundMusic from "../hooks/useBackgroundMusic";
 
 export default function AvatarCustomization({ onComplete }) {
   const [gender, setGender] = useState(null);
@@ -12,9 +11,6 @@ export default function AvatarCustomization({ onComplete }) {
     silhouetteIndex: 1,
     skinToneIndex: 1,
   });
-
-  // Música de fondo ambiental
-  useBackgroundMusic(true);
 
   // Click suave digital para Mujer
   const playClickFemale = () => {

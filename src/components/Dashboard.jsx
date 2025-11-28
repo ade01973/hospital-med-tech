@@ -14,9 +14,13 @@ import { useLeagues } from '../hooks/useLeagues';
 import { useLoginStreak } from '../hooks/useLoginStreak';
 import useNotifications from '../hooks/useNotifications';
 import { useGestCoins } from '../hooks/useGestCoins';
+import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
+  // Música de fondo en dashboard
+  useDashboardBackgroundMusic(true);
+  
   const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
   const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useGestCoins();
   const [selectedFloor, setSelectedFloor] = useState(1);
