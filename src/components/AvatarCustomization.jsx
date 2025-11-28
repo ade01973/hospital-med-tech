@@ -3,9 +3,9 @@ import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 
 export default function AvatarCustomization({ onComplete }) {
-  const [gender, setGender] = useState("female");
+  const [gender, setGender] = useState(null);
   const [avatar, setAvatar] = useState({
-    gender: "female",
+    gender: null,
     silhouetteIndex: 1,
     skinToneIndex: 1,
   });
@@ -52,38 +52,72 @@ export default function AvatarCustomization({ onComplete }) {
           </div>
           
           {/* Gender Selector */}
-          <div className="flex justify-center gap-6 mt-8">
+          <div className="flex justify-center gap-8 mt-10">
 
             {/* MUJER */}
             <button
               onClick={() => handleGenderChange("female")}
               className={`
-                group px-8 py-5 rounded-2xl font-bold text-xl flex items-center gap-3 
-                transition-all duration-300 backdrop-blur-xl border 
-                ${gender === "female" 
-                  ? "bg-gradient-to-br from-cyan-500/40 to-blue-600/30 border-cyan-400 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] scale-105" 
-                  : "bg-slate-800/60 border-slate-700 text-slate-300 hover:border-cyan-300 hover:scale-105 hover:bg-slate-700/50"
+                relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
+                transition-all duration-300 backdrop-blur-2xl
+                overflow-hidden group
+                ${gender === "female"
+                  ? "text-white bg-gradient-to-br from-cyan-500/40 to-blue-600/30 shadow-[0_0_25px_rgba(0,255,255,0.5)] scale-110"
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"
                 }
               `}
             >
-              <span className="text-3xl">👩</span> 
-              Mujer
+              {/* Glow animado interno */}
+              <div className={`
+                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
+                ${gender === "female" ? "bg-cyan-400 animate-pulse" : ""}
+              `}></div>
+
+              {/* Borde animado PRO */}
+              <span className={`
+                absolute inset-0 rounded-3xl border-4
+                ${gender === "female"
+                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
+                  : "border-transparent"
+                }
+              `}></span>
+
+              {/* Icono */}
+              <span className="text-4xl relative z-10">👩‍⚕️</span>
+              <span className="relative z-10">Mujer</span>
             </button>
 
             {/* HOMBRE */}
             <button
               onClick={() => handleGenderChange("male")}
               className={`
-                group px-8 py-5 rounded-2xl font-bold text-xl flex items-center gap-3 
-                transition-all duration-300 backdrop-blur-xl border 
-                ${gender === "male" 
-                  ? "bg-gradient-to-br from-cyan-500/40 to-blue-600/30 border-cyan-400 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] scale-105" 
-                  : "bg-slate-800/60 border-slate-700 text-slate-300 hover:border-cyan-300 hover:scale-105 hover:bg-slate-700/50"
+                relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
+                transition-all duration-300 backdrop-blur-2xl
+                overflow-hidden group
+                ${gender === "male"
+                  ? "text-white bg-gradient-to-br from-cyan-500/40 to-blue-600/30 shadow-[0_0_25px_rgba(0,255,255,0.5)] scale-110"
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"
                 }
               `}
             >
-              <span className="text-3xl">👨</span> 
-              Hombre
+              {/* Glow animado interno */}
+              <div className={`
+                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
+                ${gender === "male" ? "bg-blue-400 animate-pulse" : ""}
+              `}></div>
+
+              {/* Borde animado PRO */}
+              <span className={`
+                absolute inset-0 rounded-3xl border-4
+                ${gender === "male"
+                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
+                  : "border-transparent"
+                }
+              `}></span>
+
+              {/* Icono */}
+              <span className="text-4xl relative z-10">👨‍⚕️</span>
+              <span className="relative z-10">Hombre</span>
             </button>
 
           </div>
