@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
+import useBackgroundMusic from "../hooks/useBackgroundMusic";
 
 const FEMALE_CHARACTERS = [
   { id: 1, name: "Gestora Joven Rubia", type: "cabello", variant: "blonde-short" },
@@ -70,6 +71,9 @@ const CHARACTER_CATEGORIES = {
 export default function FemaleCharacterCustomization({ onComplete, onBack }) {
   const [selectedCharacter, setSelectedCharacter] = useState(1);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+
+  // Música de fondo ambiental en avatar
+  useBackgroundMusic(true);
 
   const handleSelectCharacter = (id) => {
     setSelectedCharacter(id);
