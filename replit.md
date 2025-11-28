@@ -81,21 +81,32 @@ This is an interactive quiz-based learning application designed for nursing mana
 **Female Character Expansion:**
 - Gestoras 1-30: Original diverse roster (cabello tradicional, artístico, variados)
 - Gestoras 31-39: Cabello refinado (pelirrojas largas, pixie cuts, platino, etc.)
-- **Gestoras 40-49: Premium medical professionals** (NEW)
-  - 40: Gestora Pelirroja Corte Pixie
-  - 41: Gestora Rubia Ondulada Flequillo
-  - 42: Gestora Morena Trenzas
-  - 43: Gestora Negra Cabello Ultrashort
-  - 44: Gestora Negra Natural
-  - 45: Gestora Morena Rizada Volumen
-  - 46: Gestora Negra Dreadlocks Morado
-  - 47: Gestora Pelirroja Liso Suelto
-  - 48: Gestora Pelirroja Corte Boyish
-  - 49: Gestora Negra Afro Natural
+- Gestoras 40-49: Premium medical professionals
+  - 40: Pelirroja Corte Pixie
+  - 41: Rubia Ondulada Flequillo
+  - 42: Morena Trenzas
+  - 43: Negra Cabello Ultrashort
+  - 44: Negra Natural
+  - 45: Morena Rizada Volumen
+  - 46: Negra Dreadlocks Morado
+  - 47: Pelirroja Liso Suelto
+  - 48: Pelirroja Corte Boyish
+  - 49: Negra Afro Natural
+- **Gestoras 50-58: Profesionales con uniforme médico** (NEW - ORDERED)
+  - 50: Negra Rizado Afro
+  - 51: Rubia Bob
+  - 52: Morena Corte Corto
+  - 53: Pelirroja Ondulada
+  - 54: Morena Ondulada
+  - 55: Platino Gris Coleta
+  - 56: Pelirroja Rizada
+  - 57: Negra Dreadlocks
+  - 58: Plata Senior
 
 #### Character Database Updated
-- Female characters: **49 unique gestoras** ✅
+- Female characters: **58 unique gestoras** ✅
 - Male characters: **60 gestores** ✅
+- **Total: 118 professional healthcare characters** 🎨
 
 ---
 
