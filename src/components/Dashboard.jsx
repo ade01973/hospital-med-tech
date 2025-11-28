@@ -9,6 +9,8 @@ import ShareModal from './ShareModal';
 import AvatarPreviewDisplay from './AvatarPreviewDisplay';
 import AvatarFullViewModal from './AvatarFullViewModal';
 import CurrencyDisplay from './CurrencyDisplay';
+import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
+import DailyChallenge from './DailyChallenge';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -431,6 +433,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   <ChevronUp size={16} className="inline" /> Subir
                 </button>
               </div>
+
+              {/* Daily Challenge */}
+              <DailyChallenge />
             </div>
           </div>
 
@@ -473,48 +478,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             </div>
           )}
 
-          {/* Right - Rank & Stats */}
+          {/* Right - Milestone Timeline */}
           <div>
-            <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
-              <h3 className="text-lg font-black text-white mb-4">Rango Actual</h3>
-
-              {currentRankData && (
-                <div className="text-center mb-6 p-4 bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl border-2 border-cyan-500/30">
-                  <p className="text-4xl mb-2">{currentRankData.icon}</p>
-                  <p className="text-2xl font-black text-cyan-300 mb-1">{currentRankData.title}</p>
-                  <p className="text-xs text-slate-400">Requiere {currentRankData.minScore} pts</p>
-                </div>
-              )}
-
-              <div className="mb-6">
-                <p className="text-xs text-slate-400 font-bold uppercase mb-2">Progreso</p>
-                <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 transition-all"
-                    style={{width: `${Math.min(100, (userData.totalScore / (nextRankData?.minScore || 23001)) * 100)}%`}}
-                  ></div>
-                </div>
-              </div>
-
-              {nextRankData && (
-                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-                  <p className="text-xs text-slate-400 font-bold uppercase mb-1">Siguiente</p>
-                  <p className="text-white font-black">{nextRankData.title}</p>
-                  <p className="text-xs text-slate-300">{Math.max(0, nextRankData.minScore - userData.totalScore)} pts restantes</p>
-                </div>
-              )}
-
-              <div className="mt-6 pt-6 border-t border-slate-700 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">Racha Actual</span>
-                  <span className="text-2xl font-black text-orange-400">🔥 {currentStreak}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">Completados</span>
-                  <span className="text-lg font-black text-emerald-400">{Object.values(userData?.completedLevels || {}).filter(Boolean).length}/22</span>
-                </div>
-              </div>
-            </div>
+            <AdvancedMilestoneTimeline currentRank={currentRank} />
           </div>
         </div>
       </div>

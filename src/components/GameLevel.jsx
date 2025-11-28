@@ -5,6 +5,7 @@ import { useGestCoins } from "../hooks/useGestCoins";
 import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
 import CoinNotification from "./CoinNotification";
+import CelebrationFX from "./CelebrationFX";
 import { useEncouragementMessages } from "../data/encouragementMessages";
 
 // 🔀 Shuffle básico tipo Fisher-Yates
@@ -234,6 +235,10 @@ export default function GameLevel({
   const coinNotificationIdRef = useRef(0);
   const { earnCoins } = useGestCoins();
 
+  // 🎉 Celebración de quiz perfecto
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationBonus, setCelebrationBonus] = useState(0);
+
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
 
@@ -353,8 +358,11 @@ export default function GameLevel({
         const totalCorrect = questions.filter((q, idx) => idx < currentIndex + 1).length;
         if (score > 0 && currentIndex + 1 === totalCorrect) {
           const perfectBonus = CURRENCY.EARN_QUIZ_PERFECT;
-          earnCoins(perfectBonus, `¡Quiz perfecto en ${topic.title}!`);
-          // El bonus se mostrará en el modal de completación
+          const streakBonus = streak * 5; // Bonus adicional por racha
+          const totalBonus = perfectBonus + streakBonus;
+          earnCoins(totalBonus, `¡Quiz perfecto en ${topic.title}!`);
+          setCelebrationBonus(totalBonus);
+          setShowCelebration(true);
         }
 
         // Mostrar modal de opciones después de completar
@@ -929,6 +937,14 @@ export default function GameLevel({
           onComplete={() => setShowConfetti(false)}
         />
       )}
+
+      {/* Celebración FX para quiz perfecto */}
+      <CelebrationFX
+        show={showCelebration}
+        bonusCoins={celebrationBonus}
+        streak={streak}
+        onComplete={() => setShowCelebration(false)}
+      />
       </div>
     </div>
   );
