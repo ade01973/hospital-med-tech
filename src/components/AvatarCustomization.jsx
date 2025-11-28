@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 export default function AvatarCustomization({ onComplete }) {
   const [gender, setGender] = useState(null);
   const [avatar, setAvatar] = useState({
+    name: "",
     gender: null,
     silhouetteIndex: 1,
     skinToneIndex: 1,
@@ -77,7 +78,7 @@ export default function AvatarCustomization({ onComplete }) {
 
   const handleFinish = () => {
     const avatarData = {
-      name: "Gestora Enfermera",
+      name: avatar.name || "Gestora Enfermera",
       gender,
       silhouetteIndex: 1,
       skinToneIndex: 1,
