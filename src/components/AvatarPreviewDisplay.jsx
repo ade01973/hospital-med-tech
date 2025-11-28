@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const sizeClasses = {
-    small: "w-24 h-24",
+    small: "w-12 h-12",
     medium: "w-32 h-32",
     large: "w-48 h-48",
   };
