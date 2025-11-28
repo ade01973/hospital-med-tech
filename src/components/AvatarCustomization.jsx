@@ -10,34 +10,69 @@ export default function AvatarCustomization({ onComplete }) {
     skinToneIndex: 1,
   });
 
-  const playClick = () => {
+  // Click suave digital para Mujer
+  const playClickFemale = () => {
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
       
       const audioContext = new AudioContextClass();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
 
-      oscillator.frequency.value = 800; // Sonido agudo
-      oscillator.type = "sine";
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      osc.frequency.value = 920; // Sonido suave digital más alto
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
+      osc.start(audioContext.currentTime);
+      osc.stop(audioContext.currentTime + 0.08);
     } catch (error) {
       console.debug("🔇 Audio no disponible");
     }
   };
 
-  const handleGenderChange = (newGender) => {
-    playClick();
-    setGender(newGender);
-    setAvatar({ ...avatar, gender: newGender });
+  // Click metálico ligero para Hombre
+  const playClickMale = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      
+      const audioContext = new AudioContextClass();
+      
+      // Primera onda: nota principal metálica
+      const osc1 = audioContext.createOscillator();
+      const gain1 = audioContext.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioContext.destination);
+      
+      osc1.frequency.value = 1200; // Más agudo y metálico
+      osc1.type = "triangle"; // Tipo triangular para efecto metálico
+      gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+      
+      osc1.start(audioContext.currentTime);
+      osc1.stop(audioContext.currentTime + 0.12);
+      
+      // Segunda onda: armónico superior
+      const osc2 = audioContext.createOscillator();
+      const gain2 = audioContext.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioContext.destination);
+      
+      osc2.frequency.value = 2000;
+      osc2.type = "sine";
+      gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      
+      osc2.start(audioContext.currentTime);
+      osc2.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+      console.debug("🔇 Audio no disponible");
+    }
   };
 
   const handleFinish = () => {
@@ -81,7 +116,7 @@ export default function AvatarCustomization({ onComplete }) {
 
             {/* MUJER */}
             <button
-              onClick={() => { playClick(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
+              onClick={() => { playClickFemale(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
               className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
                 ${gender === "female" 
                   ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse" 
@@ -110,7 +145,7 @@ export default function AvatarCustomization({ onComplete }) {
 
             {/* HOMBRE */}
             <button
-              onClick={() => { playClick(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
+              onClick={() => { playClickMale(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
               className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
                 ${gender === "male"
                   ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse"
