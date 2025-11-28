@@ -52,27 +52,40 @@ export default function AvatarCustomization({ onComplete }) {
           </div>
           
           {/* Gender Selector */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex justify-center gap-6 mt-8">
+
+            {/* MUJER */}
             <button
               onClick={() => handleGenderChange("female")}
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                gender === "female"
-                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-              }`}
+              className={`
+                group px-8 py-5 rounded-2xl font-bold text-xl flex items-center gap-3 
+                transition-all duration-300 backdrop-blur-xl border 
+                ${gender === "female" 
+                  ? "bg-gradient-to-br from-cyan-500/40 to-blue-600/30 border-cyan-400 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] scale-105" 
+                  : "bg-slate-800/60 border-slate-700 text-slate-300 hover:border-cyan-300 hover:scale-105 hover:bg-slate-700/50"
+                }
+              `}
             >
-              👩 Mujer
+              <span className="text-3xl">👩</span> 
+              Mujer
             </button>
+
+            {/* HOMBRE */}
             <button
               onClick={() => handleGenderChange("male")}
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                gender === "male"
-                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-              }`}
+              className={`
+                group px-8 py-5 rounded-2xl font-bold text-xl flex items-center gap-3 
+                transition-all duration-300 backdrop-blur-xl border 
+                ${gender === "male" 
+                  ? "bg-gradient-to-br from-cyan-500/40 to-blue-600/30 border-cyan-400 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] scale-105" 
+                  : "bg-slate-800/60 border-slate-700 text-slate-300 hover:border-cyan-300 hover:scale-105 hover:bg-slate-700/50"
+                }
+              `}
             >
-              👨 Hombre
+              <span className="text-3xl">👨</span> 
+              Hombre
             </button>
+
           </div>
 
           {/* Confirm Button */}
