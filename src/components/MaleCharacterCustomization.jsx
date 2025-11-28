@@ -80,6 +80,11 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
   };
 
   const handleConfirm = () => {
+    if (!playerAvatar.name || !playerAvatar.name.trim()) {
+      alert("Por favor ingresa un nombre para tu gestor enfermero");
+      return;
+    }
+
     const selectedChar = MALE_CHARACTERS.find(c => c.id === selectedCharacter);
     const updatedAvatar = {
       ...playerAvatar,
@@ -168,7 +173,12 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest"
+            disabled={!playerAvatar.name || !playerAvatar.name.trim()}
+            className={`flex-1 font-black py-4 rounded-xl transition-all transform flex items-center justify-center gap-2 uppercase tracking-widest ${
+              !playerAvatar.name || !playerAvatar.name.trim()
+                ? "bg-slate-600 text-slate-400 cursor-not-allowed"
+                : "bg-white text-black hover:bg-cyan-50 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] hover:-translate-y-1"
+            }`}
           >
             Al Dashboard <ChevronRight className="w-5 h-5" />
           </button>

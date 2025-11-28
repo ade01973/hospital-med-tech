@@ -78,8 +78,13 @@ export default function AvatarCustomization({ onComplete }) {
   };
 
   const handleFinish = () => {
+    if (!avatar.name.trim()) {
+      alert("Por favor ingresa un nombre para tu gestora enfermera");
+      return;
+    }
+
     const avatarData = {
-      name: avatar.name || "Gestora Enfermera",
+      name: avatar.name.trim(),
       gender,
       silhouetteIndex: 1,
       skinToneIndex: 1,
@@ -207,9 +212,9 @@ export default function AvatarCustomization({ onComplete }) {
           {/* Confirm Button */}
           <button
             onClick={handleFinish}
-            disabled={!gender}
+            disabled={!gender || !avatar.name.trim()}
             className={`w-full font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-base ${
-              !gender
+              !gender || !avatar.name.trim()
                 ? "bg-slate-600 text-slate-400 cursor-not-allowed"
                 : "bg-white text-black hover:bg-cyan-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]"
             }`}
