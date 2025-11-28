@@ -3,15 +3,13 @@ import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 
 const SKIN_TONES = [
-  { index: 1, label: "Muy Pálido", color: "bg-yellow-50" },
-  { index: 2, label: "Claro", color: "bg-yellow-100" },
-  { index: 3, label: "Beige Claro", color: "bg-yellow-200" },
-  { index: 4, label: "Medio Cálido", color: "bg-yellow-600" },
-  { index: 5, label: "Oliva", color: "bg-orange-600" },
+  { index: 1, label: "Porcelana", color: "bg-yellow-50" },
+  { index: 2, label: "Neutral Claro", color: "bg-yellow-100" },
+  { index: 3, label: "Cálido Claro", color: "bg-yellow-200" },
 ];
 
 export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
-  const [skinTone, setSkinTone] = React.useState(3);
+  const [skinTone, setSkinTone] = React.useState(2);
 
   const avatar = { gender, skinToneIndex: skinTone };
 
