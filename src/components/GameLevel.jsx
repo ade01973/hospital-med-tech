@@ -159,8 +159,8 @@ const QuizAvatar = ({ playerAvatar }) => {
   if (!playerAvatar?.image) return null;
 
   return (
-    <div className="flex justify-center mb-6">
-      <div className="w-32 h-40 rounded-lg border-2 border-cyan-500/40 bg-gradient-to-b from-slate-700 to-slate-800 overflow-hidden shadow-lg flex items-center justify-center">
+    <div className="flex justify-center mb-8">
+      <div className="w-48 h-60 rounded-lg border-2 border-cyan-500/40 bg-gradient-to-b from-slate-700 to-slate-800 overflow-hidden shadow-lg flex items-center justify-center">
         <img
           src={playerAvatar.image}
           alt="Avatar"
