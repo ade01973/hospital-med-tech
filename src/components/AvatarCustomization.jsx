@@ -3,12 +3,13 @@ import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
 import avatarMalePreview from "../assets/avatar-male-preview.mp4";
+import avatarFemalePreview from "../assets/avatar-female-preview.mp4";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
 
-// Rutas de videos (female se agregará cuando el archivo esté disponible)
+// Rutas de videos
 const VIDEOS = {
   male: avatarMalePreview,
-  female: "/assets/avatar-female-preview.mp4", // Se cargará cuando esté disponible
+  female: avatarFemalePreview,
 };
 
 export default function AvatarCustomization({ onComplete }) {
