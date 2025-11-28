@@ -3,6 +3,14 @@ import { ChevronRight, LogOut } from 'lucide-react';
 import hospitalBg from '../assets/hospital-background.png';
 
 const WelcomeScreen = ({ onContinue, onLogout }) => {
+  React.useEffect(() => {
+    console.log('✓ WelcomeScreen montado - botón debe ir a dashboard');
+  }, []);
+  
+  const handleContinue = () => {
+    console.log('🎯 Usuario presionó "Ir al Dashboard"');
+    onContinue();
+  };
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
@@ -31,10 +39,10 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
 
         <div className="space-y-3">
           <button 
-            onClick={onContinue}
+            onClick={handleContinue}
             className="w-full bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-base"
           >
-            Crear mi Avatar <ChevronRight className="w-5 h-5" />
+            Ir al Dashboard <ChevronRight className="w-5 h-5" />
           </button>
           
           <button 

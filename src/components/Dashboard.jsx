@@ -17,7 +17,7 @@ import ShopModal from './ShopModal';
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
   const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useGestCoins();
-  const [selectedFloor, setSelectedFloor] = useState(1);
+  const [selectedFloor, setSelectedFloor] = useState(null);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
