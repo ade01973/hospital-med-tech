@@ -10,7 +10,12 @@ export default function AvatarCustomization({ onComplete }) {
     skinToneIndex: 1,
   });
 
+  const playClick = () => {
+    new Audio("/assets/click.mp3").play();
+  };
+
   const handleGenderChange = (newGender) => {
+    playClick();
     setGender(newGender);
     setAvatar({ ...avatar, gender: newGender });
   };
@@ -56,7 +61,7 @@ export default function AvatarCustomization({ onComplete }) {
 
             {/* MUJER */}
             <button
-              onClick={() => handleGenderChange("female")}
+              onClick={() => { playClick(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
               className={`
                 relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
                 transition-all duration-300 backdrop-blur-2xl
@@ -89,7 +94,7 @@ export default function AvatarCustomization({ onComplete }) {
 
             {/* HOMBRE */}
             <button
-              onClick={() => handleGenderChange("male")}
+              onClick={() => { playClick(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
               className={`
                 relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4
                 transition-all duration-300 backdrop-blur-2xl
