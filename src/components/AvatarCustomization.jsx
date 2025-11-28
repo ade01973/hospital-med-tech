@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
-import useBackgroundMusic from "../hooks/useBackgroundMusic";
+import avatarFemalePreview from "../assets/avatar-female-preview.mp4";
+import avatarMalePreview from "../assets/avatar-male-preview.mp4";
 
 export default function AvatarCustomization({ onComplete }) {
   const [gender, setGender] = useState(null);
