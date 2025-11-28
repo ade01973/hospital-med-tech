@@ -675,6 +675,28 @@ export default function GameLevel({
   
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
+  // 🚪 Manejadores del modal ElevatorDoors
+  const handleElevatorComplete = () => {
+    setShowElevatorAnimation(false);
+    // El modal con opciones se mostrará automáticamente
+  };
+
+  const handleWatchVideo = () => {
+    setShowElevatorModal(false);
+    setShowReviewVideo(true);
+    setVideoFromCompletion(false);
+  };
+
+  const handleSkipVideo = () => {
+    setShowElevatorModal(false);
+    // El quiz comienza automáticamente
+  };
+
+  const handleStartLevel = () => {
+    setShowElevatorModal(true);
+    setShowElevatorAnimation(true);
+  };
+
   const handleGoToDashboard = () => {
     // Solo completar el módulo si realmente está completado
     if (isCompleted) {
