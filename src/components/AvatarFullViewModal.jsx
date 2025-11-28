@@ -1,64 +1,72 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import avatarModalBg from '../assets/avatar-modal-bg.png';
 
 const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
   if (!isOpen || !playerAvatar) return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border-2 border-cyan-500/50 max-w-md w-full shadow-2xl overflow-hidden">
+      <div 
+        className="rounded-2xl border-2 border-cyan-500/50 max-w-md w-full shadow-2xl overflow-hidden bg-cover bg-center relative"
+        style={{ backgroundImage: `url(${avatarModalBg})` }}
+      >
+        {/* Overlay oscuro */}
+        <div className="absolute inset-0 bg-black/40"></div>
         
-        {/* Header */}
-        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 flex justify-between items-center">
-          <h2 className="text-white font-bold text-lg">Mi Gestor Enfermero</h2>
-          <button 
-            onClick={onClose}
-            className="hover:bg-white/20 p-1 rounded-lg transition-all"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-        </div>
-
-        {/* Avatar Display */}
-        <div className="p-6 flex flex-col items-center">
-          <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800 border-2 border-cyan-500/50 mb-6 shadow-lg">
-            {playerAvatar.gender === 'male' && playerAvatar.characterPreset ? (
-              <img 
-                src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
-                alt="Mi Gestor Enfermero"
-                className="w-full h-full object-contain bg-gradient-to-b from-slate-700 to-slate-900"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
-                <span className="text-slate-400 text-center">Avatar Femenino</span>
-              </div>
-            )}
+        {/* Content Container */}
+        <div className="relative z-10">
+          {/* Header - Solo botón cerrar */}
+          <div className="p-4 flex justify-end">
+            <button 
+              onClick={onClose}
+              className="hover:bg-white/20 p-2 rounded-lg transition-all bg-black/30"
+              title="Cerrar"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
           </div>
 
-          {/* Avatar Info */}
-          <div className="text-center w-full">
-            <h3 className="text-white font-bold text-2xl mb-2">{playerAvatar.name}</h3>
-            <p className="text-cyan-400 font-semibold text-sm mb-4">
-              {playerAvatar.gender === 'male' ? 'Gestor Enfermero' : 'Gestora Enfermera'}
-            </p>
+          {/* Avatar Display */}
+          <div className="px-6 pb-6 flex flex-col items-center">
+            {/* Título */}
+            <h2 className="text-white font-bold text-2xl mb-1 text-center">Gestor Enfermero</h2>
             
+            {/* Nombre */}
+            <h3 className="text-cyan-300 font-semibold text-lg mb-6 text-center">{playerAvatar.name}</h3>
+            
+            {/* Avatar Image */}
+            <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
+              {playerAvatar.gender === 'male' && playerAvatar.characterPreset ? (
+                <img 
+                  src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
+                  alt="Gestor Enfermero"
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
+                  <span className="text-slate-300 text-center font-semibold">Gestora Enfermera</span>
+                </div>
+              )}
+            </div>
+
             {/* Character Info */}
             {playerAvatar.characterPreset && (
-              <div className="bg-slate-800/50 rounded-lg p-3 border border-cyan-500/30">
-                <p className="text-slate-300 text-xs">Personaje #{playerAvatar.characterPreset}</p>
+              <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-cyan-400/40 w-full text-center mb-6">
+                <p className="text-cyan-200 text-sm font-semibold">Personaje #{playerAvatar.characterPreset}</p>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Close Button */}
-        <div className="p-4 border-t border-slate-700/50">
-          <button 
-            onClick={onClose}
-            className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105"
-          >
-            Cerrar
-          </button>
+          {/* Close Button */}
+          <div className="px-6 pb-6">
+            <button 
+              onClick={onClose}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+            >
+              Cerrar
+            </button>
+          </div>
         </div>
       </div>
     </div>
