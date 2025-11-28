@@ -156,16 +156,31 @@ const EncouragementBubble = ({ message, isTimeWarning = false }) => {
 
 // 🖼️ Componente para mostrar avatar durante el quiz
 const QuizAvatar = ({ playerAvatar }) => {
-  if (!playerAvatar?.image) return null;
+  if (!playerAvatar?.name) return null;
 
   return (
-    <div className="flex justify-center mb-8">
-      <div className="w-48 h-60 rounded-lg border-2 border-cyan-500/40 bg-gradient-to-b from-slate-700 to-slate-800 overflow-hidden shadow-lg flex items-center justify-center">
-        <img
-          src={playerAvatar.image}
-          alt="Avatar"
-          className="w-full h-full object-cover"
-        />
+    <div className="mb-6">
+      <div className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 inline-block">
+        <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
+          {playerAvatar.characterPreset ? (
+            <img 
+              src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+              alt="Avatar"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: 'center top' }}
+            />
+          ) : (
+            <img
+              src={playerAvatar.image}
+              alt="Avatar"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: 'center top' }}
+            />
+          )}
+        </div>
+        <div>
+          <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
+        </div>
       </div>
     </div>
   );
@@ -655,15 +670,6 @@ export default function GameLevel({
             message={encouragementMessage}
             isTimeWarning={isTimeWarning}
           />
-        )}
-
-        {/* Player Name Badge */}
-        {playerAvatar.name && (
-          <div className="text-center mb-4">
-            <div className="inline-block bg-gradient-to-r from-cyan-500/20 to-blue-600/20 px-4 py-2 rounded-full border border-cyan-500/50">
-              <p className="text-white font-bold text-sm">👤 {playerAvatar.name}</p>
-            </div>
-          </div>
         )}
 
         {/* Header */}
