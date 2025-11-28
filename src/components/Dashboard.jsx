@@ -234,8 +234,16 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             {/* Avatar Display */}
             {playerAvatar.name && (
               <div className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50">
-                <div className="w-12 h-12">
-                  <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
+                <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-800/50">
+                  {playerAvatar.gender === 'male' && playerAvatar.characterPreset ? (
+                    <img 
+                      src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
+                      alt="Doctor avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
+                  )}
                 </div>
                 <div>
                   <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>

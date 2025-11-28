@@ -95,7 +95,8 @@ export default function AvatarCustomization({ onComplete }) {
     };
 
     localStorage.setItem("playerAvatar", JSON.stringify(avatarData));
-    onComplete();
+    // Si es hombre, ir a personalización; si es mujer, ir a dashboard
+    onComplete(gender === "male");
   };
 
   return (
@@ -206,9 +207,14 @@ export default function AvatarCustomization({ onComplete }) {
           {/* Confirm Button */}
           <button
             onClick={handleFinish}
-            className="w-full bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-base"
+            disabled={!gender}
+            className={`w-full font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-base ${
+              !gender
+                ? "bg-slate-600 text-slate-400 cursor-not-allowed"
+                : "bg-white text-black hover:bg-cyan-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+            }`}
           >
-            Confirmar <ChevronRight className="w-5 h-5" />
+            {gender === "male" ? "Personalizar Doctor" : "Confirmar"} <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>
