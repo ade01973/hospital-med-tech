@@ -3,14 +3,17 @@ import { useEffect, useRef } from 'react';
 /**
  * Hook para reproducir música de fondo ambiental médica
  * Usa Web Audio API para generar música procedural alusiva al tema sanitario
+ * Se detiene completamente al desmontar el componente
  */
 const useBackgroundMusic = (enabled = true) => {
   const audioContextRef = useRef(null);
-  const oscillatorsRef = useRef([]);
-  const gainsRef = useRef([]);
+  const timeoutIdRef = useRef(null);
+  const isActiveMusicRef = useRef(false);
 
   useEffect(() => {
     if (!enabled) return;
+
+    isActiveMusicRef.current = true;
 
     const startBackgroundMusic = () => {
       try {
@@ -19,24 +22,17 @@ const useBackgroundMusic = (enabled = true) => {
 
         audioContextRef.current = new AudioContextClass();
         const audioContext = audioContextRef.current;
-        oscillatorsRef.current = [];
-        gainsRef.current = [];
 
         // Notas médicas: C4 (261.63) - E4 (329.63) - G4 (392.00) - C5 (523.25)
-        // Arpegio ambiental tranquilo
         const notes = [261.63, 329.63, 392.00, 523.25];
-        const startTime = audioContext.currentTime;
-        const cycleDuration = 4; // 4 segundos por ciclo
         let noteIndex = 0;
 
         const playNoteSequence = () => {
-          if (!audioContext) return;
+          // Si el hook fue desmontado, no continuar
+          if (!isActiveMusicRef.current || !audioContext) return;
 
-          const now = audioContext.currentTime;
-          const noteTime = startTime + noteIndex * (cycleDuration / notes.length);
-
-          // Solo reproducir si estamos dentro de un ciclo razonable
-          if (now < noteTime + 10) {
+          try {
+            const now = audioContext.currentTime;
             const osc = audioContext.createOscillator();
             const gain = audioContext.createGain();
 
@@ -53,54 +49,52 @@ const useBackgroundMusic = (enabled = true) => {
             osc.start(now);
             osc.stop(now + 0.6);
 
-            oscillatorsRef.current.push(osc);
-            gainsRef.current.push(gain);
-
             noteIndex++;
 
-            // Siguiente nota en 1 segundo
-            setTimeout(() => {
-              if (audioContextRef.current) {
+            // Siguiente nota en 1 segundo, pero solo si sigue activo
+            if (isActiveMusicRef.current) {
+              timeoutIdRef.current = setTimeout(() => {
                 playNoteSequence();
-              }
-            }, 1000);
+              }, 1000);
+            }
+          } catch (e) {
+            // Silencioso si hay error
           }
         };
 
         playNoteSequence();
-
-        return () => {
-          // Cleanup al desmontar
-          oscillatorsRef.current.forEach((osc) => {
-            try {
-              osc.stop();
-            } catch (e) {
-              // Ya puede estar detenido
-            }
-          });
-          oscillatorsRef.current = [];
-          gainsRef.current = [];
-        };
       } catch (error) {
         console.debug('🔇 Música de fondo no disponible:', error.message);
       }
     };
 
-    const cleanup = startBackgroundMusic();
-    return cleanup;
+    startBackgroundMusic();
+
+    return () => {
+      // Detener completamente la música al desmontar
+      isActiveMusicRef.current = false;
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+        timeoutIdRef.current = null;
+      }
+      if (audioContextRef.current) {
+        try {
+          audioContextRef.current.close();
+        } catch (e) {
+          // Silencioso
+        }
+        audioContextRef.current = null;
+      }
+    };
   }, [enabled]);
 
   return {
     stop: () => {
-      oscillatorsRef.current.forEach((osc) => {
-        try {
-          osc.stop();
-        } catch (e) {
-          // Ya puede estar detenido
-        }
-      });
-      oscillatorsRef.current = [];
-      gainsRef.current = [];
+      isActiveMusicRef.current = false;
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+        timeoutIdRef.current = null;
+      }
     },
   };
 };
