@@ -100,8 +100,8 @@ export default function AvatarCustomization({ onComplete }) {
     };
 
     localStorage.setItem("playerAvatar", JSON.stringify(avatarData));
-    // Si es hombre, ir a personalización; si es mujer, ir a dashboard
-    onComplete(gender === "male");
+    // Si es hombre o mujer, ir a personalización; onComplete recibe el gender
+    onComplete(gender);
   };
 
   return (
