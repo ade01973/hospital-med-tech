@@ -1,196 +1,245 @@
-import React, { useState } from "react";
-import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
-import { ChevronRight } from "lucide-react";
+// src/components/AvatarCustomization.jsx
+import React, { useState, useEffect } from "react";
+import {
+  skinTones,
+  hairStyles,
+  uniforms,
+  accessories,
+  defaultAvatarState,
+} from "../data/avatarOptions";
+import AvatarPreview from "./AvatarPreview";
 
-export default function AvatarCustomization({ onComplete }) {
-  const [gender, setGender] = useState(null);
-  const [avatar, setAvatar] = useState({
-    gender: null,
-    silhouetteIndex: 1,
-    skinToneIndex: 1,
-  });
+const AVATAR_STORAGE_KEY = "hospitalMedTechAvatar";
 
-  // Click suave digital para Mujer
-  const playClickFemale = () => {
+const AvatarCustomization = ({ onComplete }) => {
+  const [avatar, setAvatar] = useState(defaultAvatarState);
+
+  // Cargar avatar previo si existe
+  useEffect(() => {
     try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      
-      const audioContext = new AudioContextClass();
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-
-      osc.connect(gain);
-      gain.connect(audioContext.destination);
-
-      osc.frequency.value = 920; // Sonido suave digital más alto
-      osc.type = "sine";
-      gain.gain.setValueAtTime(0.25, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
-
-      osc.start(audioContext.currentTime);
-      osc.stop(audioContext.currentTime + 0.08);
-    } catch (error) {
-      console.debug("🔇 Audio no disponible");
+      const saved = localStorage.getItem(AVATAR_STORAGE_KEY);
+      if (saved) {
+        setAvatar(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Error loading avatar from storage", e);
     }
+  }, []);
+
+  const handleChange = (field, value) => {
+    setAvatar(prev => {
+      const updated = { ...prev, [field]: value };
+
+      // Ajustes coherentes al cambiar de género
+      if (field === "gender") {
+        const gender = value;
+        const defaultHair = hairStyles[gender][0]?.id;
+        const defaultUniform = uniforms[gender][0]?.id;
+        if (defaultHair) updated.hairStyleId = defaultHair;
+        if (defaultUniform) updated.uniformId = defaultUniform;
+      }
+
+      return updated;
+    });
   };
 
-  // Click metálico ligero para Hombre
-  const playClickMale = () => {
+  const toggleAccessory = (id) => {
+    setAvatar(prev => {
+      const isSelected = prev.accessoryIds.includes(id);
+      return {
+        ...prev,
+        accessoryIds: isSelected
+          ? prev.accessoryIds.filter(a => a !== id)
+          : [...prev.accessoryIds, id],
+      };
+    });
+  };
+
+  const handleConfirm = () => {
     try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      
-      const audioContext = new AudioContextClass();
-      
-      // Primera onda: nota principal metálica
-      const osc1 = audioContext.createOscillator();
-      const gain1 = audioContext.createGain();
-      osc1.connect(gain1);
-      gain1.connect(audioContext.destination);
-      
-      osc1.frequency.value = 1200; // Más agudo y metálico
-      osc1.type = "triangle"; // Tipo triangular para efecto metálico
-      gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
-      
-      osc1.start(audioContext.currentTime);
-      osc1.stop(audioContext.currentTime + 0.12);
-      
-      // Segunda onda: armónico superior
-      const osc2 = audioContext.createOscillator();
-      const gain2 = audioContext.createGain();
-      osc2.connect(gain2);
-      gain2.connect(audioContext.destination);
-      
-      osc2.frequency.value = 2000;
-      osc2.type = "sine";
-      gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
-      osc2.start(audioContext.currentTime);
-      osc2.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
-      console.debug("🔇 Audio no disponible");
+      localStorage.setItem(AVATAR_STORAGE_KEY, JSON.stringify(avatar));
+    } catch (e) {
+      console.error("Error saving avatar", e);
     }
+    // Llamar al callback para pasar al dashboard
+    if (onComplete) onComplete(avatar);
   };
 
-  const handleFinish = () => {
-    const avatarData = {
-      name: "Gestora Enfermera",
-      gender,
-      silhouetteIndex: 1,
-      skinToneIndex: 1,
-      face: null,
-      eyeColor: null,
-      eyeShape: null,
-      noseType: null,
-      mouth: null,
-      hairType: null,
-      hairColor: null,
-      uniform: null,
-      accessory: null,
-    };
-
-    localStorage.setItem("playerAvatar", JSON.stringify(avatarData));
-    onComplete();
-  };
+  const currentHairOptions = hairStyles[avatar.gender] || [];
+  const currentUniformOptions = uniforms[avatar.gender] || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex flex-col items-center justify-center p-4">
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
-        
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-white mb-2">Genera tu Gestora Enfermera</h1>
-          <p className="text-center text-cyan-400 font-semibold mb-6 transition-all duration-300">
-            {gender === "female" 
-              ? "Liderazgo, precisión y visión de futuro. Crea tu gestora enfermera."
-              : gender === "male"
-              ? "Gestión de personas, visión estratégica y excelencia profesional."
-              : "Elige tu rol y comienza tu viaje como gestor sanitario."
-            }
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-slate-100 flex flex-col items-center py-6 px-4">
+      <h1 className="text-3xl font-bold text-slate-800 mb-2">
+        Personaliza tu Gestora Enfermera
+      </h1>
+      <p className="text-slate-600 mb-6 text-center max-w-xl">
+        Elige el aspecto físico y la indumentaria de tu avatar. 
+        Este avatar te acompañará en todo el recorrido del juego.
+      </p>
+
+      <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl">
+        {/* Panel de opciones */}
+        <div className="lg:w-1/2 bg-white rounded-2xl shadow-lg p-6 space-y-6">
+          {/* Género */}
+          <section>
+            <h2 className="font-semibold text-slate-800 mb-3 text-lg">Género</h2>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => handleChange("gender", "female")}
+                className={`flex-1 py-3 rounded-xl border text-sm font-medium transition
+                  ${avatar.gender === "female"
+                    ? "bg-sky-600 text-white border-sky-600"
+                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                  }`}
+              >
+                Mujer
+              </button>
+              <button
+                type="button"
+                onClick={() => handleChange("gender", "male")}
+                className={`flex-1 py-3 rounded-xl border text-sm font-medium transition
+                  ${avatar.gender === "male"
+                    ? "bg-sky-600 text-white border-sky-600"
+                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                  }`}
+              >
+                Hombre
+              </button>
+            </div>
+          </section>
+
+          {/* Tono de piel */}
+          <section>
+            <h2 className="font-semibold text-slate-800 mb-3 text-lg">Tono de piel</h2>
+            <div className="flex gap-3">
+              {skinTones.map(tone => (
+                <button
+                  key={tone.id}
+                  type="button"
+                  onClick={() => handleChange("skinTone", tone.id)}
+                  className={`flex-1 flex flex-col items-center gap-2 py-3 rounded-xl border text-xs transition
+                    ${avatar.skinTone === tone.id
+                      ? "border-sky-600 ring-2 ring-sky-200"
+                      : "border-slate-200 hover:bg-slate-50"
+                    }`}
+                >
+                  <span
+                    className="w-10 h-10 rounded-full border border-slate-300"
+                    style={{ backgroundColor: tone.color }}
+                  />
+                  <span>{tone.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Pelo */}
+          <section>
+            <h2 className="font-semibold text-slate-800 mb-3 text-lg">Estilo de pelo</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {currentHairOptions.map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => handleChange("hairStyleId", option.id)}
+                  className={`flex items-center gap-2 p-3 rounded-xl border text-sm transition
+                    ${avatar.hairStyleId === option.id
+                      ? "border-sky-600 bg-sky-50"
+                      : "border-slate-200 hover:bg-slate-50"
+                    }`}
+                >
+                  <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                    <img
+                      src={option.asset}
+                      alt={option.label}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span className="flex-1 text-left">{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Uniforme */}
+          <section>
+            <h2 className="font-semibold text-slate-800 mb-3 text-lg">Indumentaria</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {currentUniformOptions.map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => handleChange("uniformId", option.id)}
+                  className={`flex items-center gap-2 p-3 rounded-xl border text-sm transition
+                    ${avatar.uniformId === option.id
+                      ? "border-emerald-600 bg-emerald-50"
+                      : "border-slate-200 hover:bg-slate-50"
+                    }`}
+                >
+                  <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                    <img
+                      src={option.asset}
+                      alt={option.label}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span className="flex-1 text-left">{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Accesorios */}
+          <section>
+            <h2 className="font-semibold text-slate-800 mb-3 text-lg">Accesorios</h2>
+            <div className="grid grid-cols-3 gap-3">
+              {accessories.map(acc => {
+                const selected = avatar.accessoryIds.includes(acc.id);
+                return (
+                  <button
+                    key={acc.id}
+                    type="button"
+                    onClick={() => toggleAccessory(acc.id)}
+                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border text-xs transition
+                      ${selected
+                        ? "border-amber-500 bg-amber-50"
+                        : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                  >
+                    <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                      <img
+                        src={acc.asset}
+                        alt={acc.label}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <span className="text-center leading-tight">{acc.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <div className="pt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="px-6 py-3 rounded-xl bg-sky-600 text-white font-semibold shadow-md hover:bg-sky-700 active:scale-95 transition"
+            >
+              Confirmar avatar y continuar
+            </button>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-8">
-          
-          {/* Avatar Preview - Empty Viewer */}
-          <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800">
-            <AvatarPreviewDisplay avatar={avatar} size="large" />
-          </div>
-          
-          {/* Gender Selector */}
-          <div className="flex justify-center gap-8 mt-10">
-
-            {/* MUJER */}
-            <button
-              onClick={() => { playClickFemale(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
-              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
-                ${gender === "female" 
-                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse" 
-                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
-              `}
-            >
-              {/* Glow animado interno */}
-              <div className={`
-                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
-                ${gender === "female" ? "bg-cyan-400 animate-pulse" : ""}
-              `}></div>
-
-              {/* Borde animado PRO */}
-              <span className={`
-                absolute inset-0 rounded-3xl border-4
-                ${gender === "female"
-                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
-                  : "border-transparent"
-                }
-              `}></span>
-
-              {/* Icono */}
-              <span className="text-4xl relative z-10">👩‍⚕️</span>
-              <span className="relative z-10">Mujer</span>
-            </button>
-
-            {/* HOMBRE */}
-            <button
-              onClick={() => { playClickMale(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
-              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
-                ${gender === "male"
-                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse"
-                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
-              `}
-            >
-              {/* Glow animado interno */}
-              <div className={`
-                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
-                ${gender === "male" ? "bg-blue-400 animate-pulse" : ""}
-              `}></div>
-
-              {/* Borde animado PRO */}
-              <span className={`
-                absolute inset-0 rounded-3xl border-4
-                ${gender === "male"
-                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
-                  : "border-transparent"
-                }
-              `}></span>
-
-              {/* Icono */}
-              <span className="text-4xl relative z-10">👨‍⚕️</span>
-              <span className="relative z-10">Hombre</span>
-            </button>
-
-          </div>
-
-          {/* Confirm Button */}
-          <button
-            onClick={handleFinish}
-            className="w-full bg-white text-black hover:bg-cyan-50 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 uppercase tracking-widest text-base"
-          >
-            Confirmar <ChevronRight className="w-5 h-5" />
-          </button>
+        {/* Vista previa grande */}
+        <div className="lg:w-1/2">
+          <AvatarPreview avatar={avatar} />
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AvatarCustomization;
