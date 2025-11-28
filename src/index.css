@@ -101,3 +101,87 @@
     animation: fadeInUp 0.5s forwards;
   }
 }
+
+
+/* ========================================
+   AVATAR ANIMATIONS - Animaciones del Avatar
+   ======================================== */
+
+/* 1. Animación de entrada con fade-in y escala */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 2. Animación de flotación suave continua */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* 3. Efecto de respiración - escala sutil */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+/* 4. Resplandor pulsante en el borde */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3),
+                0 0 20px rgba(6, 182, 212, 0.2),
+                inset 0 0 10px rgba(6, 182, 212, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.6),
+                0 0 40px rgba(6, 182, 212, 0.4),
+                inset 0 0 20px rgba(6, 182, 212, 0.2);
+  }
+}
+
+/* 5. Rotación sutil en hover */
+@keyframes tiltHover {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(2deg) scale(1.05);
+  }
+}
+
+/* Clases de utilidad para aplicar las animaciones */
+.animate-fade-in {
+  animation: fadeInScale 0.8s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Combinación: Entrada + Flotación */
+.animate-enter-float {
+  animation: fadeInScale 0.8s ease-out forwards,
+             float 4s ease-in-out 0.8s infinite;
+}
