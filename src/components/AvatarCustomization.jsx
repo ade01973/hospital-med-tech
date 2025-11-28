@@ -214,7 +214,7 @@ export default function AvatarCustomization({ onComplete }) {
                 : "bg-white text-black hover:bg-cyan-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]"
             }`}
           >
-            {gender === "male" ? "Personalizar Doctor" : "Confirmar"} <ChevronRight className="w-5 h-5" />
+            {gender === "male" ? "Personalizar Gestor Enfermero" : "Confirmar"} <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>

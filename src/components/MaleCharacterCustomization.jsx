@@ -59,7 +59,7 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
       <div className="relative z-10 bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-4xl w-full">
         
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-white mb-2">Personaliza tu Doctor</h1>
+          <h1 className="text-4xl font-black text-white mb-2">Personaliza tu Gestor Enfermero</h1>
           <p className="text-center text-cyan-400 font-semibold">
             Elige tu tipo de cabello, barba y accesorios
           </p>
