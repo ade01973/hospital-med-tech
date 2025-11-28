@@ -23,7 +23,8 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
         <img
           src={avatarImage}
           alt="Avatar"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-all duration-500 ease-out opacity-0 animate-fadeInUp"
+          key={gender}
         />
       )}
     </div>
