@@ -62,3 +62,18 @@ The application is built with a modern web stack, focusing on a highly interacti
 - **Web Audio API**: For procedural sound effect generation.
 - **Web Share API**: For native mobile social sharing.
 - **Web Push API**: For browser push notifications.
+---
+
+## Latest Update (November 28, 2025 - Audio Implementation)
+
+### 🎵 Professional Background Music
+- **File**: `avatar-background-music.mp3` (1.5 MB - Professional medical app soundtrack)
+- **Volume**: 15% (Low audio level)
+- **Usage**: ONLY during avatar creation screens
+  - Selección de género
+  - Personalización de gestoras mujeres (58 opciones)
+  - Personalización de gestores hombres (60 opciones)
+- **Dashboard**: SILENT - No audio
+- **Hook**: `useBackgroundMusic.js` - Reproduces MP3 with loop
+- **Auto-stop**: Music pauses and resets on component unmount
+
