@@ -27,6 +27,14 @@ const MALE_CHARACTERS = [
   { id: 22, name: "Gestor Afrodescendiente Senior", type: "accessory", variant: "clipboard-yellow-alt" },
   { id: 23, name: "Gestor Cabello Largo", type: "hair", variant: "brown-long" },
   { id: 24, name: "Gestor Senior", type: "beard", variant: "full-beard-gray" },
+  { id: 25, name: "Gestor Profesional con Gafas", type: "accessory", variant: "clipboard-wood-alt" },
+  { id: 26, name: "Gestor Especialista Moreno", type: "hair", variant: "curly-brown" },
+  { id: 27, name: "Gestor Veterano", type: "beard", variant: "full-beard-white" },
+  { id: 28, name: "Gestor Joven Pelirrojo", type: "hair", variant: "red-curly" },
+  { id: 29, name: "Gestor Afrodescendiente con Gafas", type: "accessory", variant: "clipboard-gray-alt" },
+  { id: 30, name: "Gestor Rubio Platino", type: "hair", variant: "platinum-short" },
+  { id: 31, name: "Gestor Directivo", type: "accessory", variant: "clipboard-navy" },
+  { id: 32, name: "Gestor Joven Ejecutivo", type: "accessory", variant: "clipboard-beige" },
 ];
 
 const CHARACTER_CATEGORIES = {
