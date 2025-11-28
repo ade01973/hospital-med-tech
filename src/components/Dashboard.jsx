@@ -6,6 +6,7 @@ import Missions from './Missions.jsx';
 import Leagues from './Leagues.jsx';
 import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
+import AvatarPreviewDisplay from './AvatarPreviewDisplay';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -233,8 +234,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             {/* Avatar Display */}
             {playerAvatar.name && (
               <div className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
-                  {playerAvatar.name?.charAt(0) || '?'}
+                <div className="w-12 h-12">
+                  <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
                 </div>
                 <div>
                   <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
