@@ -35,6 +35,14 @@ const MALE_CHARACTERS = [
   { id: 30, name: "Gestor Rubio Platino", type: "hair", variant: "platinum-short" },
   { id: 31, name: "Gestor Directivo", type: "accessory", variant: "clipboard-navy" },
   { id: 32, name: "Gestor Joven Ejecutivo", type: "accessory", variant: "clipboard-beige" },
+  { id: 33, name: "Gestor Especialista Pelirrojo", type: "accessory", variant: "clipboard-yellow-bright" },
+  { id: 34, name: "Gestor Ejecutivo Rubio", type: "accessory", variant: "clipboard-purple-alt" },
+  { id: 35, name: "Gestor Médico Afrodescendiente", type: "accessory", variant: "stethoscope-orange" },
+  { id: 36, name: "Gestor Clínico Pelirrojo", type: "accessory", variant: "stethoscope-yellow" },
+  { id: 37, name: "Gestor Profesional Rubio", type: "accessory", variant: "stethoscope-purple" },
+  { id: 38, name: "Gestor Senior Afrodescendiente", type: "accessory", variant: "stethoscope-gray" },
+  { id: 39, name: "Gestor Sanitario Afrodescendiente", type: "accessory", variant: "stethoscope-orange-alt" },
+  { id: 40, name: "Gestor Clínico Moreno", type: "accessory", variant: "stethoscope-wood" },
 ];
 
 const CHARACTER_CATEGORIES = {
