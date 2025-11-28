@@ -6,6 +6,8 @@ const SKIN_TONES = [
   { index: 1, label: "Porcelana", color: "bg-yellow-50" },
   { index: 2, label: "Neutral Claro", color: "bg-yellow-100" },
   { index: 3, label: "Cálido Claro", color: "bg-yellow-200" },
+  { index: 4, label: "Neutral +", color: "bg-yellow-300" },
+  { index: 5, label: "Cálido +", color: "bg-yellow-400" },
 ];
 
 export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
