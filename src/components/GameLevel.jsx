@@ -241,8 +241,8 @@ export default function GameLevel({
   const [celebrationBonus, setCelebrationBonus] = useState(0);
 
   // 🚪 Modal de puerta de ascensor al inicio
-  const [showElevatorModal, setShowElevatorModal] = useState(false);
-  const [showElevatorAnimation, setShowElevatorAnimation] = useState(false);
+  const [showElevatorModal, setShowElevatorModal] = useState(true);
+  const [showElevatorAnimation, setShowElevatorAnimation] = useState(true);
 
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
@@ -620,7 +620,7 @@ export default function GameLevel({
   }
 
   // 🚪 Modal de ElevatorDoors al inicio del nivel
-  if (showElevatorModal && !questions.length) {
+  if (showElevatorModal) {
     return (
       <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 backdrop-blur-sm">
         {showElevatorAnimation && <ElevatorDoors onComplete={handleElevatorComplete} />}
