@@ -6,8 +6,13 @@ const SKIN_TONES = [
   { index: 1, label: "Porcelana", color: "bg-yellow-50" },
   { index: 2, label: "Neutral Claro", color: "bg-yellow-100" },
   { index: 3, label: "Cálido Claro", color: "bg-yellow-200" },
-  { index: 4, label: "Neutral +", color: "bg-yellow-300" },
-  { index: 5, label: "Cálido +", color: "bg-yellow-400" },
+  { index: 4, label: "Medium Beige", color: "bg-yellow-300" },
+  { index: 5, label: "Warm Tan", color: "bg-yellow-400" },
+  { index: 6, label: "Medium Dark", color: "bg-amber-600" },
+  { index: 7, label: "Dark Neutral", color: "bg-amber-700" },
+  { index: 8, label: "Very Dark", color: "bg-amber-900" },
+  { index: 9, label: "Medium Olive", color: "bg-yellow-600" },
+  { index: 10, label: "Deep Skin", color: "bg-gray-900" },
 ];
 
 export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
@@ -17,7 +22,7 @@ export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex flex-col items-center justify-center p-4">
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
+      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black text-white mb-2">Personaliza tu Avatar</h1>
           <p className="text-center text-cyan-400 font-semibold mb-6">
@@ -41,7 +46,7 @@ export default function TraitSelectionScreen({ gender, onComplete, onBack }) {
                 <button
                   key={tone.index}
                   onClick={() => setSkinTone(tone.index)}
-                  className={`w-12 h-12 rounded-full border-4 transition-all ${
+                  className={`w-10 h-10 rounded-full border-4 transition-all ${
                     skinTone === tone.index
                       ? `${tone.color} border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.5)] scale-110`
                       : `${tone.color} border-slate-600 hover:border-slate-500 hover:scale-105`
