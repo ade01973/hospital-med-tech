@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
+import avatarMalePreview from "../assets/avatar-male-preview.mp4";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
+
+// Rutas de videos (female se agregará cuando el archivo esté disponible)
+const VIDEOS = {
+  male: avatarMalePreview,
+  female: "/assets/avatar-female-preview.mp4", // Se cargará cuando esté disponible
+};
 
 export default function AvatarCustomization({ onComplete }) {
   const [gender, setGender] = useState(null);
@@ -132,9 +139,23 @@ export default function AvatarCustomization({ onComplete }) {
 
         <div className="flex flex-col items-center justify-center gap-8">
           
-          {/* Avatar Preview - Empty Viewer */}
-          <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800">
-            <AvatarPreviewDisplay avatar={avatar} size="large" />
+          {/* Avatar Preview - Video or Empty Viewer */}
+          <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800 w-full aspect-video flex items-center justify-center overflow-hidden">
+            {gender && VIDEOS[gender] && (
+              <video
+                key={gender}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src={VIDEOS[gender]} type="video/mp4" />
+              </video>
+            )}
+            {!gender && (
+              <AvatarPreviewDisplay avatar={avatar} size="large" />
+            )}
           </div>
 
           {/* Name Input */}
