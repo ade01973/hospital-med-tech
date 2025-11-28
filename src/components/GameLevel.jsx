@@ -643,11 +643,19 @@ export default function GameLevel({
     );
   }
 
-  // 🚪 Modal de ElevatorDoors al inicio del nivel
+  // 🚪 Modal de ElevatorDoors al inicio del nivel - RENDERIZADO CRÍTICO
   if (showElevatorModal) {
+    console.log("🚪 MODAL RENDERIZANDO - showElevatorAnimation:", showElevatorAnimation);
     return (
       <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-        {showElevatorAnimation && <ElevatorDoors onComplete={handleElevatorComplete} />}
+        {showElevatorAnimation && (
+          <ElevatorDoors 
+            onComplete={() => {
+              console.log("✅ Puerta completada, mostrando opciones");
+              setShowElevatorAnimation(false);
+            }} 
+          />
+        )}
         {!showElevatorAnimation && (
           <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-2 border-cyan-500/50 rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4 animate-fadeInUp">
             <h2 className="text-3xl font-black text-white mb-2 text-center">{topic?.title}</h2>
@@ -655,14 +663,20 @@ export default function GameLevel({
             
             <div className="space-y-3">
               <button
-                onClick={handleWatchVideo}
+                onClick={() => {
+                  console.log("🎬 Video button clicked");
+                  handleWatchVideo();
+                }}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-3 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
               >
                 <span>🎬</span> Ver Video Educativo (7 min)
               </button>
               
               <button
-                onClick={handleSkipVideo}
+                onClick={() => {
+                  console.log("⏭️ Skip quiz button clicked");
+                  handleSkipVideo();
+                }}
                 className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black py-3 rounded-lg transition-all transform hover:scale-105"
               >
                 Ir directo al Quiz →
