@@ -140,7 +140,7 @@ export default function AvatarCustomization({ onComplete }) {
         <div className="flex flex-col items-center justify-center gap-8">
           
           {/* Avatar Preview - Video or Empty Viewer */}
-          <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800 w-full aspect-video flex items-center justify-center overflow-hidden">
+          <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800 w-full aspect-square flex items-center justify-center overflow-hidden">
             {gender && VIDEOS[gender] && (
               <video
                 key={gender}
