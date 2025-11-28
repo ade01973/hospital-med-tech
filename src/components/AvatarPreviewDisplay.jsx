@@ -12,7 +12,7 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   // Placeholder avatars by gender
   const avatarImages = {
     female: "/src/assets/avatar/female_avatar_full_body.png",
-    male: null, // Will add male avatar later
+    male: "/src/assets/avatar/male_avatar_full_body.png",
   };
 
   const avatarImage = avatarImages[gender];
