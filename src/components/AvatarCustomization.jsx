@@ -119,6 +119,19 @@ export default function AvatarCustomization({ onComplete }) {
           <div className="border-2 border-cyan-500/30 rounded-2xl p-4 bg-slate-800">
             <AvatarPreviewDisplay avatar={avatar} size="large" />
           </div>
+
+          {/* Name Input */}
+          <div className="w-full mt-8">
+            <input
+              type="text"
+              maxLength="30"
+              placeholder="Tu nombre..."
+              value={avatar.name}
+              onChange={(e) => setAvatar({ ...avatar, name: e.target.value })}
+              className="w-full px-6 py-4 bg-slate-800/60 border-2 border-cyan-500/40 rounded-2xl text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none focus:shadow-[0_0_15px_rgba(0,200,255,0.3)] transition-all duration-300 font-semibold text-lg"
+            />
+            <p className="text-xs text-slate-400 mt-2 text-right">{avatar.name.length}/30</p>
+          </div>
           
           {/* Gender Selector */}
           <div className="flex justify-center gap-8 mt-10">
@@ -181,19 +194,6 @@ export default function AvatarCustomization({ onComplete }) {
               <span className="relative z-10">Hombre</span>
             </button>
 
-          </div>
-
-          {/* Name Input */}
-          <div className="w-full mt-8">
-            <input
-              type="text"
-              maxLength="30"
-              placeholder="Tu nombre..."
-              value={avatar.name}
-              onChange={(e) => setAvatar({ ...avatar, name: e.target.value })}
-              className="w-full px-6 py-4 bg-slate-800/60 border-2 border-cyan-500/40 rounded-2xl text-white placeholder-slate-400 focus:border-cyan-400 focus:outline-none focus:shadow-[0_0_15px_rgba(0,200,255,0.3)] transition-all duration-300 font-semibold text-lg"
-            />
-            <p className="text-xs text-slate-400 mt-2 text-right">{avatar.name.length}/30</p>
           </div>
 
           {/* Confirm Button */}
