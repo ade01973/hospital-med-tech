@@ -7,6 +7,7 @@ import Leagues from './Leagues.jsx';
 import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
 import AvatarPreviewDisplay from './AvatarPreviewDisplay';
+import AvatarFullViewModal from './AvatarFullViewModal';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -29,6 +30,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showMissions, setShowMissions] = useState(false);
   const [showLeagues, setShowLeagues] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(() => {
@@ -225,6 +227,13 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         upgrades={upgrades}
       />
 
+      {/* Avatar Full View Modal */}
+      <AvatarFullViewModal
+        isOpen={showAvatarModal}
+        onClose={() => setShowAvatarModal(false)}
+        playerAvatar={playerAvatar}
+      />
+
       {/* Main Content */}
       <div className="relative z-10 container mx-auto p-6 max-w-7xl">
 
@@ -233,13 +242,17 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           <div className="flex items-center gap-4">
             {/* Avatar Display */}
             {playerAvatar.name && (
-              <div className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50">
+              <button
+                onClick={() => setShowAvatarModal(true)}
+                className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 hover:border-cyan-400 hover:from-cyan-500/30 hover:to-blue-600/30 transition-all cursor-pointer transform hover:scale-105"
+              >
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
                   {playerAvatar.gender === 'male' && playerAvatar.characterPreset ? (
                     <img 
                       src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
                       alt="Doctor avatar"
                       className="w-full h-full object-contain"
+                      style={{ objectPosition: 'center 20%' }}
                     />
                   ) : (
                     <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
@@ -249,7 +262,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
                   <p className="text-cyan-400 font-bold text-xs">{userData.rank || 'Estudiante'}</p>
                 </div>
-              </div>
+              </button>
             )}
           </div>
           <div className="flex items-center gap-4">
