@@ -41,7 +41,7 @@ export default function AvatarCustomization({ onComplete }) {
       <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
         
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-white mb-2">Crea tu Avatar</h1>
+          <h1 className="text-4xl font-black text-white mb-2">genera tu Gestora Enfermera</h1>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-8">
