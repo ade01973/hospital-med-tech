@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
+import avatarCreationBg from "../assets/avatar-creation-bg.png";
 
 export default function AvatarCustomization({ onComplete }) {
   const [gender, setGender] = useState(null);
@@ -98,8 +99,14 @@ export default function AvatarCustomization({ onComplete }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex flex-col items-center justify-center p-4">
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-4 bg-cover bg-center bg-fixed"
+      style={{backgroundImage: `url(${avatarCreationBg})`}}
+    >
+      {/* Overlay oscuro */}
+      <div className="absolute inset-0 bg-black/40"></div>
+      
+      <div className="relative z-10 bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
         
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black text-white mb-2">Genera tu Gestora Enfermera</h1>
