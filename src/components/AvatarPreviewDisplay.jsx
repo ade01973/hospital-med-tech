@@ -8,38 +8,24 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   };
 
   const gender = avatar?.gender || "female";
-  const skinToneIndex = avatar?.skinToneIndex || 3;
-  const hair = avatar?.hair || (gender === "female" ? "long" : "male_short");
-  const eyes = avatar?.eyes || "brown";
+  
+  const avatarImages = {
+    female: "/src/assets/avatar/base/female_base.png",
+    male: "/src/assets/avatar/base/male_base.png",
+  };
 
-  // Layer paths
-  const layers = [
-    { id: "base", src: `/src/assets/avatar/base/${gender}_base.png` },
-    { id: "skin", src: `/src/assets/avatar/skin/skin_${skinToneIndex}.png` },
-    { id: "hair", src: `/src/assets/avatar/hair/${hair}.png` },
-    { id: "eyes", src: `/src/assets/avatar/eyes/${eyes}.png` },
-  ];
+  const avatarImage = avatarImages[gender];
 
   return (
-    <div
-      className={`${sizeClasses[size]} mx-auto rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border-2 border-cyan-500/20 overflow-hidden flex items-center justify-center relative`}
-    >
-      {/* Render layers in correct order */}
-      {layers.map((layer) => (
+    <div className={`${sizeClasses[size]} mx-auto rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border-2 border-cyan-500/20 overflow-hidden flex items-center justify-center`}>
+      {avatarImage && (
         <img
-          key={`${gender}-${skinToneIndex}-${hair}-${eyes}-${layer.id}`}
-          src={layer.src}
-          alt={`Avatar ${layer.id}`}
-          className="absolute w-full h-full object-cover"
-          style={{
-            opacity: 1,
-            mixBlendMode: layer.id === "skin" ? "multiply" : "normal",
-          }}
-          onError={(e) => {
-            console.debug(`❌ Avatar layer failed to load: ${layer.src}`);
-          }}
+          src={avatarImage}
+          alt="Avatar"
+          className="w-full h-full object-cover transition-all duration-500 ease-out"
+          key={gender}
         />
-      ))}
+      )}
     </div>
   );
 }
