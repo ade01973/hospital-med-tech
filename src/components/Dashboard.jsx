@@ -1,31 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar } from 'lucide-react';
-import { TOPICS, NURSING_RANKS } from '../data/constants.js';
-import Rewards from './Rewards.jsx';
-import Missions from './Missions.jsx';
-import Leagues from './Leagues.jsx';
-import LoginCalendar from './LoginCalendar.jsx';
-import ShareModal from './ShareModal';
-import AvatarPreviewDisplay from './AvatarPreviewDisplay';
-import AvatarFullViewModal from './AvatarFullViewModal';
-import CurrencyDisplay from './CurrencyDisplay';
-import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
-import DailyChallenge from './DailyChallenge';
-import elevatorBg from '../assets/elevator-bg.png';
-import { useMissions } from '../hooks/useMissions';
-import { useLeagues } from '../hooks/useLeagues';
-import { useLoginStreak } from '../hooks/useLoginStreak';
-import useNotifications from '../hooks/useNotifications';
-import { useGestCoins } from '../hooks/useGestCoins';
-import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
-import ShopModal from './ShopModal';
+import React, { useState, useEffect } from "react";
+import {
+  Lock,
+  Trophy,
+  Zap,
+  ShieldCheck,
+  ChevronUp,
+  ChevronDown,
+  LogOut,
+  Map,
+  Play,
+  X,
+  Star,
+  Gift,
+  Target,
+  TrendingUp,
+  Calendar,
+} from "lucide-react";
+import { TOPICS, NURSING_RANKS } from "../data/constants.js";
+import Rewards from "./Rewards.jsx";
+import Missions from "./Missions.jsx";
+import Leagues from "./Leagues.jsx";
+import LoginCalendar from "./LoginCalendar.jsx";
+import ShareModal from "./ShareModal";
+import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
+import AvatarFullViewModal from "./AvatarFullViewModal";
+import CurrencyDisplay from "./CurrencyDisplay";
+import AdvancedMilestoneTimeline from "./AdvancedMilestoneTimeline";
+import DailyChallenge from "./DailyChallenge";
+import elevatorBg from "../assets/elevator-bg.png";
+import { useMissions } from "../hooks/useMissions";
+import { useLeagues } from "../hooks/useLeagues";
+import { useLoginStreak } from "../hooks/useLoginStreak";
+import useNotifications from "../hooks/useNotifications";
+import { useGestCoins } from "../hooks/useGestCoins";
+import useDashboardBackgroundMusic from "../hooks/useDashboardBackgroundMusic";
+import ShopModal from "./ShopModal";
 
-const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
+const Dashboard = ({
+  user,
+  userData,
+  setView,
+  setLevel,
+  setShowElevatorDoors,
+}) => {
   // Música de fondo en dashboard
   useDashboardBackgroundMusic(true);
-  
-  const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
-  const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useGestCoins();
+
+  const { enabled: notificationsEnabled, toggleNotifications } =
+    useNotifications();
+  const { balance, inventory, upgrades, buyConsumable, buyUpgrade } =
+    useGestCoins();
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showShop, setShowShop] = useState(false);
@@ -41,20 +65,25 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(() => {
-    const saved = localStorage.getItem('userStreak');
+    const saved = localStorage.getItem("userStreak");
     return saved ? parseInt(saved, 10) : 0;
   });
 
-  const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
-  const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
+  const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } =
+    useMissions();
+  const { calendarData, currentStreakDay, getDaysInCurrentMonth } =
+    useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
 
-  const currentRank = userData?.rank || 'Estudiante';
-  const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
-    currentRank, 
-    userData?.totalScore || 0, 
-    user?.uid || 'demo'
-  );
+  const currentRank = userData?.rank || "Estudiante";
+  const {
+    currentLeague,
+    leagueRanking,
+    playerPosition,
+    weeklyXP,
+    getNextLeague,
+    getDaysUntilWeekEnd,
+  } = useLeagues(currentRank, userData?.totalScore || 0, user?.uid || "demo");
 
   const videoLinks = {
     1: "bL0e705JuZQ",
@@ -82,18 +111,23 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
   useEffect(() => {
     if (userData?.rank && previousScore !== userData.totalScore) {
-      const nextRank = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
+      const nextRank = NURSING_RANKS.find(
+        (r) => r.minScore > userData.totalScore,
+      );
       if (nextRank) {
         setNewRank(nextRank);
         setShowRankAchievement(true);
 
         // Preparar datos para compartir
-        const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+        const currentStreak = parseInt(
+          localStorage.getItem("userStreak") || "0",
+          10,
+        );
         setShareData({
           rankTitle: nextRank.title,
           score: userData.totalScore,
           streak: currentStreak,
-          achievementType: 'rank',
+          achievementType: "rank",
         });
 
         // Mostrar modal de compartir después del banner de logro
@@ -107,17 +141,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   }, [userData?.totalScore, userData?.rank]);
 
   useEffect(() => {
-    setCurrentStreak(parseInt(localStorage.getItem('userStreak') || '0', 10));
+    setCurrentStreak(parseInt(localStorage.getItem("userStreak") || "0", 10));
   }, []);
 
   // Monitorear cambios en misión semanal completada
   useEffect(() => {
     if (weeklyMission?.completed && !weeklyMission?.claimed) {
-      const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+      const currentStreak = parseInt(
+        localStorage.getItem("userStreak") || "0",
+        10,
+      );
       setShareData({
         score: userData.totalScore,
         streak: currentStreak,
-        achievementType: 'mission',
+        achievementType: "mission",
       });
       setTimeout(() => {
         setShowShareModal(true);
@@ -132,7 +169,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       setShareData({
         score: currentScore,
         streak: 30,
-        achievementType: 'streak',
+        achievementType: "streak",
       });
       setTimeout(() => {
         setShowShareModal(true);
@@ -154,31 +191,43 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   }
 
   const currentTopic = TOPICS[selectedFloor - 1];
-  const isCurrentCompleted = userData?.completedLevels && userData.completedLevels[selectedFloor];
-  const isCurrentUnlocked = selectedFloor === 1 || (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
-  const currentRankData = NURSING_RANKS.find(r => r.title === userData.rank);
-  const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
-  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+  const isCurrentCompleted =
+    userData?.completedLevels && userData.completedLevels[selectedFloor];
+  const isCurrentUnlocked =
+    selectedFloor === 1 ||
+    (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
+  const currentRankData = NURSING_RANKS.find((r) => r.title === userData.rank);
+  const nextRankData = NURSING_RANKS.find(
+    (r) => r.minScore > userData.totalScore,
+  );
+  const playerAvatar = JSON.parse(localStorage.getItem("playerAvatar") || "{}");
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: `url(/images/hospital-bg.png)`}}></div>
+      <div
+        className="absolute inset-0 opacity-20 bg-cover bg-center"
+        style={{ backgroundImage: `url(/images/hospital-bg.png)` }}
+      ></div>
 
       {/* Rank Achievement Banner */}
       {showRankAchievement && newRank && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 text-center max-w-sm animate-bounce">
             <p className="text-white font-black text-lg mb-2">¡NUEVO RANGO!</p>
-            <p className="text-2xl font-black text-yellow-300">{newRank.title}</p>
-            <p className="text-white text-sm mt-2">Requiere {newRank.minScore} pts</p>
+            <p className="text-2xl font-black text-yellow-300">
+              {newRank.title}
+            </p>
+            <p className="text-white text-sm mt-2">
+              Requiere {newRank.minScore} pts
+            </p>
           </div>
         </div>
       )}
 
       {/* Missions Modal */}
-      <Missions 
-        isOpen={showMissions} 
-        onClose={() => setShowMissions(false)} 
+      <Missions
+        isOpen={showMissions}
+        onClose={() => setShowMissions(false)}
         dailyMissions={dailyMissions}
         weeklyMission={weeklyMission}
         onClaimReward={claimReward}
@@ -220,7 +269,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         score={shareData?.score}
         streak={shareData?.streak}
         rankTitle={shareData?.rankTitle}
-        achievementType={shareData?.achievementType || 'module'}
+        achievementType={shareData?.achievementType || "module"}
       />
 
       {/* Shop Modal */}
@@ -243,7 +292,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto p-6 max-w-7xl">
-
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
@@ -255,19 +303,23 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               >
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
                   {playerAvatar.characterPreset ? (
-                    <img 
-                      src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                    <img
+                      src={`/src/assets/${playerAvatar.gender === "male" ? "male" : "female"}-characters/${playerAvatar.gender === "male" ? "male" : "female"}-character-${playerAvatar.characterPreset}.png`}
                       alt="Avatar"
                       className="w-full h-full object-cover"
-                      style={{ objectPosition: 'center top' }}
+                      style={{ objectPosition: "center top" }}
                     />
                   ) : (
                     <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
                   )}
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
-                  <p className="text-cyan-400 font-bold text-xs">{userData.rank || 'Estudiante'}</p>
+                  <p className="text-white font-bold text-sm leading-tight">
+                    {playerAvatar.name}
+                  </p>
+                  <p className="text-cyan-400 font-bold text-xs">
+                    {userData.rank || "Estudiante"}
+                  </p>
                 </div>
               </button>
             )}
@@ -276,19 +328,25 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             {/* Balance de Monedas */}
             <CurrencyDisplay balance={balance} />
 
-            <button 
+            <button
               onClick={toggleNotifications}
               className={`w-12 h-12 rounded-full ${
-                notificationsEnabled 
-                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:shadow-green-500/50' 
-                  : 'bg-gradient-to-br from-slate-600 to-slate-700 hover:shadow-lg hover:shadow-slate-500/50'
+                notificationsEnabled
+                  ? "bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:shadow-green-500/50"
+                  : "bg-gradient-to-br from-slate-600 to-slate-700 hover:shadow-lg hover:shadow-slate-500/50"
               } flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative`}
-              title={notificationsEnabled ? "Desactivar notificaciones" : "Activar notificaciones"}
+              title={
+                notificationsEnabled
+                  ? "Desactivar notificaciones"
+                  : "Activar notificaciones"
+              }
             >
-              <span className="text-2xl">{notificationsEnabled ? '🔔' : '🔕'}</span>
+              <span className="text-2xl">
+                {notificationsEnabled ? "🔔" : "🔕"}
+              </span>
             </button>
 
-            <button 
+            <button
               onClick={() => setShowMissions(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
               title="Ver Misiones"
@@ -301,7 +359,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               )}
             </button>
 
-            <button 
+            <button
               onClick={() => setShowLeagues(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
               title="Ver Ligas"
@@ -309,12 +367,16 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               <Trophy className="w-6 h-6 text-white" />
               {playerPosition && playerPosition <= 3 && (
                 <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white">
-                  {playerPosition === 1 ? '🥇' : playerPosition === 2 ? '🥈' : '🥉'}
+                  {playerPosition === 1
+                    ? "🥇"
+                    : playerPosition === 2
+                      ? "🥈"
+                      : "🥉"}
                 </div>
               )}
             </button>
 
-            <button 
+            <button
               onClick={() => setShowCalendar(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
               title="Calendario de Recompensas"
@@ -327,7 +389,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               )}
             </button>
 
-            <button 
+            <button
               onClick={() => setShowRewards(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
               title="Ver Recompensas"
@@ -340,7 +402,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               )}
             </button>
 
-            <button 
+            <button
               onClick={() => setShowShop(true)}
               className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
               title="Tienda GestCoins"
@@ -349,32 +411,47 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             </button>
 
             <div className="flex flex-col items-center">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">GestCoins</span>
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                GestCoins
+              </span>
               <div className="flex items-center gap-1">
                 <span className="text-lg">💸</span>
-                <span className="text-lg font-black text-yellow-300">{balance}</span>
+                <span className="text-lg font-black text-yellow-300">
+                  {balance}
+                </span>
               </div>
             </div>
 
             <div className="flex flex-col items-center">
-              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Experiencia</span>
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                Experiencia
+              </span>
               <div className="flex items-center gap-1">
                 <Zap className="w-5 h-5 text-yellow-400" />
-                <span className="text-lg font-black text-yellow-300">{userData?.totalScore || 0}</span>
+                <span className="text-lg font-black text-yellow-300">
+                  {userData?.totalScore || 0}
+                </span>
               </div>
             </div>
 
             <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
-              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
+              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">
+                Puntos Totales
+              </span>
               <div className="flex items-center gap-1">
                 <span className="text-2xl">⭐</span>
-                <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
+                <span className="text-2xl font-black text-white">
+                  {userData?.totalScore || 0}
+                </span>
               </div>
             </div>
           </div>
 
-          <button 
-            onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
+          <button
+            onClick={() => {
+              setView("welcome");
+              setShowElevatorDoors(false);
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
           >
             <LogOut className="w-4 h-4" />
@@ -384,7 +461,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
           {/* Left - Elevator */}
           <div>
             <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
@@ -395,8 +471,13 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               <div className="space-y-3 max-h-80 overflow-y-auto mb-6">
                 {TOPICS.map((topic) => {
-                  const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
-                  const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+                  const isCompleted =
+                    userData?.completedLevels &&
+                    userData.completedLevels[topic.id];
+                  const isUnlocked =
+                    topic.id === 1 ||
+                    (userData?.completedLevels &&
+                      userData.completedLevels[topic.id - 1]);
 
                   return (
                     <button
@@ -404,16 +485,17 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                       onClick={() => setSelectedFloor(topic.id)}
                       className={`w-full px-4 py-3 rounded-lg font-black text-sm uppercase tracking-wider border-2 transition-all ${
                         selectedFloor === topic.id
-                          ? 'bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/30'
-                          : isCompleted 
-                            ? 'bg-emerald-500/10 border-emerald-400 text-emerald-300'
+                          ? "bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/30"
+                          : isCompleted
+                            ? "bg-emerald-500/10 border-emerald-400 text-emerald-300"
                             : isUnlocked
-                              ? 'bg-slate-700/30 border-slate-500 hover:border-cyan-400'
-                              : 'bg-slate-800/20 border-slate-700 text-slate-500 cursor-not-allowed opacity-40'
+                              ? "bg-slate-700/30 border-slate-500 hover:border-cyan-400"
+                              : "bg-slate-800/20 border-slate-700 text-slate-500 cursor-not-allowed opacity-40"
                       }`}
                       disabled={!isUnlocked}
                     >
-                      {isCompleted ? '✓' : String(topic.id).padStart(2, '0')} {topic.title.substring(0, 10)}
+                      {isCompleted ? "✓" : String(topic.id).padStart(2, "0")}{" "}
+                      {topic.title.substring(0, 10)}
                     </button>
                   );
                 })}
@@ -421,13 +503,18 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               <div className="flex gap-2">
                 <button
-                  onClick={() => selectedFloor > 1 && setSelectedFloor(selectedFloor - 1)}
+                  onClick={() =>
+                    selectedFloor > 1 && setSelectedFloor(selectedFloor - 1)
+                  }
                   className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 rounded-lg text-xs"
                 >
                   <ChevronUp size={16} className="inline" /> Bajar
                 </button>
                 <button
-                  onClick={() => selectedFloor < TOPICS.length && setSelectedFloor(selectedFloor + 1)}
+                  onClick={() =>
+                    selectedFloor < TOPICS.length &&
+                    setSelectedFloor(selectedFloor + 1)
+                  }
                   className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-xs"
                 >
                   <ChevronUp size={16} className="inline" /> Subir
@@ -441,29 +528,47 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
           {/* Center - Module Info */}
           {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
-            <div className="bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-8 shadow-2xl" 
-                 style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
+            <div
+              className="bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-8 shadow-2xl"
+              style={{
+                borderColor: isCurrentCompleted ? "#10b981" : "#06b6d4",
+              }}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className="text-4xl">{currentTopic.icon}</div>
                 <div>
-                  <h3 className="text-2xl font-black text-white">{currentTopic.title}</h3>
-                  <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
+                  <h3 className="text-2xl font-black text-white">
+                    {currentTopic.title}
+                  </h3>
+                  <p className="text-sm text-slate-300">
+                    {currentTopic.subtitle}
+                  </p>
                 </div>
               </div>
 
               <div className="bg-slate-800/50 rounded-xl p-4 mb-6 border border-slate-700">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs text-slate-400 font-bold">PROGRESO</span>
-                  <span className="font-black text-cyan-300">{isCurrentCompleted ? '✓ 100%' : '0%'}</span>
+                  <span className="text-xs text-slate-400 font-bold">
+                    PROGRESO
+                  </span>
+                  <span className="font-black text-cyan-300">
+                    {isCurrentCompleted ? "✓ 100%" : "0%"}
+                  </span>
                 </div>
                 <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{width: isCurrentCompleted ? '100%' : '0%'}}></div>
+                  <div
+                    className="h-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                    style={{ width: isCurrentCompleted ? "100%" : "0%" }}
+                  ></div>
                 </div>
               </div>
 
               {!isCurrentCompleted && (
                 <button
-                  onClick={() => { setLevel(currentTopic); setShowElevatorDoors(true); }}
+                  onClick={() => {
+                    setLevel(currentTopic);
+                    setShowElevatorDoors(true);
+                  }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
                 >
                   Iniciar Nivel →
