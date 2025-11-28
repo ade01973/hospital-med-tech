@@ -96,9 +96,6 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
   };
 
   const selectedChar = FEMALE_CHARACTERS.find(c => c.id === selectedCharacter);
-  
-  // Map character ID to image (cycle through 1-10 if more than 10)
-  const imageId = ((selectedCharacter - 1) % 10) + 1;
 
   return (
     <div
@@ -123,7 +120,7 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-                src={`/src/assets/female-characters/female-character-${imageId}.png`}
+                src={`/src/assets/female-characters/female-character-${selectedCharacter}.png`}
                 alt={selectedChar?.name}
                 className="w-full h-auto rounded-2xl transition-all duration-300"
               />
@@ -150,7 +147,7 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                       }`}
                     >
                       <img
-                        src={`/src/assets/female-characters/female-character-${((char.id - 1) % 10) + 1}.png`}
+                        src={`/src/assets/female-characters/female-character-${char.id}.png`}
                         alt={char.name}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
