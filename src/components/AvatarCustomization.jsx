@@ -148,7 +148,7 @@ export default function AvatarCustomization({ onComplete }) {
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               >
                 <source src={VIDEOS[gender]} type="video/mp4" />
               </video>
