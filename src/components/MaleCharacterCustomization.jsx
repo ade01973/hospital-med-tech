@@ -19,6 +19,14 @@ const MALE_CHARACTERS = [
   { id: 14, name: "Especialista Documentalista", type: "accessory", variant: "clipboard-orange" },
   { id: 15, name: "Doctor Ejecutivo", type: "accessory", variant: "clipboard-wood" },
   { id: 16, name: "Médico de Urgencias", type: "accessory", variant: "clipboard-red" },
+  { id: 17, name: "Médico Afrodescendiente", type: "hair", variant: "dreadlocks" },
+  { id: 18, name: "Especialista Joven", type: "hair", variant: "red-short" },
+  { id: 19, name: "Médico Ejecutivo 2", type: "accessory", variant: "clipboard-gray" },
+  { id: 20, name: "Médico Especialista", type: "beard", variant: "full-goatee" },
+  { id: 21, name: "Gestor Administrativo", type: "accessory", variant: "clipboard-red-alt" },
+  { id: 22, name: "Médico Afrodescendiente 2", type: "accessory", variant: "clipboard-yellow-alt" },
+  { id: 23, name: "Médico Cabello Largo", type: "hair", variant: "brown-long" },
+  { id: 24, name: "Médico Senior", type: "beard", variant: "full-beard-gray" },
 ];
 
 const CHARACTER_CATEGORIES = {
