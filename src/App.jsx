@@ -3,7 +3,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
-import AvatarCustomization from './components/AvatarCustomization';
 import Dashboard from './components/Dashboard';
 import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
@@ -195,8 +194,7 @@ export default function App() {
         />
       )}
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
-      {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('avatar')} onLogout={() => auth.signOut()} />}
-      {user && view === 'avatar' && <AvatarCustomization onComplete={() => setView('dashboard')} />}
+      {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('dashboard')} onLogout={() => auth.signOut()} />}
       {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />}
       {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 
