@@ -102,6 +102,14 @@ export default function AvatarCustomization({ onComplete }) {
         
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black text-white mb-2">Genera tu Gestora Enfermera</h1>
+          <p className="text-center text-cyan-400 font-semibold mb-6 transition-all duration-300">
+            {gender === "female" 
+              ? "Liderazgo, precisión y visión de futuro. Crea tu gestora enfermera."
+              : gender === "male"
+              ? "Gestión de personas, visión estratégica y excelencia profesional."
+              : "Elige tu rol y comienza tu viaje como gestor sanitario."
+            }
+          </p>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-8">
