@@ -6,7 +6,6 @@ import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
 import CoinNotification from "./CoinNotification";
 import CelebrationFX from "./CelebrationFX";
-import ElevatorDoors from "./ElevatorDoors";
 import { useEncouragementMessages } from "../data/encouragementMessages";
 
 // 🔀 Shuffle básico tipo Fisher-Yates
@@ -239,10 +238,6 @@ export default function GameLevel({
   // 🎉 Celebración de quiz perfecto
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationBonus, setCelebrationBonus] = useState(0);
-
-  // 🚪 Modal de puerta de ascensor al inicio
-  const [showElevatorModal, setShowElevatorModal] = useState(true);
-  const [showElevatorAnimation, setShowElevatorAnimation] = useState(true);
 
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
@@ -588,30 +583,6 @@ export default function GameLevel({
     }
   };
 
-  // 🚪 Manejadores del modal ElevatorDoors - DEBEN ESTAR ANTES DEL JSX
-  const handleElevatorComplete = () => {
-    console.log("✅ Puerta completada, mostrando opciones");
-    setShowElevatorAnimation(false);
-  };
-
-  const handleWatchVideo = () => {
-    console.log("🎬 Usuario eligió ver video");
-    setShowElevatorModal(false);
-    setShowReviewVideo(true);
-    setVideoFromCompletion(false);
-  };
-
-  const handleSkipVideo = () => {
-    console.log("⏭️ Usuario eligió ir al quiz");
-    setShowElevatorModal(false);
-  };
-
-  const handleStartLevel = () => {
-    console.log("🚀 Iniciando nivel");
-    setShowElevatorModal(true);
-    setShowElevatorAnimation(true);
-  };
-
   // 💔 GAME OVER - Mostrar modal de vidas
   if (lives <= 0 && !isCompleted) {
     return (
@@ -643,64 +614,11 @@ export default function GameLevel({
     );
   }
 
-  // 🚪 Modal de ElevatorDoors al inicio del nivel - RENDERIZADO CRÍTICO
-  if (showElevatorModal) {
-    console.log("🚪 MODAL RENDERIZANDO - showElevatorAnimation:", showElevatorAnimation);
-    return (
-      <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-        {showElevatorAnimation && (
-          <ElevatorDoors 
-            onComplete={() => {
-              console.log("✅ Puerta completada, mostrando opciones");
-              setShowElevatorAnimation(false);
-            }} 
-          />
-        )}
-        {!showElevatorAnimation && (
-          <div className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-2 border-cyan-500/50 rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4 animate-fadeInUp">
-            <h2 className="text-3xl font-black text-white mb-2 text-center">{topic?.title}</h2>
-            <p className="text-cyan-300 text-center mb-6">{topic?.subtitle}</p>
-            
-            <div className="space-y-3">
-              <button
-                onClick={() => {
-                  console.log("🎬 Video button clicked");
-                  handleWatchVideo();
-                }}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-3 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <span>🎬</span> Ver Video Educativo (7 min)
-              </button>
-              
-              <button
-                onClick={() => {
-                  console.log("⏭️ Skip quiz button clicked");
-                  handleSkipVideo();
-                }}
-                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black py-3 rounded-lg transition-all transform hover:scale-105"
-              >
-                Ir directo al Quiz →
-              </button>
-            </div>
-            
-            <p className="text-xs text-slate-400 text-center mt-6">Elige una opción para comenzar</p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   if (!currentQuestion || questions.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
         <div className="text-center text-white">
           <p className="text-xl">Cargando preguntas...</p>
-          <button
-            onClick={handleStartLevel}
-            className="mt-6 bg-cyan-600 hover:bg-cyan-500 text-white font-black py-2 px-6 rounded-lg"
-          >
-            Mostrar Modal de Inicio
-          </button>
         </div>
       </div>
     );
