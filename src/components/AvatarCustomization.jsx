@@ -3,16 +3,76 @@ import AvatarPreviewDisplay from "./AvatarPreviewDisplay";
 import { ChevronRight } from "lucide-react";
 
 export default function AvatarCustomization({ onComplete }) {
-  const [gender, setGender] = useState("female");
+  const [gender, setGender] = useState(null);
   const [avatar, setAvatar] = useState({
-    gender: "female",
+    gender: null,
     silhouetteIndex: 1,
     skinToneIndex: 1,
   });
 
-  const handleGenderChange = (newGender) => {
-    setGender(newGender);
-    setAvatar({ ...avatar, gender: newGender });
+  // Click suave digital para Mujer
+  const playClickFemale = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      
+      const audioContext = new AudioContextClass();
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.frequency.value = 920; // Sonido suave digital más alto
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+
+      osc.start(audioContext.currentTime);
+      osc.stop(audioContext.currentTime + 0.08);
+    } catch (error) {
+      console.debug("🔇 Audio no disponible");
+    }
+  };
+
+  // Click metálico ligero para Hombre
+  const playClickMale = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      
+      const audioContext = new AudioContextClass();
+      
+      // Primera onda: nota principal metálica
+      const osc1 = audioContext.createOscillator();
+      const gain1 = audioContext.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioContext.destination);
+      
+      osc1.frequency.value = 1200; // Más agudo y metálico
+      osc1.type = "triangle"; // Tipo triangular para efecto metálico
+      gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+      
+      osc1.start(audioContext.currentTime);
+      osc1.stop(audioContext.currentTime + 0.12);
+      
+      // Segunda onda: armónico superior
+      const osc2 = audioContext.createOscillator();
+      const gain2 = audioContext.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioContext.destination);
+      
+      osc2.frequency.value = 2000;
+      osc2.type = "sine";
+      gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      
+      osc2.start(audioContext.currentTime);
+      osc2.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+      console.debug("🔇 Audio no disponible");
+    }
   };
 
   const handleFinish = () => {
@@ -41,7 +101,15 @@ export default function AvatarCustomization({ onComplete }) {
       <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 max-w-md w-full">
         
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-white mb-2">Crea tu Avatar</h1>
+          <h1 className="text-4xl font-black text-white mb-2">Genera tu Gestora Enfermera</h1>
+          <p className="text-center text-cyan-400 font-semibold mb-6 transition-all duration-300">
+            {gender === "female" 
+              ? "Liderazgo, precisión y visión de futuro. Crea tu gestora enfermera."
+              : gender === "male"
+              ? "Gestión de personas, visión estratégica y excelencia profesional."
+              : "Elige tu rol y comienza tu viaje como gestor sanitario."
+            }
+          </p>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-8">
@@ -52,27 +120,66 @@ export default function AvatarCustomization({ onComplete }) {
           </div>
           
           {/* Gender Selector */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex justify-center gap-8 mt-10">
+
+            {/* MUJER */}
             <button
-              onClick={() => handleGenderChange("female")}
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                gender === "female"
-                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-              }`}
+              onClick={() => { playClickFemale(); setGender("female"); setAvatar({ ...avatar, gender: "female" }); }}
+              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
+                ${gender === "female" 
+                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse" 
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
+              `}
             >
-              👩 Mujer
+              {/* Glow animado interno */}
+              <div className={`
+                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
+                ${gender === "female" ? "bg-cyan-400 animate-pulse" : ""}
+              `}></div>
+
+              {/* Borde animado PRO */}
+              <span className={`
+                absolute inset-0 rounded-3xl border-4
+                ${gender === "female"
+                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
+                  : "border-transparent"
+                }
+              `}></span>
+
+              {/* Icono */}
+              <span className="text-4xl relative z-10">👩‍⚕️</span>
+              <span className="relative z-10">Mujer</span>
             </button>
+
+            {/* HOMBRE */}
             <button
-              onClick={() => handleGenderChange("male")}
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                gender === "male"
-                  ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-              }`}
+              onClick={() => { playClickMale(); setGender("male"); setAvatar({ ...avatar, gender: "male" }); }}
+              className={`relative px-10 py-6 rounded-3xl font-black text-2xl flex items-center gap-4 transition-all duration-300 backdrop-blur-2xl overflow-hidden group
+                ${gender === "male"
+                  ? "text-white bg-gradient-to-br from-cyan-500 to-blue-700 shadow-[0_0_30px_rgba(0,200,255,0.6)] scale-[1.03] animate-pulse"
+                  : "text-slate-300 bg-slate-800/60 border border-slate-700 hover:border-cyan-300 hover:scale-105"}
+              `}
             >
-              👨 Hombre
+              {/* Glow animado interno */}
+              <div className={`
+                absolute inset-0 opacity-30 blur-2xl transition-all duration-500
+                ${gender === "male" ? "bg-blue-400 animate-pulse" : ""}
+              `}></div>
+
+              {/* Borde animado PRO */}
+              <span className={`
+                absolute inset-0 rounded-3xl border-4
+                ${gender === "male"
+                  ? "border-cyan-300 animate-[glow_2s_linear_infinite]"
+                  : "border-transparent"
+                }
+              `}></span>
+
+              {/* Icono */}
+              <span className="text-4xl relative z-10">👨‍⚕️</span>
+              <span className="relative z-10">Hombre</span>
             </button>
+
           </div>
 
           {/* Confirm Button */}
