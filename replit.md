@@ -118,3 +118,20 @@ The application is built with a modern web stack, focusing on a highly interacti
 - Import: `import avatarFemalePreview from "../assets/avatar-female-preview.mp4"`
 - Conditional rendering: `{gender === "female" ? <video> : <AvatarPreviewDisplay>}`
 
+
+### 👨‍⚕️ Male Avatar Video Display (UPDATED)
+- **File**: `avatar-male-preview.mp4` (547 KB)
+- **Location**: Avatar gender selection screen (AvatarCustomization.jsx)
+- **Behavior**: 
+  - Shows animated male avatar video when "Hombre" button is selected
+  - Same display format as female avatar video
+  - Video: autoPlay, loop, muted (no sound)
+  - Smooth display with border matching the design
+- **Size**: 256x256px (w-64 h-64) with rounded corners and object-cover fit
+
+### Technical Implementation (UPDATED)
+- Imports: `import avatarFemalePreview from "../assets/avatar-female-preview.mp4"`
+         `import avatarMalePreview from "../assets/avatar-male-preview.mp4"`
+- Conditional rendering:
+  - `{gender === "female" ? <video female> : gender === "male" ? <video male> : <AvatarPreviewDisplay>}`
+
