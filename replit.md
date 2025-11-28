@@ -1,369 +1,14 @@
 # NURSE MANAGER - Simulador de Gestión Sanitaria
 
-A gamified learning platform for nursing management education built with React, Firebase, and Tailwind CSS.
-
 ## Overview
-
-This is an interactive quiz-based learning application designed for nursing management students. The app features:
-
-- Firebase authentication (anonymous login)
-- Real-time Firestore database for progress tracking and leaderboards
-- Progressive unlocking system with 22 learning modules
-- Exponential XP curve rank progression (2000-80000 points, 2-3 weeks to max level)
-- Competitive league system (5 tiers with weekly rankings and rewards)
-- Login streak calendar with daily rewards (Day 1-30 with milestone badges)
-- Variable point scoring based on response speed
-- Streak bonuses and life/heart system (Duolingo-style)
-- Daily/Weekly missions with localStorage persistence
-- Beautiful animated UI with confetti effects and smooth transitions
-- Gamified "hospital tower" interface for quiz levels
-- Social sharing for achievements (Twitter, LinkedIn, Facebook, WhatsApp)
-- Push notifications for streaks, missions, and rank progress
-- 25-badge achievement system with unlock notifications
-- Sound effects using Web Audio API
-
-## Tech Stack
-
-- **Frontend**: React 19, Vite
-- **Styling**: Tailwind CSS v3 (with custom animations)
-- **Icons**: Lucide React
-- **Backend**: Firebase (Auth + Firestore)
-- **State**: localStorage for missions, leagues, login streak
-- **Build Tool**: Vite
-- **Animations**: CSS Keyframes + Custom Tailwind configs
-
-## Project Structure
-
-```
-/src/
-  /components/
-    - Dashboard.jsx (main hub with 5 buttons: Misiones, Ligas, Calendario, Progresión, Recompensas)
-    - GameLevel.jsx (quiz interface with timed questions)
-    - ShareModal.jsx (NEW: Social sharing for achievements)
-    - LoginCalendar.jsx (monthly calendar modal with streak tracking)
-    - LoginRewardNotification.jsx (reward notifications)
-    - Missions.jsx (daily/weekly mission tracker)
-    - Leagues.jsx (competitive league rankings)
-    - Rewards.jsx (badges and achievements display)
-    - BadgeNotification.jsx (achievement unlock animation)
-    - BadgesTab.jsx (badges display in Rewards modal)
-    - LeaderBoard.jsx (global rankings)
-    - ElevatorDoors.jsx (visual transition animation)
-    - ConfettiCelebration.jsx (animated confetti component)
-    - AuthScreen.jsx
-    - WelcomeScreen.jsx
-  /hooks/
-    - useMissions.js (mission tracking logic)
-    - useLeagues.js (league system with rank-based assignment)
-    - useLoginStreak.js (login streak and daily rewards logic)
-    - useNotifications.js (push notification management)
-    - useBadges.js (badge achievement tracking)
-    - useSoundEffects.js (Web Audio API sound generation)
-  /services/
-    - NotificationService.js (push notification management)
-  /data/
-    - constants.js (TOPICS, NURSING_RANKS, LEAGUE_SYSTEM, DAILY_REWARDS)
-    - BADGES_CONFIG.js (25 badge definitions)
-  /assets/
-    - elevator-bg.png (background image)
-  - App.jsx (main app component with routing)
-  - firebase.js (Firebase config)
-```
-
-## Recent Changes (November 28, 2025)
-
-### 👤 AVATAR SYSTEM - FEMALE CHARACTER ROSTER EXPANDED
-
-**Status**: Female character customization expanded from 39 to **49 unique gestoras enfermeras**.
-
-#### ✅ 49 Female Characters Deployed (Nov 28 - Latest)
-
-**Female Character Expansion:**
-- Gestoras 1-30: Original diverse roster (cabello tradicional, artístico, variados)
-- Gestoras 31-39: Cabello refinado (pelirrojas largas, pixie cuts, platino, etc.)
-- Gestoras 40-49: Premium medical professionals
-  - 40: Pelirroja Corte Pixie
-  - 41: Rubia Ondulada Flequillo
-  - 42: Morena Trenzas
-  - 43: Negra Cabello Ultrashort
-  - 44: Negra Natural
-  - 45: Morena Rizada Volumen
-  - 46: Negra Dreadlocks Morado
-  - 47: Pelirroja Liso Suelto
-  - 48: Pelirroja Corte Boyish
-  - 49: Negra Afro Natural
-- **Gestoras 50-58: Profesionales con uniforme médico** (NEW - ORDERED)
-  - 50: Negra Rizado Afro
-  - 51: Rubia Bob
-  - 52: Morena Corte Corto
-  - 53: Pelirroja Ondulada
-  - 54: Morena Ondulada
-  - 55: Platino Gris Coleta
-  - 56: Pelirroja Rizada
-  - 57: Negra Dreadlocks
-  - 58: Plata Senior
-
-#### Character Database Updated
-- Female characters: **58 unique gestoras** ✅
-- Male characters: **60 gestores** ✅
-- **Total: 118 professional healthcare characters** 🎨
-
----
-
-## Previous Changes (November 27, 2025)
-
-### 👤 AVATAR SYSTEM (IN-GAME CREATION) - SILHOUETTE PHASE COMPLETE
-
-**Status**: Avatar creation page with silhouette selection now active after Welcome screen, before Dashboard.
-
-#### ✅ Silhouettes & Skin Tones Deployed (Nov 27)
-
-**10 Realistic Base Silhouettes:**
-- 5 Female silhouettes: `female_silhouette_base_1.png` through `5.png`
-- 5 Male silhouettes: `male_silhouette_base_1.png` through `5.png`
-- Located in: `src/assets/avatar/base/`
-- Pure black silhouettes with realistic human proportions
-
-**8 Interactive Skin Tone Layers:**
-- Very Pale, Fair Light, Light Beige, Warm Medium, Olive Tan, Medium Brown, Deep Dark Brown, Very Dark
-- Located in: `src/assets/avatar/skin/`
-- PNG overlays applied with multiply blend mode for realistic color
-- Real-time preview updates when user selects skin tone
-
-#### Files in Use
-- ✅ `src/components/AvatarCustomization.jsx` - Interactive creation page with:
-  - Title: "Crea tu Gestora Enfermera"
-  - Gender selector (👩 Mujer / 👨 Hombre)
-  - Silhouette selector (5 variations per gender)
-  - **Skin tone selector (8 interactive color circles)**
-  - Name input field (30 chars max)
-  - Real-time avatar preview with selected silhouette + skin tone
-  - Confirm button saves to localStorage
-
-- ✅ `src/components/AvatarPreviewDisplay.jsx` - Layered avatar renderer:
-  - Shows silhouette base layer
-  - Applies skin tone overlay with multiply blend mode
-  - 3 size options: small (w-24), medium (w-32), large (w-48)
-  - Prepared for adding face, eyes, hair, accessories later
-
-#### Current App Flow
-- **Route**: Auth → Welcome → **Avatar Creation** → Dashboard
-- Avatar data saved to localStorage as `playerAvatar`
-- Avatar displayed in Dashboard top-left with name and rank
-
-#### Avatar Data Structure
-```javascript
-{
-  name: string,
-  gender: string,              // 'male' | 'female'
-  silhouetteIndex: number,     // 1-5 (silhouette variation)
-  skinToneIndex: number,       // 1-8 (skin tone variation)
-  // Future customization layers (currently null):
-  face: null,                  // 1-5 variations per gender
-  eyeColor: null,              // 'brown' | 'blue' | 'green' | etc.
-  eyeShape: null,              // Different eye shapes
-  noseType: null,              // Different nose types
-  mouth: null,                 // 'smile' | 'serious' | 'laugh' | etc.
-  hairType: null,              // 'short' | 'long' | 'curly' | etc.
-  hairColor: null,             // Hair color variations
-  uniform: null,               // Clothing options
-  accessory: null              // 'stethoscope' | 'id_badge' | 'glasses' | 'none'
-}
-```
-
-#### Customization Layers (Incremental Development)
-- ✅ PHASE 1: Silhouettes (5 female + 5 male) ← COMPLETE
-- ✅ PHASE 2: Skin tones (8 variations) ← COMPLETE
-- PHASE 3: Face variations (5 per gender)
-- PHASE 4: Eye color/shape selector
-- PHASE 5: Hair type/color selector
-- PHASE 6: Mouth expression selector
-- PHASE 7: Nose type selector
-- PHASE 8: Clothing/uniform selector
-- PHASE 9: Accessories selector
-
----
-
-### 🖼️ HOSPITAL BACKGROUNDS IMPROVEMENTS
-
-**Files Updated:**
-- `src/components/ElevatorDoors.jsx` - Random hospital background on elevator animation
-- `src/components/Dashboard.jsx` - Reduced overlay opacity from 40% to 20%
-- Background images updated: hospital-1.png, hospital-2.png, hospital-3.png
-
-**Changes:**
-✅ Hospital background visible on elevator animation  
-✅ Dashboard background now clearly visible (20% overlay)  
-✅ Better visual consistency throughout the game  
-
----
-
-### 🐛 BUG FIXES
-
-**Module Completion Logic**
-- Fixed: Module now only marked as complete if ALL 10 questions answered
-- Fixed: Exiting mid-module no longer marks it as completed
-- Users must complete full module to unlock next level
-
----
-
-## Recent Changes (November 24, 2025)
-
-### 📱 SOCIAL SHARING SYSTEM (NEW - Implemented)
-
-#### Files Created/Modified
-- **`src/components/ShareModal.jsx`** (188 líneas) - Enhanced modal with:
-  - 5 sharing platforms: Twitter/X, LinkedIn, Facebook, WhatsApp, Copy Link
-  - Web Share API support (native mobile sharing)
-  - Dynamic messages based on achievement type
-  - Preview of message before sharing
-  - Beautiful gradient UI with professional styling
-
-#### Achievement Types
-1. **Module Completion** - "¡Completé el módulo..."
-2. **Rank Achievement** - "¡Alcancé el rango..."
-3. **Weekly Mission** - "¡Completé la misión semanal..."
-4. **30-Day Streak** - "¡Llegué a 30 días de racha..."
-
-#### Integration Points
-1. **GameLevel.jsx** - ✅ Share button on "MISIÓN CUMPLIDA" screen
-2. **Dashboard.jsx** - ✅ Auto-share when:
-   - User achieves new rank (3s delay after rank banner)
-   - User completes weekly mission
-   - User reaches 30-day login streak
-
-#### Features
-✅ Web Share API for mobile native sharing  
-✅ URL-based sharing for desktop platforms  
-✅ Custom messages with stats and hashtags  
-✅ Copy to clipboard functionality  
-✅ Throttle to prevent spam  
-✅ Beautiful animated modal with smooth transitions  
-
-#### Message Format
-```
-¡[Achievement]! 🏥
-Puntuación: [score] pts ⭐
-Racha: 🔥 [streak] días
-#EnfermeríaDigital #GestiónSanitaria #Gamificación
-```
-
----
-
-## 🔊 SISTEMA DE EFECTOS DE SONIDO (Nov 24 - Implementado)
-
-### Características
-
-**Archivos Creados:**
-- `src/hooks/useSoundEffects.js` - Hook completo con Web Audio API
-
-**Sonidos Procedurales (sin archivos externos):**
-1. ✅ **Respuesta Correcta** - 3 notas ascendentes (Do-Mi-Sol)
-2. ❌ **Respuesta Incorrecta** - Nota grave descendente
-3. 🎉 **Módulo Completado** - Fanfarria épica (6 notas)
-4. 📍 **Notificaciones** - Sonido corto
-
-**Características:**
-- Toggle de sonido en HUD (🔊/🔇)
-- Preferencia guardada en localStorage
-- Web Audio API generación procedural (sin dependencias externas)
-- Volumen controlado y sutiles
-- Manejo robusto de errores para compatibilidad
-
----
-
-## 🎉 SISTEMA DE CONFETI ANIMADO (Nov 24 - Implementado)
-
-### Archivos Creados
-- `src/components/ConfettiCelebration.jsx` (97 líneas) - Componente reutilizable de confeti
-
-### Características
-
-**4 Tipos de Celebraciones:**
-1. 🏆 **Victoria (Victory)** - Módulo completado exitosamente
-2. 🔥 **Racha (Streak)** - 3, 6, 9 respuestas correctas
-3. 🎯 **Misión (Mission)** - Misión diaria completada
-4. 👑 **Rango (Rank)** - Nuevo rango alcanzado
-
----
-
-## 🔔 SISTEMA DE NOTIFICACIONES PUSH (Nov 24 - Implementado)
-
-### Archivos Creados
-- `src/services/NotificationService.js` (328 líneas) - Servicio completo de notificaciones
-- Hook `src/hooks/useNotifications.js` mejorado
-
-### Características
-
-**5 Tipos de Notificaciones:**
-1. 🔥 **Racha en Riesgo** - Si no juega en 20 horas
-2. 🎯 **Misión Diaria** - Cada día a las 9:00 AM
-3. 📚 **Progreso de Rango** - Cada lunes
-4. 🏆 **Badge Desbloqueado** - Al conseguir logro
-5. 👑 **Victoria en Liga** - Al ganar liga semanal
-
-### Características Técnicas
-
-✅ **Web Push API** - Notificaciones del navegador  
-✅ **Permisos Inteligentes** - Pide permiso automáticamente  
-✅ **localStorage** - Guarda preferencias del usuario  
-✅ **Throttling** - Máx 1 notificación por tipo/hora  
-✅ **Timestamps** - Tracking de última notificación  
-
----
-
-## 🏆 SISTEMA COMPLETO DE BADGES Y LOGROS (Nov 24 - Implementado)
-
-### Archivos Creados
-
-1. **`src/data/BADGES_CONFIG.js`** (218 líneas) - 25 badges en 5 categorías
-2. **`src/hooks/useBadges.js`** - Hook completo con lógica de badges
-3. **`src/components/BadgesTab.jsx`** - Tab dentro de Rewards modal
-4. **`src/components/BadgeNotification.jsx`** - Modal de notificación
-
-### 25 Badges Implementados
-
-#### 1️⃣ PROGRESO (4 badges)
-- 🔰 Primera Victoria
-- 🎓 Aprendiz Dedicado
-- 🎖️ Experto en Formación
-- 🏆 Maestro
-
-#### 2️⃣ EXCELENCIA (4 badges)
-- ⭐ Perfeccionista
-- 🔥 Racha Legendaria
-- ⚡ Velocista
-- 💡 Genio
-
-#### 3️⃣ DEDICACIÓN (4 badges)
-- 📅 Semana Perfecta
-- 🌟 Mes Completo
-- 🎯 Cazador de Misiones
-- 💪 Inquebrantable
-
-#### 4️⃣ COMPETICIÓN (3 badges)
-- 🥇 Campeón
-- 🥈 Subcampeón
-- 🏅 Competidor
-
-#### 5️⃣ ESPECIAL (3 badges)
-- 👑 VIP
-- 🎉 Fundador
-- ✨ Coleccionista
-
----
-
-## Dashboard Navigation
-
-The dashboard now has 5 interactive buttons in top bar:
-
-1. **🎯 MISIONES** (cyan-blue): Daily/weekly missions tracker
-2. **🏆 LIGAS** (purple-pink): Competitive league rankings
-3. **📅 CALENDARIO** (cyan-teal): Login streak calendar
-4. **🎁 RECOMPENSAS** (yellow-orange): Badges and achievements
-5. **⚡ XP Counter**: Display total experience points
-
-Plus **Salir** (Logout) button in top-right
+NURSE MANAGER is a gamified learning platform for nursing management education. It's an interactive quiz-based application designed for students, offering a comprehensive and engaging learning experience. The project aims to provide a platform with high market potential by incorporating robust gamification and social features to drive user engagement and educational outcomes.
+
+Key capabilities include:
+- Interactive quiz-based learning with progressive module unlocking.
+- Gamified progression system including XP, ranks, leagues, and achievements.
+- Real-time progress tracking, leaderboards, and daily rewards.
+- Social sharing for achievements and push notifications for engagement.
+- A visually appealing and animated user interface.
 
 ## User Preferences
 - Fast development pace
@@ -373,13 +18,47 @@ Plus **Salir** (Logout) button in top-right
 - Beautiful animations preferred
 - Spanish language UI
 
-## Known Limitations
-- Anonymous Firebase login (no persistent accounts across devices)
-- Mock leaderboard with demo players (for testing)
-- No real-time multiplayer (demo only)
-- localStorage limited to device (no cloud sync for calendar)
+## System Architecture
 
----
+The application is built with a modern web stack, focusing on a highly interactive and gamified user experience.
 
-**Last Updated**: November 24, 2025  
-**Status**: ✅ MVP COMPLETE - Full Gamification System + Social Sharing (Ranks, Leagues, Login Streak, Badges, Sound Effects, Confetti, Notifications, Social Sharing) 🎉🚀📱
+### UI/UX Decisions
+- **Gamified "hospital tower" interface** for quiz levels and a dashboard with clear navigation.
+- **Animated UI** with confetti effects, smooth transitions, and elevator door animations.
+- **Custom avatar creation system** with gender selection, 10 base silhouettes, 8 skin tones, and planned incremental customization layers (face, eyes, hair, mouth, nose, uniform, accessories).
+- **Sound effects** generated procedurally via Web Audio API for an immersive experience.
+- **Gradient UI** for modals like the ShareModal.
+
+### Technical Implementations
+- **Frontend**: React 19 with Vite for a fast development experience.
+- **Styling**: Tailwind CSS v3 with custom animations for a highly customizable and responsive design.
+- **State Management**: `localStorage` is used for persisting missions, leagues, and login streaks locally.
+- **Authentication**: Firebase anonymous login for ease of access.
+- **Database**: Real-time Firestore for managing user progress, leaderboards, and game data.
+- **Gamification Core**:
+    - **Progressive Unlocking**: 22 learning modules unlocked sequentially.
+    - **XP and Rank System**: Exponential XP curve with 2000-80000 points, designed for 2-3 weeks to max level.
+    - **League System**: 5 competitive tiers with weekly rankings and rewards.
+    - **Login Streaks**: Daily rewards calendar with milestone badges.
+    - **Variable Scoring**: Points based on response speed, streak bonuses, and a life/heart system.
+    - **Missions**: Daily/Weekly missions with local persistence.
+    - **Achievements**: 25-badge system across 5 categories (Progreso, Excelencia, Dedicación, Competición, Especial) with unlock notifications.
+- **Notifications**: Push notifications for streaks, missions, rank progress, and badge achievements using Web Push API.
+- **Sound System**: Procedural sound generation via Web Audio API for correct/incorrect answers, module completion, and notifications, with a sound toggle and preference saving.
+- **Social Sharing**: Integration for sharing achievements on Twitter/X, LinkedIn, Facebook, WhatsApp, and copy link, supporting Web Share API for mobile.
+
+### Project Structure Highlights
+- `/components`: Houses reusable UI components like `Dashboard`, `GameLevel`, `ShareModal`, `AvatarCustomization`, `LoginCalendar`, `Missions`, `Leagues`, `Rewards`, and `ConfettiCelebration`.
+- `/hooks`: Custom hooks like `useMissions`, `useLeagues`, `useLoginStreak`, `useNotifications`, `useBadges`, `useSoundEffects`, and `useBackgroundMusic` encapsulate complex logic.
+- `/services`: Dedicated services like `NotificationService` manage external interactions.
+- `/data`: Configuration for constants, badges, and character data.
+
+## External Dependencies
+- **Firebase**: Used for Authentication (anonymous login) and Firestore (real-time database).
+- **React 19**: Frontend library.
+- **Vite**: Build tool.
+- **Tailwind CSS v3**: Utility-first CSS framework for styling.
+- **Lucide React**: Icon library.
+- **Web Audio API**: For procedural sound effect generation.
+- **Web Share API**: For native mobile social sharing.
+- **Web Push API**: For browser push notifications.
