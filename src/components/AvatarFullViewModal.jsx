@@ -37,15 +37,17 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
             
             {/* Avatar Image */}
             <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
-              {playerAvatar.gender === 'male' && playerAvatar.characterPreset ? (
+              {playerAvatar.characterPreset ? (
                 <img 
-                  src={`/src/assets/male-characters/male-character-${playerAvatar.characterPreset}.png`}
-                  alt="Gestor Enfermero"
+                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  alt="Avatar"
                   className="w-full h-full object-contain"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
-                  <span className="text-slate-300 text-center font-semibold">Gestora Enfermera</span>
+                  <span className="text-slate-300 text-center font-semibold">
+                    {playerAvatar.gender === 'male' ? 'Gestor Enfermero' : 'Gestora Enfermera'}
+                  </span>
                 </div>
               )}
             </div>
