@@ -40,6 +40,10 @@ export default {
           '50%': { opacity: '1', transform: 'scale(1)' },
           '100%': { opacity: '0', transform: 'scale(0.9)' },
         },
+        'float-coin': {
+          '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+          '100%': { opacity: '0', transform: 'translateY(-60px) scale(1.2)' },
+        },
       },
       animation: {
         'shake': 'shake 0.3s ease-in-out',
@@ -50,6 +54,7 @@ export default {
         'slide-in-left': 'slide-in-left 0.3s ease-out',
         'confetti-fall': 'confetti-fall 3s ease-in forwards',
         'fade-in-out': 'fade-in-out 2s ease-in-out',
+        'float-coin': 'float-coin 2s ease-out forwards',
       },
       scale: {
         '102': '1.02',

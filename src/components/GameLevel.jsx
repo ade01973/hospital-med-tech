@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { TOPICS } from "../data/constants";
+import { TOPICS, CURRENCY } from "../data/constants";
 import useSoundEffects from "../hooks/useSoundEffects";
 import { useGestCoins } from "../hooks/useGestCoins";
 import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
+import CoinNotification from "./CoinNotification";
 import { useEncouragementMessages } from "../data/encouragementMessages";
 
 // 🔀 Shuffle básico tipo Fisher-Yates
@@ -228,6 +229,11 @@ export default function GameLevel({
   const { getGeneralEncouragement, getTimeWarning10, getTimeWarning5, getTimeUp } =
     useEncouragementMessages();
 
+  // 💰 Notificaciones de monedas
+  const [coinNotifications, setCoinNotifications] = useState([]);
+  const coinNotificationIdRef = useRef(0);
+  const { earnCoins } = useGestCoins();
+
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
 
@@ -257,7 +263,6 @@ export default function GameLevel({
   };
 
   const { playSuccess, playError, playVictory } = useSoundEffects();
-  const { earnCoins } = useGestCoins();
   const completedRef = useRef(false);
   const floatingPointsIdRef = useRef(0);
 
@@ -322,6 +327,16 @@ export default function GameLevel({
     }, 1500);
   };
 
+  // Función para mostrar notificación de monedas
+  const showCoinNotification = (amount, event) => {
+    const id = coinNotificationIdRef.current++;
+    const rect = event.target.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top;
+
+    setCoinNotifications((prev) => [...prev, { id, amount, x, y }]);
+  };
+
   // Función para avanzar a la siguiente pregunta
   const advanceQuestion = () => {
     const nextIndex = currentIndex + 1;
@@ -333,8 +348,14 @@ export default function GameLevel({
         setIsCompleted(true);
         playVictory();
         setShowConfetti(true);
-        const pointsEarned = score;
-        earnCoins(score / 10, `Respuestas correctas en ${topic.title}`);
+        
+        // 💰 Bonus de monedas si el quiz fue perfecto (todas correctas)
+        const totalCorrect = questions.filter((q, idx) => idx < currentIndex + 1).length;
+        if (score > 0 && currentIndex + 1 === totalCorrect) {
+          const perfectBonus = CURRENCY.EARN_QUIZ_PERFECT;
+          earnCoins(perfectBonus, `¡Quiz perfecto en ${topic.title}!`);
+          // El bonus se mostrará en el modal de completación
+        }
 
         // Mostrar modal de opciones después de completar
         setTimeout(() => {
@@ -527,6 +548,11 @@ export default function GameLevel({
       // Mostrar puntos flotantes
       showFloatingPoints(totalPoints, true, event);
 
+      // 💰 Ganar monedas por respuesta correcta
+      const coinsEarned = CURRENCY.EARN_QUIZ_CORRECT;
+      earnCoins(coinsEarned, "Respuesta correcta");
+      showCoinNotification(coinsEarned, event);
+
       setTimeout(() => playSuccess(), 100);
     } else {
       // ❌ RESPUESTA INCORRECTA
@@ -657,6 +683,19 @@ export default function GameLevel({
           isCorrect={fp.isCorrect}
           x={fp.x}
           y={fp.y}
+        />
+      ))}
+
+      {/* Notificaciones de monedas */}
+      {coinNotifications.map((cn) => (
+        <CoinNotification
+          key={cn.id}
+          amount={cn.amount}
+          x={cn.x}
+          y={cn.y}
+          onComplete={() => {
+            setCoinNotifications((prev) => prev.filter((c) => c.id !== cn.id));
+          }}
         />
       ))}
 

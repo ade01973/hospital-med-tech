@@ -8,6 +8,7 @@ import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
 import AvatarPreviewDisplay from './AvatarPreviewDisplay';
 import AvatarFullViewModal from './AvatarFullViewModal';
+import CurrencyDisplay from './CurrencyDisplay';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -270,6 +271,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             )}
           </div>
           <div className="flex items-center gap-4">
+            {/* Balance de Monedas */}
+            <CurrencyDisplay balance={balance} />
+
             <button 
               onClick={toggleNotifications}
               className={`w-12 h-12 rounded-full ${

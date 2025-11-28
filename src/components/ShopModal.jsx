@@ -59,7 +59,7 @@ const ShopModal = ({ isOpen, onClose, balance, onBuyConsumable, onBuyUpgrade, in
             </div>
             <div>
               <h2 className="text-2xl font-black text-white">Tienda GestCoins</h2>
-              <p className="text-cyan-300 font-mono text-sm">Balance: 💸 {balance} GestCoins</p>
+              <p className="text-yellow-300 font-mono text-sm">Balance: 💰 {balance} GestCoins</p>
             </div>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
@@ -128,7 +128,7 @@ const ShopModal = ({ isOpen, onClose, balance, onBuyConsumable, onBuyUpgrade, in
                           : 'bg-slate-700 text-slate-500 cursor-not-allowed'
                       }`}
                     >
-                      💸 {item.price} Comprar
+                      💰 {item.price} Comprar
                     </button>
                   </div>
                 );
@@ -174,7 +174,7 @@ const ShopModal = ({ isOpen, onClose, balance, onBuyConsumable, onBuyUpgrade, in
                             : 'bg-slate-700 text-slate-500 cursor-not-allowed'
                       }`}
                     >
-                      {owned ? '✓ Adquirido' : `💸 ${upgrade.price} Comprar`}
+                      {owned ? '✓ Adquirido' : `💰 ${upgrade.price} Comprar`}
                     </button>
                   </div>
                 );
