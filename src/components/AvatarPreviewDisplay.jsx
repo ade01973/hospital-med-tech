@@ -10,8 +10,8 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const gender = avatar?.gender || "female";
   
   const avatarImages = {
-    female: "/src/assets/avatar/base/female_base.png",
-    male: "/src/assets/avatar/base/male_base.png",
+    female: "/src/assets/avatar/base/woman_base.png",
+    male: "/src/assets/avatar/base/man_base.png",
   };
 
   const avatarImage = avatarImages[gender];
