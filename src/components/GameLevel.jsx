@@ -588,6 +588,30 @@ export default function GameLevel({
     }
   };
 
+  // 🚪 Manejadores del modal ElevatorDoors - DEBEN ESTAR ANTES DEL JSX
+  const handleElevatorComplete = () => {
+    console.log("✅ Puerta completada, mostrando opciones");
+    setShowElevatorAnimation(false);
+  };
+
+  const handleWatchVideo = () => {
+    console.log("🎬 Usuario eligió ver video");
+    setShowElevatorModal(false);
+    setShowReviewVideo(true);
+    setVideoFromCompletion(false);
+  };
+
+  const handleSkipVideo = () => {
+    console.log("⏭️ Usuario eligió ir al quiz");
+    setShowElevatorModal(false);
+  };
+
+  const handleStartLevel = () => {
+    console.log("🚀 Iniciando nivel");
+    setShowElevatorModal(true);
+    setShowElevatorAnimation(true);
+  };
+
   // 💔 GAME OVER - Mostrar modal de vidas
   if (lives <= 0 && !isCompleted) {
     return (
@@ -674,28 +698,6 @@ export default function GameLevel({
   else if (timeLeft <= 10) timerColor = "text-yellow-400";
   
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
-
-  // 🚪 Manejadores del modal ElevatorDoors
-  const handleElevatorComplete = () => {
-    setShowElevatorAnimation(false);
-    // El modal con opciones se mostrará automáticamente
-  };
-
-  const handleWatchVideo = () => {
-    setShowElevatorModal(false);
-    setShowReviewVideo(true);
-    setVideoFromCompletion(false);
-  };
-
-  const handleSkipVideo = () => {
-    setShowElevatorModal(false);
-    // El quiz comienza automáticamente
-  };
-
-  const handleStartLevel = () => {
-    setShowElevatorModal(true);
-    setShowElevatorAnimation(true);
-  };
 
   const handleGoToDashboard = () => {
     // Solo completar el módulo si realmente está completado
