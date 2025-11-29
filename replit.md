@@ -60,3 +60,93 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Web Audio API**: For procedural sound generation.
 - **Web Share API**: For native mobile social sharing.
 - **Web Push API**: For browser push notifications.
+---
+
+## Update #6: TIER 2 - NARRATIVA & CONTEXTO SANITARIO (November 29, 2025)
+
+### 🏥 HOSPITAL CASES SYSTEM
+✅ **8 Healthcare Management Story Arc Cases**:
+- Crisis de Camas UCI: Gestión de ocupación
+- Conflicto de Personal: Bienestar del equipo
+- Auditoría CCAFR: Control de calidad
+- Presupuesto Limitado: Asignación de recursos
+- Infecciones Nosocomiales: Prevención
+- Staff Burnout: Bienestar
+- Paciente Insatisfecho: Resolución
+- Crisis de Emergencia: Coordinación
+
+Cada caso: descripción, 3-4 opciones de decisión, recompensas XP (0-100), impacto narrativo
+
+✅ **New Components**:
+- `src/components/HospitalCases.jsx`: Modal con 8 casos seleccionables
+- `src/components/BadgesDisplay.jsx`: Grid 3x5 de badges (desbloqueados en color, grises si inactivos)
+- `src/components/BadgeNotification.jsx`: Actualizado con animación badge-pop (0.6s)
+
+### 🏆 ACHIEVEMENT BADGES SYSTEM
+✅ **15 Achievement Badges** en `src/data/BADGES.js`:
+1. Especialista 🏥 - Completar 3 módulos
+2. Gestor de Equipos 👥 - 3 team quests
+3. Hospitalero ❤️ - 5 patient cases
+4. Líder Estratégico 📊 - Tier 5 (Jefa de Área)
+5. Combatiente ⚔️ - 5 boss defeats
+6. Racha Master 🔥 - 7 días streak
+7. Auditor Experto 🚨 - 3 auditorías
+8. Salva Vidas 🚑 - 3 emergencias
+9. Gestor de Crisis 💫 - 5 conflictos resueltos
+10. Innovador 💡 - 10 decisiones únicas
+11. Maestro Sanitario 👑 - Tier 8 (Gerenta) - LEGENDARY
+12. Colaborador 🤝 - 20 team quests
+13. Analista 📈 - >75% progreso personal
+14. Mentor 👨‍🏫 - Ayudar 5 equipos
+15. Campeón 🏆 - Top 10 leaderboard - LEGENDARY
+
+Rareza: Common (50 XP), Rare (75 XP), Epic (100 XP), Legendary (150 XP)
+
+✅ **Persistent Storage**: localStorage para:
+- completedCases: casos finalizados
+- unlockedBadges: badges desbloqueados
+
+### 🎨 CSS ANIMATIONS
+✅ **@keyframes badge-pop**:
+- Escala 0.5 → 1.1 → 1 (scale effect)
+- Rotación -20deg → 5deg → 0deg
+- 0.6 segundos con cubic-bezier bounce
+- Integrado en BadgeNotification.jsx
+
+### 📦 INTEGRATIONS
+✅ **Dashboard.jsx Changes**:
+- Botón "Hospital Cases" 🏥 (red-orange gradient)
+- BadgesDisplay compacta (top 3 badges)
+- onCaseComplete handler con Toast
+- Imports: HospitalCases, BadgesDisplay, Toast, checkBadgeUnlocks
+
+✅ **Toast Notifications**:
+- "¡Decisión Correcta!" ✅
+- "Decisión No Óptima" ❌
+- Integrado en Dashboard para feedback de casos
+
+### 📊 DATA STRUCTURES
+✅ **cases.js exports**:
+- HOSPITAL_CASES: 8 casos con emoji, descripción, 3-4 opciones, impacto
+- getCompletedCases(), markCaseAsCompleted(), getCaseProgress()
+
+✅ **BADGES.js exports**:
+- BADGES: 15 badges con id, name, emoji, description, color, rarity, xpReward, condition
+- getUnlockedBadges(), unlockBadge(), isBadgeUnlocked()
+- getBadgeById(), checkBadgeUnlocks() para validación automática
+
+### ✅ Status
+✅ Todos los 8 Hospital Cases creados
+✅ 15 Achievement Badges configurados
+✅ HospitalCases.jsx fully functional
+✅ BadgesDisplay.jsx con grid responsive
+✅ BadgeNotification.jsx con animaciones
+✅ Dashboard integrado con Hospital Cases + Badges
+✅ Toast notifications para feedback
+✅ localStorage persistence
+✅ Cyan-blue consistent aesthetic
+✅ Responsive mobile design
+✅ Sin errores de compilación
+✅ Servidor running
+
+---

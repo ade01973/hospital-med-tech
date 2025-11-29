@@ -16,6 +16,9 @@ import StreakTracker from './StreakTracker';
 import Leaderboards from './Leaderboards';
 import TeamChallenges from './TeamChallenges';
 import CareerProgressionModal from './CareerProgressionModal';
+import HospitalCases from './HospitalCases';
+import BadgesDisplay from './BadgesDisplay';
+import Toast from './Toast';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -24,6 +27,7 @@ import useNotifications from '../hooks/useNotifications';
 import { useGestCoins } from '../hooks/useGestCoins';
 import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
+import { checkBadgeUnlocks } from '../data/BADGES';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   // Música de fondo en dashboard
@@ -47,9 +51,13 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showLeaderboards, setShowLeaderboards] = useState(false);
   const [showTeamChallenges, setShowTeamChallenges] = useState(false);
   const [showCareerProgression, setShowCareerProgression] = useState(false);
+  const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastIcon, setToastIcon] = useState("");
+  const [showToast, setShowToast] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(() => {
     const saved = localStorage.getItem('userStreak');
     return saved ? parseInt(saved, 10) : 0;
@@ -499,6 +507,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {/* Streak Tracker */}
               <StreakTracker />
+
+              {/* Hospital Cases Button */}
+              <button
+                onClick={() => setShowHospitalCases(true)}
+                className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 mt-4"
+              >
+                <span className="text-xl">🏥</span>
+                Hospital Cases
+              </button>
+
+              {/* Badges Display - Compact */}
+              <div className="mt-4">
+                <BadgesDisplay compact={true} />
+              </div>
             </div>
           </div>
 
@@ -566,6 +588,24 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           moduleSubtitle={selectedLevelForGame.subtitle}
           moduleIcon={selectedLevelForGame.icon}
         />
+      )}
+
+      {/* Hospital Cases Modal */}
+      {showHospitalCases && (
+        <HospitalCases 
+          onClose={() => setShowHospitalCases(false)}
+          onCaseComplete={(caseData) => {
+            setToastMessage(caseData.isCorrect ? '¡Decisión Correcta!' : 'Decisión No Óptima');
+            setToastIcon(caseData.isCorrect ? '✅' : '❌');
+            setShowToast(true);
+            // XP será otorgado en GameLevel cuando se complete un nivel
+          }}
+        />
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <Toast message={toastMessage} icon={toastIcon} duration={2000} type={showToast ? "success" : "error"} />
       )}
     </div>
   );

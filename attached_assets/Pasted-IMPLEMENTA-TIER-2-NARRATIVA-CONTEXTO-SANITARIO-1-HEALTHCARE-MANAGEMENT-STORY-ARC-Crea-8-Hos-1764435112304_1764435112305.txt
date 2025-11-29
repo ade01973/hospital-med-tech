@@ -1,0 +1,80 @@
+IMPLEMENTA TIER 2 - NARRATIVA & CONTEXTO SANITARIO:
+
+1. HEALTHCARE MANAGEMENT STORY ARC:
+Crea 8 "Hospital Cases" (misiones narrativas) en src/data/cases.js:
+- Caso 1: "Crisis de Camas UCI" - Resuelve conflicto de ocupación
+- Caso 2: "Conflicto de Personal" - Gestiona reclamo de enfermera
+- Caso 3: "Audit CCAFR" - Pasa auditoría de calidad
+- Caso 4: "Presupuesto Limitado" - Asigna recursos
+- Caso 5: "Infecciones Nosocomiales" - Prevención
+- Caso 6: "Staff Burnout" - Bienestar del equipo
+- Caso 7: "Pac Insatisfecho" - Resolución de conflicto
+- Caso 8: "Crisis Emergencia" - Coordinación de emergencia
+
+Cada caso tiene:
+- Emoji típico
+- Descripción (2-3 oraciones)
+- 3-4 opciones de respuesta (escenario de toma de decisiones)
+- Recompensa por respuesta correcta (50-100 XP)
+- Impacto narrativo (avanza historia)
+
+2. ACHIEVEMENT BADGES SYSTEM:
+Crea 15 badges en src/data/BADGES.js:
+
+Especialista (🏥): Completar 3 módulos
+Gestor de Equipos (👥): Crear/ganar 3 team quests
+Hospitalero (❤️): Completar 5 casos de pacientes
+Lida Estratégico (📊): Llegar a tier "Jefa de Área"
+Combatiente (⚔️): Vencer 5 bosses
+Racha Master (🔥): Mantener 7 días de racha
+Auditor Experto (🚨): Pasar 3 auditorías
+Salva Vidas (🚑): Completar 3 casos de emergencia
+Gestor de Crisis (💫): Resolver 5 conflictos
+Innovador (💡): Desbloquear 10 decisiones únicas
+Maestro Sanitario (👑): Alcanzar tier "Gerenta"
+Colaborador (🤝): Participar en 20 team quests
+Analista (📈): Completar progreso personal >75%
+Mentor (👨‍🏫): Ayudar 5 equipos a ganar
+Campeón (🏆): Alcanzar top 10 global leaderboard
+
+Cada badge:
+- Nombre + Emoji + Descripción
+- Condición de desbloqueo
+- 50 XP de recompensa
+- Color distintivo (raro: oro, legendario: morado)
+- Array de usuarios que lo tienen (para socialización)
+
+3. NEW COMPONENTS:
+
+src/components/HospitalCases.jsx:
+- Modal con lista de casos
+- Caso seleccionado con naración
+- 3-4 botones de opción
+- Feedback de resultado
+- +XP notification
+
+src/components/BadgesDisplay.jsx:
+- Grid 3x5 de badges desbloqueados
+- Badges grises si no desbloqueados
+- Tooltip con descripción
+- Hover effect para revelar requerimientos
+
+src/components/BadgeNotification.jsx (actualizar):
+- Añade celebración cuando se desbloquea badge
+- "🎉 ¡Desabloqueado: Especialista!"
+- Animación de badge emergiendo (pop-up scale)
+
+4. INTEGRACIONES:
+- Dashboard.jsx: Añade Botón "Hospital Cases" con icono 🏥
+- Dashboard.jsx: Añade sección "Mis Badges" mostrando top 3
+- GameLevel.jsx: Al completar nivel, checkea si desbloquó badge
+- Index.css: Añade animación @keyframes para badge pop
+
+5. REQUISITOS:
+- Seamless integration con TIER 1
+- Toast notifications para nuevos casos
+- localStorage persistence para casos completados
+- Cyan-blue aesthetic consistente
+- Animaciones smooth (300-500ms)
+- Sin errores de compilación
+- Responsive en mobile
