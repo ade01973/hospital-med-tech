@@ -20,64 +20,66 @@ import {
 
 // 🔄 BALANCED XP CURVE (Exponencial suave)
 // Cálculo realista: ~500-800 XP por nivel (10 preguntas + misiones)
+// 8 TIERS DE ENFERMERÍA CON COLORES CYAN-BLUE GRADIENTS
 // - Estudiante → Enfermera: 2000 XP (~3-4 días)
 // - Enfermera → Referente: 3000 XP (~5 días)
-// - Escala exponencial para rangosmás altos (2-3 semanas para máximo)
+// - Escala exponencial para rangos más altos (2-3 semanas para máximo)
+// - Últimos 3 escalones requieren puntajes muy altos (casi perfecto)
 export const NURSING_RANKS = [
   {
     title: "Estudiante",
     minScore: 0,
-    color: "from-slate-500 to-slate-600",
+    color: "from-slate-400 to-slate-500",
     icon: "🎓",
     league: null,
   },
   {
     title: "Enfermera",
     minScore: 2000,
-    color: "from-emerald-500 to-teal-600",
+    color: "from-cyan-400 to-blue-500",
     icon: "💉",
     league: "BRONCE",
   },
   {
-    title: "Referente",
+    title: "Enfermera Referente",
     minScore: 5000,
     color: "from-cyan-500 to-blue-600",
     icon: "🌟",
     league: "BRONCE",
   },
   {
-    title: "Supervisora",
+    title: "Jefa de Unidad",
     minScore: 10000,
-    color: "from-blue-600 to-indigo-600",
+    color: "from-cyan-600 to-blue-700",
     icon: "📋",
     league: "PLATA",
   },
   {
-    title: "Coordinadora",
+    title: "Jefa de Area",
     minScore: 18000,
-    color: "from-indigo-600 to-purple-600",
+    color: "from-blue-600 to-cyan-700",
     icon: "📊",
     league: "PLATA",
   },
   {
-    title: "Directora de Enfermería",
-    minScore: 30000,
-    color: "from-purple-600 to-fuchsia-600",
+    title: "Subdirectora de Enfermeria",
+    minScore: 35000,
+    color: "from-blue-700 to-cyan-600",
     icon: "👑",
     league: "ORO",
   },
   {
-    title: "Directora Regional",
-    minScore: 50000,
-    color: "from-fuchsia-600 to-rose-600",
+    title: "Directora de Enfermeria",
+    minScore: 65000,
+    color: "from-cyan-500 to-blue-800",
     icon: "🏥",
     league: "PLATINO",
   },
   {
-    title: "Ministra de Sanidad",
-    minScore: 80000,
-    color: "from-amber-400 to-orange-600",
-    icon: "🌍",
+    title: "Gerenta",
+    minScore: 100000,
+    color: "from-blue-900 to-cyan-700",
+    icon: "💎",
     league: "LEYENDA",
   },
 ];
@@ -88,7 +90,7 @@ export const LEAGUE_SYSTEM = {
     name: "🥉 LIGA BRONCE",
     color: "from-amber-700 to-orange-700",
     icon: "🥉",
-    ranks: ["Estudiante", "Enfermera", "Referente"],
+    ranks: ["Estudiante", "Enfermera", "Enfermera Referente"],
     rewards: {
       first: { xp: 500, badge: "🥇 Campeón Bronce", title: "Campeón Bronce" },
       second: { xp: 300, badge: "🥈", title: "Subcampeón" },
@@ -99,7 +101,7 @@ export const LEAGUE_SYSTEM = {
     name: "🥈 LIGA PLATA",
     color: "from-slate-300 to-slate-500",
     icon: "🥈",
-    ranks: ["Supervisora", "Coordinadora"],
+    ranks: ["Jefa de Unidad", "Jefa de Area"],
     rewards: {
       first: { xp: 800, badge: "🥇 Campeón Plata", title: "Campeón Plata" },
       second: { xp: 500, badge: "🥈", title: "Subcampeón" },
@@ -110,7 +112,7 @@ export const LEAGUE_SYSTEM = {
     name: "🥇 LIGA ORO",
     color: "from-yellow-500 to-yellow-600",
     icon: "🥇",
-    ranks: ["Directora de Enfermería"],
+    ranks: ["Subdirectora de Enfermeria"],
     rewards: {
       first: { xp: 1200, badge: "🥇 Campeón Oro", title: "Campeón Oro" },
       second: { xp: 700, badge: "🥈", title: "Subcampeón" },
@@ -121,7 +123,7 @@ export const LEAGUE_SYSTEM = {
     name: "💎 LIGA PLATINO",
     color: "from-cyan-400 to-blue-400",
     icon: "💎",
-    ranks: ["Directora Regional"],
+    ranks: ["Directora de Enfermeria"],
     rewards: {
       first: {
         xp: 1500,
@@ -136,7 +138,7 @@ export const LEAGUE_SYSTEM = {
     name: "⭐ LIGA LEYENDA",
     color: "from-purple-500 to-pink-500",
     icon: "⭐",
-    ranks: ["Ministra de Sanidad"],
+    ranks: ["Gerenta"],
     rewards: {
       first: {
         xp: 2000,
