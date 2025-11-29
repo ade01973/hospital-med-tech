@@ -20,22 +20,6 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
 
   if (!showEntrance) return null;
 
-  // Seleccionar SVG del avatar basado en género y skin tone
-  const getSvgPath = () => {
-    if (!avatar) return null;
-    
-    const genders = {
-      male: 'M',
-      female: 'F'
-    };
-    const gender = genders[avatar.gender] || 'M';
-    const silhouette = avatar.silhouette || '1';
-    const skin = avatar.skinTone || 'light';
-    
-    // Retornar emoji representativo en lugar de SVG
-    return avatar.gender === 'female' ? '👩‍⚕️' : '👨‍⚕️';
-  };
-
   return (
     <div 
       className="fixed inset-0 z-[999] overflow-hidden bg-cover bg-center"
@@ -50,14 +34,18 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
       {/* Avatar entrance animation */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
         {/* Avatar container */}
-        <div className="relative mb-20 animate-avatar-entrance">
+        <div className="relative mb-20 animate-avatar-entrance w-80 h-80">
           {/* Shadow */}
-          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
+          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
           {/* Avatar figure */}
-          <div className="text-9xl drop-shadow-2xl">
-            {getSvgPath()}
-          </div>
+          {avatar && avatar.characterPreset && (
+            <img
+              src={`/src/assets/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
+              alt={avatar.name || 'Avatar'}
+              className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
+            />
+          )}
 
           {/* Aura effect */}
           <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" />
