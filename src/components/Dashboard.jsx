@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -15,6 +15,7 @@ import PreGameModal from './PreGameModal';
 import StreakTracker from './StreakTracker';
 import Leaderboards from './Leaderboards';
 import TeamChallenges from './TeamChallenges';
+import CareerProgressionModal from './CareerProgressionModal';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -45,6 +46,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showPreGameModal, setShowPreGameModal] = useState(false);
   const [showLeaderboards, setShowLeaderboards] = useState(false);
   const [showTeamChallenges, setShowTeamChallenges] = useState(false);
+  const [showCareerProgression, setShowCareerProgression] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -260,6 +262,14 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         playerUID={user?.uid || 'demo'}
       />
 
+      {/* Career Progression Modal */}
+      <CareerProgressionModal
+        isOpen={showCareerProgression}
+        onClose={() => setShowCareerProgression(false)}
+        currentScore={userData?.totalScore || 0}
+        playerName={playerAvatar.name || 'Desconocido'}
+      />
+
       {/* Avatar Full View Modal */}
       <AvatarFullViewModal
         isOpen={showAvatarModal}
@@ -341,6 +351,14 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               title="Desafíos en Equipo"
             >
               <Users className="w-6 h-6 text-white" />
+            </button>
+
+            <button
+              onClick={() => setShowCareerProgression(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Carrera Profesional"
+            >
+              <TrendingUp className="w-6 h-6 text-white" />
             </button>
 
             <button 
