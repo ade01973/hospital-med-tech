@@ -6,6 +6,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import AvatarCustomization from './components/AvatarCustomization';
 import MaleCharacterCustomization from './components/MaleCharacterCustomization';
 import FemaleCharacterCustomization from './components/FemaleCharacterCustomization';
+import AvatarEntrance from './components/AvatarEntrance';
 import Dashboard from './components/Dashboard';
 import GameLevel from './components/GameLevel';
 import Leaderboard from './components/Leaderboard';
@@ -27,6 +28,7 @@ export default function App() {
   const [rewardNotification, setRewardNotification] = useState(null);
   const [showRewardNotification, setShowRewardNotification] = useState(false);
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
   
   const { processLogin } = useLoginStreak();
   const { 
@@ -199,8 +201,9 @@ export default function App() {
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
       {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('avatar')} onLogout={() => auth.signOut()} />}
       {user && view === 'avatar' && <AvatarCustomization onComplete={(gender) => setView(gender === 'male' ? 'male-customization' : gender === 'female' ? 'female-customization' : 'avatar')} />}
-      {user && view === 'male-customization' && <MaleCharacterCustomization onComplete={() => setView('dashboard')} onBack={() => setView('avatar')} />}
-      {user && view === 'female-customization' && <FemaleCharacterCustomization onComplete={() => setView('dashboard')} onBack={() => setView('avatar')} />}
+      {user && view === 'male-customization' && <MaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
+      {user && view === 'female-customization' && <FemaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
+      {user && view === 'avatar-entrance' && selectedAvatar && <AvatarEntrance avatar={selectedAvatar} onComplete={() => setView('dashboard')} />}
       {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />}
       {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 

@@ -92,12 +92,13 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
     const selectedChar = MALE_CHARACTERS.find(c => c.id === selectedCharacter);
     const updatedAvatar = {
       ...playerAvatar,
+      gender: 'male',
       characterPreset: selectedCharacter,
       characterType: selectedChar.type,
       characterVariant: selectedChar.variant,
     };
     localStorage.setItem('playerAvatar', JSON.stringify(updatedAvatar));
-    onComplete();
+    onComplete(updatedAvatar);
   };
 
   const selectedChar = MALE_CHARACTERS.find(c => c.id === selectedCharacter);

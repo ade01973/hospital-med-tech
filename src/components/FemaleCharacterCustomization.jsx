@@ -88,12 +88,13 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
     const selectedChar = FEMALE_CHARACTERS.find(c => c.id === selectedCharacter);
     const updatedAvatar = {
       ...playerAvatar,
+      gender: 'female',
       characterPreset: selectedCharacter,
       characterType: selectedChar.type,
       characterVariant: selectedChar.variant,
     };
     localStorage.setItem('playerAvatar', JSON.stringify(updatedAvatar));
-    onComplete();
+    onComplete(updatedAvatar);
   };
 
   const selectedChar = FEMALE_CHARACTERS.find(c => c.id === selectedCharacter);
