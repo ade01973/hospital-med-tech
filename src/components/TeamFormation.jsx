@@ -131,18 +131,21 @@ const TeamFormation = ({ playerName, playerUID, onTeamCreated }) => {
             <p className="text-slate-400 text-sm">No tienes equipos aún.</p>
           ) : (
             myTeams.map(team => (
-              <div key={team.id} className="bg-slate-800/30 border border-slate-600 rounded-lg p-3">
-                <div className="flex items-start justify-between mb-2">
+              <div key={team.id} className="bg-slate-800/30 border border-slate-600 rounded-lg p-3 space-y-3">
+                <div className="flex items-start justify-between">
                   <div>
                     <p className="font-bold text-white">{team.name}</p>
                     <p className="text-xs text-slate-400">{team.members.length} miembros</p>
                   </div>
-                  <button
-                    onClick={() => deleteTeam(team.id)}
-                    className="text-slate-400 hover:text-red-400 transition"
-                  >
-                    <X size={18} />
-                  </button>
+                  {team.leader === playerUID && (
+                    <button
+                      onClick={() => deleteTeam(team.id)}
+                      className="text-slate-400 hover:text-red-400 transition"
+                      title="Eliminar equipo"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {team.members.map(member => (
@@ -151,6 +154,12 @@ const TeamFormation = ({ playerName, playerUID, onTeamCreated }) => {
                     </span>
                   ))}
                 </div>
+                <button
+                  onClick={() => onTeamCreated(team)}
+                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2 rounded transition-all transform hover:scale-105"
+                >
+                  ✓ Seleccionar Equipo
+                </button>
               </div>
             ))
           )}

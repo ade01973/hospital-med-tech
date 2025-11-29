@@ -242,3 +242,44 @@ The application employs a modern web stack to deliver an interactive and gamifie
 
 ---
 
+
+---
+
+## HOTFIX: TeamFormation Selection Button - COMPLETED (November 29, 2025)
+
+### 🐛 Bug Encontrado y Arreglado
+
+**Problema:**
+- Los equipos existentes en "Mis Equipos" solo mostraban botón de eliminar
+- No había opción para **seleccionar/unirse** al equipo
+- Los tabs de Quests/Boss no se habilitaban al seleccionar
+
+**Solución Implementada:**
+
+✅ **Botón de Selección Agregado**
+- Nuevo botón: "✓ Seleccionar Equipo" en cada card
+- Ejecuta: `onTeamCreated(team)` para pasar al componente padre
+- Habilita automáticamente los tabs de Quests/Boss
+
+✅ **Botón de Eliminar Restringido**
+- Solo aparece si `team.leader === playerUID`
+- Los miembros no pueden eliminar equipos
+- Solo el líder tiene esta opción
+
+✅ **Flujo de Equipo Completado**
+1. Crear Equipo → Nuevo equipo aparece en "Mis Equipos"
+2. Seleccionar Equipo → Habilita Quests/Boss
+3. Hacer Quests → Gana XP/coins
+
+### 📝 Cambios en TeamFormation.jsx
+- Líneas 133-156: Agregado botón de selección
+- Líneas 143-151: Botón eliminar condicionado a líder
+- Styling: Cyan-Blue gradient para botón seleccionar
+
+### Status:
+✅ Bug arreglado
+✅ Botones funcionales  
+✅ Flujo de equipo completo
+✅ Servidor compilando sin errores
+✅ Listo para gameplay
+
