@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
 /**
  * AvatarEntrance - Animación de entrada del avatar al hospital
@@ -36,49 +37,20 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[999] bg-gradient-to-b from-slate-900 via-cyan-900/20 to-slate-900 overflow-hidden">
-      {/* Background Hospital */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/30 via-blue-900/20 to-slate-900/30" />
-        {/* Hospital building silhouette */}
-        <div className="absolute bottom-0 right-0 w-96 h-96 opacity-30">
-          <svg viewBox="0 0 300 300" className="w-full h-full">
-            {/* Building outline */}
-            <rect x="20" y="80" width="260" height="200" fill="none" stroke="rgba(6, 182, 212, 0.5)" strokeWidth="3" />
-            {/* Windows */}
-            {[...Array(5)].map((_, row) => 
-              [...Array(6)].map((_, col) => (
-                <rect 
-                  key={`window-${row}-${col}`}
-                  x={40 + col * 40} 
-                  y={100 + row * 30} 
-                  width="20" 
-                  height="15" 
-                  fill="rgba(34, 197, 94, 0.3)" 
-                  stroke="rgba(6, 182, 212, 0.4)" 
-                  strokeWidth="1"
-                />
-              ))
-            )}
-            {/* Cross symbol */}
-            <g transform="translate(150, 40)">
-              <rect x="-8" y="-20" width="16" height="40" fill="rgba(239, 68, 68, 0.4)" />
-              <rect x="-20" y="-8" width="40" height="16" fill="rgba(239, 68, 68, 0.4)" />
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      {/* Floor */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-800/60 to-transparent" />
-      
-      {/* Ground line */}
-      <div className="absolute bottom-20 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+    <div 
+      className="fixed inset-0 z-[999] overflow-hidden bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${hospitalEntranceBg})`,
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Overlay para mejorar legibilidad */}
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Avatar entrance animation */}
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none">
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
         {/* Avatar container */}
-        <div className="relative mb-16 animate-avatar-entrance">
+        <div className="relative mb-20 animate-avatar-entrance">
           {/* Shadow */}
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           

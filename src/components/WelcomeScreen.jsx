@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronRight, LogOut } from 'lucide-react';
-import hospitalBg from '../assets/hospital-background.png';
+import hospitalBg from '../assets/hospital-entrance.png';
 
 const WelcomeScreen = ({ onContinue, onLogout }) => {
   return (
