@@ -546,7 +546,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
           {/* Right - Milestone Timeline */}
           <div>
-            <AdvancedMilestoneTimeline currentRank={currentRank} />
+            <AdvancedMilestoneTimeline currentRank={currentRank} currentScore={userData?.totalScore || 0} />
           </div>
         </div>
       </div>
