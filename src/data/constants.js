@@ -177,6 +177,45 @@ export const STREAK_CONFIG = {
   FREEZE_LIMIT_PER_MONTH: 1
 };
 
+// 🏆 LEADERBOARD TIERS SYSTEM (FASE 2)
+export const LEADERBOARD_TIERS = {
+  BRONZE: { name: "🥉 BRONCE", color: "from-amber-700 to-orange-700", minScore: 0, icon: "🥉" },
+  SILVER: { name: "🥈 PLATA", color: "from-slate-300 to-slate-500", minScore: 5000, icon: "🥈" },
+  GOLD: { name: "🥇 ORO", color: "from-yellow-500 to-yellow-600", minScore: 15000, icon: "🥇" },
+  PLATINUM: { name: "💎 PLATINO", color: "from-cyan-400 to-blue-400", minScore: 35000, icon: "💎" },
+  DIAMOND: { name: "💠 DIAMANTE", color: "from-purple-500 to-pink-500", minScore: 70000, icon: "💠" }
+};
+
+export const LEADERBOARD_CONFIG = {
+  TOP_PLAYERS_LIMIT: 50,
+  WEEKLY_RESET_DAY: 1, // Monday
+  FRIEND_MAX: 20
+};
+
+// 👥 TEAM CHALLENGES SYSTEM (FASE 3)
+export const TEAM_CONFIG = {
+  MIN_TEAM_SIZE: 2,
+  MAX_TEAM_SIZE: 4,
+  TEAM_HEALTH_POOL: 100,
+  QUEST_DIFFICULTIES: {
+    EASY: { name: "Fácil", xpMultiplier: 1, coinMultiplier: 1, timeLimit: 120 },
+    NORMAL: { name: "Normal", xpMultiplier: 1.5, coinMultiplier: 1.5, timeLimit: 90 },
+    HARD: { name: "Difícil", xpMultiplier: 2, coinMultiplier: 2, timeLimit: 60 }
+  },
+  TEAM_ACHIEVEMENTS: [
+    { id: 1, name: "Primer Equipo", description: "Crear tu primer equipo", reward: 50 },
+    { id: 2, name: "Dúo Dinámico", description: "Completar 5 quests en duo", reward: 200 },
+    { id: 3, name: "Cuádruple Amenaza", description: "Completa un quest con 4 jugadores", reward: 500 },
+    { id: 4, name: "Cazador de Bosses", description: "Vencer 10 bosses en equipo", reward: 1000 }
+  ]
+};
+
+export const BOSS_BATTLES = [
+  { id: 1, name: "🧟 Zombi Hospitalario", health: 200, damage: 15, rewards: { xp: 300, coins: 150 } },
+  { id: 2, name: "👹 Demonio de Datos", health: 250, damage: 20, rewards: { xp: 400, coins: 200 } },
+  { id: 3, name: "🐉 Dragón Administrativo", health: 350, damage: 25, rewards: { xp: 600, coins: 300 } }
+];
+
 // 🎮 Ejemplo de nombres ficticios para demo
 export const DEMO_PLAYER_NAMES = [
   "Dr. García",

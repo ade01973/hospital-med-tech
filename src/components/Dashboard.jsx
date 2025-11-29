@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -13,6 +13,8 @@ import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
 import DailyChallenge from './DailyChallenge';
 import PreGameModal from './PreGameModal';
 import StreakTracker from './StreakTracker';
+import Leaderboards from './Leaderboards';
+import TeamChallenges from './TeamChallenges';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -41,6 +43,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showCalendar, setShowCalendar] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [showPreGameModal, setShowPreGameModal] = useState(false);
+  const [showLeaderboards, setShowLeaderboards] = useState(false);
+  const [showTeamChallenges, setShowTeamChallenges] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -238,6 +242,24 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         upgrades={upgrades}
       />
 
+      {/* Leaderboards Modal */}
+      <Leaderboards
+        isOpen={showLeaderboards}
+        onClose={() => setShowLeaderboards(false)}
+        playerScore={userData?.totalScore || 0}
+        playerName={playerAvatar.name || 'Desconocido'}
+        playerUID={user?.uid || 'demo'}
+        weeklyXP={weeklyXP || 0}
+      />
+
+      {/* Team Challenges Modal */}
+      <TeamChallenges
+        isOpen={showTeamChallenges}
+        onClose={() => setShowTeamChallenges(false)}
+        playerName={playerAvatar.name || 'Desconocido'}
+        playerUID={user?.uid || 'demo'}
+      />
+
       {/* Avatar Full View Modal */}
       <AvatarFullViewModal
         isOpen={showAvatarModal}
@@ -303,6 +325,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   {getCompletedNotClaimed()}
                 </div>
               )}
+            </button>
+
+            <button
+              onClick={() => setShowLeaderboards(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Clasificaciones"
+            >
+              <Trophy className="w-6 h-6 text-white" />
+            </button>
+
+            <button
+              onClick={() => setShowTeamChallenges(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Desafíos en Equipo"
+            >
+              <Users className="w-6 h-6 text-white" />
             </button>
 
             <button 

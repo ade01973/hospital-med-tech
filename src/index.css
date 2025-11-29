@@ -352,3 +352,71 @@
 .animate-streak-particles {
   animation: streak-particles 1s ease-out forwards;
 }
+
+@keyframes rank-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes tier-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  }
+}
+
+@keyframes medal-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes health-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes boss-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-rank-bounce {
+  animation: rank-bounce 1.5s ease-in-out infinite;
+}
+
+.animate-tier-glow {
+  animation: tier-glow 2s ease-in-out infinite;
+}
+
+.animate-medal-spin {
+  animation: medal-spin 3s linear infinite;
+}
+
+.animate-health-pulse {
+  animation: health-pulse 1s ease-in-out infinite;
+}
+
+.animate-boss-shake {
+  animation: boss-shake 0.5s ease-in-out;
+}
