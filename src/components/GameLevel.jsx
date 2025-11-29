@@ -156,32 +156,48 @@ const EncouragementBubble = ({ message, isTimeWarning = false }) => {
   );
 };
 
-// 🖼️ Componente para mostrar avatar durante el quiz
+// 🖼️ Componente para mostrar avatar durante el quiz - MEJORADO
 const QuizAvatar = ({ playerAvatar }) => {
   if (!playerAvatar?.name) return null;
 
   return (
-    <div className="mb-6">
-      <div className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 inline-block">
-        <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
-          {playerAvatar.characterPreset ? (
-            <img 
-              src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
-              alt="Avatar"
-              className="w-full h-full object-cover"
-              style={{ objectPosition: 'center top' }}
-            />
-          ) : (
-            <img
-              src={playerAvatar.image}
-              alt="Avatar"
-              className="w-full h-full object-cover"
-              style={{ objectPosition: 'center top' }}
-            />
-          )}
-        </div>
-        <div>
-          <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
+    <div className="mb-6 group">
+      {/* Container con gradiente animado y glow */}
+      <div className="bg-gradient-to-br from-cyan-600 via-blue-600 to-emerald-500 p-1 rounded-3xl shadow-2xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(0,255,255,0.6)] inline-block animate-lift-effect">
+        <div className="flex items-center gap-4 bg-gradient-to-r from-slate-900/95 to-slate-800/95 rounded-3xl p-5 backdrop-blur-xl">
+          
+          {/* Avatar Image - Más grande con border luminoso */}
+          <div className="relative">
+            {/* Border circular luminoso */}
+            <div className="absolute inset-0 rounded-full border-3 border-cyan-400/60 shadow-lg animate-pulse-glow"></div>
+            
+            {/* Avatar Image */}
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-slate-800/50 border-2 border-cyan-500/40 relative z-10 group-hover:scale-105 transition-transform duration-300">
+              {playerAvatar.characterPreset ? (
+                <img 
+                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center top' }}
+                />
+              ) : (
+                <img
+                  src={playerAvatar.image}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center top' }}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Nombre - Grande, bold, cyan con brillo */}
+          <div>
+            <p className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300 leading-tight drop-shadow-lg">
+              {playerAvatar.name}
+            </p>
+            <p className="text-xs text-emerald-300 font-bold mt-1">Gestor/a Enfermero/a</p>
+          </div>
         </div>
       </div>
     </div>
@@ -730,19 +746,32 @@ export default function GameLevel({
               ← Salir
             </button>
 
-            {/* Vidas */}
-            <div className={`flex gap-1 ${shakeLife ? "animate-shake" : ""}`}>
+            {/* Vidas - Más grandes con animación pulse */}
+            <div className={`flex gap-2 ${shakeLife ? "animate-shake" : ""}`}>
               {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className="text-2xl">
+                <span 
+                  key={i} 
+                  className={`text-4xl drop-shadow-lg transition-all duration-200 ${i < lives ? "animate-heart-pulse" : "opacity-50"}`}
+                  style={{
+                    animationDelay: i < lives ? `${i * 0.1}s` : '0s'
+                  }}
+                >
                   {i < lives ? "❤️" : "🤍"}
                 </span>
               ))}
             </div>
 
+            {/* Timer con color dinámico y glow */}
             <div
-              className={`text-3xl font-bold ${timerColor} w-16 text-center`}
+              className={`text-4xl font-black w-20 text-center drop-shadow-lg transition-all duration-200 ${
+                timeLeft <= 5 
+                  ? 'text-red-500 animate-pulse-glow' 
+                  : timeLeft <= 10 
+                    ? 'text-yellow-400' 
+                    : 'text-emerald-400'
+              }`}
             >
-              {timeLeft}s
+              ⏱️ {timeLeft}s
             </div>
           </div>
 
@@ -762,17 +791,19 @@ export default function GameLevel({
             </div>
           )}
 
-          {/* Progreso */}
-          <div className="mb-2">
-            <div className="flex justify-between items-center text-white mb-3">
-              <span className="text-sm">Pregunta {currentIndex + 1}/10</span>
-              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 px-4 py-2 rounded-lg">
-                <span className="font-bold text-lg text-white">💰 {score} pts</span>
+          {/* Progreso Mejorado */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center text-white mb-4">
+              <span className="text-base font-bold">Pregunta {currentIndex + 1}/10</span>
+              {/* Badge de puntuación dorado con bounce */}
+              <div className="bg-gradient-to-r from-yellow-400 via-yellow-300 to-orange-500 px-5 py-2 rounded-full shadow-lg border-2 border-yellow-200/60 animate-bounce-gold">
+                <span className="font-black text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">⭐ {score} pts</span>
               </div>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2">
+            {/* Barra de progreso - Más visible con gradiente animado */}
+            <div className="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden border-2 border-slate-600/40 shadow-inner">
               <div
-                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-blue-500 h-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.5)]"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
