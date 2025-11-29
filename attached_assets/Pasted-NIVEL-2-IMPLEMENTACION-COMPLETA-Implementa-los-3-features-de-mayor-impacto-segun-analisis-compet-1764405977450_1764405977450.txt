@@ -1,0 +1,56 @@
+NIVEL 2 - IMPLEMENTACION COMPLETA:
+
+Implementa los 3 features de mayor impacto segun analisis competitivo:
+
+1. DAILY STREAK SYSTEM (Retention: +30-40%)
+- Streak counter visible en Dashboard (con fuego emoji si activo)
+- Animacion de streak (número con particles)
+- Contador de dias consecutivos
+- Milestone badges: 7-day, 30-day, 100-day streaks
+- Streak lost warning (notificacion cuando faltan horas)
+- Streak freeze: opcion de usar 50 coins para recuperar racha
+- localStorage persistence entre sesiones
+
+2. LEADERBOARDS (Engagement: +45%)
+- 3 tipos de leaderboards:
+  a) Global Leaderboard: top 50 users worldwide
+  b) Friend Leaderboard: competencia con amigos
+  c) Weekly Leaderboard: reinicia cada semana
+- Ranking system: Bronze→Silver→Gold→Platinum→Diamond tiers
+- Real-time position updates
+- Animated rank transitions
+- Tu posicion destacada (con arrow indicando subida/bajada)
+- Leaderboard badges (1st place oro, 2nd plata, 3rd bronce)
+- Nueva pantalla en Dashboard con tabs para cada tipo
+
+3. TEAM CHALLENGES (Collaboration: +50% retention)
+- Crear equipos de 2-4 jugadores
+- UI para invitar amigos a equipo (codigo de equipo)
+- Team quest interface mostrando:
+  - Miembros del equipo con avatares
+  - Team health pool (compartida)
+  - Team XP progress
+  - Shared rewards
+- Boss battle mode (team vs enemy)
+- Team-only achievements desbloquea bonus coins
+- Team leaderboard ranking
+- Revive teammate mechanics (teammate perdio vida, opcion de usar power-up)
+
+ARQUITECTURA:
+- Crear: StreakTracker.jsx, Leaderboards.jsx, TeamChallenges.jsx
+- Update constants.js con streak milestones
+- Update index.css con animaciones de streaks y leaderboards
+- Implementar en Dashboard con nuevos tabs
+- Persistencia en localStorage + futuro: Firebase para sync
+
+DISENO:
+- Mantener cyan-blue aesthetic
+- Animaciones smooth (300-400ms)
+- Icons: 🔥 para streaks, 🏆 para leaderboards, 👥 para teams
+- Gradientes y glows consistentes con NIVEL 1
+
+TESTEO:
+- Verificar streak persiste entre sesiones
+- Leaderboards actualiza en tiempo real
+- Team challenges mostrar correctamente con 2-4 jugadores
+- Animaciones smooth en todos los dispositivos
