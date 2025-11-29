@@ -562,6 +562,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               Casos del Hospital Gest-Tech
             </button>
 
+            {/* Team Challenges Button */}
+            <button
+              onClick={() => setShowTeamChallenges(true)}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <span className="text-xl">👥</span>
+              Desafíos en Equipo
+            </button>
+
             {/* Streak Tracker */}
             <StreakTracker />
 
