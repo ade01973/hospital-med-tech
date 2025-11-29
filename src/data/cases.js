@@ -220,10 +220,20 @@ export const getCaseSession = () => {
 };
 
 export const initializeNewSession = () => {
-  const session = getCaseSession();
-  // Si existe sesión, mantener nivel y contador, sino empezar en nivel 1
-  const level = session?.level || 1;
-  const levelRound = session?.levelRound || 1;
+  // Leer sesión anterior si existe (sin recursión)
+  let previousSession = null;
+  try {
+    const saved = localStorage.getItem('caseSession');
+    if (saved) {
+      previousSession = JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error('Error parsing session:', e);
+  }
+  
+  // Si existe sesión anterior, mantener nivel y contador, sino empezar en nivel 1
+  const level = previousSession?.level || 1;
+  const levelRound = previousSession?.levelRound || 1;
   
   const casePool = level === 1 ? HOSPITAL_CASES : HOSPITAL_CASES_LEVEL_2;
   const shuffled = [...casePool].sort(() => Math.random() - 0.5);
