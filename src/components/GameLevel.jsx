@@ -6,6 +6,7 @@ import LivesGameOver from "./LivesGameOver";
 import ConfettiCelebration from "./ConfettiCelebration";
 import CoinNotification from "./CoinNotification";
 import CelebrationFX from "./CelebrationFX";
+import Toast from "./Toast";
 import { useEncouragementMessages } from "../data/encouragementMessages";
 
 // 🔀 Shuffle básico tipo Fisher-Yates
@@ -254,6 +255,9 @@ export default function GameLevel({
   // 🎉 Celebración de quiz perfecto
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationBonus, setCelebrationBonus] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastIcon, setToastIcon] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   // 🖼️ Fondo aleatorio del módulo
   const [randomBg, setRandomBg] = useState("");
@@ -397,6 +401,9 @@ export default function GameLevel({
         setIsCompleted(true);
         playVictory();
         setShowConfetti(true);
+        setToastMessage("¡Desafío completado!");
+        setToastIcon("🎉");
+        setShowToast(true);
         
         // 🔥 Incrementar racha
         incrementStreak();

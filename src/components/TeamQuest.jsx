@@ -14,9 +14,9 @@ const TeamQuest = ({ selectedTeam, selectedTopic, onQuestStart, onQuestComplete 
 
   // Config de dificultades
   const difficultyConfig = {
-    EASY: { name: "Fácil", questions: 8, xp: 200, coinMultiplier: 1 },
-    NORMAL: { name: "Normal", questions: 10, xp: 200, coinMultiplier: 1.5 },
-    HARD: { name: "Difícil", questions: 12, xp: 200, coinMultiplier: 2 }
+    EASY: { name: "Fácil", questions: 8, xp: 200, coinMultiplier: 1, timePerQuestion: 3, damage: 5 },
+    NORMAL: { name: "Normal", questions: 10, xp: 200, coinMultiplier: 1.5, timePerQuestion: 5, damage: 5 },
+    HARD: { name: "Difícil", questions: 12, xp: 200, coinMultiplier: 2, timePerQuestion: 2, damage: 8 }
   };
 
   // Inicializar quest
@@ -35,7 +35,7 @@ const TeamQuest = ({ selectedTeam, selectedTopic, onQuestStart, onQuestComplete 
     setTeamHealth(100);
     setCurrentQuestion(0);
     setAnsweredCount(0);
-    setTimeLeft(5);
+    setTimeLeft(config.timePerQuestion);
     setQuestState('playing');
     setIsAnswering(false);
     onQuestStart(difficulty);
@@ -43,21 +43,24 @@ const TeamQuest = ({ selectedTeam, selectedTopic, onQuestStart, onQuestComplete 
 
   // Timer countdown
   useEffect(() => {
-    if (questState !== 'playing' || isAnswering) return;
+    if (questState !== 'playing' || isAnswering || !questQuestions.length) return;
+    
+    const config = difficultyConfig[selectedDifficulty];
+    const timerDuration = config?.timePerQuestion || 5;
     
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           // Tiempo agotado = respuesta incorrecta
           handleAnswer(null);
-          return 5;
+          return timerDuration;
         }
         return prev - 1;
       });
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [questState, isAnswering]);
+  }, [questState, isAnswering, selectedDifficulty, questQuestions]);
 
   // Manejar respuesta
   const handleAnswer = (selectedIndex) => {
@@ -66,12 +69,14 @@ const TeamQuest = ({ selectedTeam, selectedTopic, onQuestStart, onQuestComplete 
     setIsAnswering(true);
     const question = questQuestions[currentQuestion];
     const isCorrect = selectedIndex === question.correct;
+    const config = difficultyConfig[selectedDifficulty];
+    const damage = config?.damage || 5;
     
     // Actualizar salud
     if (isCorrect) {
       setTeamHealth(prev => Math.min(100, prev + 10));
     } else {
-      setTeamHealth(prev => Math.max(0, prev - 5));
+      setTeamHealth(prev => Math.max(0, prev - damage));
     }
     
     const newAnsweredCount = answeredCount + 1;
@@ -93,7 +98,8 @@ const TeamQuest = ({ selectedTeam, selectedTopic, onQuestStart, onQuestComplete 
       
       // Siguiente pregunta
       setCurrentQuestion(prev => prev + 1);
-      setTimeLeft(5);
+      const nextConfig = difficultyConfig[selectedDifficulty];
+      setTimeLeft(nextConfig?.timePerQuestion || 5);
       setIsAnswering(false);
     }, 1000);
   };

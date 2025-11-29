@@ -18,7 +18,9 @@ const StreakTracker = () => {
   });
   const [hoursUntilReset, setHoursUntilReset] = useState(24);
   const [showFreezeModal, setShowFreezeModal] = useState(false);
+  const [showStreakLossModal, setShowStreakLossModal] = useState(false);
   const [unlockedMilestone, setUnlockedMilestone] = useState(null);
+  const [streakLostAnimation, setStreakLostAnimation] = useState(false);
 
   // Load streak data from localStorage
   useEffect(() => {
@@ -50,7 +52,10 @@ const StreakTracker = () => {
     const hoursDiff = (now - lastPlay) / (1000 * 60 * 60);
 
     if (hoursDiff >= 24 && data.count > 0) {
-      // Streak lost
+      // Streak lost - trigger animation
+      setStreakLostAnimation(true);
+      setTimeout(() => setShowStreakLossModal(true), 300);
+      
       const newData = {
         ...data,
         count: 0,
@@ -250,6 +255,27 @@ const StreakTracker = () => {
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white font-black py-3 rounded-xl transition transform hover:scale-105"
               >
                 Congelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Streak Loss Modal */}
+      {showStreakLossModal && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className={`bg-gradient-to-b from-red-900 to-slate-800 border-2 border-red-500/50 rounded-3xl shadow-2xl max-w-sm w-full p-6 animate-fadeInUp ${streakLostAnimation ? 'animate-streak-loss' : ''}`}>
+            <div className="text-center">
+              <div className="text-6xl mb-4 animate-streak-loss">🖤</div>
+              <h3 className="text-2xl font-black text-red-300 mb-3">¡Perdiste tu Racha!</h3>
+              <p className="text-slate-300 mb-6">
+                No jugaste en las últimas 24 horas. ¡Pero no te desanimes, comienza una nueva racha hoy!
+              </p>
+              <button
+                onClick={() => setShowStreakLossModal(false)}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition transform hover:scale-105"
+              >
+                Comenzar Nueva Racha 🔥
               </button>
             </div>
           </div>
