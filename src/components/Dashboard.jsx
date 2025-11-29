@@ -507,20 +507,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {/* Streak Tracker */}
               <StreakTracker />
-
-              {/* Hospital Cases Button */}
-              <button
-                onClick={() => setShowHospitalCases(true)}
-                className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 mt-4"
-              >
-                <span className="text-xl">🏥</span>
-                Hospital Cases
-              </button>
-
-              {/* Badges Display - Compact */}
-              <div className="mt-4">
-                <BadgesDisplay compact={true} />
-              </div>
             </div>
           </div>
 
@@ -567,8 +553,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           )}
 
           {/* Right - Milestone Timeline */}
-          <div>
+          <div className="flex flex-col gap-8">
             <AdvancedMilestoneTimeline currentRank={currentRank} currentScore={userData?.totalScore || 0} />
+
+            {/* Hospital Cases Button */}
+            <button
+              onClick={() => setShowHospitalCases(true)}
+              className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <span className="text-xl">🏥</span>
+              Hospital Cases
+            </button>
+
+            {/* Badges Display - Compact */}
+            <div>
+              <BadgesDisplay compact={true} />
+            </div>
           </div>
         </div>
       </div>
