@@ -1,0 +1,49 @@
+Genera una sección totalmente desarrollada, clara y profesional titulada “TIER 3 – ANÁLISIS & PERSONALIZACIÓN” para un documento de especificaciones de producto digital (edtech/healthtech). Incluye lenguaje técnico, centrado en UX, datos, IA y analítica.
+
+Desarrolla ambos subapartados de forma detallada:
+
+---------------------------------------------------
+3. TIER 3 – ANÁLISIS & PERSONALIZACIÓN
+
+3.1 Personal Performance Dashboard
+Objetivo: Crear un panel avanzado de rendimiento individual.
+
+Parte del problema actual:
+- No existen gráficos de progreso visibles para el usuario.
+
+Desarrolla la solución propuesta con detalle:
+- Un panel “Mi Progreso” que incluya:
+    • Curva de progresión de XP.
+    • Timeline de completitud de módulos.
+    • Análisis de fortalezas y debilidades basado en módulos con mayor tasa de fallo.
+    • Benchmarks comparativos con estándares externos:
+        - Distancia/ritmo al estilo Zombies Run.
+        - Integración con wearables tipo Fitbit para indicadores fisiológicos.
+
+Explica funcionalidad, datos que se recogen, visualizaciones, experiencia de usuario y cómo esto impulsa la personalización del aprendizaje.
+
+3.2 AI-Powered Content Recommendations
+Objetivo: Recomendación inteligente basada en desempeño y comportamiento.
+
+Parte del problema actual:
+- No existe un motor que recomiende módulos según el rendimiento previo.
+
+Desarrolla la solución propuesta:
+- Un motor de recomendaciones que sugiera contenido personalizado, por ejemplo:
+    “Te recomendamos revisar Módulo 02 (80% completado)”
+- Justifica la recomendación con:
+    • Patrones de error.
+    • Ritmo de aprendizaje.
+    • Contenido previamente completado.
+- Incluye benchmarks inspirados en:
+    • Motores de recomendación tipo Netflix.
+    • Sistemas narrativos adaptativos como Plotline 2025.
+
+Describe arquitectura conceptual, datos necesarios, algoritmo base (colaborativo + contenido), ejemplos de uso y beneficios para el engagement.
+
+---------------------------------------------------
+
+Estilo esperado:
+- Profesional, claro, orientado a producto SaaS.
+- Tonos técnicos en UX, IA, analítica avanzada y personalización dinámica.
+- Extensión aproximada: 500-700 palabras.
