@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { HOSPITAL_CASES, getCompletedCases, markCaseAsCompleted } from '../data/cases';
+import React, { useState, useEffect } from 'react';
+import { getCurrentCase, completeCurrentCase, getSessionProgress, resetCaseSession, getFullReward } from '../data/cases';
 import { X, CheckCircle } from 'lucide-react';
 
 /**
@@ -7,24 +7,28 @@ import { X, CheckCircle } from 'lucide-react';
  * Modal con 8 casos narrativos + sistema de decisiones
  */
 const HospitalCases = ({ onClose, onCaseComplete }) => {
-  const [selectedCase, setSelectedCase] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const completedCases = getCompletedCases();
+  const [showReward, setShowReward] = useState(false);
+  const [currentCase, setCurrentCase] = useState(() => getCurrentCase());
+  const [progress, setProgress] = useState(() => getSessionProgress());
+  const [resultData, setResultData] = useState(null);
+
+  useEffect(() => {
+    setCurrentCase(getCurrentCase());
+    setProgress(getSessionProgress());
+  }, []);
 
   const handleSelectOption = (index) => {
     setSelectedOption(index);
   };
 
   const handleSubmitAnswer = () => {
-    if (selectedOption === null) return;
+    if (selectedOption === null || !currentCase) return;
 
-    const currentCase = HOSPITAL_CASES[selectedCase];
     const selectedOpt = currentCase.options[selectedOption];
+    setResultData({ option: selectedOpt, isCorrect: selectedOpt.correct });
     setShowResult(true);
-
-    // Marcar caso como completado
-    markCaseAsCompleted(currentCase.id);
 
     // Notificar al padre sobre XP ganado
     if (onCaseComplete) {
@@ -38,15 +42,57 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   };
 
   const handleContinue = () => {
+    const result = completeCurrentCase(resultData.isCorrect);
+    
     setShowResult(false);
     setSelectedOption(null);
-    setSelectedCase(null);
+    setResultData(null);
+
+    // Si se completaron todos con respuestas correctas
+    if (result.reward) {
+      setShowReward(true);
+      return;
+    }
+
+    // Si hay más casos, mostrar el siguiente
+    if (result.nextCase) {
+      setCurrentCase(result.nextCase);
+      setProgress(getSessionProgress());
+    } else {
+      // Ronda completada, reiniciar para la siguiente
+      const newSession = resetCaseSession();
+      setCurrentCase(getCurrentCase());
+      setProgress(getSessionProgress());
+    }
   };
 
+  // Vista de recompensa final
+  if (showReward) {
+    const reward = getFullReward();
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+        <div className="bg-gradient-to-br from-amber-900 to-purple-900 border-2 border-yellow-400/70 rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center">
+          <div className="text-7xl mb-6 animate-bounce">{reward.icon}</div>
+          <h2 className="text-4xl font-black text-yellow-100 mb-4">{reward.title}</h2>
+          <p className="text-white/90 text-lg mb-6">{reward.message}</p>
+          <p className="text-3xl font-black text-yellow-300 mb-8">+{reward.xp} XP</p>
+          <button
+            onClick={() => {
+              setShowReward(false);
+              onClose();
+            }}
+            className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-black font-black py-4 rounded-xl transition transform hover:scale-105 text-lg"
+          >
+            ¡INCREÍBLE! →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Vista de resultado
-  if (selectedCase !== null && showResult) {
-    const currentCase = HOSPITAL_CASES[selectedCase];
-    const selectedOpt = currentCase.options[selectedOption];
+  if (showResult && resultData && currentCase) {
+    const selectedOpt = resultData.option;
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
@@ -76,10 +122,8 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
     );
   }
 
-  // Vista de caso seleccionado
-  if (selectedCase !== null && !showResult) {
-    const currentCase = HOSPITAL_CASES[selectedCase];
-
+  // Vista de caso - Auto mostrar cuando se abre
+  if (currentCase && !showResult && !showReward) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
         <div className="bg-gradient-to-b from-slate-900 to-slate-800 border-2 border-cyan-500/50 rounded-3xl shadow-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto">
@@ -87,10 +131,13 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <span className="text-4xl">{currentCase.emoji}</span>
-              <h3 className="text-2xl font-black text-white">{currentCase.title}</h3>
+              <div>
+                <h3 className="text-2xl font-black text-white">{currentCase.title}</h3>
+                <p className="text-xs text-cyan-400">Caso {progress.completed + 1} de {progress.total}</p>
+              </div>
             </div>
             <button
-              onClick={() => setSelectedCase(null)}
+              onClick={onClose}
               className="text-slate-400 hover:text-white transition"
             >
               <X size={24} />
@@ -139,70 +186,6 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
     );
   }
 
-  // Vista principal - Lista de casos
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-      <div className="bg-gradient-to-b from-slate-900 to-slate-800 border-2 border-cyan-500/50 rounded-3xl shadow-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl">🏥</span>
-            <h2 className="text-3xl font-black text-white">Hospital Cases</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition"
-          >
-            <X size={28} />
-          </button>
-        </div>
-
-        {/* Info */}
-        <p className="text-slate-400 mb-6">
-          Resuelve situaciones de gestión hospitalaria. Tus decisiones impactan la narrativa.
-        </p>
-
-        {/* Lista de Casos */}
-        <div className="space-y-3">
-          {HOSPITAL_CASES.map((caseItem, index) => {
-            const isCompleted = completedCases[caseItem.id];
-            return (
-              <button
-                key={caseItem.id}
-                onClick={() => !isCompleted && setSelectedCase(index)}
-                disabled={isCompleted}
-                className={`w-full p-4 rounded-lg border-2 transition transform hover:scale-102 text-left ${
-                  isCompleted
-                    ? 'bg-emerald-900/30 border-emerald-500/50 cursor-not-allowed'
-                    : 'bg-slate-700/50 border-slate-600 hover:border-cyan-500/50 cursor-pointer'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl">{caseItem.emoji}</span>
-                  <div className="flex-1">
-                    <h4 className={`font-black ${isCompleted ? 'text-emerald-300' : 'text-white'}`}>
-                      {caseItem.title}
-                    </h4>
-                    <p className="text-xs text-slate-400 mt-1">{caseItem.description.substring(0, 60)}...</p>
-                  </div>
-                  {isCompleted && (
-                    <CheckCircle size={24} className="text-emerald-400 flex-shrink-0" />
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Progress */}
-        <div className="mt-6 pt-4 border-t border-slate-700">
-          <p className="text-xs text-slate-400 text-center">
-            Completados: {Object.keys(completedCases).length} / {HOSPITAL_CASES.length}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default HospitalCases;

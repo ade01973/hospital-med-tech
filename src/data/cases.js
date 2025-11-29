@@ -1,6 +1,7 @@
 /**
  * Hospital Cases - 8 Healthcare Management Story Arc
  * Decisiones narrativas que avanzan la historia y otorgan XP
+ * Sistema dinámico con generación automática y recompensas
  */
 
 export const HOSPITAL_CASES = [
@@ -103,9 +104,92 @@ export const HOSPITAL_CASES = [
 ];
 
 /**
- * Rastrear casos completados del usuario
- * Guardado en localStorage: completedCases -> { 1: true, 3: true, ... }
+ * Sistema dinámico de casos con rondas y recompensas
+ * Cada ronda genera nuevos casos (baraja aleatoria de los 8 casos)
  */
+
+export const getCaseSession = () => {
+  let session = localStorage.getItem('caseSession');
+  if (!session) {
+    return initializeNewSession();
+  }
+  return JSON.parse(session);
+};
+
+export const initializeNewSession = () => {
+  const shuffled = [...HOSPITAL_CASES].sort(() => Math.random() - 0.5);
+  const session = {
+    id: Date.now(),
+    cases: shuffled.map(c => ({ ...c })),
+    currentIndex: 0,
+    correctAnswers: 0,
+    completedCount: 0,
+    startedAt: new Date().toISOString()
+  };
+  localStorage.setItem('caseSession', JSON.stringify(session));
+  return session;
+};
+
+export const getCurrentCase = () => {
+  const session = getCaseSession();
+  if (session.currentIndex < session.cases.length) {
+    return { ...session.cases[session.currentIndex], sessionIndex: session.currentIndex };
+  }
+  return null;
+};
+
+export const completeCurrentCase = (isCorrect) => {
+  const session = getCaseSession();
+  
+  if (session.currentIndex < session.cases.length) {
+    session.completedCount++;
+    if (isCorrect) {
+      session.correctAnswers++;
+    }
+    session.currentIndex++;
+    
+    localStorage.setItem('caseSession', JSON.stringify(session));
+    
+    const isSessionComplete = session.currentIndex >= session.cases.length;
+    
+    return {
+      isSessionComplete,
+      correctAnswers: session.correctAnswers,
+      totalCases: session.cases.length,
+      nextCase: isSessionComplete ? null : getCurrentCase(),
+      reward: isSessionComplete && session.correctAnswers === session.cases.length ? getFullReward() : null
+    };
+  }
+  
+  return { isSessionComplete: true, correctAnswers: session.correctAnswers, totalCases: session.cases.length };
+};
+
+export const getFullReward = () => {
+  return {
+    xp: 500,
+    badge: 'gestor_crisis_master',
+    title: '¡MAESTRO DE DECISIONES! 👑',
+    message: 'Completaste todos los casos con decisiones perfectas',
+    icon: '👑'
+  };
+};
+
+export const resetCaseSession = () => {
+  localStorage.removeItem('caseSession');
+  return initializeNewSession();
+};
+
+export const getSessionProgress = () => {
+  const session = getCaseSession();
+  return {
+    completed: session.completedCount,
+    correct: session.correctAnswers,
+    total: session.cases.length,
+    isComplete: session.currentIndex >= session.cases.length
+  };
+};
+
+// Legacy functions para compatibilidad
 export const getCompletedCases = () => {
   const saved = localStorage.getItem('completedCases');
   return saved ? JSON.parse(saved) : {};
@@ -118,6 +202,10 @@ export const markCaseAsCompleted = (caseId) => {
 };
 
 export const getCaseProgress = () => {
-  const completed = getCompletedCases();
-  return Object.keys(completed).length;
+  const session = getCaseSession();
+  return {
+    total: session.cases.length,
+    completed: session.completedCount,
+    correct: session.correctAnswers
+  };
 };
