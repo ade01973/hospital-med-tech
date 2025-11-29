@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Play, Video } from 'lucide-react';
+import { X, Play } from 'lucide-react';
 
 /**
  * PreGameModal - Modal para elegir ver video o jugar
@@ -40,17 +40,55 @@ const PreGameModal = ({ isOpen, onClose, onPlayGame, videoId, moduleName, module
                 ¿Deseas ver el video de introducción del módulo o prefieres comenzar directamente con el quiz?
               </p>
 
-              {/* Video Preview */}
-              <div className="mb-8 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-                <div className="aspect-video bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-lg flex items-center justify-center mb-4 border border-cyan-500/20">
-                  <div className="text-center">
-                    <Video size={48} className="text-cyan-400 mx-auto mb-3" />
-                    <p className="text-sm text-slate-300 font-bold">Video de Introducción</p>
-                    <p className="text-xs text-slate-500">~5 minutos</p>
+              {/* Video Preview - IRRESISTIBLE */}
+              <div className="mb-8 group cursor-pointer">
+                {/* Video Card Container */}
+                <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(0,255,255,0.5)]">
+                  {/* Animated Gradient Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 via-blue-600 to-emerald-500 opacity-90 animate-gradient-shift"></div>
+                  
+                  {/* Content Overlay */}
+                  <div className="relative w-full h-full flex flex-col items-center justify-center p-6">
+                    {/* Large Movie Emoji */}
+                    <div className="text-7xl mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      🎬
+                    </div>
+
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/20 backdrop-blur-sm">
+                      <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                        <Play size={40} className="text-cyan-600 ml-1" />
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-2xl font-black text-white text-center mb-4 drop-shadow-lg">
+                      Domina los Conceptos Clave
+                    </h3>
+
+                    {/* Badges */}
+                    <div className="flex gap-2 justify-center mb-4 flex-wrap">
+                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/40 rounded-full text-xs font-bold text-white">
+                        ⭐ Esencial
+                      </span>
+                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/40 rounded-full text-xs font-bold text-white">
+                        ⏱️ 5 min
+                      </span>
+                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/40 rounded-full text-xs font-bold text-white">
+                        📝 Subtítulos
+                      </span>
+                    </div>
+
+                    {/* Motivational Text */}
+                    <p className="text-center text-white/95 text-sm font-semibold drop-shadow-lg max-w-xs">
+                      Aprende de expertos en gestión sanitaria
+                    </p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 text-center">
-                  El video te brindará contexto e información importante del módulo
+
+                {/* Click to Watch Label */}
+                <p className="text-center text-cyan-300 text-xs font-bold mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  ✨ Haz clic para ver el video
                 </p>
               </div>
 
@@ -58,9 +96,9 @@ const PreGameModal = ({ isOpen, onClose, onPlayGame, videoId, moduleName, module
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowVideo(true)}
-                  className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg hover:shadow-[0_0_25px_rgba(0,255,255,0.4)]"
                 >
-                  <Video size={20} />
+                  <Play size={20} />
                   Ver Video
                 </button>
                 <button
