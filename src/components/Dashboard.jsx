@@ -11,6 +11,7 @@ import AvatarFullViewModal from './AvatarFullViewModal';
 import CurrencyDisplay from './CurrencyDisplay';
 import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
 import DailyChallenge from './DailyChallenge';
+import PreGameModal from './PreGameModal';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -38,6 +39,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showLeagues, setShowLeagues] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [showPreGameModal, setShowPreGameModal] = useState(false);
+  const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(() => {
@@ -463,7 +466,10 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {!isCurrentCompleted && (
                 <button
-                  onClick={() => { setLevel(currentTopic); setShowElevatorDoors(true); }}
+                  onClick={() => {
+                    setSelectedLevelForGame(currentTopic);
+                    setShowPreGameModal(true);
+                  }}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
                 >
                   Iniciar Nivel →
@@ -484,6 +490,23 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           </div>
         </div>
       </div>
+
+      {/* Pre-Game Modal */}
+      {selectedLevelForGame && (
+        <PreGameModal
+          isOpen={showPreGameModal}
+          onClose={() => setShowPreGameModal(false)}
+          onPlayGame={() => {
+            setLevel(selectedLevelForGame);
+            setShowElevatorDoors(true);
+            setShowPreGameModal(false);
+          }}
+          videoId={videoLinks[selectedLevelForGame.id]}
+          moduleName={selectedLevelForGame.title}
+          moduleSubtitle={selectedLevelForGame.subtitle}
+          moduleIcon={selectedLevelForGame.icon}
+        />
+      )}
     </div>
   );
 };
