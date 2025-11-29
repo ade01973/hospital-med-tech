@@ -55,14 +55,10 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
 
     // Si se completaron todos con respuestas correctas
     if (result.reward) {
-      const session = getCaseSession();
-      const roundNumber = session.id ? 1 : 2; // Simplificado - contar rondas
-      const reward = getFullReward(roundNumber);
-      
       // Dar gestcoins
-      earnCoins(reward.gestcoins, `Ronda perfecta de Hospital Cases (Ronda ${roundNumber})`);
+      earnCoins(result.reward.gestcoins, `Ronda perfecta de Hospital Cases - ${result.reward.title}`);
       
-      setRewardData(reward);
+      setRewardData(result.reward);
       setShowReward(true);
       setShowCelebration(true);
       return;
@@ -82,20 +78,27 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
 
   // Vista de recompensa final
   if (showReward && rewardData) {
+    const isLevel2 = rewardData.level === 2;
     return (
       <>
         {showCelebration && <ConfettiCelebration trigger={true} celebrationType="rank" numberOfPieces={500} />}
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-          <div className="bg-gradient-to-br from-amber-900 to-purple-900 border-2 border-yellow-400/70 rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center">
+          <div className={`bg-gradient-to-br ${isLevel2 ? 'from-red-900 to-black' : 'from-amber-900 to-purple-900'} border-2 ${isLevel2 ? 'border-red-400/70' : 'border-yellow-400/70'} rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center`}>
             <div className="text-7xl mb-6 animate-bounce">{rewardData.icon}</div>
-            <h2 className="text-4xl font-black text-yellow-100 mb-4">{rewardData.title}</h2>
-            <p className="text-white/90 text-lg mb-6">{rewardData.message}</p>
+            <h2 className={`text-4xl font-black mb-4 ${isLevel2 ? 'text-red-200' : 'text-yellow-100'}`}>{rewardData.title}</h2>
+            <p className={`text-lg mb-6 ${isLevel2 ? 'text-red-100' : 'text-white/90'}`}>{rewardData.message}</p>
+            
+            {isLevel2 && (
+              <p className="text-sm mb-4 px-3 py-2 bg-red-950/70 rounded-lg text-red-200 font-bold">
+                ⚠️ ¡Has desbloqueado NIVEL 2 - CASOS CASI IMPOSIBLES!
+              </p>
+            )}
             
             <div className="space-y-3 mb-8">
-              <p className="text-3xl font-black text-emerald-300">
+              <p className={`text-3xl font-black ${isLevel2 ? 'text-red-300' : 'text-emerald-300'}`}>
                 +{rewardData.xp} XP
               </p>
-              <p className="text-2xl font-black text-yellow-400 bg-amber-900/50 rounded-lg py-2">
+              <p className={`text-2xl font-black ${isLevel2 ? 'text-red-400 bg-red-950/50' : 'text-yellow-400 bg-amber-900/50'} rounded-lg py-2`}>
                 💸 +{rewardData.gestcoins} GestCoins
               </p>
             </div>
@@ -107,9 +110,9 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
                 resetCaseSession();
                 onClose();
               }}
-              className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-black font-black py-4 rounded-xl transition transform hover:scale-105 text-lg"
+              className={`w-full ${isLevel2 ? 'bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-400 hover:to-orange-500' : 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400'} text-black font-black py-4 rounded-xl transition transform hover:scale-105 text-lg`}
             >
-              ¡INCREÍBLE! → Nuevos Casos
+              ¡INCREÍBLE! → {isLevel2 ? 'Nuevos Casos Imposibles' : 'Nuevos Casos'}
             </button>
           </div>
         </div>

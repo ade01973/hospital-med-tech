@@ -2,6 +2,7 @@
  * Hospital Cases - 8 Healthcare Management Story Arc
  * Decisiones narrativas que avanzan la historia y otorgan XP
  * Sistema dinámico con generación automática y recompensas
+ * NIVEL 1: Casos básicos - NIVEL 2: Casos casi imposibles
  */
 
 export const HOSPITAL_CASES = [
@@ -104,8 +105,110 @@ export const HOSPITAL_CASES = [
 ];
 
 /**
- * Sistema dinámico de casos con rondas y recompensas
- * Cada ronda genera nuevos casos (baraja aleatoria de los 8 casos)
+ * NIVEL 2: CASOS CASI IMPOSIBLES - Mayor complejidad y dilemas éticos
+ */
+export const HOSPITAL_CASES_LEVEL_2 = [
+  {
+    id: 101,
+    title: "Triaje de Recursos Limitados",
+    emoji: "⚠️",
+    description: "Pandemia: 50 pacientes críticos, solo 10 ventiladores. Protocolos éticos contradictorios. ¿Criterios de asignación?",
+    options: [
+      { text: "Protocolo por edad + pronóstico + factores médicos objetivos", correct: true, xp: 150 },
+      { text: "FIFO (primero llegado)", correct: false, xp: -50 },
+      { text: "Decidir casos puntuales sin protocolo", correct: false, xp: -100 }
+    ],
+    impact: "✓ Decisión documentada y defensible éticamente"
+  },
+  {
+    id: 102,
+    title: "Falsificación de Reportes",
+    emoji: "🔍",
+    description: "Encuentras que un colega médico falsificó datos clínicos por 3 meses. ¿Reportar sin pruebas sólidas?",
+    options: [
+      { text: "Auditoría interna + documentar + reportar a cuerpo colegiado", correct: true, xp: 150 },
+      { text: "Confrontar privadamente", correct: false, xp: 30 },
+      { text: "Ignorar y esperar que se descubra solo", correct: false, xp: -80 }
+    ],
+    impact: "✓ Integridad institucional protegida, investigación formal iniciada"
+  },
+  {
+    id: 103,
+    title: "Presupuesto vs Vidas",
+    emoji: "💔",
+    description: "Costo de tratamiento oncológico avanzado: 200k€/año × 5 pacientes vs. Renovación de quirófanos para 500 pacientes/año.",
+    options: [
+      { text: "Buscar financiamiento externo + negociar precios + fondos públicos", correct: true, xp: 150 },
+      { text: "Negar el tratamiento avanzado", correct: false, xp: 0 },
+      { text: "Postergar renovación de quirófanos", correct: false, xp: 40 }
+    ],
+    impact: "✓ Solución integral: terapia + infraestructura ambas viables"
+  },
+  {
+    id: 104,
+    title: "Crisis de Confianza (Negligencia Compañero)",
+    emoji: "⚖️",
+    description: "Tu mejor cardiólogo, 20 años con hospital, causó muerte por error. Presión política para ocultarlo. ¿Transparencia?",
+    options: [
+      { text: "Investigación + revisión de casos previos + comunicación honesta a familia", correct: true, xp: 150 },
+      { text: "Retirarlo silenciosamente de la unidad", correct: false, xp: -70 },
+      { text: "Culpar al paciente/equipo de enfermería", correct: false, xp: -100 }
+    ],
+    impact: "✓ Responsabilidad asumida, confianza institucional fortalecida a largo plazo"
+  },
+  {
+    id: 105,
+    title: "Conflicto Ético: Paciente vs Salud Pública",
+    emoji: "🤝",
+    description: "Paciente VIH+, actitud negacionista, reusa divulgar su estado. Riesgo de transmisión. Confidencialidad vs protección.",
+    options: [
+      { text: "Educación + consejería + documentación + derivación especializada", correct: true, xp: 150 },
+      { text: "Revelar información sin consentimiento", correct: false, xp: -100 },
+      { text: "Negar acceso al servicio", correct: false, xp: -80 }
+    ],
+    impact: "✓ Derechos protegidos + salud pública salvaguardada responsablemente"
+  },
+  {
+    id: 106,
+    title: "Colusión Administrativa",
+    emoji: "🚩",
+    description: "Descubres que contratista en licitación está conectado a junta directiva. Beneficiarios de compra aparente inflada.",
+    options: [
+      { text: "Auditoría externa + denuncia formal + suspensión del contrato", correct: true, xp: 150 },
+      { text: "Informar discretamente al director", correct: false, xp: 50 },
+      { text: "Ignorar si 'las cosas funcionan'", correct: false, xp: -120 }
+    ],
+    impact: "✓ Corrupción detenida, integridad financiera restaurada"
+  },
+  {
+    id: 107,
+    title: "Mobbing y Represalia",
+    emoji: "😤",
+    description: "Enfermero denunció condiciones inseguras. Ahora sufre aislamiento, tareas degradantes, cambios injustos de turno.",
+    options: [
+      { text: "Investigación formal + protección legal + medidas disciplinarias vs acosadores", correct: true, xp: 150 },
+      { text: "Sugerir que 'busque empleo en otro lado'", correct: false, xp: -100 },
+      { text: "Mediar informalmente", correct: false, xp: 20 }
+    ],
+    impact: "✓ Cultura segura restaurada, precedente legal sentado"
+  },
+  {
+    id: 108,
+    title: "Pandemia Segunda Ola - Colapso Total",
+    emoji: "🌪️",
+    description: "3x ocupación esperada. 70% de staff baja. Falta de oxígeno. Muertes por falta de camas. Decisión en minutos.",
+    options: [
+      { text: "Activar plan contingencia extremo: solicitar refuerzos ejército, desviar de otros hospitales, triaje de recursos", correct: true, xp: 150 },
+      { text: "Aceptar todos + improvisar", correct: false, xp: -80 },
+      { text: "Esperar instrucciones ministeriales", correct: false, xp: -100 }
+    ],
+    impact: "✓ Sistema en extremis coordinado, minimizadas muertes prevenibles"
+  }
+];
+
+/**
+ * Sistema dinámico de casos con niveles y recompensas
+ * Nivel 1: 8 casos básicos → Nivel 2: 8 casos casi imposibles
  */
 
 export const getCaseSession = () => {
@@ -117,17 +220,26 @@ export const getCaseSession = () => {
 };
 
 export const initializeNewSession = () => {
-  const shuffled = [...HOSPITAL_CASES].sort(() => Math.random() - 0.5);
-  const session = {
+  const session = getCaseSession();
+  // Si existe sesión, mantener nivel y contador, sino empezar en nivel 1
+  const level = session?.level || 1;
+  const levelRound = session?.levelRound || 1;
+  
+  const casePool = level === 1 ? HOSPITAL_CASES : HOSPITAL_CASES_LEVEL_2;
+  const shuffled = [...casePool].sort(() => Math.random() - 0.5);
+  
+  const newSession = {
     id: Date.now(),
+    level: level,
+    levelRound: levelRound,
     cases: shuffled.map(c => ({ ...c })),
     currentIndex: 0,
     correctAnswers: 0,
     completedCount: 0,
     startedAt: new Date().toISOString()
   };
-  localStorage.setItem('caseSession', JSON.stringify(session));
-  return session;
+  localStorage.setItem('caseSession', JSON.stringify(newSession));
+  return newSession;
 };
 
 export const getCurrentCase = () => {
@@ -152,36 +264,73 @@ export const completeCurrentCase = (isCorrect) => {
     
     const isSessionComplete = session.currentIndex >= session.cases.length;
     
+    // Si completó perfectamente, pasar al siguiente nivel
+    if (isSessionComplete && session.correctAnswers === session.cases.length) {
+      // Incrementar nivel para próxima sesión
+      const nextLevel = session.level === 1 ? 2 : 1; // Alternar entre nivel 1 y 2
+      const nextRound = session.level === 1 ? session.levelRound : session.levelRound + 1;
+      
+      const updatedSession = {
+        ...session,
+        level: nextLevel,
+        levelRound: nextRound
+      };
+      localStorage.setItem('caseSession', JSON.stringify(updatedSession));
+      
+      return {
+        isSessionComplete: true,
+        correctAnswers: session.correctAnswers,
+        totalCases: session.cases.length,
+        nextCase: null,
+        reward: getFullReward(session.level, nextRound),
+        nextLevel: nextLevel
+      };
+    }
+    
     return {
       isSessionComplete,
       correctAnswers: session.correctAnswers,
       totalCases: session.cases.length,
       nextCase: isSessionComplete ? null : getCurrentCase(),
-      reward: isSessionComplete && session.correctAnswers === session.cases.length ? getFullReward() : null
+      reward: null
     };
   }
   
   return { isSessionComplete: true, correctAnswers: session.correctAnswers, totalCases: session.cases.length };
 };
 
-export const getFullReward = (roundNumber = 1) => {
-  // Aumentar recompensa con cada ronda completada
-  const baseGestCoins = 500;
-  const gestCoinsReward = baseGestCoins + (roundNumber * 250);
+export const getFullReward = (level = 1, round = 1) => {
+  // Aumentar recompensa con cada nivel y ronda completada
+  const baseGestCoins = level === 1 ? 500 : 1500; // Nivel 2 da más
+  const gestCoinsReward = baseGestCoins + (round * 250);
+  
+  const levelText = level === 1 ? "NIVEL 1" : "NIVEL 2 - CASI IMPOSIBLE";
   
   return {
-    xp: 500,
+    xp: level === 1 ? 500 : 1000,
     gestcoins: gestCoinsReward,
-    badge: 'gestor_crisis_master',
-    title: '¡MAESTRO DE DECISIONES! 👑',
-    message: `Completaste todos los casos con decisiones perfectas (Ronda ${roundNumber})`,
-    icon: '👑',
-    roundNumber
+    badge: level === 1 ? 'gestor_crisis_master' : 'gestor_leyenda',
+    title: level === 1 ? '¡MAESTRO DE DECISIONES! 👑' : '¡LEYENDA MÉDICA! 🏆',
+    message: `Completaste todos los casos de ${levelText} con decisiones perfectas (Ronda ${round})`,
+    icon: level === 1 ? '👑' : '🏆',
+    level,
+    round
   };
 };
 
 export const resetCaseSession = () => {
-  localStorage.removeItem('caseSession');
+  const session = getCaseSession();
+  const newSession = {
+    id: Date.now(),
+    level: session.level,
+    levelRound: session.levelRound,
+    cases: [],
+    currentIndex: 0,
+    correctAnswers: 0,
+    completedCount: 0,
+    startedAt: new Date().toISOString()
+  };
+  localStorage.setItem('caseSession', JSON.stringify(newSession));
   return initializeNewSession();
 };
 
@@ -191,7 +340,9 @@ export const getSessionProgress = () => {
     completed: session.completedCount,
     correct: session.correctAnswers,
     total: session.cases.length,
-    isComplete: session.currentIndex >= session.cases.length
+    isComplete: session.currentIndex >= session.cases.length,
+    level: session.level,
+    levelRound: session.levelRound
   };
 };
 
@@ -212,6 +363,8 @@ export const getCaseProgress = () => {
   return {
     total: session.cases.length,
     completed: session.completedCount,
-    correct: session.correctAnswers
+    correct: session.correctAnswers,
+    level: session.level,
+    levelRound: session.levelRound
   };
 };

@@ -1,7 +1,7 @@
 # NURSE MANAGER - Simulador de Gestión Sanitaria
 
 ## Overview
-NURSE MANAGER is a gamified learning platform designed to provide an interactive, quiz-based educational experience for nursing management students. The project aims for high engagement and market potential through robust gamification, social features, and a visually animated user interface. Key capabilities include interactive quizzes with progressive module unlocking, an advanced gamification system (XP, ranks, leagues, achievements, real-time progress tracking, leaderboards, daily rewards), social sharing, an 8-tier professional nursing career progression system, and team-based quests with real quiz mechanics. The platform also integrates dynamic hospital case studies for decision-making practice and a comprehensive badge system.
+NURSE MANAGER is a gamified learning platform designed to provide an interactive, quiz-based educational experience for nursing management students. The project aims for high engagement and market potential through robust gamification, social features, and a visually animated user interface. Key capabilities include interactive quizzes with progressive module unlocking, an advanced gamification system (XP, ranks, leagues, achievements, real-time progress tracking, leaderboards, daily rewards), social sharing, an 8-tier professional nursing career progression system (Estudiante → Gerenta) requiring near-perfect performance for top 3 tiers. Features healthcare management story arc with dynamic hospital cases, achievement badges, and professional hospital backgrounds.
 
 ## User Preferences
 - Fast development pace
@@ -62,41 +62,71 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Web Audio API**: For procedural sound generation.
 - **Web Share API**: For native mobile social sharing.
 - **Web Push API**: For browser push notifications.
+
 ---
 
-## Update #13: GESTCOINS REWARD + CELEBRATION FOR PERFECT ROUNDS (November 29, 2025)
+## Update #14: SISTEMA DE NIVELES EN HOSPITAL CASES (November 29, 2025)
 
-### 💸 RECOMPENSA DE GESTCOINS
-✅ **Sistema de Recompensa Completo**:
-- Cuando completa todos 8 casos **correctamente**:
-  - **500 GestCoins** (base) + 250 por cada ronda adicional
-  - Ronda 1: 500 💸
-  - Ronda 2: 750 💸
-  - Ronda 3: 1000 💸
-  - (Escala exponencial)
+### 🎯 NIVELES DE DIFICULTAD PROGRESIVOS
+✅ **Nivel 1 - Casos Básicos**:
+- 8 casos de gestión estándar con decisiones claras
+- Recompensa base: **500 GestCoins** + 250 por ronda
+- Ronda 1: 500 💸
+- Ronda 2: 750 💸
+- Ronda 3: 1000 💸
 
-✅ **Celebración Visual**:
-- Confetti de 500 piezas (efecto "rank" dorado)
-- Duración: 3.5 segundos
-- Modal con información completa:
-  - Emoji de celebración 👑
-  - Título "¡MAESTRO DE DECISIONES!"
-  - XP ganado: +500
-  - GestCoins ganados: +XXX 💸
-  - Botón "Nuevos Casos" para siguiente ronda
+✅ **Nivel 2 - Casos CASI IMPOSIBLES**:
+- 8 casos con dilemas éticos complejos y presión extrema
+- Triaje de recursos limitados, falsificación de datos, conflictos ley/ética
+- Recompensa escalada: **1500 GestCoins** + 250 por ronda
+- Ronda 1: 1500 💸
+- Ronda 2: 1750 💸
+- Ronda 3: 2000 💸
+- XP doble: 1000 XP por nivel 2 vs 500 XP por nivel 1
 
-✅ **Implementación**:
-- `cases.js`: getFullReward() retorna gestcoins + xp
-- `HospitalCases.jsx`: earnCoins() llamado automáticamente
-- Confetti integrado con ConfettiCelebration component
-- localStorage actualizado con nuevos GestCoins
+### 🎨 VISUAL DIFERENCIADO
+✅ **Nivel 1 Modal**:
+- Gradiente ámbar-púrpura
+- Borde amarillo/dorado
+- Icono: 👑
+- Texto: "¡MAESTRO DE DECISIONES!"
+
+✅ **Nivel 2 Modal**:
+- Gradiente rojo oscuro-negro
+- Borde rojo brillante
+- Icono: 🏆
+- Texto: "¡LEYENDA MÉDICA!"
+- Alerta roja: "⚠️ ¡Has desbloqueado NIVEL 2 - CASOS CASI IMPOSIBLES!"
+
+### 🔄 FLUJO DE PROGRESIÓN
+✅ **Auto-generación de siguiente nivel**:
+- Completa Nivel 1 perfectamente → Avanza a Nivel 2
+- Completa Nivel 2 perfectamente → Regresa a Nivel 1 (ronda incrementada)
+- Cada nivel mantiene contador de ronda para recompensas progresivas
+
+✅ **Casos Nivel 2 Incluyen**:
+1. Triaje de Recursos Limitados (pandemia)
+2. Falsificación de Reportes (integridad)
+3. Presupuesto vs Vidas (ética)
+4. Crisis de Confianza (negligencia compañero)
+5. Paciente vs Salud Pública (VIH+)
+6. Colusión Administrativa (corrupción)
+7. Mobbing y Represalia (acoso)
+8. Pandemia Segunda Ola (colapso total)
+
+✅ **Integración Completa**:
+- `cases.js`: Dos pools de casos (HOSPITAL_CASES + HOSPITAL_CASES_LEVEL_2)
+- Sistema de sesiones rastrean level y levelRound
+- getFullReward() diferencia recompensas por nivel
+- HospitalCases.jsx renderiza visual diferenciada
+- Confetti de 500 piezas en ambos niveles
 
 ### ✅ Status
-✅ Recompensa en gestcoins implementada
-✅ Confetti celebration agregada
-✅ Modal mejorado mostrando ambas recompensas
-✅ Integración con sistema de gestcoins completa
-✅ Rondas progresivas con aumento de recompensa
+✅ Nivel 1: 8 casos básicos implementados
+✅ Nivel 2: 8 casos casi imposibles implementados
+✅ Sistema de progresión automática funcional
+✅ Recompensas escalables por nivel y ronda
+✅ Visual diferenciado para cada nivel
 ✅ Sin errores de compilación
 ✅ Servidor corriendo perfecto
 

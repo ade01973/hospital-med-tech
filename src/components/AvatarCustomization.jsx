@@ -152,17 +152,17 @@ export default function AvatarCustomization({ onComplete }) {
         <div className="flex flex-col items-center justify-center gap-4">
           {/* Avatar Preview - Video or Empty Viewer */}
           <div className="border-2 border-cyan-500/30 rounded-xl p-0 bg-slate-800 w-2/3 max-w-xs aspect-square flex items-center justify-center overflow-hidden animate-enter-float animate-glow-pulse hover:scale-110 hover:border-cyan-400/70 hover:animate-breathe transition-all duration-500 ease-in-out cursor-pointer">
-            {" "}
-            <video
-              key={gender}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-contain"
-            >
-              <source src={VIDEOS[gender]} type="video/mp4" />
-            </video>
+            {gender && (
+              <video
+                key={gender}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain"
+              >
+                <source src={VIDEOS[gender]} type="video/mp4" />
+              </video>
             )}
             {!gender && <AvatarPreviewDisplay avatar={avatar} size="large" />}
           </div>
