@@ -149,6 +149,34 @@ export const LEAGUE_SYSTEM = {
   },
 };
 
+// 🔥 DAILY STREAK SYSTEM - Milestones y configuración
+export const STREAK_MILESTONES = [
+  {
+    days: 7,
+    name: "🔥 Semana Ardiente",
+    coinBonus: 100,
+    description: "7 días de racha consecutivos"
+  },
+  {
+    days: 30,
+    name: "🌟 Maestro del Mes",
+    coinBonus: 500,
+    description: "30 días de racha consecutivos"
+  },
+  {
+    days: 100,
+    name: "👑 Leyenda Viva",
+    coinBonus: 2000,
+    description: "100 días de racha consecutivos"
+  }
+];
+
+export const STREAK_CONFIG = {
+  FREEZE_COST: 50,
+  RESET_HOURS: 24,
+  FREEZE_LIMIT_PER_MONTH: 1
+};
+
 // 🎮 Ejemplo de nombres ficticios para demo
 export const DEMO_PLAYER_NAMES = [
   "Dr. García",

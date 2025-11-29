@@ -358,6 +358,34 @@ export default function GameLevel({
     setCoinNotifications((prev) => [...prev, { id, amount, x, y }]);
   };
 
+  // Función para incrementar streak
+  const incrementStreak = () => {
+    const now = new Date();
+    const today = now.toDateString();
+
+    let streakData = localStorage.getItem('streakData');
+    if (!streakData) {
+      streakData = {
+        count: 1,
+        lastPlayDate: now,
+        frozenUntil: null,
+        frozeThisMonth: false,
+        milestonesBadges: []
+      };
+    } else {
+      streakData = JSON.parse(streakData);
+      const lastPlay = new Date(streakData.lastPlayDate);
+      const lastPlayDate = lastPlay.toDateString();
+
+      if (lastPlayDate !== today) {
+        streakData.count += 1;
+      }
+      streakData.lastPlayDate = now;
+    }
+
+    localStorage.setItem('streakData', JSON.stringify(streakData));
+  };
+
   // Función para avanzar a la siguiente pregunta
   const advanceQuestion = () => {
     const nextIndex = currentIndex + 1;
@@ -369,6 +397,9 @@ export default function GameLevel({
         setIsCompleted(true);
         playVictory();
         setShowConfetti(true);
+        
+        // 🔥 Incrementar racha
+        incrementStreak();
         
         // 💰 Bonus de monedas si el quiz fue perfecto (todas correctas)
         const totalCorrect = questions.filter((q, idx) => idx < currentIndex + 1).length;

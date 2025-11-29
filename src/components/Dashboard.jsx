@@ -12,6 +12,7 @@ import CurrencyDisplay from './CurrencyDisplay';
 import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
 import DailyChallenge from './DailyChallenge';
 import PreGameModal from './PreGameModal';
+import StreakTracker from './StreakTracker';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -439,6 +440,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {/* Daily Challenge */}
               <DailyChallenge />
+
+              {/* Streak Tracker */}
+              <StreakTracker />
             </div>
           </div>
 

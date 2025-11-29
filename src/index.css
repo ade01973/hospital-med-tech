@@ -324,3 +324,31 @@
 .animate-heart-pulse {
   animation: heart-pulse 0.8s ease-in-out infinite;
 }
+
+@keyframes bounce-streak {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+  }
+}
+
+@keyframes streak-particles {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+.animate-bounce-streak {
+  animation: bounce-streak 0.8s ease-in-out infinite;
+}
+
+.animate-streak-particles {
+  animation: streak-particles 1s ease-out forwards;
+}
