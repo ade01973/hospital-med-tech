@@ -62,3 +62,42 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Web Audio API**: For procedural sound generation.
 - **Web Share API**: For native mobile social sharing.
 - **Web Push API**: For browser push notifications.
+---
+
+## Update #13: GESTCOINS REWARD + CELEBRATION FOR PERFECT ROUNDS (November 29, 2025)
+
+### 💸 RECOMPENSA DE GESTCOINS
+✅ **Sistema de Recompensa Completo**:
+- Cuando completa todos 8 casos **correctamente**:
+  - **500 GestCoins** (base) + 250 por cada ronda adicional
+  - Ronda 1: 500 💸
+  - Ronda 2: 750 💸
+  - Ronda 3: 1000 💸
+  - (Escala exponencial)
+
+✅ **Celebración Visual**:
+- Confetti de 500 piezas (efecto "rank" dorado)
+- Duración: 3.5 segundos
+- Modal con información completa:
+  - Emoji de celebración 👑
+  - Título "¡MAESTRO DE DECISIONES!"
+  - XP ganado: +500
+  - GestCoins ganados: +XXX 💸
+  - Botón "Nuevos Casos" para siguiente ronda
+
+✅ **Implementación**:
+- `cases.js`: getFullReward() retorna gestcoins + xp
+- `HospitalCases.jsx`: earnCoins() llamado automáticamente
+- Confetti integrado con ConfettiCelebration component
+- localStorage actualizado con nuevos GestCoins
+
+### ✅ Status
+✅ Recompensa en gestcoins implementada
+✅ Confetti celebration agregada
+✅ Modal mejorado mostrando ambas recompensas
+✅ Integración con sistema de gestcoins completa
+✅ Rondas progresivas con aumento de recompensa
+✅ Sin errores de compilación
+✅ Servidor corriendo perfecto
+
+---

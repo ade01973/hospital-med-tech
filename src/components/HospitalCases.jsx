@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentCase, completeCurrentCase, getSessionProgress, resetCaseSession, getFullReward } from '../data/cases';
+import { getCurrentCase, completeCurrentCase, getSessionProgress, resetCaseSession, getFullReward, getCaseSession } from '../data/cases';
 import { X, CheckCircle } from 'lucide-react';
+import ConfettiCelebration from './ConfettiCelebration';
+import { useGestCoins } from '../hooks/useGestCoins';
 
 /**
  * HospitalCases - Healthcare Management Story Arc Component
  * Modal con 8 casos narrativos + sistema de decisiones
  */
 const HospitalCases = ({ onClose, onCaseComplete }) => {
+  const { earnCoins } = useGestCoins();
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showReward, setShowReward] = useState(false);
   const [currentCase, setCurrentCase] = useState(() => getCurrentCase());
   const [progress, setProgress] = useState(() => getSessionProgress());
   const [resultData, setResultData] = useState(null);
+  const [rewardData, setRewardData] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     setCurrentCase(getCurrentCase());
@@ -50,7 +55,16 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
 
     // Si se completaron todos con respuestas correctas
     if (result.reward) {
+      const session = getCaseSession();
+      const roundNumber = session.id ? 1 : 2; // Simplificado - contar rondas
+      const reward = getFullReward(roundNumber);
+      
+      // Dar gestcoins
+      earnCoins(reward.gestcoins, `Ronda perfecta de Hospital Cases (Ronda ${roundNumber})`);
+      
+      setRewardData(reward);
       setShowReward(true);
+      setShowCelebration(true);
       return;
     }
 
@@ -67,26 +81,39 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   };
 
   // Vista de recompensa final
-  if (showReward) {
-    const reward = getFullReward();
+  if (showReward && rewardData) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-        <div className="bg-gradient-to-br from-amber-900 to-purple-900 border-2 border-yellow-400/70 rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center">
-          <div className="text-7xl mb-6 animate-bounce">{reward.icon}</div>
-          <h2 className="text-4xl font-black text-yellow-100 mb-4">{reward.title}</h2>
-          <p className="text-white/90 text-lg mb-6">{reward.message}</p>
-          <p className="text-3xl font-black text-yellow-300 mb-8">+{reward.xp} XP</p>
-          <button
-            onClick={() => {
-              setShowReward(false);
-              onClose();
-            }}
-            className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-black font-black py-4 rounded-xl transition transform hover:scale-105 text-lg"
-          >
-            ¡INCREÍBLE! →
-          </button>
+      <>
+        {showCelebration && <ConfettiCelebration trigger={true} celebrationType="rank" numberOfPieces={500} />}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className="bg-gradient-to-br from-amber-900 to-purple-900 border-2 border-yellow-400/70 rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center">
+            <div className="text-7xl mb-6 animate-bounce">{rewardData.icon}</div>
+            <h2 className="text-4xl font-black text-yellow-100 mb-4">{rewardData.title}</h2>
+            <p className="text-white/90 text-lg mb-6">{rewardData.message}</p>
+            
+            <div className="space-y-3 mb-8">
+              <p className="text-3xl font-black text-emerald-300">
+                +{rewardData.xp} XP
+              </p>
+              <p className="text-2xl font-black text-yellow-400 bg-amber-900/50 rounded-lg py-2">
+                💸 +{rewardData.gestcoins} GestCoins
+              </p>
+            </div>
+            
+            <button
+              onClick={() => {
+                setShowReward(false);
+                setShowCelebration(false);
+                resetCaseSession();
+                onClose();
+              }}
+              className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-black font-black py-4 rounded-xl transition transform hover:scale-105 text-lg"
+            >
+              ¡INCREÍBLE! → Nuevos Casos
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 

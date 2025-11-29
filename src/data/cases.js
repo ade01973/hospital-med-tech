@@ -164,13 +164,19 @@ export const completeCurrentCase = (isCorrect) => {
   return { isSessionComplete: true, correctAnswers: session.correctAnswers, totalCases: session.cases.length };
 };
 
-export const getFullReward = () => {
+export const getFullReward = (roundNumber = 1) => {
+  // Aumentar recompensa con cada ronda completada
+  const baseGestCoins = 500;
+  const gestCoinsReward = baseGestCoins + (roundNumber * 250);
+  
   return {
     xp: 500,
+    gestcoins: gestCoinsReward,
     badge: 'gestor_crisis_master',
     title: '¡MAESTRO DE DECISIONES! 👑',
-    message: 'Completaste todos los casos con decisiones perfectas',
-    icon: '👑'
+    message: `Completaste todos los casos con decisiones perfectas (Ronda ${roundNumber})`,
+    icon: '👑',
+    roundNumber
   };
 };
 
