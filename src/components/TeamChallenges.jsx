@@ -3,10 +3,12 @@ import { Users, Swords } from 'lucide-react';
 import TeamFormation from './TeamFormation';
 import TeamQuest from './TeamQuest';
 import BossBattle from './BossBattle';
+import { TOPICS } from '../data/constants';
 
 const TeamChallenges = ({ isOpen, onClose, playerName, playerUID }) => {
   const [activeTab, setActiveTab] = useState('formation');
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState(0);
 
   if (!isOpen) return null;
 
@@ -73,11 +75,31 @@ const TeamChallenges = ({ isOpen, onClose, playerName, playerUID }) => {
             />
           )}
           {activeTab === 'quests' && selectedTeam && (
-            <TeamQuest
-              selectedTeam={selectedTeam}
-              onQuestStart={() => {}}
-              onQuestComplete={() => {}}
-            />
+            <div className="space-y-4">
+              {/* Topic Selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-cyan-300">Selecciona un Tema:</label>
+                <select
+                  value={selectedTopic}
+                  onChange={(e) => setSelectedTopic(parseInt(e.target.value))}
+                  className="w-full bg-slate-800 border-2 border-slate-600 text-white rounded-lg p-3 font-bold hover:border-cyan-400 transition"
+                >
+                  {TOPICS.map((topic, idx) => (
+                    <option key={idx} value={idx}>
+                      {topic.icon} {topic.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* TeamQuest Component */}
+              <TeamQuest
+                selectedTeam={selectedTeam}
+                selectedTopic={selectedTopic}
+                onQuestStart={() => {}}
+                onQuestComplete={() => {}}
+              />
+            </div>
           )}
           {activeTab === 'boss' && selectedTeam && (
             <BossBattle

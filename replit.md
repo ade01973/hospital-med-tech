@@ -161,3 +161,84 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - Extended gameplay testing
 - User feedback collection
 - Future feature expansion
+
+---
+
+## Update #4: TEAM QUEST MINI-QUIZZES - COMPLETED (November 29, 2025)
+
+### 🎯 Real Quiz Implementation in Team Quests
+
+#### New Features: TeamQuest.jsx
+✅ **Real Quiz Mechanics**:
+- Uses actual questions from TOPICS[selectedTopic].questions
+- Random question selection per difficulty
+- 2-option rapid mode (5-second timer per question)
+- Health-based gameplay system
+
+✅ **Question Mechanics**:
+- **Correct Answer**: +10 team health (max 100)
+- **Incorrect/Timeout**: -5 team health
+- **Win Condition**: Complete all questions without health reaching 0
+- **Loss Condition**: Team health drops to 0 at any point
+
+✅ **Difficulty Settings**:
+- **Fácil**: 8 questions, 1x XP, 1x coins
+- **Normal**: 10 questions, 1x XP, 1.5x coins
+- **Difícil**: 12 questions, 1x XP, 2x coins
+
+✅ **Visual Elements**:
+- 5-second countdown timer (turns red at ≤2 seconds)
+- Color-coded health bar:
+  - 🟢 Green (50-100 HP)
+  - 🟡 Yellow (20-50 HP)
+  - 🔴 Red (0-20 HP)
+- Question counter (e.g., "3/10")
+- Team members display
+- Animated transitions between questions
+
+✅ **Game States**:
+- **Menu**: Select difficulty (Fácil/Normal/Difícil)
+- **Playing**: Answering questions with timer
+- **Completed**: Victory screen with XP + coin rewards
+- **Failed**: Defeat screen with stats
+
+#### Integration: TeamChallenges.jsx
+- Added topic selector dropdown (all 22 TOPICS available)
+- Passes selectedTopic to TeamQuest component
+- Seamless topic switching before quest start
+- Professional styled select element
+
+#### Rewards System
+- **Base Reward**: 200 XP per completed quest
+- **Coin Multiplier**:
+  - Fácil: 100 coins
+  - Normal: 150 coins
+  - Difícil: 200 coins
+
+#### User Experience
+- ⏱️ Real-time 5-second timer with visual feedback
+- 🎨 Color transitions for health status
+- 🏆 Victory/defeat modals with detailed stats
+- 📊 Clear progress tracking (questions answered/total)
+- 🔄 Ability to retry failed quests or try different difficulties
+
+#### Technical Implementation
+- State Management: currentQuestion, teamHealth, timeLeft, questQuestions
+- Logic: Random question selection, damage calculation, win/lose conditions
+- Rendering: Real-time timer, health bar, question display, option buttons
+- Callbacks: onQuestStart, onQuestComplete for integration with Dashboard
+
+#### Status:
+✅ All 3 difficulties fully functional
+✅ Real quiz questions from TOPICS
+✅ Timer system working (5-second countdown)
+✅ Health system with visual feedback
+✅ Victory/defeat modals implemented
+✅ Team selection integrated
+✅ Topic selection added to TeamChallenges
+✅ No console errors
+✅ Server running smoothly
+✅ Ready for gameplay testing
+
+---
+
