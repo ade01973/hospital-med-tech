@@ -504,9 +504,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {/* Daily Challenge */}
               <DailyChallenge />
-
-              {/* Streak Tracker */}
-              <StreakTracker />
             </div>
           </div>
 
@@ -562,8 +559,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <span className="text-xl">🏥</span>
-              Hospital Cases
+              Casos del Hospital Gest-Tech
             </button>
+
+            {/* Streak Tracker */}
+            <StreakTracker />
 
             {/* Badges Display - Compact */}
             <div>
