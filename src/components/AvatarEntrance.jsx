@@ -13,7 +13,7 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
     const timer = setTimeout(() => {
       setShowEntrance(false);
       if (onComplete) onComplete();
-    }, 3500);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -54,7 +54,7 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
         {/* Welcome text */}
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
           <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
-            ¡Bienvenido al Hospital!
+            Bienvenido al Hospital Gest-Tech
           </h1>
           <p className="text-xl text-cyan-300 font-bold animate-fadeInUp" style={{ animationDelay: '0.8s' }}>
             Tu aventura comienza ahora...

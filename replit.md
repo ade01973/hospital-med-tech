@@ -131,3 +131,56 @@ The application employs a modern web stack to deliver an interactive and gamifie
 ✅ Servidor corriendo perfecto
 
 ---
+
+---
+
+## Update #15: VIDEO INTRO COMPLETO - FLUJO AVATAR → VIDEO → DASHBOARD (November 30, 2025)
+
+### 🎬 FLUJO DE BIENVENIDA CINEMATOGRÁFICO
+✅ **1. Pantalla de Avatar Entrance (5 segundos)**:
+- Avatar del usuario frente al hospital con parallax background
+- Título: "Bienvenido al Hospital Gest-Tech"
+- Partículas y efectos visuales
+- Transición suave
+
+✅ **2. Pantalla de Video Fullscreen (integrado en app)**:
+- Video de introducción del hospital (Gestora Enfermera Entra Al Hospital)
+- Reproducción a pantalla completa
+- Video integrado en assets, no reproducción externa
+- Auto-play y fullscreen layout
+
+✅ **3. Transición Suave al Dashboard**:
+- Fade-out suave del video (0.8s)
+- Sin jarrones ni interrupciones
+- Acceso directo al Dashboard
+
+### 🛠️ IMPLEMENTACIÓN TÉCNICA
+✅ **AvatarEntrance.jsx**:
+- Duración aumentada: 3.5s → 5s
+- Título actualizado: "¡Bienvenido al Hospital!" → "Bienvenido al Hospital Gest-Tech"
+
+✅ **HospitalVideoIntro.jsx (NEW)**:
+- Componente fullscreen para reproducción de video
+- Video source: `/src/assets/hospital-intro.mp4`
+- Manejo de eventos onEnded para transición automática
+- Fade-out de 0.8s antes de completar
+- Indicador de carga en caso de buffering
+
+✅ **App.jsx - Flujo Actualizado**:
+- Importación de HospitalVideoIntro
+- Estado `showHospitalVideo` para control
+- Flujo: male/female-customization → avatar-entrance → showHospitalVideo → dashboard
+
+### 📂 ASSETS
+✅ Video copiado: `src/assets/hospital-intro.mp4` (Gestora Enfermera Entra Al Hospital)
+
+### ✅ Status
+✅ Video integrado en assets
+✅ Componente HospitalVideoIntro creado y funcional
+✅ AvatarEntrance actualizado (5s + título "Gest-Tech")
+✅ Flujo completo implementado en App.jsx
+✅ Transiciones suaves y cinematográficas
+✅ Sin errores de compilación
+✅ Servidor corriendo perfecto
+
+---
