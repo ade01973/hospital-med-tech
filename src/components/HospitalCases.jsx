@@ -53,7 +53,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
     setSelectedOption(null);
     setResultData(null);
 
-    // Si se completaron todos con respuestas correctas
+    // Si se completaron todos con respuestas correctas → RECOMPENSA
     if (result.reward) {
       // Dar gestcoins
       earnCoins(result.reward.gestcoins, `Ronda perfecta de Hospital Cases - ${result.reward.title}`);
@@ -64,15 +64,27 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
       return;
     }
 
-    // Si hay más casos, mostrar el siguiente
+    // Si hay más casos en la sesión actual, mostrar el siguiente
     if (result.nextCase) {
       setCurrentCase(result.nextCase);
       setProgress(getSessionProgress());
-    } else {
-      // Ronda completada, reiniciar para la siguiente
-      const newSession = resetCaseSession();
-      setCurrentCase(getCurrentCase());
-      setProgress(getSessionProgress());
+    } else if (result.isSessionComplete) {
+      // Sesión completada (con o sin recompensa)
+      // Generar 8 casos nuevos para la siguiente ronda
+      resetCaseSession();
+      
+      // Mostrar feedback: si NO todas fueron correctas
+      if (result.correctAnswers < result.totalCases) {
+        // Mostrar modal de "Intenta de nuevo con los nuevos casos"
+        setTimeout(() => {
+          setCurrentCase(getCurrentCase());
+          setProgress(getSessionProgress());
+        }, 500);
+      } else {
+        // Ya se mostró recompensa arriba
+        setCurrentCase(getCurrentCase());
+        setProgress(getSessionProgress());
+      }
     }
   };
 

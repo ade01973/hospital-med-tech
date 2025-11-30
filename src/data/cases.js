@@ -274,12 +274,13 @@ export const completeCurrentCase = (isCorrect) => {
     
     const isSessionComplete = session.currentIndex >= session.cases.length;
     
-    // Si completó perfectamente, pasar al siguiente nivel
+    // Si completó perfectamente (TODAS correctas), dar recompensa y cambiar de nivel
     if (isSessionComplete && session.correctAnswers === session.cases.length) {
       // Incrementar nivel para próxima sesión
       const nextLevel = session.level === 1 ? 2 : 1; // Alternar entre nivel 1 y 2
       const nextRound = session.level === 1 ? session.levelRound : session.levelRound + 1;
       
+      // Guardar el nuevo nivel/round ANTES de generar recompensa
       const updatedSession = {
         ...session,
         level: nextLevel,
@@ -297,11 +298,31 @@ export const completeCurrentCase = (isCorrect) => {
       };
     }
     
+    // Si la sesión se completó pero NO todas correctas, NO dar recompensa
+    // Mantener en el mismo nivel pero incrementar round (para rastrear intentos)
+    if (isSessionComplete) {
+      const newRound = session.levelRound + 1;
+      const updatedSession = {
+        ...session,
+        levelRound: newRound
+      };
+      localStorage.setItem('caseSession', JSON.stringify(updatedSession));
+      
+      return {
+        isSessionComplete: true,
+        correctAnswers: session.correctAnswers,
+        totalCases: session.cases.length,
+        nextCase: null,
+        reward: null // NO hay recompensa si no todas son correctas
+      };
+    }
+    
+    // Aún hay más casos en la sesión
     return {
-      isSessionComplete,
+      isSessionComplete: false,
       correctAnswers: session.correctAnswers,
       totalCases: session.cases.length,
-      nextCase: isSessionComplete ? null : getCurrentCase(),
+      nextCase: getCurrentCase(),
       reward: null
     };
   }
@@ -329,19 +350,26 @@ export const getFullReward = (level = 1, round = 1) => {
 };
 
 export const resetCaseSession = () => {
-  const session = getCaseSession();
+  // Obtener sesión anterior para mantener nivel y round
+  const previousSession = getCaseSession();
+  
+  // Generar nuevos 8 casos del mismo nivel
+  const casePool = previousSession.level === 1 ? HOSPITAL_CASES : HOSPITAL_CASES_LEVEL_2;
+  const shuffled = [...casePool].sort(() => Math.random() - 0.5);
+  
   const newSession = {
     id: Date.now(),
-    level: session.level,
-    levelRound: session.levelRound,
-    cases: [],
+    level: previousSession.level,
+    levelRound: previousSession.levelRound,
+    cases: shuffled.map(c => ({ ...c })),
     currentIndex: 0,
     correctAnswers: 0,
     completedCount: 0,
     startedAt: new Date().toISOString()
   };
+  
   localStorage.setItem('caseSession', JSON.stringify(newSession));
-  return initializeNewSession();
+  return newSession;
 };
 
 export const getSessionProgress = () => {
