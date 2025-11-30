@@ -1456,7 +1456,6 @@ export const TOPICS = [
         ],
         correct: 0,
       },
-
       {
         q: "¿Qué ventaja aporta la IA al análisis de datos clínicos?",
         options: [
@@ -1500,7 +1499,6 @@ export const TOPICS = [
         ],
         correct: 0,
       },
-
       {
         q: "¿Qué competencia permite evaluar sistemas de IA clínicos?",
         options: [
@@ -1707,14 +1705,256 @@ export const TOPICS = [
         ],
         correct: 1,
       },
-    ],
-  },
-  {
-    id: 5,
-    title: "El Clima Laboral",
-    subtitle: "Ambiente y satisfacción",
-    icon: "⚡",
-    questions: [
+      {
+        q: "¿Cuál es el objetivo principal de la comunicación en el contexto sanitario?",
+        options: [
+          "Informar sobre las políticas del hospital",
+          "Facilitar la toma de decisiones y el cuidado de los pacientes",
+          "Organizar eventos sociales entre el personal",
+          "Reducir la carga de trabajo del personal de enfermería"
+        ],
+        correct: 1
+      },
+      {
+        q: "Una innovación tecnológica emergente en la comunicación de gestión de enfermería es:",
+        options: [
+          "La realidad aumentada para formación del personal",
+          "El uso de fax para enviar informes médicos",
+          "Pizarras de corcho para anuncios",
+          "Agenda de papel para citas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué desafío representa la integración de nuevas tecnologías en la comunicación de enfermería?",
+        options: [
+          "La necesidad de formación continua",
+          "Reducir el uso de tecnología para ahorrar costes",
+          "Mantener métodos de comunicación obsoletos",
+          "La prohibición completa de herramientas digitales"
+        ],
+        correct: 0
+      },
+      {
+        q: "Para desarrollar un plan de comunicación efectivo en enfermería, es fundamental:",
+        options: [
+          "Concentrarse en la transmisión de información técnica compleja",
+          "Evitar el uso de canales digitales modernos",
+          "Identificar objetivos claros y definir la audiencia adecuadamente",
+          "Limitar el feedback para acelerar el proceso"
+        ],
+        correct: 2
+      },
+      {
+        q: "La mejora continua del plan de comunicación se logra a través de:",
+        options: [
+          "Recopilación y análisis de feedback",
+          "Mantener el plan estático sin cambios",
+          "Ignorar las sugerencias del equipo",
+          "Centrarse únicamente en la comunicación ascendente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO contribuye a una comunicación efectiva en gestión de enfermería?",
+        options: [
+          "Escucha activa",
+          "Empatía",
+          "Uso excesivo de jerga médica complicada",
+          "Claridad en el mensaje"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cómo impactan las tecnologías emergentes como la IA en la comunicación de enfermería?",
+        options: [
+          "Mejorando diagnósticos y facilitando la atención personalizada",
+          "Disminuyendo la interacción directa con los pacientes",
+          "Complicando los procedimientos de comunicación",
+          "Limitando el acceso a información vital"
+        ],
+        correct: 0
+      },
+      {
+        q: "Una barrera para la comunicación efectiva en la gestión de enfermería podría ser:",
+        options: [
+          "Falta de tiempo para comunicaciones detalladas",
+          "Exceso de feedback por parte del equipo",
+          "Uso de plataformas de comunicación modernas",
+          "Claridad excesiva en los mensajes transmitidos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué rol juega la comunicación grupal en la gestión sanitaria?",
+        options: [
+          "Facilita la toma de decisiones y discusión de casos clínicos",
+          "Reduce la necesidad de liderazgo efectivo",
+          "Aumenta la confusión y malentendidos",
+          "Disminuye la eficiencia del equipo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un elemento crucial en la decodificación de mensajes en la comunicación sanitaria?",
+        options: [
+          "La edad del receptor",
+          "El nivel educativo o experiencias previas del receptor",
+          "La preferencia por canales digitales",
+          "La velocidad de transmisión del mensaje"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué estrategia NO mejora la comunicación vertical ascendente?",
+        options: [
+          "Promover una cultura de feedback",
+          "Limitar las reuniones periódicas con el equipo",
+          "Utilizar herramientas de comunicación como el correo electrónico",
+          "Incentivar la participación del equipo en la toma de decisiones"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué papel juega la comunicación efectiva en los equipos de enfermería?",
+        options: [
+          "Solo se utiliza para transmitir información administrativa",
+          "Es esencial para comprender y satisfacer las necesidades de los pacientes",
+          "Se limita a la documentación del cuidado del paciente",
+          "Reduce la necesidad de reuniones de equipo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué beneficio aporta la comunicación horizontal en los equipos de salud?",
+        options: [
+          "Mejora la coordinación y eficiencia del equipo",
+          "Centraliza la toma de decisiones",
+          "Disminuye la necesidad de liderazgo",
+          "Incrementa la dependencia de la comunicación digital"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo pueden las enfermeras mejorar su comunicación interpersonal con los pacientes?",
+        options: [
+          "Utilizando un lenguaje claro y adaptado al paciente",
+          "Empleando terminología técnica para demostrar conocimiento",
+          "Limitando el tiempo dedicado a cada paciente",
+          "Evitando el feedback para acelerar las consultas"
+        ],
+        correct: 0
+      },
+      {
+        q: "La efectividad de un plan de comunicación se mide por:",
+        options: [
+          "La cantidad de información transmitida",
+          "El nivel de comprensión y acción resultante",
+          "La rapidez en la transmisión del mensaje",
+          "El uso de canales de comunicación digital"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué NO es una función de los líderes en la comunicación de equipos de salud?",
+        options: [
+          "Establecer una visión compartida",
+          "Motivar al equipo",
+          "Ignorar el feedback para mantener la autoridad",
+          "Resolver conflictos efectivamente"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es un desafío futuro para la comunicación en la gestión de enfermería?",
+        options: [
+          "Adaptación y formación continua en nuevas tecnologías",
+          "Reducción del uso de tecnología",
+          "Volver exclusivamente a la comunicación cara a cara",
+          "Mantener métodos tradicionales sin cambios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo evolucionará la comunicación en la gestión de enfermería con futuras innovaciones?",
+        options: [
+          "Reemplazo total del personal por tecnología",
+          "Disminución de la importancia de habilidades comunicativas",
+          "Integración de IA y realidad aumentada para mejorar eficacia y personalización",
+          "Retorno a métodos menos tecnológicos"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál de los siguientes NO es un elemento fundamental de la comunicación?",
+        options: [
+          "Emisor",
+          "Receptor",
+          "Canal",
+          "Obstáculo insuperable"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué tipo de comunicación se da entre enfermera y paciente?",
+        options: [
+          "Comunicación Interpersonal",
+          "Comunicación Grupal",
+          "Comunicación Organizacional",
+          "Comunicación Masiva"
+        ],
+        correct: 0
+      },
+      {
+        q: "La escucha activa en la gestión de enfermería implica:",
+        options: [
+          "Evitar interrupciones y realizar preguntas aclaratorias",
+          "Dar instrucciones sin solicitar feedback",
+          "Usar tecnicismos para impresionar al interlocutor",
+          "Hablar más que escuchar"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué tecnología ha transformado significativamente la comunicación en la gestión de enfermería?",
+        options: [
+          "Sistemas de Registro Electrónico de Salud (EHR)",
+          "Pizarras blancas en salas de espera",
+          "Teléfonos fijos",
+          "Radios bidireccionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué es la comunicación vertical en la gestión de enfermería?",
+        options: [
+          "Comunicación entre diferentes niveles jerárquicos",
+          "Diálogo entre enfermeras del mismo rango",
+          "Conversaciones informales",
+          "Comunicación exclusivamente digital"
+        ],
+        correct: 0
+      },
+      {
+        q: "Una estrategia efectiva para mejorar la comunicación vertical es:",
+        options: [
+          "Realizar reuniones periódicas con el equipo",
+          "Limitar la comunicación a memos escritos",
+          "Evitar el feedback para no generar conflictos",
+          "Usar jerga compleja para impresionar"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo influye el liderazgo en la comunicación dentro de los equipos de salud?",
+        options: [
+          "Fomentando una comunicación abierta y transparente",
+          "Prohibiendo discusiones grupales",
+          "Ignorando el feedback del equipo",
+          "Centrándose solo en comunicación descendente"
+        ],
+        correct: 0
+      },
       {
         q: "Según los estudios mencionados en el documento, ¿cuál fue el hallazgo principal de la AHRQ sobre la relación entre clima laboral positivo y resultados sanitarios?",
         options: [
@@ -1814,9 +2054,267 @@ export const TOPICS = [
           "Reduce la calidad del trabajo",
         ],
         correct: 1,
-      },
+  },
     ],
   },
+      {
+        id: 5,
+        title: "Clima Laboral",
+        subtitle: "Bienestar, liderazgo y motivación",
+        icon: "⚡",
+        questions: [
+          {
+            q: "¿Cómo afecta la carga de trabajo equitativa al clima laboral?",
+            options: [
+              "Reduce el estrés y previene el burnout",
+              "Aumenta la competitividad entre colegas",
+              "Disminuye la eficiencia del equipo",
+              "Genera conflictos de programación"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cómo impacta un liderazgo positivo en el clima laboral?",
+            options: [
+              "Mediante comunicación clara y apoyo al personal",
+              "A través de la imposición de reglas estrictas",
+              "Limitando la participación del personal en decisiones",
+              "Reduciendo las oportunidades de desarrollo profesional"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cómo se define el clima laboral?",
+            options: [
+              "Por el nivel de salario del personal",
+              "Como el conjunto de percepciones compartidas sobre el entorno de trabajo",
+              "A través de la estructura física del lugar de trabajo",
+              "Mediante las políticas de contratación de personal"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cuál de los siguientes es un desafío que afecta negativamente el clima laboral en la enfermería?",
+            options: [
+              "Alta carga de trabajo y presión asistencial",
+              "Exceso de recursos y equipos",
+              "Comunicación ineficaz entre pacientes",
+              "Reconocimiento excesivo del personal"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cuál es el impacto de un liderazgo transformacional en el clima laboral?",
+            options: [
+              "Mejora la moral y la eficiencia del equipo",
+              "Aumenta la dependencia del personal hacia el líder",
+              "Reduce la comunicación entre los miembros del equipo",
+              "Limita el desarrollo profesional del personal"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cuál es un beneficio directo de un clima laboral positivo en enfermería?",
+            options: [
+              "Reducción del estrés y el burnout",
+              "Aumento en el número de pacientes",
+              "Disminución de la necesidad de trabajo en equipo",
+              "Incremento en la duración de los turnos laborales"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cuál es un indicador clave para evaluar el clima laboral?",
+            options: [
+              "Nivel de satisfacción del personal",
+              "Número de pacientes por enfermera",
+              "Costos operativos del departamento de enfermería",
+              "Tasa de ocupación del hospital"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cuál es un método para evaluar el clima laboral?",
+            options: [
+              "Encuestas de clima laboral",
+              "Evaluación del rendimiento financiero",
+              "Análisis de la competencia",
+              "Revisión de la historia clínica de los pacientes"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cuál es una estrategia NO recomendada para fomentar el compromiso del personal?",
+            options: [
+              "Involucrar al personal en la toma de decisiones",
+              "Ignorar el feedback del personal",
+              "Definir una visión clara y compartida",
+              "Fomentar la participación en actividades sociales"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué aspecto de las condiciones de trabajo es crucial para un clima laboral positivo?",
+            options: [
+              "Seguridad y ergonomía del entorno de trabajo",
+              "Decoración de la oficina",
+              "Ubicación geográfica de la institución",
+              "Políticas de vestimenta"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué beneficio directo tiene la comunicación efectiva en el clima laboral de enfermería?",
+            options: [
+              "Mejora el trabajo en equipo y la cooperación",
+              "Aumenta las habilidades técnicas del personal",
+              "Reduce la necesidad de supervisión",
+              "Elimina completamente los errores médicos"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué caracteriza a un programa de formación en liderazgo efectivo para enfermería?",
+            options: [
+              "Desarrollo de habilidades de comunicación y toma de decisiones",
+              "Enfoque exclusivo en habilidades clínicas",
+              "Limitación al aprendizaje autodidacta",
+              "Concentración en la gestión financiera"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué componente NO es principal del clima laboral?",
+            options: [
+              "Liderazgo",
+              "Ubicación geográfica del hospital",
+              "Comunicación",
+              "Carga de trabajo"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué efecto tiene el reconocimiento del trabajo bien hecho sobre el personal de enfermería?",
+            options: [
+              "Aumenta la motivación y el compromiso",
+              "Disminuye la importancia del trabajo en equipo",
+              "Genera competencia negativa entre los empleados",
+              "Reduce la comunicación interna"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué efecto tiene un clima laboral positivo en el entorno sanitario?",
+            options: [
+              "Aumento en la carga de trabajo del personal",
+              "Mejora de la satisfacción y bienestar del personal",
+              "Disminución de la colaboración entre el personal",
+              "Aumento de los conflictos interpersonales"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué estilo de liderazgo se caracteriza por inspirar y motivar al personal?",
+            options: [
+              "Liderazgo transformacional",
+              "Liderazgo autocrático",
+              "Liderazgo laissez-faire",
+              "Liderazgo burocrático"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué estrategia es efectiva para fomentar la motivación intrínseca en el personal de enfermería?",
+            options: [
+              "Ofrecer oportunidades de desarrollo profesional",
+              "Limitar las responsabilidades del personal",
+              "Reducir la autonomía en el trabajo",
+              "Aumentar las horas de trabajo"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué estrategia NO mejora la comunicación en el entorno de enfermería?",
+            options: [
+              "Implementación de un buzón de sugerencias",
+              "Restricción de reuniones periódicas",
+              "Uso de plataformas de comunicación interna",
+              "Realización de programas de formación en comunicación"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué factor NO es considerado al evaluar el clima laboral?",
+            options: [
+              "Estilo de liderazgo",
+              "Comunicación",
+              "Preferencias de color en la decoración",
+              "Relaciones interpersonales"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué NO es un componente del clima laboral?",
+            options: [
+              "Reconocimiento",
+              "Carga de trabajo",
+              "Distancia al lugar de trabajo",
+              "Liderazgo"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué NO se considera una estrategia efectiva para mejorar el clima laboral?",
+            options: [
+              "Reconocimiento del trabajo bien hecho",
+              "Ignorar las sugerencias del personal",
+              "Promoción de la salud y bienestar del personal",
+              "Fomento de la flexibilidad laboral y conciliación familiar"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué NO se considera una técnica efectiva de resolución de conflictos?",
+            options: [
+              "Comunicación efectiva",
+              "Evitar el conflicto a toda costa",
+              "Identificar intereses de las partes involucradas",
+              "Buscar soluciones creativas"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué relación existe entre el clima laboral y la calidad del cuidado al paciente según estudios?",
+            options: [
+              "Ninguna relación significativa",
+              "Hospitales con clima laboral positivo tienen menores tasas de mortalidad y complicaciones",
+              "Clima laboral negativo mejora la eficiencia",
+              "Clima laboral positivo aumenta los errores médicos"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué tendencia está mejorando la colaboración en el clima laboral de enfermería?",
+            options: [
+              "Uso de tecnologías para comunicación interna",
+              "Definir una visión clara y compartida",
+              "Limitación al aprendizaje autodidacta",
+              "Reduce la comunicación interna"
+            ],
+            correct: 0
+          },
+          {
+            q: "En el contexto de la enfermería, ¿qué significa una cultura de seguridad dentro del clima laboral?",
+            options: [
+              "Reconocimiento de y medidas preventivas contra errores médicos",
+              "Seguridad en las instalaciones físicas",
+              "Políticas de seguridad informática",
+              "Programas de seguridad personal fuera del trabajo"
+            ],
+            correct: 0
+          },
+        ],
+      },
   {
     id: 6,
     title: "La Gestión del Conflicto",
@@ -1923,14 +2421,256 @@ export const TOPICS = [
         ],
         correct: 1,
       },
-    ],
-  },
-  {
-    id: 7,
-    title: "La Motivación en Gestión",
-    subtitle: "Teorías y aplicación",
-    icon: "🔥",
-    questions: [
+        {
+          q: "¿Qué se define como conflicto?",
+          options: [
+            "Una cooperación entre dos o más partes para alcanzar un objetivo común",
+            "Una situación en la que dos o más partes perciben que sus objetivos, intereses o valores son incompatibles",
+            "Una discusión informal entre colegas sobre temas no relacionados con el trabajo",
+            "Un acuerdo entre dos partes sin la necesidad de mediación"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Cuál es una causa común de conflicto en el ámbito sanitario?",
+          options: [
+            "Exceso de comunicación",
+            "Claridad en roles y responsabilidades",
+            "Falta de comunicación",
+            "Abundancia de recursos"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué tipo de conflicto se da entre diferentes departamentos de un centro sanitario?",
+          options: [
+            "Conflictos interpersonales",
+            "Conflictos intrapersonales",
+            "Conflictos organizacionales",
+            "Conflictos éticos"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué consecuencia puede tener un conflicto no resuelto?",
+          options: [
+            "Mejora de la moral y satisfacción laboral",
+            "Disminución de la productividad",
+            "Aumento de la claridad en roles y responsabilidades",
+            "Mejora en la seguridad del paciente"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué fase del conflicto implica la percepción de incompatibilidad entre las partes?",
+          options: [
+            "Escalada",
+            "Crisis",
+            "Percepción",
+            "Desescalada"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué estrategia es recomendada durante la fase de percepción del conflicto?",
+          options: [
+            "Separar a las partes",
+            "Comunicarse con la otra parte para aclarar la situación",
+            "Buscar ayuda de un tercero imparcial",
+            "Establecer un canal de comunicación cerrado"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Cuál es un estilo de resolución de conflictos?",
+          options: [
+            "Estilo competitivo",
+            "Estilo independiente",
+            "Estilo dependiente",
+            "Estilo introvertido"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué estilo de resolución de conflictos busca evitarlo a toda costa?",
+          options: [
+            "Estilo competitivo",
+            "Estilo complaciente",
+            "Estilo colaborativo",
+            "Estilo evasivo"
+          ],
+          correct: 3
+        },
+        {
+          q: "¿Cuál es el estilo más efectivo para la resolución de conflictos a largo plazo?",
+          options: [
+            "Estilo competitivo",
+            "Estilo complaciente",
+            "Estilo evasivo",
+            "Estilo colaborativo"
+          ],
+          correct: 3
+        },
+        {
+          q: "¿Qué técnica de gestión del conflicto implica un acuerdo mutuo entre las partes?",
+          options: [
+            "Arbitraje",
+            "Negociación",
+            "Mediación",
+            "Conciliación"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿En qué proceso un tercero neutral ayuda a las partes a llegar a un acuerdo, sin proponer soluciones?",
+          options: [
+            "Arbitraje",
+            "Mediación",
+            "Conciliación",
+            "Negociación"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué habilidad implica ser capaz de expresar sus necesidades y deseos de forma clara y directa?",
+          options: [
+            "Escucha activa",
+            "Flexibilidad",
+            "Asertividad",
+            "Tolerancia a la frustración"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué se recomienda hacer para prevenir el conflicto?",
+          options: [
+            "Evitar toda comunicación",
+            "Comunicación clara y efectiva",
+            "Ignorar las señales de conflicto",
+            "Promover la competencia entre colegas"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué estrategia NO es recomendada para la gestión efectiva del conflicto?",
+          options: [
+            "Mantener la calma",
+            "Concentrarse en las personas, no en los problemas",
+            "Utilizar técnicas de comunicación efectiva",
+            "Practicar la escucha activa"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué fase del conflicto es crítica y representa el punto más álgido?",
+          options: [
+            "Percepción",
+            "Escalada",
+            "Crisis",
+            "Resolución"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Cuál es una causa del conflicto en el ámbito de la enfermería?",
+          options: [
+            "Sobrecarga de trabajo",
+            "Exceso de recursos",
+            "Comunicación excesiva",
+            "Claridad excesiva en roles y responsabilidades"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es una consecuencia del conflicto no resuelto en el ámbito sanitario?",
+          options: [
+            "Errores de asistencia sanitaria",
+            "Mejora en la calidad de la atención al paciente",
+            "Aumento de la moral entre los profesionales",
+            "Disminución del estrés y la fatiga"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué habilidad para la gestión del conflicto implica entender los sentimientos y necesidades de la otra persona?",
+          options: [
+            "Autoconocimiento",
+            "Empatía",
+            "Flexibilidad",
+            "Toma de decisiones"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Cuál de las siguientes NO es una técnica para la gestión del conflicto?",
+          options: [
+            "Arbitraje",
+            "Negociación",
+            "Competencia",
+            "Mediación"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué factor NO afecta la elección del estilo adecuado de resolución de conflictos?",
+          options: [
+            "La naturaleza del conflicto",
+            "El color favorito de las personas involucradas",
+            "Las características de las personas involucradas",
+            "El contexto del conflicto"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué se debe fomentar para prevenir conflictos según el texto?",
+          options: [
+            "Trabajo en equipo",
+            "Competencia individual",
+            "Aislamiento de los empleados",
+            "Políticas y procedimientos ambiguos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el primer paso en la gestión del conflicto según el texto?",
+          options: [
+            "Escalar el conflicto",
+            "Identificar los primeros signos de conflicto",
+            "Implementar un sistema de resolución de quejas inmediatamente",
+            "Buscar ayuda de un tercero imparcial"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué estilo de resolución de conflictos implica ceder ante las demandas de la otra parte para evitar el conflicto?",
+          options: [
+            "Estilo competitivo",
+            "Estilo complaciente",
+            "Estilo colaborativo",
+            "Estilo evasivo"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué recomendación NO se incluye para la prevención del conflicto?",
+          options: [
+            "Sea claro y directo en su comunicación",
+            "Escuche atentamente el punto de vista de la otra persona",
+            "Ignore las señales tempranas de conflicto",
+            "Sea respetuoso y tolerante con las diferencias"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Qué fase del conflicto implica buscar soluciones y negociar de buena fe?",
+          options: [
+            "Crisis",
+            "Desescalada",
+            "Percepción",
+            "Resolución"
+          ],
+          correct: 3
+        },
       {
         q: "Según la definición presentada en el documento, ¿cuál es la esencia fundamental de la motivación?",
         options: [
@@ -2030,6 +2770,264 @@ export const TOPICS = [
           "Ignorar la resistencia del personal",
         ],
         correct: 2,
+  },
+    ],
+  },
+  {
+    id: 7,
+    title: "Motivación en Enfermería",
+    subtitle: "Teorías, factores y estrategias",
+    icon: "✨",
+    questions: [
+      {
+        q: "¿Qué es la motivación según la definición proporcionada?",
+        options: [
+          "Un objetivo externo que se impone a las personas",
+          "Una fuerza interna que impulsa a las personas a actuar y persistir en sus acciones para alcanzar un objetivo",
+          "Una teoría psicológica que solo se aplica en el ámbito laboral",
+          "Un conjunto de técnicas de gestión empresarial"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál de las siguientes teorías no fue mencionada en el texto?",
+        options: [
+          "Teoría de las necesidades de Maslow",
+          "Teoría de los dos factores de Herzberg",
+          "Teoría de la disonancia cognitiva",
+          "Teorías X e Y de McGregor"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Por qué es crucial la motivación en los equipos de enfermería?",
+        options: [
+          "Porque reduce los costos operativos del hospital",
+          "Porque incrementa el número de pacientes atendidos",
+          "Porque mejora la calidad del servicio de atención a la salud",
+          "Porque elimina la necesidad de supervisión"
+        ],
+        correct: 2
+      },
+      {
+        q: "Según Maslow, ¿cuál es la necesidad más básica?",
+        options: [
+          "Necesidades de estima",
+          "Necesidades fisiológicas",
+          "Necesidades de autorrealización",
+          "Necesidades de afiliación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué diferencia principal establece Herzberg en su teoría?",
+        options: [
+          "Entre necesidades personales y profesionales",
+          "Entre motivación intrínseca y extrínseca",
+          "Entre factores motivadores y de higiene",
+          "Entre liderazgo autocrático y democrático"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué visión tiene la Teoría Y de McGregor sobre las personas?",
+        options: [
+          "Las personas son irresponsables y buscan evitar el trabajo",
+          "Las personas son responsables y buscan la autorrealización",
+          "Las personas necesitan ser estrictamente controladas",
+          "Las personas trabajan mejor bajo presión"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál de los siguientes es un factor intrínseco que influye en la motivación del personal de enfermería?",
+        options: [
+          "Salario",
+          "Seguridad laboral",
+          "Sentimiento de logro",
+          "Relaciones con los compañeros"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué aspecto NO es considerado un factor extrínseco de motivación?",
+        options: [
+          "Autonomía",
+          "Condiciones de trabajo",
+          "Liderazgo",
+          "Oportunidades de desarrollo profesional"
+        ],
+        correct: 0
+      },
+      {
+        q: "Según la teoría de Herzberg, ¿qué factor es considerado motivacional?",
+        options: [
+          "Salario",
+          "Seguridad laboral",
+          "Reconocimiento",
+          "Ambiente físico del trabajo"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué estrategia de motivación implica el reconocimiento del trabajo bien hecho?",
+        options: [
+          "Establecimiento de objetivos",
+          "Reconocimiento",
+          "Gestión del cambio",
+          "Liderazgo situacional"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es la importancia de la comunicación efectiva en la motivación de equipos de enfermería?",
+        options: [
+          "Permite establecer horarios flexibles",
+          "Ayuda a mantener una comunicación clara y abierta",
+          "Facilita la gestión financiera del equipo",
+          "Incrementa el salario del personal"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué permite el establecimiento de objetivos en un equipo de enfermería?",
+        options: [
+          "Aumentar el salario base del equipo",
+          "Fomentar la participación y compromiso del personal",
+          "Reducir el número de pacientes por enfermera",
+          "Eliminar la necesidad de capacitación continua"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué NO es un consejo para líderes de equipos de enfermería según el texto?",
+        options: [
+          "Ignorar el feedback del equipo",
+          "Fomentar un ambiente de trabajo positivo",
+          "Brindar oportunidades de desarrollo profesional",
+          "Mantener una comunicación clara y abierta"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se describe la Teoría X de McGregor en el texto?",
+        options: [
+          "Las personas son creativas y buscan el trabajo en equipo",
+          "Las personas son perezosas y evitan el trabajo",
+          "Las personas prefieren ser lideradas que liderar",
+          "Las personas son naturalmente competitivas"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué aspecto es fundamental para mantener la motivación durante los cambios según el texto?",
+        options: [
+          "Reducir el número de cambios",
+          "Mantener una comunicación abierta y honesta",
+          "Aumentar el salario durante los cambios",
+          "Evitar la participación del personal en el cambio"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué NO se considera un factor intrínseco según el texto?",
+        options: [
+          "Condiciones de trabajo",
+          "Sentido de pertenencia",
+          "Reconocimiento",
+          "Autonomía"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de estos no es un beneficio de un equipo de enfermería motivado mencionado en el texto?",
+        options: [
+          "Mayor número de vacaciones",
+          "Mejor desempeño",
+          "Reducción del estrés y el burnout",
+          "Mejora en la calidad de la atención al paciente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué teoría propone niveles de necesidades desde las más básicas hasta las más complejas?",
+        options: [
+          "Teoría de los dos factores de Herzberg",
+          "Teorías X e Y de McGregor",
+          "Teoría de Maslow sobre las Necesidades",
+          "Teoría de la disonancia cognitiva"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué estrategia de motivación enfatiza el equilibrio entre la vida laboral y personal?",
+        options: [
+          "Flexibilidad en los horarios de trabajo",
+          "Incremento de salario",
+          "Reducción de la carga laboral",
+          "Capacitación técnica"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un enfoque incorrecto según la teoría X e Y de McGregor para motivar a los equipos de enfermería?",
+        options: [
+          "Fomentar la autonomía y la responsabilidad",
+          "Adoptar un liderazgo participativo",
+          "Considerar que las personas son perezosas por naturaleza",
+          "Crear un clima de trabajo positivo"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué no es considerado un factor extrínseco que influye en la motivación?",
+        options: [
+          "Sentimiento de logro",
+          "Condiciones de trabajo",
+          "Oportunidades de desarrollo profesional",
+          "Liderazgo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué acción no es recomendada para gestionar el cambio en la motivación del personal de enfermería?",
+        options: [
+          "Limitar la participación del personal en el proceso de cambio",
+          "Brindar apoyo y capacitación",
+          "Manejar las emociones del personal",
+          "Involucrar al personal en el proceso de cambio"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el propósito de ofrecer reconocimiento y recompensas según el texto?",
+        options: [
+          "Disminuir la carga laboral",
+          "Mostrar al personal que su trabajo es valorado",
+          "Aumentar la competitividad entre los empleados",
+          "Reducir los costos de formación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué no se menciona como un aspecto del buen ambiente de trabajo para motivar al personal de enfermería?",
+        options: [
+          "Competitividad entre colegas",
+          "Clima de confianza, respeto y colaboración",
+          "Buena comunicación y apoyo entre compañeros",
+          "Recursos y herramientas adecuados para realizar el trabajo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un principio del liderazgo transformacional aplicado a la enfermería según el texto?",
+        options: [
+          "Promover la competencia interna",
+          "Ignorar el desarrollo profesional",
+          "Inspirar al equipo a alcanzar objetivos desafiantes",
+          "Centralizar la toma de decisiones"
+        ],
+        correct: 2
       },
     ],
   },
@@ -2139,8 +3137,258 @@ export const TOPICS = [
         ],
         correct: 3,
       },
-    ],
-  },
+          {
+            q: "¿Qué define al trabajo en equipo en el contexto de la enfermería?",
+            options: [
+              "Competencia entre profesionales",
+              "Esfuerzo colaborativo para alcanzar un objetivo común",
+              "Trabajo individual sin interacción",
+              "Seguimiento de órdenes sin aportación personal"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cuál es una característica clave de un equipo de trabajo eficaz?",
+            options: [
+              "Comunicación ineficaz",
+              "Falta de respeto mutuo",
+              "Liderazgo compartido",
+              "Evitación de conflictos"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué diferencia principal hay entre un grupo de trabajo y un equipo?",
+            options: [
+              "Un equipo tiene baja colaboración",
+              "Un grupo de trabajo tiene alta interdependencia",
+              "Un equipo tiene compromiso alto",
+              "Un grupo de trabajo tiene responsabilidad compartida"
+            ],
+            correct: 2
+          },
+          {
+            q: "Según el modelo de Tuckman, ¿cuál es la primera etapa en el desarrollo de un equipo?",
+            options: [
+              "Formación",
+              "Tormenta",
+              "Normalización",
+              "Desempeño"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Qué etapa del desarrollo de un equipo implica el inicio de conflictos por expresión de ideas?",
+            options: [
+              "Formación",
+              "Tormenta",
+              "Normalización",
+              "Desempeño"
+            ],
+            correct: 1
+          },
+          {
+            q: "Durante la etapa de 'Desempeño', ¿cómo operan los miembros del equipo?",
+            options: [
+              "Con alta dependencia",
+              "Con comunicación limitada",
+              "De manera eficiente y efectiva",
+              "Con objetivos individuales"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué beneficio trae el trabajo en equipo a los pacientes?",
+            options: [
+              "Reducción de la calidad de atención",
+              "Mejora de la calidad de la atención",
+              "Aumento de errores médicos",
+              "Disminución de la seguridad del paciente"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cuál es una habilidad clave para el trabajo en equipo en enfermería?",
+            options: [
+              "Comunicación efectiva",
+              "Liderazgo autoritario",
+              "Trabajo en silos",
+              "Evitación de feedback"
+            ],
+            correct: 0
+          },
+          {
+            q: "¿Cómo se describe el liderazgo compartido en un equipo de enfermería eficaz?",
+            options: [
+              "Un único líder toma todas las decisiones",
+              "Las responsabilidades de liderazgo se distribuyen entre miembros",
+              "Falta de liderazgo",
+              "Liderazgo basado en la antigüedad"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué estrategia es fundamental para fomentar el trabajo en equipo?",
+            options: [
+              "Promover la competencia entre miembros",
+              "Limitar la comunicación",
+              "Crear un ambiente de trabajo positivo",
+              "Definir objetivos contradictorios"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué representa la toma de decisiones consensuada en un equipo?",
+            options: [
+              "Decisiones tomadas únicamente por el líder",
+              "Ignorar las opiniones de los miembros",
+              "Acuerdos aceptados y apoyados por todos los miembros",
+              "Decisiones rápidas sin discusión"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Cuál es una barrera común para el trabajo en equipo en enfermería?",
+            options: [
+              "Comunicación efectiva",
+              "Falta de comunicación",
+              "Demasiada confianza",
+              "Uniformidad de personalidades"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cómo se puede superar la falta de confianza en un equipo de enfermería?",
+            options: [
+              "Ignorando los conflictos",
+              "Fomentando experiencias compartidas de fiabilidad",
+              "Estableciendo un liderazgo autoritario",
+              "Reduciendo la comunicación"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué importancia tiene el liderazgo compartido en un equipo de enfermería?",
+            options: [
+              "Disminuye la participación de los miembros",
+              "Limita la diversidad de habilidades",
+              "Mejora la toma de decisiones y fomenta la innovación",
+              "Aumenta la dependencia de un único líder"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué etapa del modelo de Tuckman se enfoca en establecer normas y roles del equipo?",
+            options: [
+              "Formación",
+              "Tormenta",
+              "Normalización",
+              "Desempeño"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué beneficio aporta el trabajo en equipo a los profesionales de la salud?",
+            options: [
+              "Aumento del estrés",
+              "Mayor satisfacción laboral",
+              "Disminución de la colaboración",
+              "Reducción de oportunidades de aprendizaje"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cuál es un ejemplo de cómo el trabajo en equipo beneficia a los pacientes?",
+            options: [
+              "Atención fragmentada",
+              "Cuidados paliativos integrales",
+              "Aumento de errores de medicación",
+              "Disminución de la comunicación entre profesionales"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cómo se diferencia un equipo de un grupo de trabajo en términos de liderazgo?",
+            options: [
+              "Liderazgo centralizado en el grupo de trabajo",
+              "Liderazgo compartido en el equipo",
+              "Falta de liderazgo en ambos",
+              "Liderazgo autoritario en el equipo"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué rol juega la flexibilidad y adaptabilidad en un equipo de enfermería?",
+            options: [
+              "Limita la capacidad de respuesta del equipo",
+              "Es fundamental para adaptarse a nuevas situaciones",
+              "Reduce la eficiencia del equipo",
+              "Aumenta la dependencia de protocolos rígidos"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué estrategia ayuda a definir la dirección del equipo de enfermería?",
+            options: [
+              "Evitar establecer objetivos",
+              "Definir objetivos comunes y roles claros",
+              "Promover objetivos individuales",
+              "Mantener los roles ambiguos"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Cómo afecta la falta de liderazgo al trabajo en equipo en enfermería?",
+            options: [
+              "Mejora automáticamente la colaboración",
+              "Conduce a una dirección confusa y moral baja",
+              "Aumenta la eficacia del equipo",
+              "Fomenta el liderazgo compartido"
+            ],
+            correct: 1
+          },
+          {
+            q: "¿Qué característica no es deseable en un equipo de trabajo eficaz?",
+            options: [
+              "Comunicación efectiva",
+              "Confianza y respeto mutuo",
+              "Liderazgo compartido",
+              "Evitación de conflictos"
+            ],
+            correct: 3
+          },
+          {
+            q: "¿Qué representa la etapa de 'Disolución' en el modelo de Tuckman?",
+            options: [
+              "Inicio del trabajo en equipo",
+              "Generación de conflictos",
+              "El equipo se disuelve tras completar su tarea",
+              "Establecimiento de normas y roles"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Qué importancia tiene celebrar los éxitos del equipo?",
+            options: [
+              "Disminuye la moral del equipo",
+              "Aumenta la competencia interna",
+              "Fortalece el espíritu de equipo y aumenta la moral",
+              "Reduce la eficiencia del equipo"
+            ],
+            correct: 2
+          },
+          {
+            q: "¿Cuál es una barrera para el trabajo en equipo que implica diferencias entre miembros?",
+            options: [
+              "Comunicación excesiva",
+              "Demasiada confianza",
+              "Diferencias de personalidad o valores",
+              "Liderazgo compartido eficaz"
+            ],
+            correct: 2
+          },
+        ],
+      },
   {
     id: 9,
     title: "Imagen Digital de la Enfermera",
@@ -2246,6 +3494,256 @@ export const TOPICS = [
           "La única dificultad es tener una foto bonita",
         ],
         correct: 0,
+      },
+      {
+        q: "¿Qué impacto tiene la imagen digital en la comunicación y el desarrollo profesional actual?",
+        options: [
+          "Impacto significativo",
+          "Ninguno",
+          "Impacto negativo",
+          "Solo afecta a las redes sociales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Por qué es relevante la imagen digital para las enfermeras?",
+        options: [
+          "Afecta la confianza de los pacientes",
+          "No es relevante",
+          "Solo para fines personales",
+          "Solo afecta la búsqueda de empleo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo puede una enfermera generar confianza en sus pacientes a través de su imagen digital?",
+        options: [
+          "Teniendo una presencia online profesional y positiva",
+          "Publicando contenido personal",
+          "Ignorando las redes sociales",
+          "Usando únicamente LinkedIn"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa la identidad digital de una enfermera?",
+        options: [
+          "Su presencia en redes sociales, publicaciones y actividad online",
+          "Solo su currículum vitae",
+          "Únicamente su perfil de LinkedIn",
+          "Sus interacciones personales offline"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una herramienta clave para construir una imagen digital positiva según el texto?",
+        options: [
+          "Las redes sociales y plataformas profesionales",
+          "Evitar todas las redes sociales",
+          "Publicar exclusivamente contenido de entretenimiento",
+          "No interactuar con otros profesionales online"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se recomienda para mantener una imagen digital profesional y ética?",
+        options: [
+          "Comprobar la información y respetar la privacidad de los pacientes",
+          "Publicar cualquier tipo de contenido",
+          "No verificar la información antes de compartirla",
+          "Usar un tono confrontativo en las interacciones online"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo puede influir la presencia digital de una enfermera en la percepción pública de la profesión?",
+        options: [
+          "Puede aumentar la visibilidad y conocimiento sobre la enfermería",
+          "No tiene influencia",
+          "Solo influencia negativa",
+          "Disminuye la confianza en la profesión"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto es crucial al construir una imagen digital profesional?",
+        options: [
+          "Comunicación digital efectiva",
+          "Ignorar las críticas constructivas",
+          "Limitar la presencia online a una sola plataforma",
+          "Evitar compartir logros profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué deben evitar las enfermeras al usar redes sociales profesionales?",
+        options: [
+          "Publicar contenido inapropiado u ofensivo",
+          "Conectar con otros profesionales",
+          "Compartir conocimientos y experiencias",
+          "Promocionar su marca personal"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un desafío significativo de la imagen digital en enfermería?",
+        options: [
+          "La desinformación y las fake news",
+          "Usar demasiadas redes sociales",
+          "Tener una presencia digital positiva",
+          "Evitar toda presencia online"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia NO es recomendada para construir una imagen digital positiva?",
+        options: [
+          "Crear contenido de baja calidad",
+          "Definir una marca personal clara",
+          "Ser auténtico online",
+          "Interactuar con otros profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué beneficio proporciona una buena imagen digital a las enfermeras en su carrera profesional?",
+        options: [
+          "Aumenta las oportunidades de formación e investigación",
+          "Limita las oportunidades laborales",
+          "Disminuye la visibilidad profesional",
+          "Reduce la confianza de los pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué herramienta NO es mencionada como útil para la gestión de la imagen digital en enfermería?",
+        options: [
+          "Ninguna de las anteriores",
+          "LinkedIn",
+          "Canva",
+          "Facebook"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué acción es fundamental para enfrentar los retos de la imagen digital en enfermería?",
+        options: [
+          "Desarrollar una red de apoyo online",
+          "Ignorar los desafíos",
+          "Publicar contenido sin verificar",
+          "Limitar la interacción con otros profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el principal objetivo al definir la audiencia objetivo de la imagen digital de una enfermera?",
+        options: [
+          "Mejorar la visibilidad y reputación online",
+          "Ignorar las necesidades del público",
+          "Aumentar la confusión sobre la enfermería",
+          "Reducir la interacción con el público"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO es una práctica recomendada para la construcción de una imagen digital profesional?",
+        options: [
+          "Publicar información no verificada",
+          "Claridad en los mensajes",
+          "Mantener una ortografía y gramática impecables",
+          "Respetar y ser cordial en las interacciones online"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo pueden las enfermeras promover una representación más diversa e inclusiva en línea?",
+        options: [
+          "Denunciando la discriminación y el sexismo",
+          "Manteniendo los estereotipos existentes",
+          "Ignorando los sesgos de género",
+          "Limitando su presencia en redes sociales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué elemento NO es parte de la identidad digital según el texto?",
+        options: [
+          "Dirección física",
+          "Nombre",
+          "Foto de perfil",
+          "Biografía"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué beneficio ofrece el sitio web personal para las enfermeras?",
+        options: [
+          "Diferenciarse de la competencia",
+          "Disminuir su credibilidad profesional",
+          "Limitar su visibilidad online",
+          "Aumentar los estereotipos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué consejo NO se da para enfrentar el ciberacoso?",
+        options: [
+          "Publicar contenido provocativo",
+          "Ignorar a los trolls",
+          "Bloquear a los usuarios acosadores",
+          "Denunciar el acoso a las plataformas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué factor NO se menciona como parte de la construcción de una marca personal coherente?",
+        options: [
+          "Ser inconsistente en las plataformas",
+          "Desarrollar una identidad visual",
+          "Definir el valor diferencial",
+          "Crear contenido de calidad"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO es un aspecto a mejorar en la imagen digital en enfermería?",
+        options: [
+          "Reducir la visibilidad online",
+          "Combatir estereotipos de género",
+          "Aumentar la presencia en puestos de liderazgo",
+          "Mostrar la diversidad de la profesión"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo pueden las enfermeras aumentar su visibilidad profesional según el texto?",
+        options: [
+          "Participando activamente en redes sociales y plataformas online",
+          "Limitando su participación en eventos online",
+          "Usando una única red social",
+          "No compartiendo logros o experiencias"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO se sugiere para gestionar efectivamente la imagen digital en enfermería?",
+        options: [
+          "Ignorar el feedback negativo",
+          "Publicar contenido regularmente",
+          "Interactuar con seguidores",
+          "Mantenerse actualizado con tendencias digitales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un beneficio directo de una imagen digital positiva para las enfermeras en el ámbito laboral?",
+        options: [
+          "Acceso a mejores oportunidades laborales",
+          "Disminución de ofertas de trabajo",
+          "Menor visibilidad en búsquedas de empleo",
+          "Aumento de la competencia profesional"
+        ],
+        correct: 0
       },
     ],
   },
@@ -2355,6 +3853,256 @@ export const TOPICS = [
         ],
         correct: 1,
       },
+      {
+        q: "¿Qué es la toma de decisiones en enfermería?",
+        options: [
+          "Elegir el mejor vendaje para una herida",
+          "Proceso de selección de la mejor opción entre alternativas para cuidado de calidad",
+          "Decidir si un paciente necesita ser intubado",
+          "Administrar medicamentos prescritos"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué impacto tienen las decisiones de las enfermeras?",
+        options: [
+          "Cambian los protocolos hospitalarios",
+          "Afectan la administración del hospital",
+          "Impactan la salud y bienestar de los pacientes",
+          "Modifican las leyes de salud"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué factor NO se considera en la toma de decisiones en enfermería?",
+        options: [
+          "Evidencia científica",
+          "Valores del paciente",
+          "Color favorito del paciente",
+          "Recursos disponibles"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué modelo asume que las enfermeras toman decisiones de forma racional?",
+        options: [
+          "Modelo de toma de decisiones racional",
+          "Modelo de toma de decisiones intuitiva",
+          "Modelo de toma de decisiones basada en la evidencia",
+          "Modelo de toma de decisiones en equipo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es la primera fase del proceso de toma de decisiones en enfermería?",
+        options: [
+          "Análisis de datos",
+          "Planificación",
+          "Ejecución",
+          "Identificación del problema"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué herramienta permite a las enfermeras medir la gravedad de un problema?",
+        options: [
+          "Guías de práctica clínica",
+          "Protocolos",
+          "Sistemas de información",
+          "Escalas de valoración"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál es un factor individual que influye en la toma de decisiones en enfermería?",
+        options: [
+          "Recursos disponibles",
+          "Presión asistencial",
+          "Conocimiento",
+          "Protocolos y normas"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué característica NO describe una situación compleja en enfermería?",
+        options: [
+          "Incertidumbre",
+          "Claridad de información",
+          "Ambigüedad",
+          "Múltiples factores a considerar"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué nivel de decisiones incluye la asignación de personal?",
+        options: [
+          "Decisiones simples",
+          "Decisiones estratégicas",
+          "Decisiones operativas",
+          "Decisiones inciertas"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué técnica implica preguntar '¿Por qué?' repetidamente hasta llegar a la raíz de un problema?",
+        options: [
+          "Brainstorming",
+          "Diagrama de flujo",
+          "Método de los Cinco Porqués",
+          "Matriz de decisión"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es un objetivo de la mejora continua de la calidad y seguridad del paciente?",
+        options: [
+          "Aumentar los ingresos del hospital",
+          "Reducir errores e incidentes",
+          "Cambiar la misión del hospital",
+          "Aumentar la carga de trabajo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué herramienta es útil para identificar factores internos y externos en la toma de decisiones?",
+        options: [
+          "Análisis DAFO",
+          "Protocolos",
+          "Escalas de valoración",
+          "Software de Gestión de Datos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO es un factor del entorno que influye en la toma de decisiones en enfermería?",
+        options: [
+          "Valores culturales y religiosos del paciente",
+          "Recursos disponibles",
+          "Tiempo",
+          "Presión asistencial"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un beneficio del trabajo en equipo y la colaboración en la toma de decisiones?",
+        options: [
+          "Reducción de la diversidad de conocimientos",
+          "Soluciones innovadoras",
+          "Aumento del estrés laboral",
+          "Disminución del apoyo mutuo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué aplicación de las tecnologías de la información NO se menciona en el contexto de la toma de decisiones en enfermería?",
+        options: [
+          "Videojuegos para entrenamiento",
+          "Sistemas de información clínica",
+          "Bases de datos de evidencia científica",
+          "Herramientas de apoyo a la toma de decisiones"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de los siguientes NO es un factor del paciente que influye en la toma de decisiones en enfermería?",
+        options: [
+          "Preferencias y deseos del paciente",
+          "Valores culturales y religiosos del paciente",
+          "Marca favorita de ropa del paciente",
+          "Estado de salud del paciente"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué modelo reconoce que las enfermeras toman decisiones basadas en su intuición?",
+        options: [
+          "Modelo de toma de decisiones racional",
+          "Modelo de toma de decisiones intuitiva",
+          "Modelo de toma de decisiones basada en la evidencia",
+          "Modelo de toma de decisiones en equipo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál fase NO es parte del proceso de toma de decisiones en enfermería?",
+        options: [
+          "Reflexión",
+          "Análisis de datos",
+          "Planificación",
+          "Evaluación"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál herramienta NO es mencionada como apoyo para la toma de decisiones?",
+        options: [
+          "Guías de práctica clínica",
+          "Enciclopedias médicas impresas",
+          "Protocolos",
+          "Software de Gestión de Datos"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué esencial NO es parte de la toma de decisiones de la gestora enfermera?",
+        options: [
+          "Mejora de la cafetería del hospital",
+          "Definición de la misión, visión y valores del servicio de enfermería",
+          "Planificación de recursos humanos y materiales",
+          "Desarrollo de políticas y procedimientos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál estrategia NO se recomienda para la toma de decisiones en situaciones complejas?",
+        options: [
+          "Ignorar los valores y preferencias del paciente",
+          "Recopilar la mayor cantidad de información posible",
+          "Consultar con otros profesionales de la salud",
+          "Utilizar herramientas de apoyo a la toma de decisiones"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué NO se considera un factor que afecta la toma de decisiones en enfermería?",
+        options: [
+          "Color de las paredes en el hospital",
+          "Conocimiento",
+          "Experiencia",
+          "Valores personales y profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué beneficio NO se asocia con el análisis DAFO en la toma de decisiones?",
+        options: [
+          "Identificación de nuevas tendencias de moda",
+          "Identificación de debilidades",
+          "Reconocimiento de amenazas",
+          "Aprovechamiento de oportunidades"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál no es un tipo de decisión en el contexto de la enfermería?",
+        options: [
+          "Decisiones de color",
+          "Decisiones simples",
+          "Decisiones complejas",
+          "Decisiones urgentes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué modelo enfatiza la importancia de utilizar la mejor evidencia científica disponible?",
+        options: [
+          "Modelo de toma de decisiones racional",
+          "Modelo de toma de decisiones intuitiva",
+          "Modelo de toma de decisiones basada en la evidencia",
+          "Modelo de toma de decisiones en equipo"
+        ],
+        correct: 2
+      },
     ],
   },
   {
@@ -2463,14 +4211,264 @@ export const TOPICS = [
         ],
         correct: 0,
       },
+      {
+        q: "¿Qué es la planificación?",
+        options: [
+          "Un proceso de solución de problemas",
+          "Una herramienta para el éxito en cualquier ámbito de la vida",
+          "Una metodología de evaluación",
+          "Un sistema de control de calidad"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál de los siguientes no es un beneficio de la planificación eficaz?",
+        options: [
+          "Ser más productivos",
+          "Reducir el estrés y la ansiedad",
+          "Aumentar el estrés",
+          "Mejorar nuestra calidad de vida"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué tipo de planificación se utiliza para establecer objetivos personales?",
+        options: [
+          "Planificación empresarial",
+          "Planificación financiera",
+          "Planificación personal",
+          "Planificación de proyectos"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es el primer paso en la planificación según los principios básicos?",
+        options: [
+          "Identificación de recursos",
+          "Establecimiento de objetivos y metas",
+          "Desarrollo de un plan de acción",
+          "Seguimiento y evaluación del plan"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué herramienta se utiliza para realizar un diagnóstico de la situación actual de una organización en la planificación estratégica?",
+        options: [
+          "Matriz BCG",
+          "Cuadro de Mando Integral",
+          "Análisis FODA",
+          "Diagramas de Gantt"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué representa el Cuadrante 1 en la matriz de Eisenhower?",
+        options: [
+          "Importante y urgente",
+          "Importante, pero no urgente",
+          "No importante, pero urgente",
+          "No importante ni urgente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes es una herramienta visual que permite organizar ideas y conceptos de forma jerárquica?",
+        options: [
+          "Diagramas de flujo",
+          "Mapas mentales",
+          "Matriz de decisiones",
+          "Listas de tareas"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué metodología de planificación se centra en el corto plazo y en la asignación de recursos para alcanzar los objetivos?",
+        options: [
+          "Planificación estratégica",
+          "Planificación táctica",
+          "Planificación operativa",
+          "Planificación por proyectos"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué técnica se utiliza para determinar la ruta crítica de un proyecto?",
+        options: [
+          "PERT",
+          "CPM",
+          "Diagramas de Gantt",
+          "Análisis FODA"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué categoría en el método ABC incluye tareas que son importantes para el éxito a largo plazo pero no urgentes?",
+        options: [
+          "A",
+          "B",
+          "C",
+          "Ninguna de las anteriores"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué tipo de planificación se enfoca en el día a día de las operaciones de la organización?",
+        options: [
+          "Planificación táctica",
+          "Planificación operativa",
+          "Planificación estratégica",
+          "Planificación por proyectos"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué herramienta ayuda a tomar decisiones de forma racional y sistemática?",
+        options: [
+          "Diagramas de flujo",
+          "Mapas mentales",
+          "Matriz de decisiones",
+          "Software de planificación"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿En qué se basa el análisis FODA?",
+        options: [
+          "Identificación de factores internos y externos que pueden afectar el éxito de la organización",
+          "Clasificación de productos o servicios",
+          "Traducción de la visión en indicadores de desempeño",
+          "Visualización del cronograma de un proyecto"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un ejemplo del Cuadrante 3 de la matriz de Eisenhower?",
+        options: [
+          "Planificar la estrategia a largo plazo",
+          "Hacer ejercicio regularmente",
+          "Responder correos no importantes",
+          "Aprender un nuevo idioma"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué tipo de planificación gestiona las finanzas de una organización?",
+        options: [
+          "Planificación personal",
+          "Planificación de proyectos",
+          "Planificación empresarial",
+          "Planificación financiera"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué metodología permite analizar la cartera de productos o servicios?",
+        options: [
+          "Análisis FODA",
+          "Matriz BCG",
+          "Cuadro de Mando Integral",
+          "Diagramas de Gantt"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué ventaja ofrece el software de planificación?",
+        options: [
+          "Reduce la eficacia del proceso",
+          "Limita la comunicación",
+          "Mejora la eficiencia del proceso de planificación",
+          "Aumenta la dependencia de recursos materiales"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál NO es una metodología de planificación mencionada en el texto?",
+        options: [
+          "Planificación estratégica",
+          "Planificación reactiva",
+          "Planificación táctica",
+          "Planificación operativa"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué herramienta permite visualizar el cronograma de un proyecto?",
+        options: [
+          "Diagramas de Gantt",
+          "PERT",
+          "CPM",
+          "Mapas mentales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa el análisis FODA en la planificación estratégica?",
+        options: [
+          "Una técnica de gestión del tiempo",
+          "Un método para determinar la ruta crítica",
+          "Una herramienta para realizar un diagnóstico",
+          "Un software de planificación"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué criterio NO se aplica a las metas de planificación?",
+        options: [
+          "Específicas",
+          "Medibles",
+          "Inalcanzables",
+          "Con plazo determinado"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es el propósito de la planificación operativa?",
+        options: [
+          "Definir la dirección a largo plazo",
+          "Traducir objetivos estratégicos en planes concretos",
+          "Desarrollar detalles para implementar planes tácticos",
+          "Gestionar proyectos específicos"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué metodología se utiliza para definir la estrategia y objetivos de una empresa?",
+        options: [
+          "Planificación personal",
+          "Planificación empresarial",
+          "Planificación de proyectos",
+          "Planificación financiera"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué técnica permite optimizar la planificación de proyectos complejos?",
+        options: [
+          "Diagramas de Gantt",
+          "PERT",
+          "Matriz BCG",
+          "Análisis FODA"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué planificación se basa en analizar el entorno interno y externo?",
+        options: [
+          "Planificación táctica",
+          "Planificación operativa",
+          "Planificación estratégica",
+          "Planificación por proyectos"
+        ],
+        correct: 2
+      },
     ],
   },
   {
     id: 12,
-    title: "Gestión por Procesos",
-    subtitle: "Diseño, implementación y mejora continua",
-    icon: "📈",
-    questions: [
+        title: "Gestión por Procesos",
+        subtitle: "Mapas, indicadores y mejora continua",
+        icon: "📊",
+        questions: [
       {
         q: "Según el documento, ¿cuál es la definición fundamental de la gestión por procesos?",
         options: [
@@ -2570,6 +4568,226 @@ export const TOPICS = [
           "Menos trabajo",
         ],
         correct: 3,
+      },
+      {
+        q: "¿Qué busca optimizar la gestión por procesos en una organización?",
+        options: [
+          "El número de empleados",
+          "La cultura organizacional",
+          "El uso de los recursos y la satisfacción de los clientes",
+          "La estructura jerárquica"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál de las siguientes afirmaciones caracteriza mejor la diferencia estructural entre la gestión tradicional y la gestión por procesos?",
+        options: [
+          "La gestión tradicional tiene una estructura jerárquica, mientras que la gestión por procesos presenta una estructura plana.",
+          "La gestión tradicional promueve la mejora continua, a diferencia de la gestión por procesos.",
+          "La gestión por procesos reduce la coordinación entre unidades organizativas.",
+          "La gestión tradicional se basa en procesos horizontales y sistémicos."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el primer paso esencial para implementar la gestión por procesos en los servicios de enfermería?",
+        options: [
+          "Identificar los procesos existentes dentro del servicio.",
+          "Contratar personal experto en mapas de procesos.",
+          "Estandarizar los protocolos clínicos.",
+          "Reorganizar las estructuras departamentales jerárquicas."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué proceso se clasifica como estratégico dentro de los servicios de enfermería?",
+        options: [
+          "La planificación estratégica de la unidad de cuidados.",
+          "La administración de medicación intravenosa.",
+          "El registro de constantes vitales.",
+          "La gestión del cambio de turno."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se clasifican los procesos directamente relacionados con la atención al paciente?",
+        options: [
+          "Procesos de apoyo",
+          "Procesos asistenciales",
+          "Procesos estratégicos",
+          "Procesos administrativos"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué tipo de proceso incluye actividades como lavandería, farmacia o mantenimiento?",
+        options: [
+          "Procesos de apoyo",
+          "Procesos asistenciales",
+          "Procesos estratégicos",
+          "Procesos de mejora continua"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué característica NO corresponde a la gestión por procesos?",
+        options: [
+          "Estructura organizativa basada en departamentos independientes",
+          "Orientación al cliente",
+          "Mejora continua",
+          "Trabajo en equipo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de los siguientes es un criterio para la identificación de procesos?",
+        options: [
+          "La complejidad tecnológica",
+          "La cantidad de empleados involucrados",
+          "El objetivo del proceso",
+          "La ubicación geográfica de la organización"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué criterio permite diferenciar un proceso desde su inicio hasta su fin de forma estructurada?",
+        options: [
+          "Inicio y fin",
+          "Rentabilidad financiera",
+          "Nivel jerárquico del responsable",
+          "Participación del paciente en su ejecución"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué proceso de enfermería implica la recogida de datos sobre el paciente?",
+        options: [
+          "Planificación de cuidados",
+          "Ejecución de cuidados",
+          "Valoración del paciente",
+          "Registro de la información"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es una técnica gráfica que permite representar visualmente los pasos de un proceso en secuencia lógica?",
+        options: [
+          "Diagrama de flujo",
+          "Análisis DAFO",
+          "Informe de calidad",
+          "Manual operativo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué herramienta se utiliza para representar gráficamente todos los procesos de una organización?",
+        options: [
+          "Mapa de procesos",
+          "Cuadro de mando integral",
+          "Análisis DAFO",
+          "Histograma de frecuencias"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa un mapa de procesos?",
+        options: [
+          "Una secuencia de tareas",
+          "Un análisis financiero",
+          "Todos los procesos de una organización",
+          "La estructura organizacional"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué técnica se utiliza para la identificación de procesos mediante la observación directa del entorno laboral?",
+        options: [
+          "Observación directa",
+          "Benchmarking",
+          "Cuadro de mando integral",
+          "Diagrama de Ishikawa"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué técnica se utiliza para la identificación de procesos mediante la revisión de documentación existente?",
+        options: [
+          "Observación directa",
+          "Entrevistas",
+          "Análisis de la documentación",
+          "Cuestionarios"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué implica el rediseño de un proceso según los principios de gestión por procesos?",
+        options: [
+          "Modificar su estructura para mejorar su eficiencia y eficacia",
+          "Sustituir al personal implicado",
+          "Interrumpir temporalmente los servicios",
+          "Incluir exclusivamente tecnología en la atención"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se debe definir en la fase de planificación del ciclo de mejora continua?",
+        options: [
+          "Los recursos financieros",
+          "Los competidores",
+          "El problema",
+          "Los proveedores"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué acción se realiza en la fase de 'Hacer' del ciclo de mejora continua?",
+        options: [
+          "Definir el problema",
+          "Implementar el plan de acción",
+          "Estandarizar las mejoras",
+          "Identificar lecciones aprendidas"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué fase del ciclo de mejora continua implica analizar los datos obtenidos tras implementar una acción?",
+        options: [
+          "Verificar",
+          "Planificar",
+          "Actuar",
+          "Controlar"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué elemento del ciclo de mejora busca estandarizar mejoras y continuar el ciclo?",
+        options: [
+          "Actuar",
+          "Planificar",
+          "Hacer",
+          "Evaluar"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se busca mejorar con la gestión por procesos en el ámbito sanitario?",
+        options: [
+          "La calidad de la atención al paciente",
+          "El marketing de servicios",
+          "La gestión de inventarios",
+          "La formación académica"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un indicador clave para evaluar la calidad de un proceso?",
+        options: [
+          "Indicador de calidad",
+          "Protocolo de actuación",
+          "Hoja de ruta",
+          "Grado académico del personal"
+        ],
+        correct: 0
       },
     ],
   },
@@ -2679,6 +4897,236 @@ export const TOPICS = [
         ],
         correct: 1,
       },
+      {
+        q: "¿Qué busca promover el Marketing Sanitario en el contexto del sistema sanitario español?",
+        options: [
+          "La salud y prevención de enfermedades",
+          "La venta de medicamentos",
+          "Únicamente la promoción de la vacunación",
+          "La mercantilización de la salud"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál fue el foco del Marketing Sanitario en España durante los años 70-80?",
+        options: [
+          "Promoción de hospitales y clínicas",
+          "Publicidad de productos farmacéuticos",
+          "Marketing relacional",
+          "Implementación del marketing online"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa una mayor exigencia de los pacientes en el sistema sanitario español actual?",
+        options: [
+          "Demanda de información y atención personalizada",
+          "Menor uso de tecnología",
+          "Menos campañas de concienciación",
+          "Disminución de la competencia"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué diferencia principal existe entre Marketing y Publicidad según el texto?",
+        options: [
+          "El marketing implica un enfoque integral y comunicación bidireccional",
+          "La publicidad no utiliza canales de comunicación",
+          "El marketing solo se enfoca en la promoción de vacunas",
+          "La publicidad es más importante que el marketing"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia de marketing online es utilizada en el sector salud?",
+        options: [
+          "Marketing en buscadores (SEO y SEM)",
+          "Marketing en videojuegos",
+          "Marketing exclusivo en apps de mensajería",
+          "Solo panfletos digitales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué objetivo tiene el marketing de contenidos en el sector salud?",
+        options: [
+          "Educar a los pacientes sobre su salud",
+          "Disminuir la comunicación con los pacientes",
+          "Evitar la creación de contenido relevante",
+          "Limitar el acceso a información"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué elemento es clave en la comunicación sanitaria para ser efectiva?",
+        options: [
+          "Claridad",
+          "Complejidad del mensaje",
+          "Uso exclusivo de jerga médica",
+          "Información irrelevante"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué permite una marca sanitaria sólida según el texto?",
+        options: [
+          "Atraer nuevos pacientes",
+          "Disminuir la confianza en la organización",
+          "Aumentar la competencia",
+          "Reducir la fidelización"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué funcionalidad destaca un CRM en el ámbito sanitario?",
+        options: [
+          "Mejorar la atención al paciente",
+          "Disminuir la eficiencia del marketing",
+          "Evitar la personalización del servicio",
+          "Reducir la base de datos de pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se busca con la segmentación de mercados en el ámbito sanitario?",
+        options: [
+          "Adaptar estrategias a necesidades específicas",
+          "Generalizar la atención a todos los pacientes",
+          "Disminuir la calidad sanitaria",
+          "Ignorar diferencias entre grupos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué criterio de segmentación está relacionado con el estilo de vida?",
+        options: [
+          "Psicográficos",
+          "Demográficos",
+          "Geográficos",
+          "Culinarios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué criterio de segmentación demográfico se utiliza en el ámbito sanitario?",
+        options: [
+          "Edad",
+          "Color favorito",
+          "Marca de coche",
+          "Tipo de música preferida"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿En qué década se enfocó el Marketing Sanitario en la fidelización de pacientes?",
+        options: [
+          "Años 90",
+          "Años 50-60",
+          "Años 70-80",
+          "Años 2000"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto NO se menciona como parte de la importancia del Marketing Sanitario en la actualidad?",
+        options: [
+          "Reducir el número de servicios ofrecidos",
+          "Atraer nuevos pacientes",
+          "Fidelizar pacientes actuales",
+          "Mejorar la imagen y posicionamiento"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué diferencia existe entre Marketing y Publicidad?",
+        options: [
+          "La publicidad es una herramienta del marketing con mensajes unidireccionales",
+          "El marketing se enfoca solo en el precio",
+          "La publicidad no utiliza canales digitales",
+          "El marketing no incluye la promoción"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué importancia tiene la propuesta de valor en el Marketing Sanitario?",
+        options: [
+          "Diferenciarlo del marketing tradicional",
+          "Hacerlo idéntico al marketing de moda",
+          "Disminuir la confianza del sistema",
+          "Aumentar costes innecesariamente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se espera lograr con una experiencia del paciente positiva?",
+        options: [
+          "Mayor satisfacción del paciente",
+          "Aumento de quejas",
+          "Disminución de la fidelidad",
+          "Reducción de la calidad asistencial"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia de marketing offline se utiliza en el sector salud?",
+        options: [
+          "Publicidad en medios tradicionales",
+          "Uso exclusivo de blogs",
+          "Marketing solo en streaming",
+          "Ignorar eventos y ferias"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué busca el marketing de contenidos?",
+        options: [
+          "Educar a los pacientes sobre su salud",
+          "Reducir la transparencia",
+          "Limitar contenidos educativos",
+          "Promover información no verificada"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Por qué es importante la comunicación eficaz en el ámbito sanitario?",
+        options: [
+          "Para generar confianza en la organización",
+          "Para reducir la claridad de la información",
+          "Para evitar el diálogo",
+          "Para disminuir la fidelización"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué factor ha intensificado la competencia en el sector salud?",
+        options: [
+          "Proliferación de clínicas privadas y seguros",
+          "Disminución del marketing digital",
+          "Menor demanda asistencial",
+          "Reducción del empoderamiento del paciente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué caracteriza al paciente empoderado en la actualidad?",
+        options: [
+          "Mayor participación en la toma de decisiones",
+          "Menor necesidad de información",
+          "Preferencia por atención no personalizada",
+          "Desinterés en el autocuidado"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto es clave para mejorar la experiencia del paciente según el texto?",
+        options: [
+          "Centrarse en sus necesidades",
+          "Ignorar sus necesidades",
+          "Limitar la comunicación",
+          "Aumentar tiempos de espera"
+        ],
+        correct: 0
+      },
     ],
   },
   {
@@ -2786,6 +5234,246 @@ export const TOPICS = [
           "Desconocidas",
         ],
         correct: 0,
+      },
+      {
+        q: "¿Qué busca implementar la gestión del cambio en una organización?",
+        options: [
+          "Cambios en la estructura física",
+          "Mejoras en el funcionamiento y alcance de objetivos estratégicos",
+          "Reducción de personal",
+          "Aumento de productos o servicios"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es la importancia de la gestión del cambio en los servicios de enfermería?",
+        options: [
+          "Reducir el número de empleados",
+          "Incrementar costos operativos",
+          "Mejorar la calidad de atención al paciente",
+          "Disminuir los servicios ofrecidos"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué tipo de cambio se refiere a modificaciones pequeñas y graduales?",
+        options: [
+          "Cambio radical",
+          "Cambio incremental",
+          "Cambio estructural",
+          "Cambio organizacional"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es un ejemplo de cambio radical en enfermería?",
+        options: [
+          "Modificar el sistema de organización del trabajo",
+          "Implementar un nuevo protocolo",
+          "Reestructurar la prestación de cuidados",
+          "Introducir una nueva tecnología"
+        ],
+        correct: 2
+      },
+      {
+        q: "Según el modelo de Lewin, ¿cuál es la primera etapa del proceso de cambio?",
+        options: [
+          "Cambio",
+          "Descongelación",
+          "Recongelación",
+          "Evaluación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué etapa del modelo de Kotter implica crear un sentido de urgencia?",
+        options: [
+          "Formar una coalición poderosa",
+          "Crear una visión clara",
+          "Crear un sentido de urgencia",
+          "Empoderar a los empleados"
+        ],
+        correct: 2
+      },
+      {
+        q: "En el modelo de Kübler-Ross, ¿cuál es la primera etapa ante el cambio?",
+        options: [
+          "Negación",
+          "Ira",
+          "Negociación",
+          "Depresión"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué modelo describe la transición en tres etapas dentro del cambio?",
+        options: [
+          "Modelo de Lewin",
+          "Modelo de Kotter",
+          "Modelo de Kübler-Ross",
+          "Modelo de Bridges"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál es la fase inicial del proceso de cambio según el texto?",
+        options: [
+          "Cambio",
+          "Descongelación",
+          "Recongelación",
+          "Planificación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Quién puede ser un agente de cambio en una organización?",
+        options: [
+          "Solo gerentes",
+          "Solo líderes formales",
+          "Cualquier miembro con influencia",
+          "Solo consultores externos"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué característica es esencial para un agente de cambio?",
+        options: [
+          "Resistir al cambio",
+          "Habilidades de comunicación efectiva",
+          "Preferir rutinas establecidas",
+          "Evitar el liderazgo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué habilidad necesita un agente de cambio para planificar e implementar cambios?",
+        options: [
+          "Gestión de proyectos",
+          "Mantener todo sin cambios",
+          "Evitar conflictos",
+          "Incapacidad de adaptación"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué factor individual influye en el proceso de cambio?",
+        options: [
+          "Estructura de la organización",
+          "Clima organizacional",
+          "Actitud hacia el cambio",
+          "Cultura del grupo"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es un factor grupal que afecta al cambio?",
+        options: [
+          "Percepción del cambio",
+          "Cultura del grupo",
+          "Estructura organizativa",
+          "Recursos disponibles"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es un factor organizacional que influye en el cambio?",
+        options: [
+          "Capacidad individual de adaptación",
+          "Liderazgo",
+          "Normas del grupo",
+          "Actitud hacia el cambio"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué causa común de resistencia al cambio se relaciona con la percepción de perder poder?",
+        options: [
+          "Falta de información",
+          "Pérdida de poder o control",
+          "Hábitos y rutinas",
+          "Presión social"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué estrategia implica involucrar a las personas para superar la resistencia al cambio?",
+        options: [
+          "Coerción",
+          "Participación",
+          "Limitar comunicación",
+          "Aumentar la presión"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué factor grupal puede dificultar el cambio?",
+        options: [
+          "Liderazgo efectivo",
+          "Comunicación interna",
+          "Conflicto dentro del grupo",
+          "Estructura organizacional"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué estrategia es efectiva para superar la resistencia al cambio?",
+        options: [
+          "Limitar la comunicación",
+          "Ignorar participación",
+          "Comunicación efectiva",
+          "Aumentar la presión"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué tipo de cambio se adapta a nuevas necesidades sin ser disruptivo?",
+        options: [
+          "Cambio estructural",
+          "Cambio radical",
+          "Cambio incremental",
+          "Cambio estratégico"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué modelo de gestión del cambio consta de ocho etapas?",
+        options: [
+          "Lewin",
+          "Kotter",
+          "Kübler-Ross",
+          "Bridges"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué fase del modelo de Lewin estabiliza el cambio?",
+        options: [
+          "Descongelación",
+          "Cambio",
+          "Recongelación",
+          "Evaluación"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es una responsabilidad del líder del cambio?",
+        options: [
+          "Evitar cambios",
+          "Comunicar la visión del cambio",
+          "Mantener prácticas actuales",
+          "Desalentar participación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué rol tiene el líder en la gestión del cambio?",
+        options: [
+          "Mantener todo igual",
+          "Superar resistencia al cambio",
+          "Desalentar innovación",
+          "Comunicar poca información"
+        ],
+        correct: 1
       },
     ],
   },
@@ -2895,6 +5583,256 @@ export const TOPICS = [
         ],
         correct: 1,
       },
+      {
+        q: "¿Qué define la innovación en enfermería?",
+        options: [
+          "La implementación de políticas de gestión tradicionales",
+          "La introducción de nuevos conocimientos para mejorar la calidad de atención",
+          "El aumento en el número de enfermeras en el sector",
+          "La reducción de costos operativos en el hospital"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Por qué es importante la innovación en enfermería?",
+        options: [
+          "Para aumentar el número de pacientes atendidos",
+          "Para mejorar la eficiencia y eficacia de la atención",
+          "Para reducir el número de enfermeras necesarias",
+          "Para incrementar los ingresos del hospital"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué reto enfrenta la innovación en enfermería debido a la falta de recursos?",
+        options: [
+          "Imposibilidad de realizar cambios en las políticas internas",
+          "Dificultad en la implementación de innovaciones",
+          "Reducción del personal de enfermería",
+          "Disminución de la calidad de la atención"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cómo puede afectar la cultura organizacional a la innovación en enfermería?",
+        options: [
+          "Promoviendo la competencia entre enfermeras",
+          "Dificultando el cambio por falta de apoyo",
+          "Aumentando la eficacia de los tratamientos",
+          "Reduciendo los costos de capacitación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es el primer paso en el proceso de innovación en enfermería?",
+        options: [
+          "Planificación e implementación de la innovación",
+          "Identificación de necesidades y oportunidades",
+          "Evaluación y difusión de la innovación",
+          "Generación de ideas y soluciones"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué estrategia se utiliza para generar ideas innovadoras en enfermería?",
+        options: [
+          "Análisis de costos",
+          "Brainstorming",
+          "Evaluación de desempeño",
+          "Auditorías internas"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué papel juega el liderazgo en la innovación de enfermería?",
+        options: [
+          "Mantener el status quo",
+          "Fomentar una cultura resistente al cambio",
+          "Fomentar la innovación y el cambio",
+          "Reducir los presupuestos para innovación"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué recurso es crucial para la implementación de la innovación en enfermería?",
+        options: [
+          "Recursos humanos y financieros",
+          "Políticas gubernamentales restrictivas",
+          "Manuales de procedimientos tradicionales",
+          "Equipos médicos obsoletos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo contribuye la gestión del conocimiento a la innovación en enfermería?",
+        options: [
+          "Limitando el acceso a información nueva",
+          "Promoviendo el aprendizaje continuo",
+          "Manteniendo prácticas obsoletas",
+          "Reduciendo la colaboración entre enfermeras"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cuál es una competencia clave para la enfermera innovadora?",
+        options: [
+          "Aversión al riesgo",
+          "Comunicación efectiva",
+          "Conformidad con las normas existentes",
+          "Independencia total del equipo"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué estrategia de formación es esencial para fomentar la innovación en enfermería?",
+        options: [
+          "Cursos sobre prácticas tradicionales",
+          "Talleres sobre pensamiento creativo",
+          "Seminarios sobre legislación antigua",
+          "Conferencias sobre historia de la enfermería"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué función tienen las unidades de innovación y gestión del cambio en enfermería?",
+        options: [
+          "Prevenir cualquier cambio en las prácticas",
+          "Apoyar y gestionar la implementación de innovaciones",
+          "Mantener únicamente las tecnologías existentes",
+          "Desalentar la participación en proyectos de innovación"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cómo se pueden compartir conocimientos y experiencias en enfermería para fomentar la innovación?",
+        options: [
+          "A través de redes de colaboración y conocimiento compartido",
+          "Manteniendo la información en silos departamentales",
+          "Evitando el uso de tecnologías de la información",
+          "Limitando la comunicación entre enfermeras"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un desafío común al implementar la innovación en enfermería?",
+        options: [
+          "Exceso de recursos financieros",
+          "Demasiado apoyo de la administración",
+          "Resistencia al cambio",
+          "Falta de pacientes para cuidar"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué aspecto de la cultura organizacional es vital para la innovación en enfermería?",
+        options: [
+          "Evitar el riesgo a toda costa",
+          "Valorar la creatividad y la toma de riesgos",
+          "Priorizar la adherencia estricta a las normas",
+          "Desalentar el desarrollo profesional"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cómo se identifican las necesidades y oportunidades de innovación en enfermería?",
+        options: [
+          "A través del análisis de datos y la observación de la práctica",
+          "Ignorando las sugerencias de pacientes y personal médico",
+          "Manteniendo prácticas antiguas sin revisión",
+          "Evitando la implementación de nuevas tecnologías"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué papel desempeñan los recursos financieros en la innovación de enfermería?",
+        options: [
+          "Ninguno, ya que la innovación es siempre gratuita",
+          "Limitar el alcance de proyectos innovadores",
+          "Facilitar la implementación de innovaciones",
+          "Desalentar la búsqueda de soluciones creativas"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué es crucial evaluar en la fase de evaluación de la innovación en enfermería?",
+        options: [
+          "La eficacia de la innovación",
+          "La popularidad de la innovación entre el personal administrativo",
+          "El costo de revertir la innovación",
+          "La opinión de expertos externos únicamente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué enfoque de liderazgo es necesario para la innovación en enfermería?",
+        options: [
+          "Un enfoque pasivo y reaccionario",
+          "Un enfoque centrado en la penalización del fallo",
+          "Un enfoque visionario y proactivo",
+          "Un enfoque que evite el cambio"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es el impacto de la innovación en la seguridad del paciente en enfermería?",
+        options: [
+          "Ninguno, la seguridad del paciente no se ve afectada",
+          "Reduce los errores médicos y mejora la seguridad",
+          "Aumenta los riesgos y los errores médicos",
+          "Complica los procedimientos existentes"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Qué formación es valiosa para enfermeras que buscan innovar?",
+        options: [
+          "Solo formación en procedimientos estándar",
+          "Formación en habilidades de innovación y pensamiento crítico",
+          "Exclusivamente formación teórica sin prácticas",
+          "Formación que desalienta cuestionar prácticas existentes"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cómo afecta la innovación la satisfacción del paciente?",
+        options: [
+          "No tiene impacto",
+          "Disminuye la satisfacción por cambios constantes",
+          "Mejora la experiencia y satisfacción del paciente",
+          "Aumenta únicamente la carga de trabajo"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué papel desempeña la tecnología en la innovación en enfermería?",
+        options: [
+          "Complica los procesos",
+          "Reduce la interacción humana",
+          "Facilita el acceso a información y apoya la colaboración",
+          "Desalienta la innovación"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Por qué es importante el aprendizaje continuo en innovación de enfermería?",
+        options: [
+          "No es importante",
+          "Fomenta prácticas obsoletas",
+          "Promueve la actualización sobre innovaciones",
+          "Desalienta la participación del personal"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué estrategia puede superar la resistencia al cambio en la innovación de enfermería?",
+        options: [
+          "Ignorar opiniones contrarias",
+          "Fomentar una cultura de apertura y experimentación",
+          "Castigar la resistencia",
+          "Limitar la comunicación"
+        ],
+        correct: 1
+      },
     ],
   },
   {
@@ -3002,6 +5940,246 @@ export const TOPICS = [
           "Solo individual",
         ],
         correct: 1,
+      },
+      {
+        q: "¿Qué es la carga de cuidados en la enfermería?",
+        options: [
+          "La cantidad de trabajo físico, emocional y mental que exige la atención a los pacientes",
+          "La satisfacción del paciente tras recibir atención",
+          "El salario de la enfermera basado en sus horas de trabajo",
+          "La cantidad de medicamentos administrados a los pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de los siguientes es un ejemplo de tarea física en la carga de cuidados?",
+        options: [
+          "Realizar maniobras de RCP",
+          "Tomar decisiones críticas",
+          "Escuchar las preocupaciones de los pacientes",
+          "Planificar los cuidados de los pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué factor no incrementa la carga de cuidados de una enfermera?",
+        options: [
+          "Un bajo número de pacientes asignados",
+          "Un entorno de trabajo estresante",
+          "Pacientes con enfermedades leves",
+          "La complejidad de los pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo afecta la experiencia de la enfermera en la gestión de la carga de cuidados?",
+        options: [
+          "Aumenta la eficiencia en la gestión de la carga de cuidados",
+          "Disminuye la eficiencia en la gestión de la carga de cuidados",
+          "No tiene ningún efecto sobre la carga de cuidados",
+          "Reduce la cantidad de cuidados que necesita el paciente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué tipo de carga se refiere al esfuerzo físico necesario en la atención a los pacientes?",
+        options: [
+          "Carga física",
+          "Carga mental",
+          "Carga emocional",
+          "Carga administrativa"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes es una estrategia para gestionar la carga de cuidados a nivel individual?",
+        options: [
+          "Desarrollar estrategias de afrontamiento del estrés",
+          "Aumentar el ratio enfermera-paciente",
+          "Reducir el salario de las enfermeras",
+          "Ignorar el estrés laboral"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué instrumento se utiliza para medir objetivamente la carga de cuidados?",
+        options: [
+          "Escala de Carga de Trabajo de Nursing Activities Score (NAS)",
+          "Encuestas de opinión pública",
+          "Gráficos de humor semanal",
+          "Listas de verificación de tareas domésticas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una consecuencia del alto nivel de carga de cuidados en las enfermeras?",
+        options: [
+          "Aumento del riesgo de burnout",
+          "Mejora automática de la calidad de los cuidados",
+          "Reducción de los costes operativos",
+          "Aumento de la satisfacción laboral"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un factor que no se considera al calcular la carga de trabajo de las enfermeras?",
+        options: [
+          "La opinión pública sobre la enfermería",
+          "El número de pacientes",
+          "La complejidad de los cuidados requeridos",
+          "La cantidad de recursos disponibles"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué método no se menciona como forma de calcular la carga de trabajo?",
+        options: [
+          "Método de evaluación por pares",
+          "Método de unidades de trabajo",
+          "Método de los ratios enfermera-paciente",
+          "Método de la simulación"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes no es una limitación en la medición de la carga de cuidados?",
+        options: [
+          "Uniformidad en la percepción de la carga entre todas las enfermeras",
+          "Dificultad para obtener datos precisos",
+          "Subjetividad de las escalas de valoración",
+          "Falta de consenso sobre los métodos de medición"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué impacto tiene la carga de cuidados en la calidad de los cuidados al paciente?",
+        options: [
+          "Aumento del riesgo de errores de medicación",
+          "Aumento de la eficacia de los medicamentos",
+          "Mejora de la comunicación paciente-enfermera",
+          "Reducción de los costes de atención médica"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué no se considera una intervención a nivel organizativo para gestionar la carga de cuidados?",
+        options: [
+          "Reducción del salario de las enfermeras",
+          "Mejora de la organización del trabajo",
+          "Adecuación de la plantilla de enfermeras",
+          "Implementación de tecnologías de la información y la comunicación"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una estrategia a nivel político para gestionar la carga de cuidados?",
+        options: [
+          "Aprobación de leyes que regulen la carga de trabajo de las enfermeras",
+          "Ignorar las demandas de las enfermeras",
+          "Reducción de la inversión en salud",
+          "Aumento de la carga de trabajo sin proporcionar apoyo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo contribuye el autocuidado en la gestión de la carga de cuidados por parte de las enfermeras?",
+        options: [
+          "Ayuda a las enfermeras a mantener su bienestar físico, mental y emocional",
+          "No tiene ningún impacto",
+          "Aumenta la carga de trabajo",
+          "Disminuye la eficacia de la atención al paciente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué no es un componente de la carga emocional en la enfermería?",
+        options: [
+          "La realización de tareas administrativas",
+          "La resolución de problemas",
+          "El manejo del duelo de los pacientes",
+          "El apoyo a pacientes con ansiedad"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes no es una característica del paciente que afecta la carga de cuidados?",
+        options: [
+          "Su ocupación",
+          "Su nivel de ingresos",
+          "El nivel de dependencia",
+          "La agudeza del proceso"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué factor relacionado con la enfermera disminuye su capacidad para gestionar la carga de cuidados?",
+        options: [
+          "Alto nivel de estrés",
+          "Mayor experiencia",
+          "Formación específica en gestión de cuidados",
+          "Habilidades técnicas avanzadas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes no es una consecuencia para la organización sanitaria debido a una alta carga de cuidados?",
+        options: [
+          "Mejora en la satisfacción del paciente",
+          "Aumento de los costes",
+          "Deterioro de la imagen de la organización",
+          "Dificultades para atraer y retener personal"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de los siguientes no es un tipo de instrumento para medir la carga de cuidados?",
+        options: [
+          "Encuestas de satisfacción del paciente",
+          "Escalas de valoración",
+          "Cuestionarios",
+          "Diarios de trabajo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto del entorno de trabajo no se menciona como factor que influye en la carga de cuidados?",
+        options: [
+          "Decoración de la unidad",
+          "Tipo de unidad",
+          "Ratio enfermera-paciente",
+          "Recursos disponibles"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una intervención a nivel individual para gestionar la carga de cuidados que no se menciona?",
+        options: [
+          "Incremento de las horas de trabajo sin descanso",
+          "Capacitación en técnicas de gestión del tiempo",
+          "Fomento de hábitos saludables",
+          "Desarrollo de competencias específicas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué no se considera una estrategia de afrontamiento del estrés para las enfermeras?",
+        options: [
+          "Aumentar el número de pacientes a su cargo",
+          "Técnicas de relajación",
+          "Programas de apoyo psicológico",
+          "Fomento de hábitos saludables"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál no es un efecto del alto nivel de carga de cuidados en las enfermeras?",
+        options: [
+          "Aumento de la longevidad",
+          "Agotamiento físico y mental",
+          "Estrés laboral",
+          "Deterioro de la salud física y mental"
+        ],
+        correct: 0
       },
     ],
   },
@@ -3111,8 +6289,239 @@ export const TOPICS = [
         ],
         correct: 1,
       },
+      {
+        q: "¿Qué es un sistema de salud?",
+        options: [
+          "Un conjunto de elementos interrelacionados que organizan la provisión de servicios de salud a una población",
+          "Un servicio médico ofrecido por hospitales privados únicamente",
+          "Una colección de políticas de salud pública a nivel nacional",
+          "Una estructura dedicada solo a la atención médica de emergencia"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el objetivo principal de un sistema de salud?",
+        options: [
+          "Mejorar la salud de la población mediante promoción, prevención, tratamiento y rehabilitación",
+          "Aumentar el beneficio económico de los proveedores de salud",
+          "Centralizar todos los servicios bajo una única administración",
+          "Promover solo la atención especializada"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuáles son las principales funciones de los sistemas de salud?",
+        options: [
+          "Promoción de la salud, protección financiera y regulación",
+          "Provisión de entretenimiento a la población",
+          "Gestión de calidad del aire",
+          "Financiación de campañas políticas"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se clasifican los sistemas de salud según su financiación?",
+        options: [
+          "Públicos, privados y mixtos",
+          "Solo por impuestos",
+          "Por donaciones exclusivamente",
+          "Exclusivamente por cuotas de usuarios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué caracteriza al NHS del Reino Unido?",
+        options: [
+          "Cobertura universal gratuita para todos los residentes",
+          "Financiación privada descentralizada",
+          "Cobertura basada en seguros sociales obligatorios",
+          "Atención basada únicamente en el modelo biopsicosocial"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se financia principalmente el Sistema Nacional de Salud español?",
+        options: [
+          "Mediante impuestos generales",
+          "Solo por copagos",
+          "De forma exclusivamente privada",
+          "A través de donaciones voluntarias"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué nivel del SNS español planifica y desarrolla políticas de salud pública?",
+        options: [
+          "Nivel central",
+          "Nivel local",
+          "Nivel autonómico",
+          "Organizaciones no gubernamentales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa un bien público?",
+        options: [
+          "Un bien no excluible y no rival",
+          "Un bien que se provee solo en el sector privado",
+          "Un producto que se consume una sola vez",
+          "Un bien exclusivamente propiedad del Estado"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué nivel del SNS español asume la gestión directa de los servicios de salud en su territorio?",
+        options: [
+          "Nivel autonómico",
+          "Nivel central",
+          "Organizaciones internacionales",
+          "Nivel local"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué fallo del mercado se identifica en la provisión de salud?",
+        options: [
+          "Inequidad en el acceso a la atención",
+          "Exceso de oferta",
+          "Sobreinversión tecnológica",
+          "Eficiencia óptima en la distribución de recursos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una función clave de los sistemas de salud?",
+        options: [
+          "Garantizar acceso sin dificultades económicas",
+          "Promover competencia entre proveedores",
+          "Aumentar precios para mejorar calidad",
+          "Limitar la I+D en medicina"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué característica comparten los sistemas públicos como el NHS británico y el modelo Beveridge en Canadá?",
+        options: [
+          "Cobertura universal gratuita",
+          "Acceso según capacidad de pago",
+          "Predominio de seguros privados",
+          "Tiempos de espera muy cortos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué reto común enfrentan los sistemas de salud a nivel mundial?",
+        options: [
+          "Aumento de enfermedades crónicas",
+          "Disminución de demanda asistencial",
+          "Reducción global de costes",
+          "Exceso de profesionales sanitarios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué nivel del SNS gestiona atención primaria y salud pública en un área geográfica concreta?",
+        options: [
+          "Nivel local",
+          "Nivel central",
+          "Nivel autonómico",
+          "Organizaciones no gubernamentales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué fallo del mercado justifica la intervención del Estado?",
+        options: [
+          "Inequidad en el acceso",
+          "Competencia perfecta",
+          "Asignación eficiente",
+          "Información totalmente transparente"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué es una Zona Básica de Salud?",
+        options: [
+          "Una unidad territorial con uno o varios centros de salud",
+          "Un hospital especializado",
+          "Una división administrativa financiera",
+          "Un servicio de atención exclusiva privada"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia mejora la sostenibilidad de los sistemas de salud?",
+        options: [
+          "Gestión eficiente de recursos",
+          "Reducir inversión en promoción de salud",
+          "Limitar acceso a atención primaria",
+          "Restringir cobertura sanitaria"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué es una externalidad positiva en el ámbito de la salud?",
+        options: [
+          "Reducción de transmisión de enfermedades gracias a buena salud poblacional",
+          "Competencia entre hospitales",
+          "Aumento de costes por tecnología avanzada",
+          "Acceso exclusivo a tratamientos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una fuente de financiación complementaria del SNS español?",
+        options: [
+          "Copagos de algunos servicios",
+          "Inversiones en bolsa",
+          "Financiación exclusiva privada",
+          "Donaciones no monetarias"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se denomina la atención médica básica y preventiva del SNS?",
+        options: [
+          "Atención primaria",
+          "Atención especializada",
+          "Atención sociosanitaria",
+          "Salud pública"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué modelo integra aspectos biológicos, psicológicos y sociales?",
+        options: [
+          "Modelo biopsicosocial",
+          "Modelo biomédico",
+          "Modelo de financiación pública",
+          "Modelo descentralizado"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué desafío generan los avances tecnológicos en los sistemas de salud?",
+        options: [
+          "Aumento de los costes",
+          "Reducción de calidad diagnóstica",
+          "Menor demanda asistencial",
+          "Exceso de profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia ayuda a afrontar el envejecimiento poblacional?",
+        options: [
+          "Promoción de la salud y prevención",
+          "Reducir inversión en atención a mayores",
+          "Centralizar totalmente el sistema",
+          "Disminuir cobertura pública"
+        ],
+        correct: 0
+      },
     ],
   },
+
   {
     id: 18,
     title: "La Administración como Ciencia",
@@ -3218,6 +6627,236 @@ export const TOPICS = [
           "Cinco",
         ],
         correct: 1,
+      },
+      {
+        q: "¿Qué define la administración en el contexto de la enfermería?",
+        options: [
+          "El proceso de planificar, organizar, dirigir y controlar recursos para lograr objetivos específicos.",
+          "La gestión exclusiva de personal médico.",
+          "El desarrollo de medicamentos y tratamientos nuevos.",
+          "La capacitación exclusiva de enfermeros en técnicas médicas."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál fue uno de los primeros antecedentes de la práctica administrativa en la historia?",
+        options: [
+          "El Antiguo Egipto y la construcción de las pirámides.",
+          "La Revolución Francesa.",
+          "La fundación de la Compañía de las Indias Orientales.",
+          "El inicio de la Revolución Industrial."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué teoría se basa en la idea de que los trabajadores son seres sociales que buscan satisfacción en su trabajo?",
+        options: [
+          "Teoría de las relaciones humanas.",
+          "Teoría del proceso administrativo.",
+          "Teoría clásica.",
+          "Teoría de la organización formal."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿En qué se centra principalmente el enfoque humanista de la administración?",
+        options: [
+          "El desarrollo personal de los trabajadores.",
+          "La eficiencia y especialización del trabajo.",
+          "La estructura formal de la organización.",
+          "La aplicación de métodos científicos en la gestión."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto es fundamental para la eficacia y la eficiencia de los servicios de enfermería según el documento?",
+        options: [
+          "La administración.",
+          "La tecnología exclusivamente.",
+          "La especialización en una sola área.",
+          "El trabajo en solitario del personal."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué teoría destaca la importancia de las necesidades fisiológicas, de seguridad, sociales, de estima y de autorrealización?",
+        options: [
+          "Teoría de las necesidades humanas.",
+          "Teoría del proceso administrativo.",
+          "Teoría de la organización formal.",
+          "Teoría de las relaciones humanas."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué enfoque de la administración considera a la organización como un sistema formal compuesto por partes interrelacionadas?",
+        options: [
+          "Enfoque clásico.",
+          "Enfoque humanista.",
+          "Enfoque neoclásico.",
+          "Enfoque de la contingencia."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Quiénes desarrollaron la técnica de los micromovimientos?",
+        options: [
+          "Frank y Lillian Gilbreth.",
+          "Frederick Winslow Taylor y Henri Fayol.",
+          "Douglas McGregor.",
+          "Sócrates y Platón."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de los siguientes no es un principio de la administración científica de Taylor?",
+        options: [
+          "Desarrollo de relaciones personales estrechas entre trabajadores y supervisores.",
+          "División del trabajo.",
+          "Estudio de tiempos y movimientos.",
+          "Establecimiento de sistemas de incentivos."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿En qué se basa la Teoría del comportamiento organizacional?",
+        options: [
+          "En las ciencias del comportamiento.",
+          "En las ciencias naturales.",
+          "En la teoría matemática.",
+          "En la teoría económica."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál fue una contribución principal de Frederick Winslow Taylor?",
+        options: [
+          "La administración científica y el estudio de tiempos y movimientos.",
+          "La teoría de las necesidades humanas.",
+          "La teoría del comportamiento organizacional.",
+          "La teoría X e Y de McGregor."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué función administrativa implica motivar al personal, delegar tareas y resolver conflictos?",
+        options: [
+          "Dirección.",
+          "Planificación.",
+          "Organización.",
+          "Control."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes es una función administrativa definida por Henri Fayol?",
+        options: [
+          "Coordinación.",
+          "Motivación.",
+          "Capacitación.",
+          "Innovación."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué reto enfrenta la administración de enfermería debido al envejecimiento poblacional?",
+        options: [
+          "Aumento de la demanda de servicios de enfermería.",
+          "Reducción de la demanda.",
+          "Disminución de la complejidad de la atención.",
+          "Menor necesidad de tecnología."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el principal objetivo de aplicar principios de administración en enfermería?",
+        options: [
+          "Brindar una atención de calidad a los pacientes.",
+          "Disminuir el personal necesario.",
+          "Aumentar las ganancias institucionales.",
+          "Reducir el uso de tecnología."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de estos no es un precursor directo de la administración?",
+        options: [
+          "La Revolución Francesa.",
+          "El Antiguo Egipto.",
+          "La antigua Grecia.",
+          "La Edad Media."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué desafío no se menciona entre los retos actuales de la administración en enfermería?",
+        options: [
+          "Aumento de la eficacia de los tratamientos médicos.",
+          "Escasez de recursos.",
+          "Cambios tecnológicos.",
+          "Aumento de la complejidad de los pacientes."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué enfoque de administración se centra en el factor humano y las relaciones en la organización?",
+        options: [
+          "Enfoque neoclásico.",
+          "Enfoque clásico.",
+          "Enfoque científico.",
+          "Enfoque de contingencia."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Quién es considerado el padre de la administración científica?",
+        options: [
+          "Frederick Winslow Taylor.",
+          "Henri Fayol.",
+          "Douglas McGregor.",
+          "Frank y Lillian Gilbreth."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué principio administrativo implica establecer objetivos y determinar acciones?",
+        options: [
+          "Planificación.",
+          "Organización.",
+          "Dirección.",
+          "Control."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué enfoque administrativo propone las teorías X e Y?",
+        options: [
+          "Enfoque humanista.",
+          "Enfoque clásico.",
+          "Enfoque neoclásico.",
+          "Enfoque científico."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Quién desarrolló la teoría clásica de la administración?",
+        options: [
+          "Henri Fayol.",
+          "Frederick Winslow Taylor.",
+          "Douglas McGregor.",
+          "Frank y Lillian Gilbreth."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de estos NO es un principio aplicable a la administración en enfermería?",
+        options: [
+          "Desarrollo de nuevos medicamentos.",
+          "Motivación del personal.",
+          "Planificación de recursos materiales.",
+          "Evaluación de la calidad asistencial."
+        ],
+        correct: 0
       },
     ],
   },
@@ -3327,8 +6966,238 @@ export const TOPICS = [
         ],
         correct: 0,
       },
+      {
+        q: "¿Cómo afecta el envejecimiento de la población a la calidad en enfermería?",
+        options: [
+          "Reducción en la demanda de servicios de enfermería",
+          "Aumento de la demanda y complejidad de la atención sanitaria",
+          "Menor necesidad de actualización profesional",
+          "Disminución de la utilización de tecnología en la atención"
+        ],
+        correct: 1
+      },
+      {
+        q: "¿Cómo se define la calidad en el contexto sanitario?",
+        options: [
+          "La cantidad de servicios de salud proporcionados",
+          "La rapidez con la que se brindan los servicios de salud",
+          "El costo de los servicios de salud proporcionados",
+          "El grado en que los servicios de salud satisfacen las necesidades de los usuarios en términos de resultados y procesos"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál de las siguientes fases NO pertenece al proceso de implementación de modelos de calidad en enfermería?",
+        options: [
+          "Planificación",
+          "Diseño",
+          "Desarrollo",
+          "Promoción"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál de las siguientes tendencias NO se menciona como parte de la gestión de la calidad en el documento?",
+        options: [
+          "Enfoque en el paciente",
+          "Seguridad del paciente",
+          "Uso de las tecnologías de la información",
+          "Reducción de la formación continua del personal"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál de los siguientes modelos de calidad se enfoca en la estructura, proceso y resultado?",
+        options: [
+          "Modelo Lean Healthcare",
+          "Modelo de Seis Sigma",
+          "Modelo de la Excelencia (EFQM)",
+          "Modelo de Donabedian"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál de los siguientes NO es un recurso necesario para la implementación de modelos de calidad en enfermería?",
+        options: [
+          "Personal capacitado",
+          "Fondos para capacitación",
+          "Equipos e infraestructura adecuada",
+          "Libros de autoayuda para el personal"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál es el principal enfoque del Modelo Lean Healthcare?",
+        options: [
+          "Aumentar la cantidad de personal",
+          "Implementar sistemas de recompensas",
+          "Eliminar el despilfarro en los procesos",
+          "Reducir la participación del paciente en su cuidado"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es un beneficio de la calidad para la sostenibilidad del sistema sanitario?",
+        options: [
+          "Aumentar los costes operativos",
+          "Limitar el acceso a la atención sanitaria",
+          "Reducir la satisfacción del paciente",
+          "Mejorar la eficiencia"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Cuál es un método de evaluación de la calidad en enfermería?",
+        options: [
+          "Evaluaciones psicológicas del personal",
+          "Análisis de la competencia",
+          "Auditorías",
+          "Encuestas de clima laboral"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Cuál es una dimensión de la calidad en enfermería?",
+        options: [
+          "Publicidad",
+          "Marketing",
+          "Ventas",
+          "Seguridad"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué busca lograr la eficacia dentro de las dimensiones de la calidad en enfermería?",
+        options: [
+          "Minimizar el uso de recursos",
+          "Asegurar la rapidez en la atención",
+          "Promover la publicidad del hospital",
+          "Lograr los mejores resultados posibles con los recursos disponibles"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué caracteriza al Modelo de Ishikawa en la gestión de la calidad en enfermería?",
+        options: [
+          "Su enfoque en la motivación del personal",
+          "La implementación de tecnología de vanguardia",
+          "La reducción de costos en la atención al paciente",
+          "Identificación de las causas de problemas en los procesos de atención"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué criterio NO es evaluado por el Modelo de la Excelencia (EFQM)?",
+        options: [
+          "Liderazgo",
+          "Resultados en los empleados",
+          "Satisfacción del cliente",
+          "Competencia de los empleados en deportes"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué enfoque de calidad se centra en la mejora continua de la calidad de la atención al paciente?",
+        options: [
+          "Enfoque tradicional",
+          "Modelo de Seis Sigma",
+          "Modelo de la Excelencia (EFQM)",
+          "Modelo de mejora continua"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué estrategia de mejora continua implica la implicación del paciente en la evaluación de la atención recibida?",
+        options: [
+          "Seguridad del paciente",
+          "Trabajo en equipo",
+          "Uso de las tecnologías de la información",
+          "Enfoque en el paciente"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué estrategia NO se recomienda para superar la resistencia al cambio en la implementación de modelos de calidad?",
+        options: [
+          "Comunicación efectiva",
+          "Capacitación adecuada del personal",
+          "Involucramiento de la dirección",
+          "Aislamiento de los opositores"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué indicador mide el impacto de la atención en la salud del paciente?",
+        options: [
+          "Indicadores de estructura",
+          "Indicadores de proceso",
+          "Indicadores de resultado",
+          "Indicadores de eficacia"
+        ],
+        correct: 2
+      },
+      {
+        q: "¿Qué modelo mejora eficiencia y calidad eliminando despilfarro?",
+        options: [
+          "Modelo de Donabedian",
+          "Modelo de la Excelencia (EFQM)",
+          "Modelo de Seis Sigma",
+          "Modelo Lean Healthcare"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué reto surge por el aumento de enfermedades crónicas?",
+        options: [
+          "Reducción de la necesidad de atención",
+          "Disminución de demanda de enfermeras especializadas",
+          "Menor uso de tecnología",
+          "Mayor necesidad de seguimiento y tratamiento a largo plazo"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué papel desempeñan las enfermeras en la implementación de modelos de calidad?",
+        options: [
+          "Únicamente proporcionar atención directa",
+          "Mantener registros financieros",
+          "Gestionar recursos materiales",
+          "Participar en la selección, capacitación e implementación del modelo"
+        ],
+        correct: 3
+      },
+      {
+        q: "¿Qué tipo de indicadores mide las actividades que se realizan para brindar la atención al paciente?",
+        options: [
+          "Indicadores de estructura",
+          "Indicadores de proceso",
+          "Indicadores de resultado",
+          "Indicadores de eficacia"
+        ],
+        correct: 1
+      },
+      {
+        q: "En el contexto de los modelos de calidad en enfermería, ¿qué busca minimizar el Modelo de Seis Sigma?",
+        options: [
+          "La inversión en educación continua",
+          "La colaboración interdepartamental",
+          "El uso de tecnologías de la información",
+          "La variabilidad en los procesos"
+        ],
+        correct: 3
+      },
+      {
+        q: "En la implementación de modelos de calidad en enfermería, ¿cuál es la primera fase?",
+        options: [
+          "Diseño",
+          "Planificación",
+          "Desarrollo",
+          "Evaluación"
+        ],
+        correct: 1
+      },
     ],
-  },
+  },  
   {
     id: 20,
     title: "Dirección Estratégica",
@@ -3434,6 +7303,256 @@ export const TOPICS = [
           "Tres",
         ],
         correct: 2,
+      },
+      {
+        q: "¿Qué define la Dirección Estratégica?",
+        options: [
+          "Un proceso sistemático y continuo que permite a una organización definir sus objetivos y asignar recursos eficientemente.",
+          "Un proceso para aumentar los salarios del personal de enfermería.",
+          "Un procedimiento para reducir el número de empleados en una organización.",
+          "Una técnica exclusiva para el manejo de pacientes en entornos de enfermería."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Por qué es importante la Dirección Estratégica en Enfermería?",
+        options: [
+          "Porque permite liderar el cambio, mejorar la calidad de los cuidados y gestionar eficientemente los recursos.",
+          "Solo porque mejora la imagen pública de la organización.",
+          "Únicamente para incrementar los ingresos de los hospitales.",
+          "Solo para reducir los costos operativos."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es la primera fase en el Proceso de Planificación Estratégica en Enfermería?",
+        options: [
+          "Análisis Estratégico.",
+          "Implementación de la Estrategia.",
+          "Evaluación y Control de la Estrategia.",
+          "Formulación de la Estrategia."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué herramienta permite identificar fortalezas, debilidades, oportunidades y amenazas?",
+        options: [
+          "Análisis DAFO.",
+          "Modelo de las Cinco Fuerzas de Porter.",
+          "Matriz BCG.",
+          "Plan de Negocios."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa la visión en Dirección Estratégica?",
+        options: [
+          "Una imagen del futuro que la organización desea alcanzar.",
+          "Los problemas actuales de la organización.",
+          "La cantidad de empleados en la organización.",
+          "Las tácticas de marketing de la organización."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una característica esencial de los objetivos estratégicos?",
+        options: [
+          "Ser específicos y medibles.",
+          "Ser ambiguos.",
+          "Ser irrealizables.",
+          "No tener un plazo definido."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué tipo de indicadores miden el impacto final de las actividades?",
+        options: [
+          "Indicadores de resultados.",
+          "Indicadores de procesos.",
+          "Indicadores financieros.",
+          "Indicadores cualitativos."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el papel del líder en la implementación de la estrategia?",
+        options: [
+          "Comunicar la visión y motivar a los empleados.",
+          "Mantener el status quo.",
+          "Reducir los salarios del personal.",
+          "Ignorar el feedback de los empleados."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué herramienta clasifica unidades estratégicas según crecimiento y participación?",
+        options: [
+          "Matriz BCG.",
+          "Análisis DAFO.",
+          "Modelo de las Cinco Fuerzas de Porter.",
+          "Estudio de mercado."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un ejemplo de un objetivo estratégico en enfermería?",
+        options: [
+          "Reducir la tasa de infecciones en el hospital en un 50% en los próximos 3 años.",
+          "Aumentar el número de cafeterías en los hospitales.",
+          "Disminuir el uso de tecnología en los cuidados de enfermería.",
+          "Incrementar el número de reuniones administrativas."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué estrategia facilita la gestión del cambio?",
+        options: [
+          "Comunicación clara y transparente.",
+          "Ignorar preocupaciones del personal.",
+          "Recompensas financieras indiscriminadas.",
+          "Aumentar la carga de trabajo."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué implica la planificación de la plantilla?",
+        options: [
+          "Determinar el número y tipo de empleados necesarios para alcanzar los objetivos.",
+          "Reducir el personal al mínimo indispensable.",
+          "Incrementar personal sin considerar necesidades.",
+          "Contratar basándose solo en recomendaciones."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo pueden las TIC mejorar la gestión de enfermería?",
+        options: [
+          "Facilitando la comunicación entre profesionales y mejorando la administración de medicamentos.",
+          "Sustituyendo completamente el juicio clínico.",
+          "Limitando el acceso a la información del paciente.",
+          "Reduciendo la importancia de la investigación."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa la misión en Dirección Estratégica?",
+        options: [
+          "La razón de ser de la organización: qué hace y para quién.",
+          "Los beneficios anuales esperados.",
+          "La competencia principal de la organización.",
+          "Una lista de servicios ofrecidos."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué valor puede guiar el comportamiento en una organización de enfermería?",
+        options: [
+          "Profesionalismo.",
+          "Competitividad extrema.",
+          "Secretismo.",
+          "Autonomía aislada."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué herramienta analiza la competencia del sector?",
+        options: [
+          "Modelo de las Cinco Fuerzas de Porter.",
+          "Análisis PESTEL.",
+          "Análisis DAFO.",
+          "Matriz BCG."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un indicador de procesos?",
+        options: [
+          "Tiempo de espera para recibir atención médica.",
+          "Satisfacción del paciente.",
+          "Tasa de mortalidad.",
+          "Número de procedimientos realizados."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué método ayuda a superar resistencias al cambio?",
+        options: [
+          "Comunicación clara y participación del personal.",
+          "Ignorar opiniones contrarias.",
+          "Aplicar cambios sin aviso.",
+          "Aumentar la carga de trabajo."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto financiero es clave?",
+        options: [
+          "Presupuesto y control de costes.",
+          "Inversiones especulativas.",
+          "Reducción generalizada de salarios.",
+          "Apuestas financieras."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo contribuyen las TIC a la educación en enfermería?",
+        options: [
+          "Facilitando el acceso a recursos educativos y la investigación.",
+          "Sustituyendo la formación práctica.",
+          "Reduciendo el tiempo de estudio.",
+          "Limitando interacción docente."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué característica NO es esencial en los objetivos estratégicos?",
+        options: [
+          "Ser inalcanzables para motivar.",
+          "Ser específicos y medibles.",
+          "Ser relevantes para misión y visión.",
+          "Tener un plazo definido."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué importancia tiene la visión?",
+        options: [
+          "Guía la toma de decisiones y motiva a los empleados.",
+          "Define penalizaciones por bajo rendimiento.",
+          "Establece salarios.",
+          "Limita la innovación."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se evalúa en la fase de evaluación y control?",
+        options: [
+          "El progreso hacia los objetivos estratégicos.",
+          "La efectividad del marketing.",
+          "Productividad individual exclusivamente.",
+          "Las preferencias del personal."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el rol del desarrollo profesional?",
+        options: [
+          "Mejorar habilidades y conocimientos para lograr los objetivos.",
+          "Reducir costes de formación.",
+          "Motivar solo mediante incentivos financieros.",
+          "Mantener estructuras rígidas."
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Para qué sirve la matriz BCG en enfermería?",
+        options: [
+          "Clasificar servicios según demanda y eficiencia.",
+          "Identificar personal redundante.",
+          "Elegir ubicaciones de clínicas.",
+          "Determinar precios de servicios."
+        ],
+        correct: 0
       },
     ],
   },
@@ -3542,6 +7661,176 @@ export const TOPICS = [
           "Castigo profesionales",
         ],
         correct: 1,
+      },
+      {
+        q: "¿Cómo se clasifica un evento adverso como 'No prevenible'?",
+        options: [
+          "Cuando no se puede evitar con las medidas de seguridad actuales",
+          "Cuando ocurre debido a una negligencia médica",
+          "Cuando el paciente ignora las recomendaciones médicas",
+          "Cuando se debe exclusivamente a un error de diagnóstico"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cómo se clasifican los eventos adversos según su intencionalidad?",
+        options: [
+          "Accidentales e intencionales",
+          "Leves y graves",
+          "Preventivos y no preventivos",
+          "Humanos y sistémicos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes NO es una característica de una cultura de seguridad del paciente?",
+        options: [
+          "Aumento de la competencia entre profesionales",
+          "Compromiso de la dirección",
+          "Comunicación abierta",
+          "Aprendizaje continuo"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál de las siguientes NO es una fase del Proceso de Gestión del Riesgo Sanitario?",
+        options: [
+          "Evaluación de la competencia del personal",
+          "Identificación de riesgos",
+          "Valoración y análisis de riesgos",
+          "Intervención y control de riesgos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el papel de las auditorías en la seguridad del paciente?",
+        options: [
+          "Evaluar el cumplimiento de las normas de seguridad",
+          "Reducir el tiempo dedicado a cada paciente",
+          "Incrementar el número de procedimientos invasivos",
+          "Disminuir la comunicación entre el personal sanitario"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el primer paso en el proceso de gestión del riesgo sanitario?",
+        options: [
+          "Identificación de riesgos",
+          "Evaluación y seguimiento",
+          "Priorización de riesgos",
+          "Intervención y control de riesgos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es el propósito de las listas de verificación en la seguridad del paciente?",
+        options: [
+          "Asegurar que se completen los pasos críticos en un proceso",
+          "Reducir los costes operativos del hospital",
+          "Incrementar la velocidad de los diagnósticos",
+          "Reducir el tiempo de las visitas de los pacientes"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es un objetivo fundamental de la Gestión del Riesgo Sanitario?",
+        options: [
+          "Seguridad del Paciente",
+          "Reducir los costos operativos del centro sanitario",
+          "Aumentar la eficiencia en el uso de los medicamentos",
+          "Mejorar la comunicación entre el personal"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Cuál es una consecuencia directa de los eventos adversos?",
+        options: [
+          "Incremento en los costos de la atención sanitaria",
+          "Mejora en la eficiencia del personal sanitario",
+          "Aumento en la satisfacción laboral del personal",
+          "Reducción de la demanda de servicios sanitarios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué aspecto NO se asocia directamente con la importancia de la cultura de seguridad?",
+        options: [
+          "Aumento de los costos asociados a los errores y eventos adversos",
+          "Reducción de la tasa de errores y eventos adversos",
+          "Mejora de la calidad de la atención sanitaria",
+          "Aumento de la satisfacción de los profesionales"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué objetivo tiene la farmacovigilancia?",
+        options: [
+          "Prevenir los efectos adversos de los medicamentos",
+          "Aumentar las ventas de medicamentos",
+          "Promover el uso de medicamentos genéricos",
+          "Reducir el tiempo de desarrollo de nuevos medicamentos"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué permite la farmacovigilancia?",
+        options: [
+          "Identificar y prevenir los efectos adversos de los medicamentos",
+          "Mejorar las habilidades de comunicación del personal sanitario",
+          "Incrementar las ventas de medicamentos",
+          "Reducir los costos de formación del personal"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué permite la notificación de eventos adversos?",
+        options: [
+          "Identificar riesgos y tomar medidas preventivas",
+          "Incrementar la rentabilidad del hospital",
+          "Reducir la necesidad de formación continua del personal",
+          "Disminuir la cantidad de medicamentos necesarios"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué proceso evalúa si un centro sanitario cumple con los estándares de calidad y seguridad establecidos?",
+        options: [
+          "Acreditación de centros sanitarios",
+          "Implementación de una cultura de seguridad",
+          "Formación en seguridad del paciente",
+          "Farmacovigilancia"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué representa el análisis DAFO en la gestión de riesgos?",
+        options: [
+          "Una técnica para identificar fortalezas, debilidades, oportunidades y amenazas",
+          "Una técnica para la reanimación cardiopulmonar",
+          "Una herramienta de comunicación interna",
+          "Una metodología para la detección rápida de enfermedades"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se define como la reducción del riesgo de daño asociado a la asistencia sanitaria a un mínimo aceptable?",
+        options: [
+          "Seguridad del Paciente",
+          "Gestión del Riesgo Sanitario",
+          "Cultura de Seguridad del Paciente",
+          "Protocolos de práctica clínica"
+        ],
+        correct: 0
+      },
+      {
+        q: "¿Qué se utiliza para asegurar que se siguen los pasos correctos en un proceso?",
+        options: [
+          "Listas de verificación",
+          "Protocolos y guías de práctica clínica",
+          "Acreditación de centros sanitarios",
+          "Auditorías"
+        ],
+        correct: 0
       },
     ],
   },
