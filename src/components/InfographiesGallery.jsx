@@ -3,11 +3,13 @@ import { X, ZoomIn } from 'lucide-react';
 import { TOPICS } from '../data/constants';
 import moduloGestoraImg from '../assets/infographics/modulo-1-gestora-enfermera.png';
 import moduloLiderazgoImg from '../assets/infographics/modulo-2-liderazgo.png';
+import moduloCompetenciasImg from '../assets/infographics/modulo-3-competencias-digitales.png';
 
 // Mapeo de infografías por módulo
 const infographicsMap = {
   1: moduloGestoraImg, // La Gestora Enfermera
   2: moduloLiderazgoImg, // Liderazgo
+  3: moduloCompetenciasImg, // Competencias Digitales
 };
 
 export default function InfographiesGallery({ isOpen, onClose }) {
