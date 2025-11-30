@@ -22,6 +22,7 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - Gradient designs for modals and a consistent Cyan-Blue gradient for professional elements.
 - Professional hospital backgrounds with parallax effects.
 - Cinematic welcome flow: 5-second avatar entrance, fullscreen video intro, smooth transition to dashboard.
+- **Infographics Gallery**: Visual guide system showcasing 21 thematic infographics (one per module) with grid layout, module badges, and download functionality. Styled with purple-pink gradient buttons and cyan-blue accent borders consistent with dashboard aesthetic.
 
 ### Technical Implementations
 - **Frontend**: React 19 with Vite.
@@ -47,6 +48,7 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Career Progression**: An 8-tier professional nursing career roadmap with visual timeline, real-time progress tracking, and "Casi Perfecto" requirements for top tiers.
 - **Visual Celebrations**: Toast notifications and confetti animations upon completing challenges.
 - **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
+- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with placeholder UI for future infographic content. Includes module icons, titles, subtitles, and download buttons. Ready to accept custom infographic designs from user.
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.

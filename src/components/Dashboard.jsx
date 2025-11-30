@@ -19,6 +19,7 @@ import CareerProgressionModal from './CareerProgressionModal';
 import HospitalCases from './HospitalCases';
 import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
+import InfographiesGallery from './InfographiesGallery';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -52,6 +53,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showTeamChallenges, setShowTeamChallenges] = useState(false);
   const [showCareerProgression, setShowCareerProgression] = useState(false);
   const [showHospitalCases, setShowHospitalCases] = useState(false);
+  const [showInfographics, setShowInfographics] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -546,6 +548,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   <p className="text-emerald-300 font-black">✓ COMPLETADO</p>
                 </div>
               )}
+
+              {/* Infografías Button - Below Central Block */}
+              <button
+                onClick={() => setShowInfographics(true)}
+                className="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <span className="text-xl">📊</span>
+                Ver Infografías Temáticas
+              </button>
             </div>
           )}
 
@@ -611,6 +622,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           }}
         />
       )}
+
+      {/* Infographics Gallery Modal */}
+      <InfographiesGallery
+        isOpen={showInfographics}
+        onClose={() => setShowInfographics(false)}
+      />
 
       {/* Toast Notification */}
       {showToast && (
