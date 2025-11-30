@@ -22,7 +22,7 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - Gradient designs for modals and a consistent Cyan-Blue gradient for professional elements.
 - Professional hospital backgrounds with parallax effects.
 - Cinematic welcome flow: 5-second avatar entrance, fullscreen video intro, smooth transition to dashboard.
-- **Infographics Gallery**: Visual guide system showcasing 21 thematic infographics (one per module) with grid layout, module badges, and download functionality. Styled with purple-pink gradient buttons and cyan-blue accent borders consistent with dashboard aesthetic.
+- **Infographics Gallery**: Gamified visual guide system showcasing 21 thematic infographics with advanced features: progress tracking (X/15 viewed with animated bar), Framer Motion stagger animations, confetti celebration on completion, favorites system with star toggle, search and category filters (Gestión, Liderazgo, Innovación, Comunicación, Equipo), 3D module number badges, skeleton shimmer loaders, and hover image previews. All progress persisted via localStorage.
 
 ### Technical Implementations
 - **Frontend**: React 19 with Vite.
