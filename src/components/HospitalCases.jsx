@@ -14,12 +14,14 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showReward, setShowReward] = useState(false);
+  const [showSessionSummary, setShowSessionSummary] = useState(false);
   const [currentCase, setCurrentCase] = useState(null);
   const [progress, setProgress] = useState(null);
   const [resultData, setResultData] = useState(null);
   const [rewardData, setRewardData] = useState(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [sessionSummary, setSessionSummary] = useState(null);
 
   useEffect(() => {
     console.log('🔄 Abriendo Hospital Cases...');
@@ -100,24 +102,94 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
       setCurrentCase(result.nextCase);
       setProgress(getSessionProgress());
     } else if (result.isSessionComplete) {
-      // Sesión completada (con o sin recompensa)
-      // Generar 8 casos nuevos para la siguiente ronda
-      resetCaseSession();
-      
-      // Mostrar feedback: si NO todas fueron correctas
-      if (result.correctAnswers < result.totalCases) {
-        // Mostrar modal de "Intenta de nuevo con los nuevos casos"
-        setTimeout(() => {
-          setCurrentCase(getCurrentCase());
-          setProgress(getSessionProgress());
-        }, 500);
-      } else {
-        // Ya se mostró recompensa arriba
-        setCurrentCase(getCurrentCase());
-        setProgress(getSessionProgress());
-      }
+      // Sesión completada - MOSTRAR RESUMEN
+      setSessionSummary({
+        correct: result.correctAnswers,
+        total: result.totalCases,
+        incorrect: result.totalCases - result.correctAnswers,
+        percentage: Math.round((result.correctAnswers / result.totalCases) * 100)
+      });
+      setShowSessionSummary(true);
     }
   };
+
+  const handleContinueNewCases = () => {
+    resetCaseSession();
+    setShowSessionSummary(false);
+    setSessionSummary(null);
+    setCurrentCase(getCurrentCase());
+    setProgress(getSessionProgress());
+  };
+
+  const getSessionAdvice = (percentage) => {
+    if (percentage === 100) return "🏆 ¡Perfección total! Eres un/a gestor/a de élite";
+    if (percentage >= 88) return "🌟 ¡Excelente! Casi perfecto, sigue así";
+    if (percentage >= 75) return "💪 ¡Muy bien! Vas por buen camino";
+    if (percentage >= 63) return "📈 ¡Buen esfuerzo! Aprende de los errores";
+    if (percentage >= 50) return "🎓 ¡Sigues aprendiendo! Revisa las decisiones";
+    return "📚 ¡No te desanimes! Cada intento suma experiencia";
+  };
+
+  // Vista de resumen de sesión (cuando termina los 8 casos)
+  if (showSessionSummary && sessionSummary) {
+    const isGood = sessionSummary.percentage >= 75;
+    const advice = getSessionAdvice(sessionSummary.percentage);
+    
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+        <div className={`bg-gradient-to-b ${isGood ? 'from-cyan-900 to-slate-800' : 'from-amber-900 to-slate-800'} border-2 ${isGood ? 'border-cyan-500' : 'border-amber-500'} rounded-3xl shadow-2xl max-w-lg w-full p-8`}>
+          <div className="text-center">
+            <div className="text-6xl mb-4">🏥</div>
+            <h2 className={`text-3xl font-black mb-6 ${isGood ? 'text-cyan-300' : 'text-amber-300'}`}>
+              Ronda Completada
+            </h2>
+            
+            {/* Estadísticas */}
+            <div className="bg-slate-900/50 rounded-xl p-6 mb-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-lg text-slate-300">Acertadas:</span>
+                <span className="text-2xl font-black text-emerald-400">✅ {sessionSummary.correct}/8</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-lg text-slate-300">Fallidas:</span>
+                <span className="text-2xl font-black text-red-400">❌ {sessionSummary.incorrect}/8</span>
+              </div>
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full ${isGood ? 'bg-gradient-to-r from-emerald-500 to-cyan-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`}
+                  style={{ width: `${sessionSummary.percentage}%` }}
+                />
+              </div>
+              <div className="text-xl font-black text-white">
+                {sessionSummary.percentage}% Éxito
+              </div>
+            </div>
+            
+            {/* Consejo */}
+            <div className={`text-lg font-bold mb-6 p-4 rounded-lg ${isGood ? 'bg-cyan-500/20 text-cyan-200' : 'bg-amber-500/20 text-amber-200'}`}>
+              {advice}
+            </div>
+            
+            {/* Botones */}
+            <div className="space-y-3">
+              <button
+                onClick={handleContinueNewCases}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition transform hover:scale-105"
+              >
+                ➜ Siguientes 8 Casos
+              </button>
+              <button
+                onClick={onClose}
+                className="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-black py-3 rounded-xl transition transform hover:scale-105"
+              >
+                Salir al Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Vista de recompensa final
   if (showReward && rewardData) {
