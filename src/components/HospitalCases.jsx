@@ -21,32 +21,32 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
-    // Inicializar sesión de casos cuando se abre
-    const initCases = async () => {
-      try {
-        console.log('🔄 Inicializando Hospital Cases...');
-        
-        const session = getCaseSession();
-        console.log('📋 Sesión de casos:', session);
-        
-        const firstCase = getCurrentCase();
-        console.log('📝 Primer caso:', firstCase);
-        
-        const prog = getSessionProgress();
-        console.log('📊 Progreso:', prog);
-        
-        // Pequeño delay para asegurar que React renderice correctamente
-        setTimeout(() => {
-          setProgress(prog);
-          setCurrentCase(firstCase);
-          console.log('✅ Casos inicializados correctamente');
-        }, 100);
-      } catch (error) {
-        console.error('❌ Error al inicializar Hospital Cases:', error);
-      }
-    };
+    console.log('🔄 Abriendo Hospital Cases...');
     
-    initCases();
+    try {
+      // Obtener o crear sesión
+      const session = getCaseSession();
+      console.log('📋 Sesión:', session?.level, 'Round:', session?.levelRound, 'Casos:', session?.cases?.length);
+      
+      // Obtener primer caso
+      const case1 = getCurrentCase();
+      console.log('📝 Caso:', case1?.title);
+      
+      // Obtener progreso
+      const prog = getSessionProgress();
+      console.log('📊 Progreso:', prog);
+      
+      // Establecer estados
+      if (case1 && prog) {
+        setCurrentCase(case1);
+        setProgress(prog);
+        console.log('✅ Casos listos');
+      } else {
+        console.error('❌ Error: case=', case1, 'prog=', prog);
+      }
+    } catch (e) {
+      console.error('❌ Error:', e.message);
+    }
   }, []);
 
   const handleSelectOption = (index) => {

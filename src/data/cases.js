@@ -253,11 +253,22 @@ export const initializeNewSession = () => {
 };
 
 export const getCurrentCase = () => {
-  const session = getCaseSession();
+  let session = getCaseSession();
+  
+  // Si la sesión no tiene casos, reinicializar
+  if (!session.cases || session.cases.length === 0) {
+    console.log('⚠️ Sesión sin casos, reinicializando...');
+    session = initializeNewSession();
+  }
+  
   if (session.currentIndex < session.cases.length) {
     return { ...session.cases[session.currentIndex], sessionIndex: session.currentIndex };
   }
-  return null;
+  
+  // Si llegamos aquí, reinicializar todo
+  console.warn('⚠️ getCurrentCase: índice fuera de rango, reinicializando');
+  session = initializeNewSession();
+  return session.cases[0] ? { ...session.cases[0], sessionIndex: 0 } : null;
 };
 
 export const completeCurrentCase = (isCorrect) => {
