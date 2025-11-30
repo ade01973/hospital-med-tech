@@ -463,7 +463,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <Star className="w-6 h-6 text-yellow-400" />
               </div>
 
-              <div className="space-y-3 max-h-80 overflow-y-auto mb-6">
+              <div className="space-y-2 max-h-48 overflow-y-auto mb-4">
                 {TOPICS.map((topic) => {
                   const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
                   const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
@@ -507,10 +507,54 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               {/* Daily Challenge */}
               <DailyChallenge />
             </div>
+          </div>
+
+          {/* Center Column */}
+          <div className="flex flex-col gap-6">
+            {/* Module Info */}
+            {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
+              <div className="bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-6 shadow-2xl" 
+                   style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="text-4xl">{currentTopic.icon}</div>
+                  <div>
+                    <h3 className="text-xl font-black text-white">{currentTopic.title}</h3>
+                    <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800/50 rounded-xl p-3 mb-4 border border-slate-700">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-xs text-slate-400 font-bold">PROGRESO</span>
+                    <span className="font-black text-cyan-300">{isCurrentCompleted ? '✓ 100%' : '0%'}</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{width: isCurrentCompleted ? '100%' : '0%'}}></div>
+                  </div>
+                </div>
+
+                {!isCurrentCompleted && (
+                  <button
+                    onClick={() => {
+                      setSelectedLevelForGame(currentTopic);
+                      setShowPreGameModal(true);
+                    }}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
+                  >
+                    Iniciar Nivel →
+                  </button>
+                )}
+
+                {isCurrentCompleted && (
+                  <div className="text-center py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+                    <p className="text-emerald-300 font-black">✓ COMPLETADO</p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Infografías Section - Separate Visual Frame */}
-            <div className="mt-6 bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-blue-900/40 backdrop-blur-xl border-2 border-purple-400/40 rounded-3xl p-5 shadow-2xl shadow-purple-500/20 relative overflow-hidden">
-              {/* Decorative Background Elements */}
+            <div className="bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-blue-900/40 backdrop-blur-xl border-2 border-purple-400/40 rounded-3xl p-5 shadow-2xl shadow-purple-500/20 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-2xl"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-500/20 to-transparent rounded-full blur-2xl"></div>
               
@@ -540,48 +584,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               </div>
             </div>
           </div>
-
-          {/* Center - Module Info */}
-          {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
-            <div className="bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-8 shadow-2xl" 
-                 style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="text-4xl">{currentTopic.icon}</div>
-                <div>
-                  <h3 className="text-2xl font-black text-white">{currentTopic.title}</h3>
-                  <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
-                </div>
-              </div>
-
-              <div className="bg-slate-800/50 rounded-xl p-4 mb-6 border border-slate-700">
-                <div className="flex justify-between mb-2">
-                  <span className="text-xs text-slate-400 font-bold">PROGRESO</span>
-                  <span className="font-black text-cyan-300">{isCurrentCompleted ? '✓ 100%' : '0%'}</span>
-                </div>
-                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{width: isCurrentCompleted ? '100%' : '0%'}}></div>
-                </div>
-              </div>
-
-              {!isCurrentCompleted && (
-                <button
-                  onClick={() => {
-                    setSelectedLevelForGame(currentTopic);
-                    setShowPreGameModal(true);
-                  }}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
-                >
-                  Iniciar Nivel →
-                </button>
-              )}
-
-              {isCurrentCompleted && (
-                <div className="text-center py-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
-                  <p className="text-emerald-300 font-black">✓ COMPLETADO</p>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Right - Milestone Timeline */}
           <div className="flex flex-col gap-8">
