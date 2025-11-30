@@ -13,6 +13,9 @@ import moduloImagenImg from '../assets/infographics/modulo-9-imagen-digital.png'
 import moduloDecisionesImg from '../assets/infographics/modulo-10-decisiones.png';
 import moduloPlanificacionImg from '../assets/infographics/modulo-11-planificacion.png';
 import moduloProcesosImg from '../assets/infographics/modulo-12-procesos.png';
+import moduloCambioImg from '../assets/infographics/modulo-13-cambio.png';
+import moduloInnovacionImg from '../assets/infographics/modulo-14-innovacion.png';
+import moduloMarketingImg from '../assets/infographics/modulo-15-marketing.png';
 
 // Mapeo de infografías por módulo
 const infographicsMap = {
@@ -28,6 +31,9 @@ const infographicsMap = {
   10: moduloDecisionesImg, // Toma de Decisiones
   11: moduloPlanificacionImg, // Planificación
   12: moduloProcesosImg, // Gestión por Procesos
+  13: moduloCambioImg, // Gestión del Cambio
+  14: moduloInnovacionImg, // Gestión de la Innovación
+  15: moduloMarketingImg, // Marketing Sanitario
 };
 
 export default function InfographiesGallery({ isOpen, onClose }) {
