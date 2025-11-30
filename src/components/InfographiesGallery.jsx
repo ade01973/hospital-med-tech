@@ -8,6 +8,7 @@ import moduloComunicacionImg from '../assets/infographics/modulo-4-comunicacion.
 import moduloClimaImg from '../assets/infographics/modulo-5-clima-laboral.png';
 import moduloConflictoImg from '../assets/infographics/modulo-6-conflicto.png';
 import moduloMotivacionImg from '../assets/infographics/modulo-7-motivacion.png';
+import moduloTrabajoImg from '../assets/infographics/modulo-8-trabajo-equipo.png';
 
 // Mapeo de infografías por módulo
 const infographicsMap = {
@@ -18,6 +19,7 @@ const infographicsMap = {
   5: moduloClimaImg, // Clima Laboral
   6: moduloConflictoImg, // Gestión del Conflicto
   7: moduloMotivacionImg, // Gestión de la Motivación
+  8: moduloTrabajoImg, // Trabajo en Equipo
 };
 
 export default function InfographiesGallery({ isOpen, onClose }) {
