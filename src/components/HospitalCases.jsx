@@ -13,15 +13,33 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showReward, setShowReward] = useState(false);
-  const [currentCase, setCurrentCase] = useState(() => getCurrentCase());
-  const [progress, setProgress] = useState(() => getSessionProgress());
+  const [currentCase, setCurrentCase] = useState(null);
+  const [progress, setProgress] = useState(null);
   const [resultData, setResultData] = useState(null);
   const [rewardData, setRewardData] = useState(null);
   const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
-    setCurrentCase(getCurrentCase());
-    setProgress(getSessionProgress());
+    // Inicializar sesión de casos cuando se abre
+    try {
+      const session = getCaseSession();
+      console.log('📋 Sesión de casos:', session);
+      
+      const firstCase = getCurrentCase();
+      console.log('📝 Primer caso:', firstCase);
+      
+      if (firstCase) {
+        setCurrentCase(firstCase);
+      } else {
+        console.error('❌ No se pudo obtener el primer caso');
+      }
+      
+      const prog = getSessionProgress();
+      console.log('📊 Progreso:', prog);
+      setProgress(prog);
+    } catch (error) {
+      console.error('❌ Error al inicializar Hospital Cases:', error);
+    }
   }, []);
 
   const handleSelectOption = (index) => {
@@ -138,7 +156,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-        <div className={`bg-gradient-to-b ${selectedOpt.correct ? 'from-emerald-900 to-slate-800' : 'from-red-900 to-slate-800'} border-2 ${selectedOpt.correct ? 'border-emerald-500' : 'border-red-500'}/50 rounded-3xl shadow-2xl max-w-lg w-full p-8`}>
+        <div className={`bg-gradient-to-b ${selectedOpt.correct ? 'from-emerald-900 to-slate-800' : 'from-red-900 to-slate-800'} border-2 ${selectedOpt.correct ? 'border-emerald-500' : 'border-red-500/50'} rounded-3xl shadow-2xl max-w-lg w-full p-8`}>
           <div className="text-center">
             <div className={`text-6xl mb-4 ${selectedOpt.correct ? 'animate-bounce' : 'animate-shake'}`}>
               {selectedOpt.correct ? '✅' : '❌'}
@@ -159,6 +177,20 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
               Continuar
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista de carga
+  if (!currentCase || !progress) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+        <div className="bg-gradient-to-b from-slate-900 to-slate-800 border-2 border-cyan-500/50 rounded-3xl shadow-2xl p-8 text-center">
+          <div className="animate-spin mb-4 inline-block">
+            <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full"></div>
+          </div>
+          <p className="text-cyan-300 font-bold mt-4">Inicializando Casos del Hospital...</p>
         </div>
       </div>
     );
