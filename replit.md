@@ -268,3 +268,39 @@ Respuesta 3/8 correcta
 ✅ Servidor corriendo sin errores
 ✅ App lista para usar
 
+
+---
+
+## Update #17: FEEDBACK DINÁMICO PARA HOSPITAL CASES (November 30, 2025)
+
+### 🎯 RESPUESTAS ALEATORIAS POSITIVAS Y NEGATIVAS
+✅ **Feedback Positivo** (10 variantes):
+- Emojis variados: ✅ 🎉 ⭐ 🏆 💪 🌟 👏 🎯 💯 🚀
+- Mensajes de ánimo y celebración
+- Ejemplos: "¡Bravo! ¡Tomaste la mejor decisión!" / "¡Increíble! ¡Resolviste la crisis brillantemente!"
+
+✅ **Feedback Negativo** (10 variantes):
+- Emojis motivacionales: ❌ 💭 🔄 📚 🎓 ⚡ 🌱 💡 🎪 🔮
+- Mensajes de ánimo para seguir adelante
+- Ejemplos: "Hay una opción mejor... ¡Pero sigue intentando!" / "La respuesta correcta está cerca... ¡Persevera!"
+
+### 🛠️ IMPLEMENTACIÓN
+✅ **casesFeedback.js** (NEW):
+- POSITIVE_FEEDBACKS: 10 respuestas positivas
+- NEGATIVE_FEEDBACKS: 10 respuestas negativas
+- getRandomPositiveFeedback() y getRandomNegativeFeedback()
+
+✅ **HospitalCases.jsx - Actualizado**:
+- Importa funciones de feedback aleatorio
+- Reemplaza mensajes estáticos con respuestas dinámicas
+- Emojis varían según el feedback seleccionado
+
+### ✅ Status
+✅ 10 respuestas positivas diferentes
+✅ 10 respuestas negativas diferentes
+✅ Sistema de selección aleatoria funcional
+✅ Emojis personalizados por tipo de feedback
+✅ Sin errores de compilación
+✅ Servidor corriendo perfecto
+
+---

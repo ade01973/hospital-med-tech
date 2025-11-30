@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentCase, completeCurrentCase, getSessionProgress, resetCaseSession, getFullReward, getCaseSession } from '../data/cases';
+import { getRandomPositiveFeedback, getRandomNegativeFeedback } from '../data/casesFeedback';
 import { X, CheckCircle } from 'lucide-react';
 import ConfettiCelebration from './ConfettiCelebration';
 import { useGestCoins } from '../hooks/useGestCoins';
@@ -153,16 +154,17 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   // Vista de resultado
   if (showResult && resultData && currentCase) {
     const selectedOpt = resultData.option;
+    const feedback = selectedOpt.correct ? getRandomPositiveFeedback() : getRandomNegativeFeedback();
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
         <div className={`bg-gradient-to-b ${selectedOpt.correct ? 'from-emerald-900 to-slate-800' : 'from-red-900 to-slate-800'} border-2 ${selectedOpt.correct ? 'border-emerald-500' : 'border-red-500/50'} rounded-3xl shadow-2xl max-w-lg w-full p-8`}>
           <div className="text-center">
             <div className={`text-6xl mb-4 ${selectedOpt.correct ? 'animate-bounce' : 'animate-shake'}`}>
-              {selectedOpt.correct ? '✅' : '❌'}
+              {feedback.emoji}
             </div>
             <h3 className={`text-2xl font-black mb-3 ${selectedOpt.correct ? 'text-emerald-300' : 'text-red-300'}`}>
-              {selectedOpt.correct ? '¡Decisión Correcta!' : 'Decisión No Óptima'}
+              {feedback.text}
             </h3>
             <p className="text-slate-200 mb-4">
               {selectedOpt.correct ? currentCase.impact : "Hay una opción mejor para esta situación"}
