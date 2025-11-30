@@ -12,6 +12,7 @@ import moduloTrabajoImg from '../assets/infographics/modulo-8-trabajo-equipo.png
 import moduloImagenImg from '../assets/infographics/modulo-9-imagen-digital.png';
 import moduloDecisionesImg from '../assets/infographics/modulo-10-decisiones.png';
 import moduloPlanificacionImg from '../assets/infographics/modulo-11-planificacion.png';
+import moduloProcesosImg from '../assets/infographics/modulo-12-procesos.png';
 
 // Mapeo de infografías por módulo
 const infographicsMap = {
@@ -26,6 +27,7 @@ const infographicsMap = {
   9: moduloImagenImg, // La Imagen Digital
   10: moduloDecisionesImg, // Toma de Decisiones
   11: moduloPlanificacionImg, // Planificación
+  12: moduloProcesosImg, // Gestión por Procesos
 };
 
 export default function InfographiesGallery({ isOpen, onClose }) {
