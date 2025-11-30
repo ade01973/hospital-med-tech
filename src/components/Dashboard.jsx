@@ -507,6 +507,38 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               {/* Daily Challenge */}
               <DailyChallenge />
             </div>
+
+            {/* Infografías Section - Separate Visual Frame */}
+            <div className="mt-6 bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-blue-900/40 backdrop-blur-xl border-2 border-purple-400/40 rounded-3xl p-5 shadow-2xl shadow-purple-500/20 relative overflow-hidden">
+              {/* Decorative Background Elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-500/20 to-transparent rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/40">
+                    <span className="text-2xl">📊</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white">Biblioteca Visual</h3>
+                    <p className="text-xs text-purple-200/70">Infografías de gestión sanitaria</p>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+                  Explora las guías visuales de cada módulo. Marca tus favoritas y sigue tu progreso.
+                </p>
+                
+                <button
+                  onClick={() => setShowInfographics(true)}
+                  className="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:via-indigo-500 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 shadow-lg shadow-purple-500/30 border border-purple-400/30"
+                >
+                  <span className="text-xl">📖</span>
+                  Abrir Galería de Infografías
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">15</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Center - Module Info */}
@@ -548,15 +580,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   <p className="text-emerald-300 font-black">✓ COMPLETADO</p>
                 </div>
               )}
-
-              {/* Infografías Button - Below Central Block */}
-              <button
-                onClick={() => setShowInfographics(true)}
-                className="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <span className="text-xl">📊</span>
-                Ver Infografías Temáticas
-              </button>
             </div>
           )}
 
