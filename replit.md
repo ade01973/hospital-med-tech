@@ -304,3 +304,21 @@ Respuesta 3/8 correcta
 ✅ Servidor corriendo perfecto
 
 ---
+
+---
+
+## HOTFIX: Carga de Hospital Cases Optimizada (November 30, 2025)
+
+### 🔧 PROBLEMA
+- Los casos mostraban "Inicializando..." pero no cargaban después
+
+### ✅ SOLUCIÓN APLICADA
+- Agregado pequeño delay (100ms) en useEffect para garantizar que React actualice correctamente
+- Cambiada condición de loading de `!currentCase || !progress` a solo `!currentCase`
+- Agregados valores por defecto en el display: `{progress?.completed + 1 || 1} de {progress?.total || 8}`
+
+### 🎯 RESULTADO
+✅ Los casos ahora cargan después del splash de "Inicializando"
+✅ Feedback dinámico funcionando (10 variantes positivas + 10 negativas)
+✅ Sistema completamente operativo
+

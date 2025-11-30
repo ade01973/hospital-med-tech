@@ -22,25 +22,31 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
 
   useEffect(() => {
     // Inicializar sesión de casos cuando se abre
-    try {
-      const session = getCaseSession();
-      console.log('📋 Sesión de casos:', session);
-      
-      const firstCase = getCurrentCase();
-      console.log('📝 Primer caso:', firstCase);
-      
-      if (firstCase) {
-        setCurrentCase(firstCase);
-      } else {
-        console.error('❌ No se pudo obtener el primer caso');
+    const initCases = async () => {
+      try {
+        console.log('🔄 Inicializando Hospital Cases...');
+        
+        const session = getCaseSession();
+        console.log('📋 Sesión de casos:', session);
+        
+        const firstCase = getCurrentCase();
+        console.log('📝 Primer caso:', firstCase);
+        
+        const prog = getSessionProgress();
+        console.log('📊 Progreso:', prog);
+        
+        // Pequeño delay para asegurar que React renderice correctamente
+        setTimeout(() => {
+          setProgress(prog);
+          setCurrentCase(firstCase);
+          console.log('✅ Casos inicializados correctamente');
+        }, 100);
+      } catch (error) {
+        console.error('❌ Error al inicializar Hospital Cases:', error);
       }
-      
-      const prog = getSessionProgress();
-      console.log('📊 Progreso:', prog);
-      setProgress(prog);
-    } catch (error) {
-      console.error('❌ Error al inicializar Hospital Cases:', error);
-    }
+    };
+    
+    initCases();
   }, []);
 
   const handleSelectOption = (index) => {
@@ -185,7 +191,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   }
 
   // Vista de carga
-  if (!currentCase || !progress) {
+  if (!currentCase) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
         <div className="bg-gradient-to-b from-slate-900 to-slate-800 border-2 border-cyan-500/50 rounded-3xl shadow-2xl p-8 text-center">
@@ -209,7 +215,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
               <span className="text-4xl">{currentCase.emoji}</span>
               <div>
                 <h3 className="text-2xl font-black text-white">{currentCase.title}</h3>
-                <p className="text-xs text-cyan-400">Caso {progress.completed + 1} de {progress.total}</p>
+                <p className="text-xs text-cyan-400">Caso {progress?.completed + 1 || 1} de {progress?.total || 8}</p>
               </div>
             </div>
             <button
