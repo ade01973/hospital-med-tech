@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { X, ZoomIn } from 'lucide-react';
 import { TOPICS } from '../data/constants';
 import moduloGestoraImg from '../assets/infographics/modulo-1-gestora-enfermera.png';
+import moduloLiderazgoImg from '../assets/infographics/modulo-2-liderazgo.png';
 
 // Mapeo de infografías por módulo
 const infographicsMap = {
   1: moduloGestoraImg, // La Gestora Enfermera
-  // 2: require('./assets/infographics/modulo-2.png'),
-  // Agregar más módulos cuando proporciones las infografías
+  2: moduloLiderazgoImg, // Liderazgo
 };
 
 export default function InfographiesGallery({ isOpen, onClose }) {
