@@ -48,7 +48,7 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Career Progression**: An 8-tier professional nursing career roadmap with visual timeline, real-time progress tracking, and "Casi Perfecto" requirements for top tiers.
 - **Visual Celebrations**: Toast notifications and confetti animations upon completing challenges.
 - **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
-- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with placeholder UI for future infographic content. Includes module icons, titles, subtitles, and download buttons. Ready to accept custom infographic designs from user.
+- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. Modulo 1 (La Gestora Enfermera) infographic ready. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.
