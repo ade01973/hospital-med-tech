@@ -19,6 +19,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   const [resultData, setResultData] = useState(null);
   const [rewardData, setRewardData] = useState(null);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     console.log('🔄 Abriendo Hospital Cases...');
@@ -57,7 +58,11 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
     if (selectedOption === null || !currentCase) return;
 
     const selectedOpt = currentCase.options[selectedOption];
+    // Seleccionar UN feedback aleatorio y guardarlo en estado
+    const selectedFeedback = selectedOpt.correct ? getRandomPositiveFeedback() : getRandomNegativeFeedback();
+    
     setResultData({ option: selectedOpt, isCorrect: selectedOpt.correct });
+    setFeedback(selectedFeedback);
     setShowResult(true);
 
     // Notificar al padre sobre XP ganado
@@ -77,6 +82,7 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
     setShowResult(false);
     setSelectedOption(null);
     setResultData(null);
+    setFeedback(null);
 
     // Si se completaron todos con respuestas correctas → RECOMPENSA
     if (result.reward) {
@@ -158,9 +164,8 @@ const HospitalCases = ({ onClose, onCaseComplete }) => {
   }
 
   // Vista de resultado
-  if (showResult && resultData && currentCase) {
+  if (showResult && resultData && currentCase && feedback) {
     const selectedOpt = resultData.option;
-    const feedback = selectedOpt.correct ? getRandomPositiveFeedback() : getRandomNegativeFeedback();
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
