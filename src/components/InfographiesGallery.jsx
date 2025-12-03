@@ -18,6 +18,10 @@ import moduloProcesosImg from '../assets/infographics/modulo-12-procesos.png';
 import moduloCambioImg from '../assets/infographics/modulo-13-cambio.png';
 import moduloInnovacionImg from '../assets/infographics/modulo-14-innovacion.png';
 import moduloMarketingImg from '../assets/infographics/modulo-15-marketing.png';
+import moduloAdministracionImg from '../assets/infographics/modulo-16-administracion.png';
+import moduloSistemasImg from '../assets/infographics/modulo-17-sistemas-sanitarios.png';
+import moduloCargaImg from '../assets/infographics/modulo-18-carga-cuidados.png';
+import moduloSeguridadImg from '../assets/infographics/modulo-19-seguridad-paciente.png';
 
 const infographicsMap = {
   1: moduloGestoraImg,
@@ -35,6 +39,10 @@ const infographicsMap = {
   13: moduloCambioImg,
   14: moduloInnovacionImg,
   15: moduloMarketingImg,
+  16: moduloAdministracionImg,
+  17: moduloSistemasImg,
+  18: moduloCargaImg,
+  19: moduloSeguridadImg,
 };
 
 const CATEGORIES = [
@@ -47,11 +55,11 @@ const CATEGORIES = [
 ];
 
 const getCategoryForTopic = (topicId) => {
-  if ([1, 11, 12, 13].includes(topicId)) return 'gestion';
+  if ([1, 11, 12, 13, 16, 17].includes(topicId)) return 'gestion';
   if ([2, 10].includes(topicId)) return 'liderazgo';
   if ([3, 14, 15].includes(topicId)) return 'innovacion';
   if ([4, 9].includes(topicId)) return 'comunicacion';
-  if ([5, 6, 7, 8].includes(topicId)) return 'equipo';
+  if ([5, 6, 7, 8, 18, 19].includes(topicId)) return 'equipo';
   return 'gestion';
 };
 
