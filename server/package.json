@@ -1,0 +1,13 @@
+{
+  "name": "gemini-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node gemini-api.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.5.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

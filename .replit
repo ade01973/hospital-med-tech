@@ -29,6 +29,10 @@ author = "agent"
 task = "workflow.run"
 args = "Dev Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Gemini API"
+
 [[workflows.workflow]]
 name = "Dev Server"
 author = "agent"
@@ -40,6 +44,18 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "Gemini API"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd server && node gemini-api.js"
+waitForPort = 3001
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [[ports]]
 localPort = 5000
@@ -104,3 +120,8 @@ externalPort = 8099
 [[ports]]
 localPort = 46033
 externalPort = 8080
+
+[userenv]
+
+[userenv.shared]
+VITE_GEMINI_API_KEY = "${GEMINI_API_KEY}"

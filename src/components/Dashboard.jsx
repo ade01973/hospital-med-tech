@@ -20,6 +20,7 @@ import HospitalCases from './HospitalCases';
 import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
+import GeminiChat from './GeminiChat';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -54,6 +55,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showCareerProgression, setShowCareerProgression] = useState(false);
   const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [showInfographics, setShowInfographics] = useState(false);
+  const [showGeminiChat, setShowGeminiChat] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -583,6 +585,37 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 </button>
               </div>
             </div>
+
+            {/* Gemini AI Assistant Section */}
+            <div className="bg-gradient-to-br from-emerald-900/40 via-teal-900/30 to-cyan-900/40 backdrop-blur-xl border-2 border-emerald-400/40 rounded-3xl p-5 shadow-2xl shadow-emerald-500/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-teal-500/20 to-transparent rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                    <span className="text-2xl">🤖</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white">Asistente IA</h3>
+                    <p className="text-xs text-emerald-200/70">Powered by Gemini</p>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+                  Resuelve tus dudas sobre gestión sanitaria con inteligencia artificial.
+                </p>
+                
+                <button
+                  onClick={() => setShowGeminiChat(true)}
+                  className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/30 border border-emerald-400/30"
+                >
+                  <span className="text-xl">💬</span>
+                  Abrir Chat con IA
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">NUEVO</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Right - Milestone Timeline */}
@@ -653,6 +686,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         isOpen={showInfographics}
         onClose={() => setShowInfographics(false)}
       />
+
+      {/* Gemini Chat */}
+      {showGeminiChat && (
+        <GeminiChat onBack={() => setShowGeminiChat(false)} />
+      )}
 
       {/* Toast Notification */}
       {showToast && (
