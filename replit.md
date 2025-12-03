@@ -49,13 +49,13 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Visual Celebrations**: Toast notifications and confetti animations upon completing challenges.
 - **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
 - **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. All 21 infographics complete. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
-- **AI Training Hub**: Comprehensive AI-powered training center with 5 specialized modules powered by Gemini AI:
+- **AI Training Hub**: Comprehensive AI-powered training center styled as a separate dashboard with nurse manager office background. Features 5 specialized modules powered by Gemini AI:
     - **Gestión de Casos**: Analyze clinical and management cases with AI feedback
     - **Toma de Decisiones**: Practice decision-making with scenarios (quick, complex, ethical, crisis)
     - **Liderazgo**: Develop leadership competencies with coaching and tests
     - **Comunicación**: Improve communication skills with role-play and techniques
     - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
-  Each module has customized AI prompts, themed UI colors, quick-start suggestions, and conversation history.
+  UI features: 3-column layout matching Dashboard style, office background image (`ai-training-bg.png`), animated particles, welcome card with user name, how-it-works guide, module grid with themed colors and icons. Each module has customized AI prompts with mandatory "gestor/gestora enfermero/a" terminology, conversation history, and 60s request timeout.
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.
