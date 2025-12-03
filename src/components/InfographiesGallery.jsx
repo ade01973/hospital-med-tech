@@ -39,10 +39,10 @@ const infographicsMap = {
   13: moduloMarketingImg,
   14: moduloCambioImg,
   15: moduloInnovacionImg,
-  16: moduloAdministracionImg,
+  16: moduloCargaImg,
   17: moduloSistemasImg,
-  18: moduloCargaImg,
-  19: moduloSeguridadImg,
+  18: moduloAdministracionImg,
+  21: moduloSeguridadImg,
 };
 
 const CATEGORIES = [
@@ -55,11 +55,11 @@ const CATEGORIES = [
 ];
 
 const getCategoryForTopic = (topicId) => {
-  if ([1, 11, 12, 16, 17].includes(topicId)) return 'gestion';
+  if ([1, 11, 12, 17, 18].includes(topicId)) return 'gestion';
   if ([2, 10, 14].includes(topicId)) return 'liderazgo';
   if ([3, 13, 15].includes(topicId)) return 'innovacion';
   if ([4, 9].includes(topicId)) return 'comunicacion';
-  if ([5, 6, 7, 8, 18, 19].includes(topicId)) return 'equipo';
+  if ([5, 6, 7, 8, 16, 21].includes(topicId)) return 'equipo';
   return 'gestion';
 };
 

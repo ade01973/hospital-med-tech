@@ -579,7 +579,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 >
                   <span className="text-xl">📖</span>
                   Abrir Galería de Infografías
-                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">19</span>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">18</span>
                 </button>
               </div>
             </div>
