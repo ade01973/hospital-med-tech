@@ -20,7 +20,7 @@ import HospitalCases from './HospitalCases';
 import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
-import GeminiChat from './GeminiChat';
+import AITrainingHub from './AITrainingHub';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -55,7 +55,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showCareerProgression, setShowCareerProgression] = useState(false);
   const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [showInfographics, setShowInfographics] = useState(false);
-  const [showGeminiChat, setShowGeminiChat] = useState(false);
+  const [showAITraining, setShowAITraining] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -597,22 +597,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                     <span className="text-2xl">🤖</span>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-white">Asistente IA</h3>
-                    <p className="text-xs text-emerald-200/70">Powered by Gemini</p>
+                    <h3 className="text-lg font-black text-white">Centro de Entrenamiento IA</h3>
+                    <p className="text-xs text-emerald-200/70">5 módulos de desarrollo profesional</p>
                   </div>
                 </div>
                 
                 <p className="text-sm text-slate-300 mb-4 leading-relaxed">
-                  Resuelve tus dudas sobre gestión sanitaria con inteligencia artificial.
+                  Casos, Decisiones, Liderazgo, Comunicación y Trabajo en Equipo.
                 </p>
                 
                 <button
-                  onClick={() => setShowGeminiChat(true)}
+                  onClick={() => setShowAITraining(true)}
                   className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/30 border border-emerald-400/30"
                 >
-                  <span className="text-xl">💬</span>
-                  Abrir Chat con IA
-                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">NUEVO</span>
+                  <span className="text-xl">🧠</span>
+                  Abrir Centro de Entrenamiento
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">5</span>
                 </button>
               </div>
             </div>
@@ -687,9 +687,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         onClose={() => setShowInfographics(false)}
       />
 
-      {/* Gemini Chat */}
-      {showGeminiChat && (
-        <GeminiChat onBack={() => setShowGeminiChat(false)} />
+      {/* AI Training Hub */}
+      {showAITraining && (
+        <AITrainingHub onBack={() => setShowAITraining(false)} />
       )}
 
       {/* Toast Notification */}

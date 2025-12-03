@@ -10,28 +10,45 @@ app.use(express.json());
 // This API key is from Gemini Developer API Key, not vertex AI API Key
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { message, history = [] } = req.body;
+// Terminología obligatoria para todos los prompts
+const TERMINOLOGY_RULES = `
+REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
+- Usa EXCLUSIVAMENTE los términos "gestor enfermero" o "gestora enfermera" para referirse a profesionales de gestión enfermera.
+- NUNCA uses los términos "médico", "doctor", "doctora" ni "facultativo".
+- Usa siempre "profesional sanitario/a", "enfermero/a" o "gestor/a enfermero/a" según corresponda.
+- El contexto siempre es gestión enfermera, NO gestión médica.
+- Habla de "equipos de enfermería", "unidades de enfermería", "supervisores/as de enfermería".
+`;
 
-    const systemPrompt = `Eres un asistente experto en gestión sanitaria y enfermería. 
+const DEFAULT_SYSTEM_PROMPT = `Eres un asistente experto en gestión sanitaria para gestores y gestoras enfermeras. 
 Tu nombre es "Asistente NurseManager".
-Ayudas a estudiantes de enfermería a aprender sobre:
+Ayudas a estudiantes y profesionales de enfermería a aprender sobre:
 - Gestión de equipos de enfermería
-- Liderazgo en salud
-- Administración sanitaria
+- Liderazgo enfermero
+- Administración sanitaria desde la perspectiva enfermera
 - Calidad asistencial
 - Seguridad del paciente
 - Marketing sanitario
 - Innovación en enfermería
 
+${TERMINOLOGY_RULES}
+
 Responde siempre en español de forma clara, profesional y educativa.
 Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, history = [], systemPrompt: customPrompt } = req.body;
+
+    // Combinar prompt personalizado con reglas de terminología obligatorias
+    const systemPrompt = customPrompt 
+      ? `${customPrompt}\n\n${TERMINOLOGY_RULES}`
+      : DEFAULT_SYSTEM_PROMPT;
+
     const contents = [
       { role: "user", parts: [{ text: systemPrompt }] },
-      { role: "model", parts: [{ text: "Entendido. Soy el Asistente NurseManager, especializado en gestión sanitaria y enfermería. Estoy aquí para ayudarte con tus dudas sobre liderazgo, administración, calidad y todos los temas relacionados con la gestión enfermera. ¿En qué puedo ayudarte?" }] },
+      { role: "model", parts: [{ text: "Entendido. Soy el Asistente NurseManager, especializado en gestión enfermera. Estoy aquí para ayudarte con tus dudas sobre liderazgo, administración, calidad y todos los temas relacionados con la gestión enfermera. ¿En qué puedo ayudarte?" }] },
       ...history,
       { role: "user", parts: [{ text: message }] }
     ];

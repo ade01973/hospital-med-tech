@@ -48,7 +48,14 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Career Progression**: An 8-tier professional nursing career roadmap with visual timeline, real-time progress tracking, and "Casi Perfecto" requirements for top tiers.
 - **Visual Celebrations**: Toast notifications and confetti animations upon completing challenges.
 - **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
-- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. Modulo 1 (La Gestora Enfermera) infographic ready. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
+- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. All 21 infographics complete. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
+- **AI Training Hub**: Comprehensive AI-powered training center with 5 specialized modules powered by Gemini AI:
+    - **Gestión de Casos**: Analyze clinical and management cases with AI feedback
+    - **Toma de Decisiones**: Practice decision-making with scenarios (quick, complex, ethical, crisis)
+    - **Liderazgo**: Develop leadership competencies with coaching and tests
+    - **Comunicación**: Improve communication skills with role-play and techniques
+    - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
+  Each module has customized AI prompts, themed UI colors, quick-start suggestions, and conversation history.
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.
@@ -59,9 +66,17 @@ The application employs a modern web stack to deliver an interactive and gamifie
 ## External Dependencies
 - **Firebase**: Authentication (anonymous login) and Firestore (real-time database).
 - **React 19**: Frontend library.
-- **Vite**: Build tool.
+- **Vite**: Build tool with proxy configuration for API calls.
 - **Tailwind CSS v3**: Utility-first CSS framework.
 - **Lucide React**: Icon library.
 - **Web Audio API**: For procedural sound generation.
 - **Web Share API**: For native mobile social sharing.
 - **Web Push API**: For browser push notifications.
+- **Google Gemini AI**: AI-powered training modules via `@google/genai` library. API runs on Express server (port 3001) with Vite proxy.
+
+## Server Architecture
+- **Frontend**: Vite dev server on port 5000
+- **Gemini API Server**: Express.js server on port 3001 (`server/gemini-api.js`)
+  - POST `/api/chat` - General chat with custom system prompts
+  - POST `/api/generate-quiz` - Generate quiz questions from topics
+  - Vite proxies `/api/*` requests to the Gemini server
