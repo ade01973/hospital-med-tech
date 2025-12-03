@@ -23,6 +23,7 @@ import moduloSistemasImg from '../assets/infographics/modulo-17-sistemas-sanitar
 import moduloCargaImg from '../assets/infographics/modulo-18-carga-cuidados.png';
 import moduloSeguridadImg from '../assets/infographics/modulo-19-seguridad-paciente.png';
 import moduloCalidadImg from '../assets/infographics/modulo-19-calidad.png';
+import moduloDireccionImg from '../assets/infographics/modulo-20-direccion-estrategica.png';
 
 const infographicsMap = {
   1: moduloGestoraImg,
@@ -44,6 +45,7 @@ const infographicsMap = {
   17: moduloSistemasImg,
   18: moduloAdministracionImg,
   19: moduloCalidadImg,
+  20: moduloDireccionImg,
   21: moduloSeguridadImg,
 };
 
@@ -58,7 +60,7 @@ const CATEGORIES = [
 
 const getCategoryForTopic = (topicId) => {
   if ([1, 11, 12, 17, 18, 19].includes(topicId)) return 'gestion';
-  if ([2, 10, 14].includes(topicId)) return 'liderazgo';
+  if ([2, 10, 14, 20].includes(topicId)) return 'liderazgo';
   if ([3, 13, 15].includes(topicId)) return 'innovacion';
   if ([4, 9].includes(topicId)) return 'comunicacion';
   if ([5, 6, 7, 8, 16, 21].includes(topicId)) return 'equipo';
