@@ -96,15 +96,15 @@ const AITrainingHub = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-slate-950 overflow-auto">
       {/* Background Image - Office */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-30"
+        className="fixed inset-0 bg-cover bg-center opacity-30"
         style={{ backgroundImage: `url(${aiTrainingBg})` }}
       ></div>
       
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-indigo-950/60 to-slate-950/90"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-950/80 via-indigo-950/60 to-slate-950/90"></div>
       
       {/* Animated Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
