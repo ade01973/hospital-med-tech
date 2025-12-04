@@ -74,6 +74,30 @@ const AVAILABLE_CASES = [
       { name: 'Ana Belén Ruiz', role: 'Enfermera Mediadora', description: 'Conocida por sus habilidades de comunicación y empatía, intenta ser la voz de la razón y el puente entre los grupos. Sus esfuerzos se ven obstaculizados por la creciente tensión.', emoji: '👩‍⚕️' }
     ],
     situation: `En un día particularmente desafiante, con múltiples cirugías complejas programadas y el equipo ya bajo una considerable tensión, los conflictos entre las enfermeras alcanzan un punto crítico. Isabel se encuentra en el centro de esta tormenta, luchando por mantener la unidad y eficiencia del equipo mientras se enfrenta a la creciente frustración y el descontento. La forma en que maneje esta situación no solo determinará el resultado de las cirugías del día, sino también el futuro de la dinámica del equipo.`
+  },
+  {
+    id: 'comunicacion-oncologia',
+    title: 'Desafíos de Comunicación en la Unidad de Oncología',
+    category: 'Comunicación en Enfermería',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '💬',
+    color: 'from-teal-500 to-emerald-500',
+    description: 'Un caso sobre comunicación efectiva, empática y culturalmente sensible en un entorno oncológico.',
+    context: `La Unidad de Oncología del Hospital General se enfrenta a desafíos únicos en términos de comunicación. La naturaleza sensible de los tratamientos y el estado emocional de los pacientes y sus familias requieren una comunicación excepcionalmente cuidadosa y empática. Los desafíos recientes incluyen:
+
+**1. Información Compleja y Sensible:** Los profesionales de enfermería deben comunicar información compleja sobre diagnósticos y tratamientos a pacientes y familias, a menudo en situaciones emocionalmente cargadas.
+
+**2. Diversidad Cultural y Lingüística:** La unidad atiende a una población diversa, con barreras lingüísticas y culturales que pueden complicar la comunicación.
+
+**3. Coordinación del Equipo Multidisciplinar:** La necesidad de una comunicación efectiva y coordinada entre diferentes especialistas (oncólogos, enfermería, trabajadores sociales, etc.) es crucial para proporcionar una atención integral.`,
+    characters: [
+      { name: 'Isabel González', role: 'Jefa de Enfermeras', description: 'Enfrenta el reto de asegurar una comunicación clara y compasiva dentro de su equipo y hacia los pacientes y sus familias.', emoji: '👩‍⚕️' },
+      { name: 'Juan Martín', role: 'Enfermero Especializado en Oncología', description: 'Lucha con la comunicación efectiva de malas noticias a los pacientes, buscando el equilibrio entre la información y la empatía.', emoji: '👨‍⚕️' },
+      { name: 'Lucía Ramírez', role: 'Enfermera Bilingüe', description: 'Esencial en la superación de barreras lingüísticas, pero a menudo se siente abrumada por la carga adicional de traducción y mediación cultural.', emoji: '👩‍⚕️' },
+      { name: 'Carlos Vargas', role: 'Enfermero Recién Incorporado', description: 'Intenta encontrar el equilibrio entre ser informativo y empático, aprendiendo las complejidades de la comunicación en oncología.', emoji: '👨‍⚕️' }
+    ],
+    situation: `Durante una semana particularmente desafiante, con varios casos nuevos de diagnósticos complicados y decisiones de tratamiento difíciles, el equipo de enfermería debe manejar eficazmente la comunicación en múltiples frentes. Isabel debe liderar a su equipo para asegurar que la comunicación sea efectiva, empática y culturalmente sensible, tanto con los pacientes y sus familias como dentro del equipo multidisciplinar.`
   }
 ];
 
