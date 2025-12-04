@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Bot, User, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen } from 'lucide-react';
+import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
 
 const AVAILABLE_CASES = [
@@ -26,8 +26,34 @@ const AVAILABLE_CASES = [
       { name: 'Luis Fernández', role: 'Recién Graduado', description: 'Ansioso por aprender, pero su falta de experiencia en situaciones de alta presión es un obstáculo.', emoji: '👨‍⚕️' }
     ],
     situation: `En una noche particularmente ocupada, con un número inusualmente alto de pacientes críticos y varios incidentes inesperados, el equipo de enfermería se enfrenta a una tormenta perfecta de desafíos. Ana debe guiar a su equipo a través de esta crisis, asegurando que todos los pacientes reciban la atención que necesitan mientras se adapta al nuevo sistema y maneja las dinámicas complejas de su equipo.`
+  },
+  {
+    id: 'toma-decisiones-uci',
+    title: 'Crisis en la Unidad de Cuidados Intensivos (UCI)',
+    category: 'Toma de Decisiones',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '🚨',
+    color: 'from-red-500 to-pink-500',
+    description: 'Un escenario crítico de toma de decisiones durante un brote de infección con recursos limitados.',
+    context: `La Unidad de Cuidados Intensivos (UCI) del Hospital General se enfrenta a una situación crítica que pone a prueba la toma de decisiones del personal de enfermería. La UCI, conocida por su excelencia en el manejo de casos críticos, se encuentra en una situación complicada debido a:
+
+**1. Brote de Infección Inesperado:** Un brote inesperado de una infección resistente a múltiples medicamentos ha surgido en la UCI, lo que requiere decisiones rápidas y efectivas sobre el aislamiento de pacientes, la administración de tratamientos y la prevención de la propagación.
+
+**2. Recursos Limitados:** La UCI está experimentando una escasez de recursos críticos, incluyendo personal, equipos y medicamentos esenciales. Esto obliga al equipo a tomar decisiones difíciles sobre la asignación de recursos y la priorización de pacientes.
+
+**3. Desafíos de Comunicación:** La comunicación efectiva entre el personal de enfermería, otros profesionales sanitarios y los familiares de los pacientes es crucial, pero se ve obstaculizada por la urgencia y la gravedad de la situación.`,
+    characters: [
+      { name: 'Elena Rodríguez', role: 'Jefa de Enfermeras UCI', description: 'Debe liderar a su equipo en la toma de decisiones críticas bajo presión, equilibrando la atención al paciente con los recursos limitados.', emoji: '👩‍⚕️' },
+      { name: 'Miguel Álvarez', role: 'Enfermero Experimentado', description: 'Se enfrenta al desafío de manejar múltiples pacientes críticos simultáneamente, tomando decisiones rápidas y efectivas.', emoji: '👨‍⚕️' },
+      { name: 'Laura Martínez', role: 'Enfermera Recién Graduada', description: 'Se encuentra abrumada por la gravedad de la situación y necesita tomar decisiones importantes mientras aún está aprendiendo.', emoji: '👩‍⚕️' },
+      { name: 'Diego Sánchez', role: 'Enfermero Comunicador', description: 'Con habilidades excepcionales en comunicación, juega un papel clave en la coordinación entre el equipo, otros profesionales y las familias.', emoji: '👨‍⚕️' }
+    ],
+    situation: `Durante un turno particularmente intenso, con el brote de infección en su punto más crítico y recursos limitados, el equipo de enfermería de la UCI debe tomar decisiones rápidas y efectivas. Elena debe guiar a su equipo a través de esta crisis, asegurando que se tomen las mejores decisiones posibles para el cuidado de los pacientes, la gestión de recursos y la comunicación efectiva.`
   }
 ];
+
+const directoraImage = '/src/assets/female-characters/female-character-8.png';
 
 const CaseManagementModule = ({ onBack }) => {
   const [selectedCase, setSelectedCase] = useState(null);
@@ -42,6 +68,16 @@ const CaseManagementModule = ({ onBack }) => {
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
   const contentRef = useRef(null);
+
+  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+  
+  const getPlayerAvatarImage = () => {
+    if (playerAvatar.characterPreset) {
+      const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
+      return `/src/assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+    }
+    return '/src/assets/female-characters/female-character-1.png';
+  };
 
   const formatText = (text) => {
     return text
@@ -65,7 +101,7 @@ const CaseManagementModule = ({ onBack }) => {
         body: JSON.stringify({
           message: `Genera la pregunta número ${questionNumber} de 10 para este caso de estudio.`,
           history: [],
-          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
+          systemPrompt: `Eres un experto evaluador en gestión enfermera y ${caseInfo.category.toLowerCase()}. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
 
 CASO DE ESTUDIO: "${caseInfo.title}"
 
@@ -83,21 +119,21 @@ ${answersContext || 'Ninguna aún (esta es la primera pregunta)'}
 
 INSTRUCCIONES:
 1. Genera UNA pregunta reflexiva y desafiante sobre el caso
-2. La pregunta debe evaluar competencias de liderazgo, toma de decisiones, gestión de conflictos o comunicación
+2. La pregunta debe evaluar competencias de ${caseInfo.category.toLowerCase()}, gestión de conflictos o comunicación
 3. Adapta la dificultad según las respuestas anteriores del estudiante
 4. Si las respuestas anteriores fueron superficiales, haz preguntas que profundicen más
 5. Si fueron buenas, aumenta la complejidad
 6. La pregunta ${questionNumber} debe cubrir un aspecto diferente a las anteriores
 
-TEMAS A CUBRIR EN LAS 10 PREGUNTAS:
+TEMAS A CUBRIR EN LAS 10 PREGUNTAS (adaptados al caso):
 1. Identificación del problema principal
 2. Análisis de las dinámicas del equipo
-3. Estrategias de liderazgo de Ana
-4. Manejo del cambio y resistencia (Sofía)
-5. Apoyo a personal nuevo (Carlos y Luis)
+3. Estrategias de ${caseInfo.category.toLowerCase()}
+4. Manejo de situaciones críticas
+5. Apoyo a personal con diferentes niveles de experiencia
 6. Priorización en crisis
 7. Comunicación efectiva
-8. Delegación de tareas
+8. Delegación de tareas y recursos
 9. Gestión emocional del equipo
 10. Plan de acción integral
 
@@ -192,7 +228,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
         body: JSON.stringify({
           message: 'Evalúa las respuestas del estudiante y proporciona calificación y feedback.',
           history: [],
-          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
+          systemPrompt: `Eres un experto evaluador en gestión enfermera y ${caseInfo.category.toLowerCase()}. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
 
 CASO EVALUADO: "${caseInfo.title}"
 
@@ -210,8 +246,8 @@ Evalúa las respuestas del estudiante y proporciona:
 
 1. **CALIFICACIÓN GLOBAL** (0-100 puntos):
    - Comprensión del caso: /25 puntos
-   - Aplicación de liderazgo: /25 puntos
-   - Resolución de conflictos: /25 puntos
+   - Aplicación de ${caseInfo.category.toLowerCase()}: /25 puntos
+   - Resolución de problemas: /25 puntos
    - Comunicación y trabajo en equipo: /25 puntos
 
 2. **FORTALEZAS DEMOSTRADAS** (3-5 puntos fuertes)
@@ -224,7 +260,7 @@ Evalúa las respuestas del estudiante y proporciona:
    - Recursos recomendados para profundizar
 
 5. **COMPETENCIAS EVALUADAS**:
-   - Liderazgo: [Nivel: Básico/Intermedio/Avanzado]
+   - ${caseInfo.category}: [Nivel: Básico/Intermedio/Avanzado]
    - Toma de decisiones: [Nivel]
    - Gestión de conflictos: [Nivel]
    - Comunicación: [Nivel]
@@ -299,7 +335,11 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
                             <span className="px-4 py-1.5 bg-cyan-500/30 text-cyan-200 text-sm font-bold rounded-full border border-cyan-400/50">
                               {caseItem.category}
                             </span>
-                            <span className="px-4 py-1.5 bg-amber-500/30 text-amber-200 text-sm font-bold rounded-full border border-amber-400/50">
+                            <span className={`px-4 py-1.5 text-sm font-bold rounded-full border ${
+                              caseItem.difficulty === 'Avanzado' 
+                                ? 'bg-red-500/30 text-red-200 border-red-400/50'
+                                : 'bg-amber-500/30 text-amber-200 border-amber-400/50'
+                            }`}>
                               {caseItem.difficulty}
                             </span>
                           </div>
@@ -471,7 +511,7 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
           {currentQuestion === 0 && answers.length === 0 && (
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl border-2 border-cyan-500/40 p-8 mb-8 shadow-2xl">
               <h2 className="text-3xl font-black text-white mb-6 flex items-center gap-3">
-                🏥 {selectedCase.title}
+                {selectedCase.icon} {selectedCase.title}
               </h2>
               
               <div className="space-y-8">
@@ -520,8 +560,12 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
           {answers.map((item, idx) => (
             <div key={idx} className="space-y-4">
               <div className="flex gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <Bot className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-lg border-2 border-cyan-500/50 bg-slate-800">
+                  <img 
+                    src={directoraImage} 
+                    alt="Directora" 
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <div className="flex-1 bg-slate-800/95 border-2 border-slate-600 rounded-2xl px-6 py-4">
                   <p className="text-xs text-cyan-400 font-black mb-2">PREGUNTA {idx + 1}</p>
@@ -532,8 +576,12 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
                 <div className="max-w-[80%] bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl px-6 py-4 shadow-lg">
                   <p className="text-white text-lg">{item.answer}</p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <User className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-lg border-2 border-cyan-500/50 bg-slate-800">
+                  <img 
+                    src={getPlayerAvatarImage()} 
+                    alt="Tu avatar" 
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
               </div>
             </div>
@@ -541,8 +589,12 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
 
           {questions[currentQuestion] && answers.length === currentQuestion && (
             <div className="flex gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Bot className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-lg border-2 border-cyan-500/50 bg-slate-800">
+                <img 
+                  src={directoraImage} 
+                  alt="Directora" 
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
               <div className="flex-1 bg-slate-800/95 border-2 border-cyan-500/50 rounded-2xl px-6 py-4 shadow-lg">
                 <p className="text-xs text-cyan-400 font-black mb-2">PREGUNTA {currentQuestion + 1}</p>
@@ -553,8 +605,12 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
 
           {isGeneratingQuestion && (
             <div className="flex gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                <Bot className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-lg border-2 border-cyan-500/50 bg-slate-800 animate-pulse">
+                <img 
+                  src={directoraImage} 
+                  alt="Directora" 
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
               <div className="bg-slate-800/95 border-2 border-slate-600 rounded-2xl px-6 py-4">
                 <div className="flex items-center gap-3 text-cyan-300">
