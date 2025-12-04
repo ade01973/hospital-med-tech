@@ -56,18 +56,17 @@ The application employs a modern web stack to deliver an interactive and gamifie
     - **Comunicación**: Improve communication skills with role-play and techniques
     - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
   UI features: 3-column layout matching Dashboard style, office background image (`ai-training-bg.png`), animated particles, welcome card with user name, how-it-works guide, module grid with themed colors and icons. Each module has customized AI prompts with mandatory "gestor/gestora enfermero/a" terminology, conversation history, and 60s request timeout.
-- **Case Management Module (2025 Ultra-Visual UI)**: Highly gamified, visually stunning interface following Duolingo/Kahoot best practices:
-    - **Visual Effects**: FloatingOrbs component with 5 animated gradient orbs (cyan, purple, blue, pink, amber), GlowingStars with 30 twinkling star particles
-    - **Statistics Dashboard**: 4 animated StatCards showing Completed Cases, Total XP, Progress %, and Available XP with AnimatedCounter component
-    - **Featured Case Section**: Highlighted "RECOMENDADO" card for the next uncompleted case with crown icon and pulsing badge
-    - **Progress Tracking**: Animated progress bar with shimmer effect, percentage counter, and completion statistics
-    - **Case Cards**: Compact modern design with gradient backgrounds based on completion status (emerald for completed, amber for recommended, slate for pending)
-    - **Gamification Elements**: Streak indicator with flame icon, XP rewards display (+150 XP per case), numbered badges, difficulty indicators
-    - **User Profile**: Avatar with online status indicator, profile integration in header
-    - **Micro-animations**: Hover scale (1.01-1.1), rotate effects (2-6deg), staggered fadeInUp animations with delays, gradient text transitions
-    - **Information Panels**: "How it Works" guide with emoji steps, Statistics panel with accuracy, best streak, level, and average time
-    - **Responsive Design**: Optimized layout for mobile (p-4) and desktop (p-8), grid adjustments for different screen sizes
-    - **Color Scheme**: Deep indigo-purple-slate gradient background, cyan/purple accent highlights, emerald completion badges
+- **Case Management Module (2025 UI)**: Modern gamified interface following Duolingo/Kahoot best practices:
+    - Glassmorphism design with backdrop blur and translucent cards
+    - User avatar displayed in top-right corner with status indicator
+    - Progress bar with shimmer animation showing case completion
+    - XP counter and case completion tracker
+    - Animated floating orbs background
+    - Micro-animations: hover scale (1.02), rotate effects, gradient text transitions
+    - Case cards with numbered badges, difficulty indicators, XP rewards (+150 XP)
+    - "Completed" badges on finished cases with emerald green styling
+    - Modern typography with gradient titles and improved line-height
+    - Enhanced spacing and border-radius (rounded-3xl: 24px)
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.

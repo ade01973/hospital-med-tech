@@ -1,91 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles, Flame, Crown, Gift, TrendingUp, Brain, Heart, Rocket, Medal, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
-
-const FloatingOrbs = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-20 left-[10%] w-80 h-80 bg-cyan-500/20 rounded-full blur-[100px] animate-pulse" />
-      <div className="absolute bottom-20 right-[10%] w-96 h-96 bg-purple-500/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-1/3 left-[20%] w-64 h-64 bg-pink-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute top-1/4 right-[20%] w-56 h-56 bg-amber-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2.5s' }} />
-    </div>
-  );
-};
-
-const GlowingStars = () => {
-  const stars = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 3 + 1,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 5,
-    duration: Math.random() * 3 + 2
-  }));
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {stars.map((star) => (
-        <div
-          key={star.id}
-          className="absolute bg-white rounded-full animate-pulse"
-          style={{
-            width: star.size,
-            height: star.size,
-            left: `${star.left}%`,
-            top: `${star.top}%`,
-            animationDelay: `${star.delay}s`,
-            animationDuration: `${star.duration}s`,
-            boxShadow: '0 0 6px 2px rgba(255,255,255,0.3)'
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-const AnimatedCounter = ({ value, suffix = '' }) => {
-  const [displayValue, setDisplayValue] = useState(0);
-  
-  useEffect(() => {
-    const duration = 1200;
-    const steps = 25;
-    const increment = value / steps;
-    let current = 0;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setDisplayValue(value);
-        clearInterval(timer);
-      } else {
-        setDisplayValue(Math.floor(current));
-      }
-    }, duration / steps);
-    
-    return () => clearInterval(timer);
-  }, [value]);
-  
-  return <span>{displayValue.toLocaleString()}{suffix}</span>;
-};
-
-const StatCard = ({ icon: Icon, value, label, color, delay = 0 }) => (
-  <div 
-    className={`bg-gradient-to-br ${color} backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl transform hover:scale-105 transition-all duration-300 animate-fadeInUp`}
-    style={{ animationDelay: `${delay}ms` }}
-  >
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-        <Icon className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <p className="text-2xl font-black text-white"><AnimatedCounter value={value} /></p>
-        <p className="text-white/70 text-xs font-medium">{label}</p>
-      </div>
-    </div>
-  </div>
-);
 
 const AVAILABLE_CASES = [
   {
@@ -551,305 +466,219 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
   const totalXP = parseInt(localStorage.getItem('totalXP') || '0');
 
   if (!selectedCase) {
-    const nextCase = AVAILABLE_CASES.find(c => !completedCases.includes(c.id)) || AVAILABLE_CASES[0];
-    const progressPercent = Math.round((completedCases.length / AVAILABLE_CASES.length) * 100);
-    const xpAvailable = (AVAILABLE_CASES.length - completedCases.length) * 150;
-    
     return (
-      <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-950">
+      <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{ backgroundImage: `url(${aiTrainingBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-indigo-950/60 to-slate-950/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-indigo-950/70 to-slate-950/80" />
         
-        <FloatingOrbs />
-        <GlowingStars />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
         
         <div className="relative z-10 h-full overflow-auto">
-          <div className="min-h-full p-4 md:p-8">
+          <div className="min-h-full p-6 md:p-10">
             <div className="max-w-6xl mx-auto">
               
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-5">
                   <button 
                     onClick={onBack} 
-                    className="p-3 bg-white/10 backdrop-blur-xl hover:bg-white/20 rounded-xl transition-all duration-300 border border-white/20 hover:border-cyan-400/50 shadow-xl hover:shadow-cyan-500/30 hover:scale-105 group"
+                    className="p-4 bg-white/10 backdrop-blur-xl hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/20 hover:border-cyan-400/50 shadow-xl hover:shadow-cyan-500/20 hover:scale-105 group"
                   >
-                    <Home className="w-5 h-5 text-white group-hover:text-cyan-300 transition-colors" />
+                    <Home className="w-6 h-6 text-white group-hover:text-cyan-300 transition-colors" />
                   </button>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/30">
-                          <Brain className="w-7 h-7 text-white" />
-                        </div>
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center animate-bounce shadow-lg">
-                          <Sparkles className="w-3 h-3 text-white" />
+                  <div className="flex items-center gap-5">
+                    <div className="relative">
+                      <div className="w-18 h-18 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-red-500/40 p-1">
+                        <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center">
+                          <Briefcase className="w-9 h-9 text-white drop-shadow-lg" />
                         </div>
                       </div>
-                      <div>
-                        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-purple-200">
-                          Gestión de Casos
-                        </h1>
-                        <p className="text-cyan-300/80 text-sm md:text-base font-medium">
-                          Entrena con casos reales de gestión enfermera
-                        </p>
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                        <Sparkles className="w-3.5 h-3.5 text-white" />
                       </div>
+                    </div>
+                    <div>
+                      <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-white tracking-tight drop-shadow-lg">
+                        Gestión de Casos
+                      </h1>
+                      <p className="text-cyan-300/90 text-lg mt-1 font-medium tracking-wide">
+                        Entrena tus competencias con casos reales
+                      </p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-xl rounded-xl px-4 py-2 border border-amber-400/30 shadow-lg">
-                    <Flame className="w-5 h-5 text-amber-400 animate-pulse" />
-                    <span className="text-amber-300 font-bold text-sm">Racha: 3</span>
+                <div className="flex items-center gap-4">
+                  <div className="hidden md:flex items-center gap-3 bg-white/10 backdrop-blur-xl rounded-2xl px-5 py-3 border border-white/20 shadow-xl">
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-amber-400" />
+                      <span className="text-white font-bold">{completedCases.length}/{AVAILABLE_CASES.length}</span>
+                    </div>
+                    <div className="w-px h-6 bg-white/20" />
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-5 h-5 text-cyan-400" />
+                      <span className="text-white font-bold">{totalXP} XP</span>
+                    </div>
                   </div>
                   
                   <div className="relative group">
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden border-2 border-cyan-400/50 shadow-xl shadow-cyan-500/20 transition-all duration-300 group-hover:scale-110 group-hover:border-cyan-400 bg-gradient-to-br from-slate-800 to-slate-900">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden border-3 border-cyan-400/50 shadow-2xl shadow-cyan-500/30 transition-all duration-300 group-hover:scale-110 group-hover:border-cyan-400 bg-gradient-to-br from-slate-800 to-slate-900">
                       <img 
                         src={getPlayerAvatarImage()} 
                         alt="Tu avatar" 
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full border-2 border-slate-900 flex items-center justify-center shadow-lg">
-                      <div className="w-2 h-2 bg-white rounded-full" />
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full border-2 border-slate-900 flex items-center justify-center">
+                      <CheckCircle className="w-3.5 h-3.5 text-white" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <StatCard icon={Trophy} value={completedCases.length} label="Casos Completados" color="from-amber-500/30 to-orange-600/30" delay={0} />
-                <StatCard icon={Zap} value={totalXP} label="XP Total" color="from-cyan-500/30 to-blue-600/30" delay={100} />
-                <StatCard icon={Target} value={progressPercent} label="% Progreso" color="from-purple-500/30 to-pink-600/30" delay={200} />
-                <StatCard icon={Gift} value={xpAvailable} label="XP Disponible" color="from-emerald-500/30 to-teal-600/30" delay={300} />
+              <div className="mb-8 bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <Target className="w-6 h-6 text-cyan-400" />
+                    <span className="text-white font-bold text-lg">Progreso General</span>
+                  </div>
+                  <span className="text-cyan-300 font-black text-xl">{Math.round((completedCases.length / AVAILABLE_CASES.length) * 100)}%</span>
+                </div>
+                <div className="h-4 bg-slate-800/80 rounded-full overflow-hidden shadow-inner">
+                  <div 
+                    className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-cyan-500/50 relative overflow-hidden"
+                    style={{ width: `${(completedCases.length / AVAILABLE_CASES.length) * 100}%` }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 text-sm">
+                  <span className="text-slate-400">{completedCases.length} casos completados</span>
+                  <span className="text-slate-400">{AVAILABLE_CASES.length - completedCases.length} pendientes</span>
+                </div>
               </div>
 
-              <div className="mb-6 bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-cyan-500/10 to-transparent rounded-full blur-2xl" />
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Rocket className="w-5 h-5 text-cyan-400" />
-                      <span className="text-white font-bold">Tu Progreso</span>
-                    </div>
-                    <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                      <AnimatedCounter value={progressPercent} suffix="%" />
-                    </span>
-                  </div>
-                  <div className="h-4 bg-slate-900/80 rounded-full overflow-hidden shadow-inner border border-white/5">
-                    <div 
-                      className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
-                      style={{ width: `${progressPercent}%` }}
+              <div className="grid gap-5">
+                {AVAILABLE_CASES.map((caseItem, index) => {
+                  const isCompleted = completedCases.includes(caseItem.id);
+                  return (
+                    <div
+                      key={caseItem.id}
+                      className={`relative bg-white/5 backdrop-blur-xl rounded-3xl border transition-all duration-500 overflow-hidden group cursor-pointer shadow-2xl hover:shadow-cyan-500/20 transform hover:scale-[1.02] hover:-translate-y-1 ${
+                        isCompleted 
+                          ? 'border-emerald-500/50 hover:border-emerald-400' 
+                          : 'border-white/10 hover:border-cyan-400/50'
+                      }`}
+                      onClick={() => startCase(caseItem)}
+                      style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
-                    </div>
-                  </div>
-                  <div className="flex justify-between mt-2 text-xs">
-                    <span className="text-emerald-400">{completedCases.length} completados</span>
-                    <span className="text-slate-400">{AVAILABLE_CASES.length - completedCases.length} restantes</span>
-                  </div>
-                </div>
-              </div>
-
-              {!completedCases.includes(nextCase.id) && (
-                <div 
-                  className="mb-6 bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-red-500/20 backdrop-blur-xl rounded-2xl p-5 border border-amber-500/40 shadow-2xl shadow-amber-500/10 cursor-pointer group hover:scale-[1.01] transition-all duration-300 relative overflow-hidden"
-                  onClick={() => startCase(nextCase)}
-                >
-                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-bl from-amber-400/30 to-transparent rounded-full blur-2xl" />
-                  <div className="absolute top-3 right-3 px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center gap-1.5 shadow-lg animate-pulse">
-                    <Crown className="w-3.5 h-3.5 text-white" />
-                    <span className="text-white text-xs font-bold">RECOMENDADO</span>
-                  </div>
-                  
-                  <div className="relative flex items-center gap-4">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${nextCase.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      {nextCase.icon}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-amber-200/80 text-xs font-medium uppercase tracking-wider mb-1">Siguiente Caso</p>
-                      <h3 className="text-white font-bold text-lg line-clamp-1 group-hover:text-amber-100 transition-colors">{nextCase.title}</h3>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="flex items-center gap-1 text-xs text-slate-300">
-                          <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                          {nextCase.duration}
-                        </span>
-                        <span className="flex items-center gap-1 text-xs text-cyan-300 font-bold">
-                          <Zap className="w-3.5 h-3.5" />
-                          +150 XP
-                        </span>
-                      </div>
-                    </div>
-                    <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                      <Play className="w-7 h-7 text-white ml-0.5" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="mb-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <BookOpen className="w-4 h-4 text-white" />
-                  </div>
-                  <h2 className="text-xl font-black text-white">Todos los Casos</h2>
-                  <div className="flex-1 h-px bg-gradient-to-r from-purple-500/50 to-transparent" />
-                  <span className="text-slate-400 text-sm">{AVAILABLE_CASES.length} disponibles</span>
-                </div>
-
-                <div className="grid gap-3">
-                  {AVAILABLE_CASES.map((caseItem, index) => {
-                    const isCompleted = completedCases.includes(caseItem.id);
-                    const isRecommended = caseItem.id === nextCase.id && !isCompleted;
-                    
-                    return (
-                      <div
-                        key={caseItem.id}
-                        className={`relative backdrop-blur-xl rounded-xl border transition-all duration-300 overflow-hidden group cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-[1.005] animate-fadeInUp ${
-                          isCompleted 
-                            ? 'bg-gradient-to-r from-emerald-900/40 to-slate-900/60 border-emerald-500/40 hover:border-emerald-400/60' 
-                            : isRecommended
-                            ? 'bg-gradient-to-r from-amber-900/30 to-slate-900/60 border-amber-500/40 hover:border-amber-400/60'
-                            : 'bg-gradient-to-r from-slate-800/50 to-slate-900/60 border-white/10 hover:border-cyan-400/40'
-                        }`}
-                        onClick={() => startCase(caseItem)}
-                        style={{ animationDelay: `${index * 50}ms` }}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        
-                        <div className="relative p-4">
-                          <div className="flex items-center gap-4">
-                            <div className="relative flex-shrink-0">
-                              <div className={`w-14 h-14 bg-gradient-to-br ${caseItem.color} rounded-xl flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 group-hover:rotate-2 transition-all duration-300`}>
-                                {caseItem.icon}
-                              </div>
-                              {isCompleted && (
-                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center shadow-lg border border-slate-900">
-                                  <CheckCircle className="w-3 h-3 text-white" />
-                                </div>
-                              )}
-                              {isRecommended && (
-                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg border border-slate-900 animate-pulse">
-                                  <Star className="w-3 h-3 text-white" />
-                                </div>
-                              )}
-                              <div className="absolute -bottom-0.5 -left-0.5 w-5 h-5 bg-slate-800 rounded-lg flex items-center justify-center text-[10px] font-black text-white border border-white/20">
-                                {index + 1}
-                              </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      <div className="relative p-7">
+                        <div className="flex items-start gap-6">
+                          <div className="relative">
+                            <div className={`w-24 h-24 bg-gradient-to-br ${caseItem.color} rounded-3xl flex items-center justify-center text-5xl shadow-2xl flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                              {caseItem.icon}
                             </div>
-                            
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
-                                  isCompleted ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' : 'bg-cyan-500/20 text-cyan-300 border-cyan-400/30'
-                                }`}>
-                                  {caseItem.category}
-                                </span>
-                                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
-                                  caseItem.difficulty === 'Avanzado' ? 'bg-red-500/20 text-red-300 border-red-400/30' : 'bg-amber-500/20 text-amber-300 border-amber-400/30'
-                                }`}>
-                                  {caseItem.difficulty}
-                                </span>
-                                {isCompleted && (
-                                  <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-400/30 flex items-center gap-1">
-                                    <Medal className="w-2.5 h-2.5" /> Completado
-                                  </span>
-                                )}
+                            {isCompleted && (
+                              <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/50 border-2 border-white">
+                                <CheckCircle className="w-5 h-5 text-white" />
                               </div>
-                              <h3 className="text-sm font-bold text-white line-clamp-1 group-hover:text-cyan-200 transition-colors">
-                                {caseItem.title}
-                              </h3>
-                              <div className="flex items-center gap-3 mt-1.5 text-[11px]">
-                                <span className="flex items-center gap-1 text-slate-400">
-                                  <Clock className="w-3 h-3 text-cyan-400" />
-                                  {caseItem.duration}
-                                </span>
-                                <span className="flex items-center gap-1 text-slate-400">
-                                  <Users className="w-3 h-3 text-purple-400" />
-                                  {caseItem.characters.length} personajes
-                                </span>
-                                <span className="flex items-center gap-1 text-cyan-300 font-bold">
-                                  <Zap className="w-3 h-3" />
-                                  +150 XP
-                                </span>
-                              </div>
+                            )}
+                            <div className="absolute -bottom-1 -left-1 w-7 h-7 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl flex items-center justify-center text-xs font-black text-white border border-white/20 shadow-lg">
+                              {index + 1}
                             </div>
-                            
-                            <div className="flex-shrink-0">
-                              <div className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300 ${
-                                isCompleted 
-                                  ? 'bg-gradient-to-br from-emerald-500 to-green-600' 
-                                  : 'bg-gradient-to-br from-cyan-500 to-blue-600 group-hover:shadow-cyan-500/40'
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                              <span className="px-4 py-1.5 bg-cyan-500/20 backdrop-blur-sm text-cyan-200 text-sm font-bold rounded-full border border-cyan-400/30 shadow-lg shadow-cyan-500/10">
+                                {caseItem.category}
+                              </span>
+                              <span className={`px-4 py-1.5 text-sm font-bold rounded-full border shadow-lg ${
+                                caseItem.difficulty === 'Avanzado' 
+                                  ? 'bg-red-500/20 text-red-200 border-red-400/30 shadow-red-500/10'
+                                  : 'bg-amber-500/20 text-amber-200 border-amber-400/30 shadow-amber-500/10'
                               }`}>
-                                {isCompleted ? (
-                                  <Award className="w-5 h-5 text-white" />
-                                ) : (
-                                  <Play className="w-5 h-5 text-white ml-0.5" />
-                                )}
-                              </div>
+                                {caseItem.difficulty}
+                              </span>
+                              {isCompleted && (
+                                <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-200 text-sm font-bold rounded-full border border-emerald-400/30 flex items-center gap-1.5">
+                                  <Star className="w-3.5 h-3.5 fill-emerald-300" />
+                                  Completado
+                                </span>
+                              )}
+                            </div>
+                            <h3 className="text-2xl font-black text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-300 group-hover:to-blue-300 transition-all duration-300 leading-tight">
+                              {caseItem.title}
+                            </h3>
+                            <p className="text-slate-300/90 text-base mb-5 leading-relaxed line-clamp-2">
+                              {caseItem.description}
+                            </p>
+                            <div className="flex flex-wrap items-center gap-3 text-sm">
+                              <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 shadow-lg transition-all duration-300 hover:bg-white/15">
+                                <Clock className="w-4 h-4 text-cyan-400" />
+                                <span className="text-white font-medium">{caseItem.duration}</span>
+                              </span>
+                              <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 shadow-lg transition-all duration-300 hover:bg-white/15">
+                                <Users className="w-4 h-4 text-purple-400" />
+                                <span className="text-white font-medium">{caseItem.characters.length} personajes</span>
+                              </span>
+                              <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 shadow-lg transition-all duration-300 hover:bg-white/15">
+                                <BookOpen className="w-4 h-4 text-amber-400" />
+                                <span className="text-white font-medium">10 preguntas</span>
+                              </span>
+                              <span className="flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-cyan-400/20 shadow-lg">
+                                <Zap className="w-4 h-4 text-cyan-400" />
+                                <span className="text-cyan-200 font-bold">+150 XP</span>
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center self-center">
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/40 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 group-hover:shadow-cyan-500/60">
+                              <Play className="w-8 h-8 text-white ml-1 drop-shadow-lg" />
                             </div>
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-xl p-5 border border-white/10 shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full blur-xl" />
-                  <div className="relative">
-                    <div className="flex items-center gap-2 mb-3">
-                      <GraduationCap className="w-5 h-5 text-amber-400" />
-                      <h3 className="text-base font-bold text-white">¿Cómo funciona?</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {[
-                        { icon: '1️⃣', text: 'Selecciona un caso' },
-                        { icon: '2️⃣', text: 'Lee contexto y personajes' },
-                        { icon: '3️⃣', text: 'Responde 10 preguntas IA' },
-                        { icon: '4️⃣', text: 'Recibe feedback' },
-                      ].map((step, i) => (
-                        <div key={i} className="flex items-center gap-2 text-slate-300 text-sm">
-                          <span>{step.icon}</span>
-                          <span>{step.text}</span>
-                        </div>
-                      ))}
-                    </div>
+              <div className="mt-10 bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/20 to-transparent rounded-full blur-2xl" />
+                
+                <h3 className="text-2xl font-black text-white mb-6 flex items-center gap-3 relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/40">
+                    <Star className="w-5 h-5 text-white" />
                   </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-purple-900/30 to-slate-900/50 backdrop-blur-xl rounded-xl p-5 border border-purple-500/20 shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-xl" />
-                  <div className="relative">
-                    <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="w-5 h-5 text-purple-400" />
-                      <h3 className="text-base font-bold text-white">Estadísticas</h3>
+                  ¿Cómo funciona?
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                  {[
+                    { num: 1, text: 'Selecciona un caso de estudio para comenzar', color: 'from-cyan-500 to-blue-500' },
+                    { num: 2, text: 'Lee el contexto, personajes y situación crítica', color: 'from-purple-500 to-pink-500' },
+                    { num: 3, text: 'Responde las 10 preguntas generadas por IA', color: 'from-amber-500 to-orange-500' },
+                    { num: 4, text: 'Recibe calificación y feedback personalizado', color: 'from-emerald-500 to-teal-500' },
+                  ].map((step) => (
+                    <div 
+                      key={step.num}
+                      className="flex items-start gap-4 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 shadow-xl transition-all duration-300 hover:bg-white/10 hover:scale-[1.02] hover:border-white/20 group"
+                    >
+                      <div className={`w-12 h-12 bg-gradient-to-br ${step.color} rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        {step.num}
+                      </div>
+                      <p className="text-slate-200 text-base leading-relaxed pt-2">{step.text}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
-                        <p className="text-slate-400 text-[10px]">Precisión</p>
-                        <p className="text-lg font-black text-emerald-400">85%</p>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
-                        <p className="text-slate-400 text-[10px]">Mejor Racha</p>
-                        <p className="text-lg font-black text-amber-400">5 🔥</p>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
-                        <p className="text-slate-400 text-[10px]">Nivel</p>
-                        <p className="text-lg font-black text-purple-400">Pro</p>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
-                        <p className="text-slate-400 text-[10px]">Tiempo Medio</p>
-                        <p className="text-lg font-black text-cyan-400">25m</p>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
