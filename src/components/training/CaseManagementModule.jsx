@@ -50,6 +50,30 @@ const AVAILABLE_CASES = [
       { name: 'Diego Sánchez', role: 'Enfermero Comunicador', description: 'Con habilidades excepcionales en comunicación, juega un papel clave en la coordinación entre el equipo, otros profesionales y las familias.', emoji: '👨‍⚕️' }
     ],
     situation: `Durante un turno particularmente intenso, con el brote de infección en su punto más crítico y recursos limitados, el equipo de enfermería de la UCI debe tomar decisiones rápidas y efectivas. Elena debe guiar a su equipo a través de esta crisis, asegurando que se tomen las mejores decisiones posibles para el cuidado de los pacientes, la gestión de recursos y la comunicación efectiva.`
+  },
+  {
+    id: 'gestion-conflicto-cirugia',
+    title: 'Tensiones en la Unidad de Cirugía',
+    category: 'Gestión del Conflicto',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '⚔️',
+    color: 'from-purple-500 to-indigo-500',
+    description: 'Un caso sobre gestión del conflicto entre generaciones de profesionales con diferentes métodos de trabajo.',
+    context: `La unidad de cirugía del Hospital General, reconocida por su excelencia en procedimientos quirúrgicos complejos y atención al paciente, enfrenta un desafío interno que amenaza su eficiencia y armonía. Este conflicto surge de varias capas de problemas:
+
+**1. Diferencias en Métodos de Trabajo:** La unidad ha incorporado recientemente a varias enfermeras jóvenes y entusiastas, quienes traen consigo nuevas ideas y técnicas. Sin embargo, estas nuevas prácticas a menudo chocan con los métodos tradicionales y establecidos de las enfermeras veteranas, creando una división en el equipo. Las enfermeras más experimentadas ven estas nuevas ideas como una amenaza a los protocolos probados y seguros, mientras que las recién llegadas se sienten frustradas por la resistencia al cambio.
+
+**2. Presiones de Tiempo y Estrés:** La unidad de cirugía siempre ha sido un entorno de alta presión debido a la naturaleza crítica de su trabajo. Sin embargo, recientes aumentos en el volumen de pacientes y la complejidad de los casos han intensificado el estrés. Este ambiente tenso ha exacerbado las tensiones existentes, llevando a conflictos abiertos y a veces a la disminución de la colaboración entre los miembros del equipo.
+
+**3. Comunicación Deficiente:** A pesar de los esfuerzos por mantener una comunicación clara y abierta, el equipo ha luchado con malentendidos y falta de diálogo efectivo. Las diferencias en estilos de comunicación entre las generaciones han llevado a interpretaciones erróneas y a la falta de reconocimiento de las contribuciones de cada uno, lo que ha alimentado un ambiente de desconfianza y resentimiento.`,
+    characters: [
+      { name: 'Isabel Torres', role: 'Jefa de Unidad', description: 'Líder respetada con décadas de experiencia. Se enfrenta al desafío de unir a un equipo dividido, equilibrando la sabiduría de las prácticas establecidas con la innovación de las nuevas técnicas.', emoji: '👩‍⚕️' },
+      { name: 'Lucía Gómez', role: 'Enfermera Recién Graduada', description: 'Con una perspectiva fresca, se siente marginada y subestimada por sus colegas más experimentadas. Lucha por encontrar su lugar y hacerse escuchar en un equipo resistente al cambio.', emoji: '👩‍⚕️' },
+      { name: 'Carlos Jiménez', role: 'Enfermero Veterano', description: 'Con una sólida trayectoria en la unidad, valora la estabilidad y los protocolos probados. Ve las nuevas ideas como riesgos innecesarios y a menudo se encuentra en desacuerdo con las enfermeras más jóvenes.', emoji: '👨‍⚕️' },
+      { name: 'Ana Belén Ruiz', role: 'Enfermera Mediadora', description: 'Conocida por sus habilidades de comunicación y empatía, intenta ser la voz de la razón y el puente entre los grupos. Sus esfuerzos se ven obstaculizados por la creciente tensión.', emoji: '👩‍⚕️' }
+    ],
+    situation: `En un día particularmente desafiante, con múltiples cirugías complejas programadas y el equipo ya bajo una considerable tensión, los conflictos entre las enfermeras alcanzan un punto crítico. Isabel se encuentra en el centro de esta tormenta, luchando por mantener la unidad y eficiencia del equipo mientras se enfrenta a la creciente frustración y el descontento. La forma en que maneje esta situación no solo determinará el resultado de las cirugías del día, sino también el futuro de la dinámica del equipo.`
   }
 ];
 
