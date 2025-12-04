@@ -123,6 +123,31 @@ const AVAILABLE_CASES = [
       { name: 'Sofía Martín', role: 'Enfermera Recién Incorporada', description: 'Trae conocimientos actualizados y nuevas perspectivas, pero se enfrenta al reto de integrarse en un equipo establecido sin causar fricciones.', emoji: '👩‍⚕️' }
     ],
     situation: `La unidad se enfrenta a una semana de alta demanda, con varios casos complicados que requieren una coordinación y colaboración excepcionales. Además, un nuevo tratamiento innovador está siendo introducido, lo que requiere una rápida adaptación y aprendizaje por parte del equipo. Ana debe liderar a su equipo a través de estos desafíos, asegurando que la atención al paciente se mantenga al más alto nivel mientras se fomenta un ambiente de trabajo en equipo efectivo y solidario.`
+  },
+  {
+    id: 'etica-radiologia',
+    title: 'Dilema Ético en la Unidad de Radiología',
+    category: 'Ética en Enfermería',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '⚖️',
+    color: 'from-rose-500 to-pink-600',
+    description: 'Un caso sobre dilemas éticos, integridad profesional y gestión de solicitudes inapropiadas.',
+    context: `La Unidad de Radiología del Hospital Central es conocida por su excelencia en el campo de los diagnósticos. Con equipos de última generación y un equipo altamente especializado, esta unidad es crucial para el diagnóstico y tratamiento de una amplia gama de condiciones. Los desafíos únicos incluyen:
+
+**1. Alto Volumen de Trabajo y Decisiones Críticas:** La unidad maneja un alto volumen de casos, cada uno requiriendo atención detallada y decisiones rápidas, lo cual pone una presión constante sobre el equipo.
+
+**2. Tecnología Avanzada y Capacitación Continua:** El personal necesita estar constantemente actualizado con las últimas tecnologías y procedimientos de diagnóstico, lo que implica una formación continua.
+
+**3. Interacción con Múltiples Disciplinas:** La unidad trabaja en estrecha colaboración con casi todos los otros departamentos del hospital, lo que requiere una comunicación efectiva y coordinación constante.
+
+**4. El Dilema Ético:** Un jefe de servicio ha solicitado que se conceda un día libre a una enfermera en una situación que no se ajusta a las políticas del hospital. Si la dirección descubre esta acción, podría llevar a un expediente disciplinario. Negarse podría deteriorar la relación laboral y generar conflictos.`,
+    characters: [
+      { name: 'María González', role: 'Jefa de Enfermeras', description: 'Profesional experimentada que enfrenta un dilema ético entre cumplir una solicitud inapropiada y el riesgo de generar conflictos con el jefe de servicio.', emoji: '👩‍⚕️' },
+      { name: 'Juan Rodríguez', role: 'Jefe de Servicio', description: 'Realiza la solicitud inapropiada. Su relación con María y el equipo puede verse afectada por la decisión tomada.', emoji: '👨‍⚕️' },
+      { name: 'Equipo de Enfermería', role: 'Personal de la Unidad', description: 'Aunque no directamente involucrados, la decisión de María influirá en la percepción de justicia y equidad en el equipo.', emoji: '👥' }
+    ],
+    situation: `María se encuentra entre la espada y la pared: conceder el permiso va en contra de las normas y ética profesional, pero negarlo podría generar tensiones y conflictos con el jefe de servicio, afectando potencialmente la operatividad y el ambiente de la unidad. La decisión de María no solo afectará su relación con el jefe de servicio y su equipo, sino que también podría tener repercusiones en toda la unidad y más allá. ¿Cómo debería manejar este dilema ético manteniendo su integridad profesional?`
   }
 ];
 
