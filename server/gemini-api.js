@@ -8,7 +8,7 @@ app.use(express.json());
 
 // DON'T DELETE THIS COMMENT
 // This API key is from Gemini Developer API Key, not vertex AI API Key
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY || "" });
 
 // Terminología obligatoria para todos los prompts
 const TERMINOLOGY_RULES = `
