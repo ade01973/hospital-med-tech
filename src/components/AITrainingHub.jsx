@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Brain, Users, MessageSquare, Target, Briefcase, Sparkles, Zap, Trophy, Home } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Brain, Users, MessageSquare, Target, Briefcase, Sparkles, Zap, Trophy, Home, Star, Rocket } from 'lucide-react';
 import CaseManagementModule from './training/CaseManagementModule';
 import DecisionMakingModule from './training/DecisionMakingModule';
 import LeadershipModule from './training/LeadershipModule';
@@ -14,10 +14,11 @@ const TRAINING_MODULES = [
     subtitle: 'Analiza casos clínicos y de gestión',
     icon: Briefcase,
     emoji: '📋',
-    color: 'from-red-500 to-orange-500',
-    shadowColor: 'shadow-red-500/30',
-    borderColor: 'border-red-400/40',
-    bgGlow: 'from-red-500/20',
+    color: 'from-rose-500 via-red-500 to-orange-500',
+    shadowColor: 'shadow-rose-500/40',
+    borderColor: 'border-rose-400/50',
+    bgGlow: 'from-rose-500/30',
+    glowColor: 'rgba(244, 63, 94, 0.4)',
     description: 'Trabaja con casos reales de gestión sanitaria. Comparte tus casos y recibe análisis detallado.'
   },
   {
@@ -26,10 +27,11 @@ const TRAINING_MODULES = [
     subtitle: 'Entrena tu capacidad de decisión',
     icon: Target,
     emoji: '🎯',
-    color: 'from-purple-500 to-indigo-500',
-    shadowColor: 'shadow-purple-500/30',
-    borderColor: 'border-purple-400/40',
-    bgGlow: 'from-purple-500/20',
+    color: 'from-violet-500 via-purple-500 to-indigo-500',
+    shadowColor: 'shadow-violet-500/40',
+    borderColor: 'border-violet-400/50',
+    bgGlow: 'from-violet-500/30',
+    glowColor: 'rgba(139, 92, 246, 0.4)',
     description: 'Practica la toma de decisiones en escenarios complejos con feedback inmediato.'
   },
   {
@@ -38,10 +40,11 @@ const TRAINING_MODULES = [
     subtitle: 'Desarrolla habilidades de líder',
     icon: Brain,
     emoji: '🧠',
-    color: 'from-emerald-500 to-teal-500',
-    shadowColor: 'shadow-emerald-500/30',
-    borderColor: 'border-emerald-400/40',
-    bgGlow: 'from-emerald-500/20',
+    color: 'from-emerald-500 via-green-500 to-teal-500',
+    shadowColor: 'shadow-emerald-500/40',
+    borderColor: 'border-emerald-400/50',
+    bgGlow: 'from-emerald-500/30',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
     description: 'Aprende y practica diferentes estilos de liderazgo aplicados a la gestión enfermera.'
   },
   {
@@ -50,10 +53,11 @@ const TRAINING_MODULES = [
     subtitle: 'Mejora tu comunicación efectiva',
     icon: MessageSquare,
     emoji: '💬',
-    color: 'from-cyan-500 to-blue-500',
-    shadowColor: 'shadow-cyan-500/30',
-    borderColor: 'border-cyan-400/40',
-    bgGlow: 'from-cyan-500/20',
+    color: 'from-cyan-500 via-sky-500 to-blue-500',
+    shadowColor: 'shadow-cyan-500/40',
+    borderColor: 'border-cyan-400/50',
+    bgGlow: 'from-cyan-500/30',
+    glowColor: 'rgba(6, 182, 212, 0.4)',
     description: 'Practica técnicas de comunicación asertiva, feedback constructivo y gestión de conflictos.'
   },
   {
@@ -62,16 +66,91 @@ const TRAINING_MODULES = [
     subtitle: 'Potencia la colaboración',
     icon: Users,
     emoji: '👥',
-    color: 'from-amber-500 to-yellow-500',
-    shadowColor: 'shadow-amber-500/30',
-    borderColor: 'border-amber-400/40',
-    bgGlow: 'from-amber-500/20',
+    color: 'from-amber-500 via-orange-500 to-yellow-500',
+    shadowColor: 'shadow-amber-500/40',
+    borderColor: 'border-amber-400/50',
+    bgGlow: 'from-amber-500/30',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
     description: 'Desarrolla habilidades para coordinar equipos, delegar tareas y fomentar la cohesión grupal.'
   }
 ];
 
+const FloatingOrbs = () => (
+  <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    {[
+      { color: 'from-cyan-500/20 to-blue-500/10', size: 'w-96 h-96', position: 'top-0 -left-48', delay: '0s' },
+      { color: 'from-purple-500/20 to-pink-500/10', size: 'w-80 h-80', position: 'top-1/4 -right-40', delay: '2s' },
+      { color: 'from-emerald-500/15 to-teal-500/10', size: 'w-72 h-72', position: 'bottom-1/4 -left-36', delay: '4s' },
+      { color: 'from-amber-500/15 to-orange-500/10', size: 'w-64 h-64', position: '-bottom-32 right-1/4', delay: '1s' },
+      { color: 'from-indigo-500/20 to-violet-500/10', size: 'w-56 h-56', position: 'top-1/2 left-1/3', delay: '3s' },
+    ].map((orb, i) => (
+      <div
+        key={i}
+        className={`absolute ${orb.size} ${orb.position} bg-gradient-radial ${orb.color} rounded-full blur-3xl opacity-60`}
+        style={{
+          animation: `float-orb 8s ease-in-out infinite`,
+          animationDelay: orb.delay
+        }}
+      />
+    ))}
+  </div>
+);
+
+const GlowingStars = () => (
+  <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    {[...Array(25)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute rounded-full"
+        style={{
+          width: `${Math.random() * 4 + 2}px`,
+          height: `${Math.random() * 4 + 2}px`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          background: `radial-gradient(circle, ${['#06b6d4', '#a855f7', '#10b981', '#f59e0b', '#ec4899'][Math.floor(Math.random() * 5)]} 0%, transparent 70%)`,
+          animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 5}s`,
+          boxShadow: `0 0 ${6 + Math.random() * 10}px currentColor`
+        }}
+      />
+    ))}
+  </div>
+);
+
+const FloatingParticles = () => (
+  <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    {[...Array(30)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute w-1 h-1 rounded-full"
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${100 + Math.random() * 20}%`,
+          background: ['#06b6d4', '#a855f7', '#10b981', '#f59e0b'][Math.floor(Math.random() * 4)],
+          animation: `rise-particle ${8 + Math.random() * 12}s linear infinite`,
+          animationDelay: `${Math.random() * 10}s`,
+          opacity: 0.6
+        }}
+      />
+    ))}
+  </div>
+);
+
+const ShimmerText = ({ children, className = '' }) => (
+  <span className={`relative inline-block ${className}`}>
+    <span className="relative z-10">{children}</span>
+    <span 
+      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+      style={{
+        animation: 'shimmer-text 3s ease-in-out infinite'
+      }}
+    />
+  </span>
+);
+
 const AITrainingHub = ({ onBack }) => {
   const [activeModule, setActiveModule] = useState(null);
+  const [hoveredModule, setHoveredModule] = useState(null);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
   const renderActiveModule = () => {
@@ -96,193 +175,230 @@ const AITrainingHub = ({ onBack }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950 overflow-auto">
-      {/* Background Image - Office */}
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 overflow-auto">
+      <style>{`
+        @keyframes float-orb {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(10px, -20px) scale(1.05); }
+          50% { transform: translate(-5px, 10px) scale(0.95); }
+          75% { transform: translate(15px, 5px) scale(1.02); }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes rise-particle {
+          0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.6; }
+          90% { opacity: 0.6; }
+          100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes shimmer-text {
+          0% { transform: translateX(-100%) skewX(-12deg); }
+          100% { transform: translateX(200%) skewX(-12deg); }
+        }
+        @keyframes glow-pulse {
+          0%, 100% { box-shadow: 0 0 20px var(--glow-color, rgba(6, 182, 212, 0.3)); }
+          50% { box-shadow: 0 0 40px var(--glow-color, rgba(6, 182, 212, 0.6)), 0 0 60px var(--glow-color, rgba(6, 182, 212, 0.3)); }
+        }
+        @keyframes border-glow {
+          0%, 100% { border-color: rgba(6, 182, 212, 0.3); }
+          50% { border-color: rgba(6, 182, 212, 0.7); }
+        }
+        @keyframes icon-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .card-hover-effect {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+          transform: translateY(-8px) scale(1.02);
+        }
+        .icon-hover:hover .icon-inner {
+          animation: icon-rotate 0.6s ease-out;
+        }
+        .glow-button {
+          animation: glow-pulse 2s ease-in-out infinite;
+        }
+      `}</style>
+
       <div 
-        className="fixed inset-0 bg-cover bg-center opacity-60"
+        className="fixed inset-0 bg-cover bg-center opacity-40"
         style={{ backgroundImage: `url(${aiTrainingBg})` }}
-      ></div>
+      />
       
-      {/* Gradient Overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-950/50 via-indigo-950/30 to-slate-950/60"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-950/70 via-indigo-950/50 to-purple-950/60" />
       
-      {/* Animated Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400/30 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
+      <FloatingOrbs />
+      <GlowingStars />
+      <FloatingParticles />
 
-      {/* Main Content */}
-      <div className="relative z-10 container mx-auto p-6 max-w-7xl">
+      <div className="relative z-10 container mx-auto p-4 md:p-8 max-w-7xl">
         
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-4">
-            {/* Back Button with Avatar */}
-            <button
-              onClick={onBack}
-              className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 hover:border-cyan-400 hover:from-cyan-500/30 hover:to-blue-600/30 transition-all cursor-pointer transform hover:scale-105"
-            >
-              <Home className="w-5 h-5 text-cyan-400" />
-              <span className="text-white font-bold text-sm">Volver al Dashboard</span>
-            </button>
-          </div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+          <button
+            onClick={onBack}
+            className="group flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 backdrop-blur-xl rounded-2xl p-4 border-2 border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-xl shadow-cyan-500/10 glow-button"
+            style={{ '--glow-color': 'rgba(6, 182, 212, 0.3)' }}
+          >
+            <Home className="w-6 h-6 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="text-white font-bold">Volver al Dashboard</span>
+          </button>
 
-          <div className="flex items-center gap-4">
-            {/* Title Badge */}
-            <div className="flex items-center gap-3 bg-gradient-to-br from-indigo-600/40 to-purple-600/40 backdrop-blur-xl rounded-2xl px-6 py-3 border-2 border-indigo-400/50 shadow-lg shadow-indigo-500/30">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-black text-white">Centro de Entrenamiento IA</h1>
-                <p className="text-xs text-indigo-300">Desarrolla tus competencias con inteligencia artificial</p>
-              </div>
+          <div className="flex items-center gap-4 bg-gradient-to-br from-indigo-600/30 to-purple-600/30 backdrop-blur-xl rounded-3xl px-8 py-4 border-2 border-indigo-400/40 shadow-2xl shadow-indigo-500/20">
+            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/40 animate-pulse">
+              <Sparkles className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+                <ShimmerText>Centro de Entrenamiento IA</ShimmerText>
+              </h1>
+              <p className="text-sm text-indigo-300/80 leading-relaxed">Desarrolla tus competencias con inteligencia artificial</p>
             </div>
           </div>
 
-          {/* AI Badge */}
-          <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-600/40 to-teal-600/40 px-4 py-2 rounded-xl border border-emerald-400/50">
-            <span className="text-2xl">🤖</span>
-            <span className="text-emerald-300 font-bold text-sm">Powered by Gemini AI</span>
+          <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 backdrop-blur-xl px-5 py-3 rounded-2xl border-2 border-emerald-400/40 shadow-xl shadow-emerald-500/20 glow-button" style={{ '--glow-color': 'rgba(16, 185, 129, 0.3)' }}>
+            <span className="text-3xl">🤖</span>
+            <div>
+              <span className="text-emerald-300 font-black text-sm block">Powered by</span>
+              <span className="text-white font-bold">Gemini AI</span>
+            </div>
           </div>
         </div>
 
-        {/* Main Grid - 3 Columns */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column - Welcome & How It Works */}
           <div className="space-y-6">
-            {/* Welcome Card */}
-            <div className="bg-slate-900/60 backdrop-blur-xl border-2 border-indigo-400/30 rounded-3xl p-6 shadow-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/40">
-                  <Sparkles className="w-7 h-7 text-white" />
+            <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-indigo-400/30 rounded-3xl p-7 shadow-2xl shadow-indigo-500/10 card-hover-effect hover:border-indigo-400/60">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/40 transform hover:rotate-6 transition-transform duration-300">
+                  <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-white">¡Bienvenido/a!</h2>
-                  <p className="text-sm text-indigo-300">{playerAvatar.name || 'Gestora Enfermera'}</p>
+                  <h2 className="text-2xl font-black bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">¡Bienvenido/a!</h2>
+                  <p className="text-base text-indigo-300 font-medium">{playerAvatar.name || 'Gestora Enfermera'}</p>
                 </div>
               </div>
               
-              <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                Este centro de entrenamiento utiliza <span className="text-emerald-400 font-bold">Inteligencia Artificial</span> para ayudarte a desarrollar competencias clave en gestión enfermera.
+              <p className="text-slate-300 text-base leading-relaxed mb-5">
+                Este centro utiliza <span className="text-emerald-400 font-black">Inteligencia Artificial</span> avanzada para desarrollar tus competencias en gestión enfermera.
               </p>
 
-              <div className="bg-indigo-500/10 border border-indigo-400/30 rounded-xl p-4">
-                <p className="text-indigo-200 text-xs font-medium">
-                  💡 Cada módulo está diseñado para entrenar habilidades específicas mediante conversaciones interactivas con IA especializada.
-                </p>
+              <div className="bg-gradient-to-br from-indigo-500/15 to-purple-500/15 border border-indigo-400/30 rounded-2xl p-5 backdrop-blur-sm">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">💡</span>
+                  <p className="text-indigo-200 text-sm font-medium leading-relaxed">
+                    Cada módulo está diseñado para entrenar habilidades específicas mediante conversaciones interactivas con IA especializada.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* How It Works */}
-            <div className="bg-slate-900/60 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
-              <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-cyan-400" />
+            <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-7 shadow-2xl shadow-cyan-500/10 card-hover-effect hover:border-cyan-400/60">
+              <h3 className="text-xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-5 flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
                 ¿Cómo funciona?
               </h3>
               
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <span className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-lg">1</span>
-                  <div>
-                    <p className="text-white font-bold text-sm">Elige un área</p>
-                    <p className="text-slate-400 text-xs">Selecciona el módulo que quieres entrenar</p>
+              <div className="space-y-5">
+                {[
+                  { num: '1', title: 'Elige un área', desc: 'Selecciona el módulo que quieres entrenar' },
+                  { num: '2', title: 'Interactúa con la IA', desc: 'Conversa, plantea casos, pide ejemplos' },
+                  { num: '3', title: 'Recibe feedback', desc: 'Obtén análisis y recomendaciones personalizadas' }
+                ].map((step, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    <span className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0 shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">{step.num}</span>
+                    <div>
+                      <p className="text-white font-bold text-base">{step.title}</p>
+                      <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <span className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-lg">2</span>
-                  <div>
-                    <p className="text-white font-bold text-sm">Interactúa con la IA</p>
-                    <p className="text-slate-400 text-xs">Conversa, plantea casos, pide ejemplos</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <span className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-lg">3</span>
-                  <div>
-                    <p className="text-white font-bold text-sm">Recibe feedback</p>
-                    <p className="text-slate-400 text-xs">Obtén análisis y recomendaciones personalizadas</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Stats Preview */}
-            <div className="bg-gradient-to-br from-purple-900/40 to-indigo-900/40 backdrop-blur-xl border-2 border-purple-400/30 rounded-3xl p-5 shadow-2xl">
-              <h3 className="text-lg font-black text-white mb-3 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-400" />
+            <div className="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 backdrop-blur-xl border-2 border-purple-400/30 rounded-3xl p-6 shadow-2xl shadow-purple-500/10 card-hover-effect hover:border-purple-400/60">
+              <h3 className="text-xl font-black bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent mb-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <Trophy className="w-5 h-5 text-white" />
+                </div>
                 Áreas Disponibles
               </h3>
-              <div className="grid grid-cols-5 gap-2">
-                {TRAINING_MODULES.map((module) => (
-                  <div 
+              <div className="grid grid-cols-5 gap-3">
+                {TRAINING_MODULES.map((module, i) => (
+                  <button 
                     key={module.id}
-                    className="aspect-square bg-slate-800/50 rounded-xl flex items-center justify-center text-2xl border border-slate-700/50 hover:border-cyan-400/50 transition-all cursor-pointer transform hover:scale-110"
+                    className="aspect-square bg-slate-800/60 backdrop-blur-sm rounded-2xl flex items-center justify-center text-3xl border-2 border-slate-700/50 hover:border-cyan-400/70 transition-all duration-300 cursor-pointer transform hover:scale-110 hover:-translate-y-1 shadow-lg hover:shadow-cyan-500/20"
                     onClick={() => setActiveModule(module.id)}
                     title={module.title}
+                    style={{ animationDelay: `${i * 0.1}s` }}
                   >
                     {module.emoji}
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Center Column - Training Modules Grid */}
           <div className="lg:col-span-2">
-            <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-black text-white">Módulos de Entrenamiento</h2>
-                <div className="flex items-center gap-2 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-400/50">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                  <span className="text-emerald-300 text-xs font-bold">IA Activa</span>
+            <div className="bg-slate-900/30 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-8 shadow-2xl shadow-cyan-500/10">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+                  Módulos de Entrenamiento
+                </h2>
+                <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-sm px-5 py-2 rounded-full border-2 border-emerald-400/50 shadow-lg shadow-emerald-500/20">
+                  <span className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></span>
+                  <span className="text-emerald-300 text-sm font-black">IA Activa</span>
+                  <Rocket className="w-4 h-4 text-emerald-400" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {TRAINING_MODULES.map((module) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {TRAINING_MODULES.map((module, index) => {
                   const IconComponent = module.icon;
                   return (
                     <button
                       key={module.id}
                       onClick={() => setActiveModule(module.id)}
-                      className={`bg-slate-800/60 backdrop-blur-xl border-2 ${module.borderColor} rounded-2xl p-5 text-left transition-all hover:scale-[1.02] hover:bg-slate-800/80 group relative overflow-hidden`}
+                      onMouseEnter={() => setHoveredModule(module.id)}
+                      onMouseLeave={() => setHoveredModule(null)}
+                      className={`relative bg-slate-800/50 backdrop-blur-xl border-2 ${module.borderColor} rounded-3xl p-6 text-left transition-all duration-400 group overflow-hidden icon-hover`}
+                      style={{
+                        transform: hoveredModule === module.id ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+                        boxShadow: hoveredModule === module.id ? `0 25px 50px -12px ${module.glowColor}` : 'none',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        animationDelay: `${index * 0.1}s`
+                      }}
                     >
-                      {/* Background Glow */}
-                      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${module.bgGlow} to-transparent opacity-20 rounded-full blur-2xl group-hover:opacity-40 transition-opacity`}></div>
+                      <div className={`absolute top-0 right-0 w-40 h-40 bg-gradient-to-br ${module.bgGlow} to-transparent opacity-30 rounded-full blur-3xl transition-opacity duration-300 ${hoveredModule === module.id ? 'opacity-60' : ''}`} />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl" />
                       
                       <div className="relative z-10">
-                        {/* Icon & Title Row */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-12 h-12 bg-gradient-to-br ${module.color} rounded-xl flex items-center justify-center shadow-lg ${module.shadowColor}`}>
-                            <IconComponent className="w-6 h-6 text-white" />
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className={`w-14 h-14 bg-gradient-to-br ${module.color} rounded-2xl flex items-center justify-center shadow-xl ${module.shadowColor} transform group-hover:rotate-6 transition-all duration-300`}>
+                            <IconComponent className="w-7 h-7 text-white icon-inner" />
                           </div>
                           <div>
-                            <h3 className="text-base font-black text-white">{module.title}</h3>
-                            <p className="text-xs text-slate-400">{module.subtitle}</p>
+                            <h3 className="text-lg font-black text-white group-hover:text-cyan-100 transition-colors">{module.title}</h3>
+                            <p className="text-sm text-slate-400">{module.subtitle}</p>
+                          </div>
+                          <div className="ml-auto">
+                            <span className="text-3xl transform group-hover:scale-125 transition-transform duration-300 block">{module.emoji}</span>
                           </div>
                         </div>
 
-                        {/* Description */}
-                        <p className="text-sm text-slate-300 leading-relaxed mb-3">{module.description}</p>
+                        <p className="text-sm text-slate-300 leading-relaxed mb-4">{module.description}</p>
 
-                        {/* Action hint */}
-                        <div className={`flex items-center gap-2 text-sm font-bold bg-gradient-to-r ${module.color} bg-clip-text text-transparent`}>
-                          <span>Comenzar entrenamiento</span>
-                          <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        <div className={`flex items-center justify-between`}>
+                          <div className={`flex items-center gap-2 text-sm font-black bg-gradient-to-r ${module.color} bg-clip-text text-transparent`}>
+                            <Star className="w-4 h-4 text-amber-400" />
+                            <span>Comenzar entrenamiento</span>
+                          </div>
+                          <span className="text-xl transform group-hover:translate-x-2 transition-transform duration-300">→</span>
                         </div>
                       </div>
                     </button>
@@ -290,13 +406,14 @@ const AITrainingHub = ({ onBack }) => {
                 })}
               </div>
 
-              {/* Footer Tips */}
-              <div className="mt-6 bg-slate-800/40 border border-slate-700 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">💡</span>
+              <div className="mt-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl border-2 border-slate-600/30 rounded-2xl p-5 card-hover-effect hover:border-amber-400/40">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                    <span className="text-2xl">💡</span>
+                  </div>
                   <div>
-                    <p className="text-white font-bold text-sm">Consejo del día</p>
-                    <p className="text-slate-400 text-xs">Combina los módulos para un aprendizaje integral. Empieza por Liderazgo y conecta con Comunicación y Trabajo en Equipo.</p>
+                    <p className="text-white font-black text-base mb-1">Consejo del día</p>
+                    <p className="text-slate-400 text-sm leading-relaxed">Combina los módulos para un aprendizaje integral. Empieza por <span className="text-emerald-400 font-bold">Liderazgo</span> y conecta con <span className="text-cyan-400 font-bold">Comunicación</span> y <span className="text-amber-400 font-bold">Trabajo en Equipo</span>.</p>
                   </div>
                 </div>
               </div>

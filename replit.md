@@ -56,6 +56,17 @@ The application employs a modern web stack to deliver an interactive and gamifie
     - **Comunicación**: Improve communication skills with role-play and techniques
     - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
   UI features: 3-column layout matching Dashboard style, office background image (`ai-training-bg.png`), animated particles, welcome card with user name, how-it-works guide, module grid with themed colors and icons. Each module has customized AI prompts with mandatory "gestor/gestora enfermero/a" terminology, conversation history, and 60s request timeout.
+  **2025 Ultra-Visual UI Enhancements**:
+    - **FloatingOrbs**: 5 animated gradient orbs (cyan, purple, emerald, amber, indigo) with smooth floating animation
+    - **GlowingStars**: 25 twinkling star particles with random colors and positions
+    - **FloatingParticles**: 30 rising particles with rotation effect
+    - **Glassmorphism**: Enhanced backdrop-blur-xl, translucent cards with rounded-3xl borders
+    - **Glow Effects**: Pulsing glow animations on buttons and badges
+    - **Micro-animations**: Hover scale (1.02-1.1), translateY(-8px), icon rotation, smooth cubic-bezier transitions
+    - **Gradient Text**: Shimmer effect on main titles, gradient-to-r text colors
+    - **Card Hover Effects**: Dynamic shadows matching module theme colors
+    - **Interactive Elements**: Emoji grid with hover animations, step badges with scale effects
+    - **Typography**: Larger titles (text-2xl to text-3xl), improved line-height, font-black weights
 - **Case Management Module (2025 Ultra-Visual UI)**: Highly gamified, visually stunning interface following Duolingo/Kahoot best practices:
     - **Visual Effects**: FloatingOrbs component with 5 animated gradient orbs (cyan, purple, blue, pink, amber), GlowingStars with 30 twinkling star particles
     - **Statistics Dashboard**: 4 animated StatCards showing Completed Cases, Total XP, Progress %, and Available XP with AnimatedCounter component
