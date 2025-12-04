@@ -148,6 +148,31 @@ const AVAILABLE_CASES = [
       { name: 'Equipo de Enfermería', role: 'Personal de la Unidad', description: 'Aunque no directamente involucrados, la decisión de María influirá en la percepción de justicia y equidad en el equipo.', emoji: '👥' }
     ],
     situation: `María se encuentra entre la espada y la pared: conceder el permiso va en contra de las normas y ética profesional, pero negarlo podría generar tensiones y conflictos con el jefe de servicio, afectando potencialmente la operatividad y el ambiente de la unidad. La decisión de María no solo afectará su relación con el jefe de servicio y su equipo, sino que también podría tener repercusiones en toda la unidad y más allá. ¿Cómo debería manejar este dilema ético manteniendo su integridad profesional?`
+  },
+  {
+    id: 'gestion-cambio-uci',
+    title: 'Gestión del Cambio en la Unidad de Cuidados Intensivos',
+    category: 'Gestión del Cambio',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '🔄',
+    color: 'from-violet-500 to-purple-600',
+    description: 'Un caso sobre implementación de cambios, resistencia del personal y liderazgo durante transiciones.',
+    context: `La Unidad de Cuidados Intensivos (UCI) del Hospital Central está atravesando un período de cambios significativos. Estos cambios incluyen la implementación de nuevos protocolos clínicos, la adopción de tecnologías avanzadas, y una reestructuración del personal. Los desafíos únicos incluyen:
+
+**1. Adaptación a Nuevas Tecnologías y Protocolos:** La UCI debe integrar rápidamente nuevas tecnologías y actualizar sus protocolos para mejorar la atención al paciente.
+
+**2. Gestión del Cambio y Resistencia del Personal:** El personal de la UCI puede experimentar incertidumbre y resistencia ante los cambios, lo que requiere una gestión efectiva del cambio.
+
+**3. Mantener la Calidad del Cuidado Durante la Transición:** Asegurar que los cambios no afecten negativamente la calidad del cuidado que se brinda a los pacientes críticos.
+
+**4. Comunicación y Moral:** Mantener una comunicación clara y abierta con el equipo sobre los cambios y sus razones, sin que esto afecte la moral y cohesión del equipo.`,
+    characters: [
+      { name: 'Laura Martínez', role: 'Jefa de Enfermeras', description: 'Con años de experiencia en la UCI, debe liderar a su equipo a través de este período de cambio, equilibrando la innovación con el bienestar de su equipo.', emoji: '👩‍⚕️' },
+      { name: 'Equipo de Enfermería', role: 'Personal de UCI', description: 'Enfrentando nuevos protocolos y tecnologías, deben adaptarse rápidamente mientras continúan proporcionando atención de alta calidad.', emoji: '👥' },
+      { name: 'Personal Administrativo', role: 'Apoyo Institucional', description: 'Deben colaborar con Laura para asegurar que los cambios se implementen de manera eficiente y efectiva.', emoji: '📋' }
+    ],
+    situation: `Laura y su equipo se enfrentan a una semana crítica con la implementación de un nuevo sistema electrónico de registros y la introducción de un nuevo protocolo de atención al paciente. Debe asegurar que la transición sea fluida, sin comprometer la atención al paciente. ¿Cómo puede Laura liderar eficazmente durante este período de cambio, gestionar la resistencia del personal y mantener la calidad del cuidado?`
   }
 ];
 
