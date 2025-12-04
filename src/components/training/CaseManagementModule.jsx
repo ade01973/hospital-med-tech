@@ -173,6 +173,32 @@ const AVAILABLE_CASES = [
       { name: 'Personal Administrativo', role: 'Apoyo Institucional', description: 'Deben colaborar con Laura para asegurar que los cambios se implementen de manera eficiente y efectiva.', emoji: '📋' }
     ],
     situation: `Laura y su equipo se enfrentan a una semana crítica con la implementación de un nuevo sistema electrónico de registros y la introducción de un nuevo protocolo de atención al paciente. Debe asegurar que la transición sea fluida, sin comprometer la atención al paciente. ¿Cómo puede Laura liderar eficazmente durante este período de cambio, gestionar la resistencia del personal y mantener la calidad del cuidado?`
+  },
+  {
+    id: 'marketing-sanitario',
+    title: 'Campaña de Marketing Sanitario: Alimentación Saludable y Vida Activa',
+    category: 'Marketing Sanitario',
+    difficulty: 'Intermedio',
+    duration: '25-35 min',
+    icon: '📢',
+    color: 'from-green-500 to-lime-500',
+    description: 'Un caso sobre diseño e implementación de campañas de promoción de la salud en la comunidad.',
+    context: `El Centro de Salud Comunitario necesita desarrollar una campaña de marketing sanitario enfocada en la promoción de alimentación saludable y vida activa. La comunidad presenta altas tasas de obesidad, diabetes tipo 2 y enfermedades cardiovasculares relacionadas con el sedentarismo y la mala alimentación. Los desafíos incluyen:
+
+**1. Análisis de la Situación:** La comunidad tiene acceso limitado a información sobre nutrición y actividad física. Los hábitos alimentarios poco saludables están arraigados culturalmente.
+
+**2. Público Objetivo Diverso:** La campaña debe llegar a diferentes grupos: familias con niños, jóvenes, adultos trabajadores y adultos mayores, cada uno con necesidades y canales de comunicación diferentes.
+
+**3. Recursos Limitados:** El presupuesto es ajustado y se debe maximizar el impacto con recursos limitados, priorizando estrategias de bajo costo y alto alcance.
+
+**4. Medición de Resultados:** Se necesitan métodos claros para evaluar el impacto de la campaña en los hábitos de salud de la comunidad.`,
+    characters: [
+      { name: 'Carmen Delgado', role: 'Coordinadora de Promoción de Salud', description: 'Lidera el diseño de la campaña. Debe equilibrar creatividad con evidencia científica y restricciones presupuestarias.', emoji: '👩‍⚕️' },
+      { name: 'Roberto Vega', role: 'Gestor Enfermero de Atención Primaria', description: 'Aporta conocimiento sobre las necesidades de salud de la comunidad y los recursos disponibles en el centro de salud.', emoji: '👨‍⚕️' },
+      { name: 'Elena Navarro', role: 'Especialista en Comunicación', description: 'Experta en redes sociales y medios de comunicación, ayuda a definir los canales y mensajes más efectivos.', emoji: '👩‍💼' },
+      { name: 'Comunidad Local', role: 'Público Objetivo', description: 'Familias, jóvenes, adultos y mayores que deben ser alcanzados con mensajes personalizados y relevantes.', emoji: '👥' }
+    ],
+    situation: `El equipo debe diseñar una campaña integral de marketing sanitario en dos semanas. Deben definir: título creativo, objetivos claros, mensaje clave, estrategias y tácticas (redes sociales, eventos comunitarios), cronograma, presupuesto, materiales promocionales y métodos de evaluación. La campaña debe ser culturalmente sensible, basada en evidencia y capaz de generar cambios reales en los hábitos de alimentación y actividad física de la comunidad.`
   }
 ];
 
