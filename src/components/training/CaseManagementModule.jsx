@@ -264,11 +264,11 @@ const CaseManagementModule = ({ onBack }) => {
       .replace(/\n/g, '<br/>');
   };
 
-  const generateNextQuestion = async (previousAnswers, questionNumber) => {
+  const generateNextQuestion = async (previousAnswers, questionNumber, caseData = null) => {
     setIsGeneratingQuestion(true);
     setError(null);
     try {
-      const caseInfo = selectedCase;
+      const caseInfo = caseData || selectedCase;
       const answersContext = previousAnswers.map((a, i) => 
         `Pregunta ${i + 1}: ${a.question}\nRespuesta del estudiante: ${a.answer}`
       ).join('\n\n');
@@ -344,7 +344,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
     setEvaluation(null);
     setError(null);
     
-    const firstQuestion = await generateNextQuestion([], 1);
+    const firstQuestion = await generateNextQuestion([], 1, caseData);
     if (firstQuestion) {
       setQuestions([firstQuestion]);
     }
