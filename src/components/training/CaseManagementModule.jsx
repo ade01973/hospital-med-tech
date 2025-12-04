@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Bot, User, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Send, Bot, User, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen } from 'lucide-react';
+import aiTrainingBg from '../../assets/ai-training-bg.png';
 
 const AVAILABLE_CASES = [
   {
@@ -13,16 +14,16 @@ const AVAILABLE_CASES = [
     description: 'Un caso complejo sobre liderazgo, gestión de conflictos y comunicación en un turno nocturno desafiante.',
     context: `El Hospital General es un centro sanitario de referencia en la región, conocido por su atención de alta calidad y su capacidad para manejar una variedad de casos médicos complejos. Sin embargo, enfrenta desafíos significativos durante los turnos de noche:
 
-1. **Escasez de Personal**: El turno nocturno siempre ha tenido menos personal que los turnos diurnos. Esta escasez se ha agravado por recientes recortes presupuestarios y la alta demanda de servicios de salud.
+**1. Escasez de Personal:** El turno nocturno siempre ha tenido menos personal que los turnos diurnos. Esta escasez se ha agravado por recientes recortes presupuestarios y la alta demanda de servicios de salud.
 
-2. **Aumento de Pacientes Críticos**: El hospital ha visto un incremento en el número de pacientes críticos que requieren atención constante y especializada.
+**2. Aumento de Pacientes Críticos:** El hospital ha visto un incremento en el número de pacientes críticos que requieren atención constante y especializada.
 
-3. **Implementación de un Nuevo Sistema de Gestión**: El hospital ha implementado un nuevo sistema de gestión de pacientes. El personal ha encontrado dificultades para adaptarse a la nueva interfaz y protocolos.`,
+**3. Implementación de un Nuevo Sistema de Gestión:** El hospital ha implementado un nuevo sistema de gestión de pacientes. El personal ha encontrado dificultades para adaptarse a la nueva interfaz y protocolos.`,
     characters: [
-      { name: 'Ana García', role: 'Supervisora de Enfermería', description: 'Responsable de garantizar que el turno nocturno funcione sin problemas. Lidera al equipo a través de la transición al nuevo sistema.' },
-      { name: 'Carlos Ruiz', role: 'Enfermero Nuevo', description: 'Relativamente nuevo, se siente abrumado por aprender el nuevo sistema y manejar pacientes críticos.' },
-      { name: 'Sofía Pérez', role: 'Enfermera Veterana', description: 'Ha trabajado en el hospital muchos años. Resistente al cambio y vocal en su crítica al nuevo sistema.' },
-      { name: 'Luis Fernández', role: 'Recién Graduado', description: 'Ansioso por aprender, pero su falta de experiencia en situaciones de alta presión es un obstáculo.' }
+      { name: 'Ana García', role: 'Supervisora de Enfermería', description: 'Responsable de garantizar que el turno nocturno funcione sin problemas. Lidera al equipo a través de la transición al nuevo sistema.', emoji: '👩‍⚕️' },
+      { name: 'Carlos Ruiz', role: 'Enfermero Nuevo', description: 'Relativamente nuevo, se siente abrumado por aprender el nuevo sistema y manejar pacientes críticos.', emoji: '👨‍⚕️' },
+      { name: 'Sofía Pérez', role: 'Enfermera Veterana', description: 'Ha trabajado en el hospital muchos años. Resistente al cambio y vocal en su crítica al nuevo sistema.', emoji: '👩‍⚕️' },
+      { name: 'Luis Fernández', role: 'Recién Graduado', description: 'Ansioso por aprender, pero su falta de experiencia en situaciones de alta presión es un obstáculo.', emoji: '👨‍⚕️' }
     ],
     situation: `En una noche particularmente ocupada, con un número inusualmente alto de pacientes críticos y varios incidentes inesperados, el equipo de enfermería se enfrenta a una tormenta perfecta de desafíos. Ana debe guiar a su equipo a través de esta crisis, asegurando que todos los pacientes reciban la atención que necesitan mientras se adapta al nuevo sistema y maneja las dinámicas complejas de su equipo.`
   }
@@ -38,18 +39,20 @@ const CaseManagementModule = ({ onBack }) => {
   const [showResults, setShowResults] = useState(false);
   const [evaluation, setEvaluation] = useState(null);
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false);
+  const [error, setError] = useState(null);
   const inputRef = useRef(null);
   const contentRef = useRef(null);
 
   const formatText = (text) => {
     return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-300">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/\n/g, '<br/>');
   };
 
   const generateNextQuestion = async (previousAnswers, questionNumber) => {
     setIsGeneratingQuestion(true);
+    setError(null);
     try {
       const caseInfo = selectedCase;
       const answersContext = previousAnswers.map((a, i) => 
@@ -62,7 +65,7 @@ const CaseManagementModule = ({ onBack }) => {
         body: JSON.stringify({
           message: `Genera la pregunta número ${questionNumber} de 10 para este caso de estudio.`,
           history: [],
-          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario. 
+          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
 
 CASO DE ESTUDIO: "${caseInfo.title}"
 
@@ -103,10 +106,16 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
       });
 
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
       return data.response;
     } catch (error) {
       console.error('Error generating question:', error);
-      return 'Error al generar la pregunta. Por favor, intenta de nuevo.';
+      setError('Error al conectar con el servicio de IA. Por favor, intenta de nuevo.');
+      return null;
     } finally {
       setIsGeneratingQuestion(false);
     }
@@ -119,13 +128,16 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
     setQuestions([]);
     setShowResults(false);
     setEvaluation(null);
+    setError(null);
     
     const firstQuestion = await generateNextQuestion([], 1);
-    setQuestions([firstQuestion]);
+    if (firstQuestion) {
+      setQuestions([firstQuestion]);
+    }
   };
 
   const handleSubmitAnswer = async () => {
-    if (!currentAnswer.trim() || isLoading) return;
+    if (!currentAnswer.trim() || isLoading || isGeneratingQuestion) return;
 
     const newAnswer = {
       question: questions[currentQuestion],
@@ -138,8 +150,10 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
 
     if (currentQuestion < 9) {
       const nextQ = await generateNextQuestion(updatedAnswers, currentQuestion + 2);
-      setQuestions(prev => [...prev, nextQ]);
-      setCurrentQuestion(prev => prev + 1);
+      if (nextQ) {
+        setQuestions(prev => [...prev, nextQ]);
+        setCurrentQuestion(prev => prev + 1);
+      }
       
       setTimeout(() => {
         contentRef.current?.scrollTo({ top: contentRef.current.scrollHeight, behavior: 'smooth' });
@@ -147,8 +161,25 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
     }
   };
 
+  const retryQuestion = async () => {
+    setError(null);
+    const question = await generateNextQuestion(answers, currentQuestion + 1);
+    if (question) {
+      if (questions.length === currentQuestion) {
+        setQuestions(prev => [...prev, question]);
+      } else {
+        setQuestions(prev => {
+          const newQuestions = [...prev];
+          newQuestions[currentQuestion] = question;
+          return newQuestions;
+        });
+      }
+    }
+  };
+
   const handleFinalSubmit = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const caseInfo = selectedCase;
       const allAnswers = answers.map((a, i) => 
@@ -161,7 +192,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
         body: JSON.stringify({
           message: 'Evalúa las respuestas del estudiante y proporciona calificación y feedback.',
           history: [],
-          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario.
+          systemPrompt: `Eres un experto evaluador en gestión enfermera y liderazgo sanitario. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
 
 CASO EVALUADO: "${caseInfo.title}"
 
@@ -206,12 +237,16 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
       });
 
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
       setEvaluation(data.response);
       setShowResults(true);
     } catch (error) {
       console.error('Error evaluating:', error);
-      setEvaluation('Error al evaluar las respuestas. Por favor, intenta de nuevo.');
-      setShowResults(true);
+      setError('Error al evaluar las respuestas. Por favor, intenta de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -219,103 +254,111 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
 
   if (!selectedCase) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-red-900/20 to-slate-900 z-50 overflow-auto">
-        <div className="min-h-screen p-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-4 mb-8">
-              <button 
-                onClick={onBack} 
-                className="p-3 bg-slate-800/80 hover:bg-slate-700 rounded-xl transition-colors border border-slate-700"
-              >
-                <ArrowLeft className="w-5 h-5 text-white" />
-              </button>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30">
-                  <Briefcase className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-black text-white">Gestión de Casos</h1>
-                  <p className="text-red-300 text-sm">Selecciona un caso para comenzar</p>
+      <div className="fixed inset-0 z-50 bg-slate-950">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40"
+          style={{ backgroundImage: `url(${aiTrainingBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-900/80 to-slate-950/90" />
+        
+        <div className="relative z-10 h-full overflow-auto">
+          <div className="min-h-full p-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="flex items-center gap-6 mb-10">
+                <button 
+                  onClick={onBack} 
+                  className="p-4 bg-slate-800/90 hover:bg-slate-700 rounded-2xl transition-all border-2 border-slate-600 hover:border-cyan-500 shadow-xl"
+                >
+                  <Home className="w-6 h-6 text-white" />
+                </button>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-500/40">
+                    <Briefcase className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-4xl font-black text-white tracking-tight">Gestión de Casos</h1>
+                    <p className="text-red-300 text-lg mt-1">Selecciona un caso para comenzar tu entrenamiento</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid gap-4">
-              {AVAILABLE_CASES.map((caseItem) => (
-                <div
-                  key={caseItem.id}
-                  className="bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-700 hover:border-cyan-500/50 transition-all overflow-hidden group cursor-pointer"
-                  onClick={() => startCase(caseItem)}
-                >
-                  <div className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className={`w-16 h-16 bg-gradient-to-br ${caseItem.color} rounded-xl flex items-center justify-center text-3xl shadow-lg flex-shrink-0`}>
-                        {caseItem.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="px-2 py-0.5 bg-cyan-500/20 text-cyan-300 text-xs font-bold rounded-full">
-                            {caseItem.category}
-                          </span>
-                          <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs font-bold rounded-full">
-                            {caseItem.difficulty}
-                          </span>
+              <div className="grid gap-6">
+                {AVAILABLE_CASES.map((caseItem) => (
+                  <div
+                    key={caseItem.id}
+                    className="bg-slate-800/90 backdrop-blur-xl rounded-3xl border-2 border-slate-600 hover:border-cyan-400 transition-all overflow-hidden group cursor-pointer shadow-2xl hover:shadow-cyan-500/20 transform hover:scale-[1.01]"
+                    onClick={() => startCase(caseItem)}
+                  >
+                    <div className="p-8">
+                      <div className="flex items-start gap-6">
+                        <div className={`w-24 h-24 bg-gradient-to-br ${caseItem.color} rounded-2xl flex items-center justify-center text-5xl shadow-2xl flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                          {caseItem.icon}
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-                          {caseItem.title}
-                        </h3>
-                        <p className="text-slate-400 text-sm mb-3">
-                          {caseItem.description}
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-slate-500">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {caseItem.duration}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {caseItem.characters.length} personajes
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <AlertTriangle className="w-3 h-3" />
-                            10 preguntas
-                          </span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="px-4 py-1.5 bg-cyan-500/30 text-cyan-200 text-sm font-bold rounded-full border border-cyan-400/50">
+                              {caseItem.category}
+                            </span>
+                            <span className="px-4 py-1.5 bg-amber-500/30 text-amber-200 text-sm font-bold rounded-full border border-amber-400/50">
+                              {caseItem.difficulty}
+                            </span>
+                          </div>
+                          <h3 className="text-2xl font-black text-white mb-3 group-hover:text-cyan-300 transition-colors">
+                            {caseItem.title}
+                          </h3>
+                          <p className="text-slate-300 text-base mb-5 leading-relaxed">
+                            {caseItem.description}
+                          </p>
+                          <div className="flex items-center gap-6 text-sm text-slate-400">
+                            <span className="flex items-center gap-2 bg-slate-700/50 px-3 py-1.5 rounded-lg">
+                              <Clock className="w-4 h-4 text-cyan-400" />
+                              {caseItem.duration}
+                            </span>
+                            <span className="flex items-center gap-2 bg-slate-700/50 px-3 py-1.5 rounded-lg">
+                              <Users className="w-4 h-4 text-cyan-400" />
+                              {caseItem.characters.length} personajes
+                            </span>
+                            <span className="flex items-center gap-2 bg-slate-700/50 px-3 py-1.5 rounded-lg">
+                              <BookOpen className="w-4 h-4 text-cyan-400" />
+                              10 preguntas
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          <Play className="w-5 h-5 text-white" />
+                        <div className="flex items-center">
+                          <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                            <Play className="w-8 h-8 text-white ml-1" />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="mt-8 bg-slate-800/40 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-400" />
-                ¿Cómo funciona?
-              </h3>
-              <ul className="space-y-2 text-slate-300 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">1.</span>
-                  Selecciona un caso de estudio para comenzar
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">2.</span>
-                  Lee el contexto, los personajes y la situación crítica
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">3.</span>
-                  Responde las 10 preguntas generadas por IA
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">4.</span>
-                  Al finalizar, recibirás calificación y feedback detallado
-                </li>
-              </ul>
+              <div className="mt-10 bg-slate-800/80 backdrop-blur-xl rounded-2xl p-8 border-2 border-slate-600 shadow-xl">
+                <h3 className="text-2xl font-black text-white mb-5 flex items-center gap-3">
+                  <Star className="w-7 h-7 text-amber-400" />
+                  ¿Cómo funciona?
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-start gap-4 bg-slate-700/50 rounded-xl p-4">
+                    <span className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">1</span>
+                    <p className="text-slate-200 text-base">Selecciona un caso de estudio para comenzar</p>
+                  </div>
+                  <div className="flex items-start gap-4 bg-slate-700/50 rounded-xl p-4">
+                    <span className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">2</span>
+                    <p className="text-slate-200 text-base">Lee el contexto, personajes y situación crítica</p>
+                  </div>
+                  <div className="flex items-start gap-4 bg-slate-700/50 rounded-xl p-4">
+                    <span className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">3</span>
+                    <p className="text-slate-200 text-base">Responde las 10 preguntas generadas por IA</p>
+                  </div>
+                  <div className="flex items-start gap-4 bg-slate-700/50 rounded-xl p-4">
+                    <span className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">4</span>
+                    <p className="text-slate-200 text-base">Recibe calificación y feedback personalizado</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -325,51 +368,57 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
 
   if (showResults && evaluation) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/20 to-slate-900 z-50 overflow-auto">
-        <div className="min-h-screen p-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-4 mb-8">
-              <button 
-                onClick={() => {
-                  setSelectedCase(null);
-                  setShowResults(false);
-                  setEvaluation(null);
-                }} 
-                className="p-3 bg-slate-800/80 hover:bg-slate-700 rounded-xl transition-colors border border-slate-700"
-              >
-                <ArrowLeft className="w-5 h-5 text-white" />
-              </button>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                  <Award className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-black text-white">Evaluación Completada</h1>
-                  <p className="text-emerald-300 text-sm">{selectedCase.title}</p>
+      <div className="fixed inset-0 z-50 bg-slate-950">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: `url(${aiTrainingBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/50 via-slate-900/80 to-slate-950/90" />
+        
+        <div className="relative z-10 h-full overflow-auto">
+          <div className="min-h-full p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-6 mb-10">
+                <button 
+                  onClick={() => {
+                    setSelectedCase(null);
+                    setShowResults(false);
+                    setEvaluation(null);
+                  }} 
+                  className="p-4 bg-slate-800/90 hover:bg-slate-700 rounded-2xl transition-all border-2 border-slate-600 hover:border-emerald-500 shadow-xl"
+                >
+                  <ArrowLeft className="w-6 h-6 text-white" />
+                </button>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+                    <Award className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-black text-white">Evaluación Completada</h1>
+                    <p className="text-emerald-300 text-lg mt-1">{selectedCase.title}</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-emerald-500/30 p-6">
-              <div className="prose prose-invert max-w-none">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-3xl border-2 border-emerald-500/50 p-8 shadow-2xl">
                 <div 
-                  className="text-slate-200 leading-relaxed"
+                  className="text-slate-100 leading-relaxed text-lg prose prose-invert prose-lg max-w-none"
                   dangerouslySetInnerHTML={{ __html: formatText(evaluation) }}
                 />
               </div>
-            </div>
 
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={() => {
-                  setSelectedCase(null);
-                  setShowResults(false);
-                  setEvaluation(null);
-                }}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/30"
-              >
-                Volver a Casos
-              </button>
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={() => {
+                    setSelectedCase(null);
+                    setShowResults(false);
+                    setEvaluation(null);
+                  }}
+                  className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black text-xl rounded-2xl transition-all shadow-2xl shadow-cyan-500/40 transform hover:scale-105"
+                >
+                  Volver a Casos
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -378,32 +427,38 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 z-50 flex flex-col">
-      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-cyan-500/30 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col">
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-25"
+        style={{ backgroundImage: `url(${aiTrainingBg})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-blue-950/50 to-slate-950/90" />
+      
+      <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-b-2 border-cyan-500/40 px-6 py-4 flex items-center justify-between shadow-xl">
+        <div className="flex items-center gap-4">
           <button 
             onClick={() => setSelectedCase(null)} 
-            className="p-2 hover:bg-slate-700 rounded-xl transition-colors"
+            className="p-3 hover:bg-slate-700 rounded-xl transition-colors border border-slate-600"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Briefcase className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <Briefcase className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-white">{selectedCase.category}</h1>
-            <p className="text-xs text-cyan-300">Pregunta {currentQuestion + 1} de 10</p>
+            <h1 className="text-xl font-black text-white">{selectedCase.category}</h1>
+            <p className="text-sm text-cyan-300 font-medium">Pregunta {Math.min(currentQuestion + 1, 10)} de 10</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {[...Array(10)].map((_, i) => (
             <div
               key={i}
-              className={`w-3 h-3 rounded-full transition-all ${
+              className={`w-4 h-4 rounded-full transition-all shadow-lg ${
                 i < answers.length
-                  ? 'bg-emerald-500'
+                  ? 'bg-emerald-500 shadow-emerald-500/50'
                   : i === currentQuestion
-                  ? 'bg-cyan-500 animate-pulse'
+                  ? 'bg-cyan-500 animate-pulse shadow-cyan-500/50'
                   : 'bg-slate-600'
               }`}
             />
@@ -411,132 +466,161 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
         </div>
       </div>
 
-      <div ref={contentRef} className="flex-1 overflow-y-auto p-4 space-y-4">
-        {currentQuestion === 0 && (
-          <div className="bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-700 p-6 mb-6">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              🏥 {selectedCase.title}
-            </h2>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-cyan-400 font-bold mb-2">📋 Contexto</h3>
-                <div 
-                  className="text-slate-300 text-sm leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: formatText(selectedCase.context) }}
-                />
-              </div>
+      <div ref={contentRef} className="relative z-10 flex-1 overflow-y-auto p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {currentQuestion === 0 && answers.length === 0 && (
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl border-2 border-cyan-500/40 p-8 mb-8 shadow-2xl">
+              <h2 className="text-3xl font-black text-white mb-6 flex items-center gap-3">
+                🏥 {selectedCase.title}
+              </h2>
+              
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-xl text-cyan-400 font-black mb-4 flex items-center gap-2">
+                    📋 Contexto del Caso
+                  </h3>
+                  <div 
+                    className="text-slate-200 text-lg leading-relaxed bg-slate-700/50 rounded-xl p-6"
+                    dangerouslySetInnerHTML={{ __html: formatText(selectedCase.context) }}
+                  />
+                </div>
 
-              <div>
-                <h3 className="text-cyan-400 font-bold mb-2">👥 Personajes</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {selectedCase.characters.map((char, i) => (
-                    <div key={i} className="bg-slate-700/50 rounded-xl p-3">
-                      <p className="text-white font-bold text-sm">{char.name}</p>
-                      <p className="text-cyan-300 text-xs">{char.role}</p>
-                      <p className="text-slate-400 text-xs mt-1">{char.description}</p>
-                    </div>
-                  ))}
+                <div>
+                  <h3 className="text-xl text-cyan-400 font-black mb-4 flex items-center gap-2">
+                    👥 Personajes Principales
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {selectedCase.characters.map((char, i) => (
+                      <div key={i} className="bg-slate-700/70 rounded-xl p-5 border border-slate-600">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-3xl">{char.emoji}</span>
+                          <div>
+                            <p className="text-white font-black text-lg">{char.name}</p>
+                            <p className="text-cyan-300 text-sm font-medium">{char.role}</p>
+                          </div>
+                        </div>
+                        <p className="text-slate-300 text-sm leading-relaxed">{char.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-xl text-amber-400 font-black mb-4 flex items-center gap-2">
+                    ⚠️ Situación Crítica
+                  </h3>
+                  <p className="text-slate-200 text-lg leading-relaxed bg-amber-500/10 rounded-xl p-6 border border-amber-500/30">
+                    {selectedCase.situation}
+                  </p>
                 </div>
               </div>
+            </div>
+          )}
 
-              <div>
-                <h3 className="text-amber-400 font-bold mb-2">⚠️ Situación Crítica</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{selectedCase.situation}</p>
+          {answers.map((item, idx) => (
+            <div key={idx} className="space-y-4">
+              <div className="flex gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1 bg-slate-800/95 border-2 border-slate-600 rounded-2xl px-6 py-4">
+                  <p className="text-xs text-cyan-400 font-black mb-2">PREGUNTA {idx + 1}</p>
+                  <p className="text-white text-lg">{item.question}</p>
+                </div>
+              </div>
+              <div className="flex gap-4 justify-end">
+                <div className="max-w-[80%] bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl px-6 py-4 shadow-lg">
+                  <p className="text-white text-lg">{item.answer}</p>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <User className="w-6 h-6 text-white" />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          ))}
 
-        {answers.map((item, idx) => (
-          <div key={idx} className="space-y-3">
-            <div className="flex gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Bot className="w-4 h-4 text-white" />
+          {questions[currentQuestion] && answers.length === currentQuestion && (
+            <div className="flex gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Bot className="w-6 h-6 text-white" />
               </div>
-              <div className="flex-1 bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-                <p className="text-xs text-cyan-400 font-bold mb-1">Pregunta {idx + 1}</p>
-                <p className="text-slate-100 text-sm">{item.question}</p>
-              </div>
-            </div>
-            <div className="flex gap-3 justify-end">
-              <div className="max-w-[80%] bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl px-4 py-3">
-                <p className="text-white text-sm">{item.answer}</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <User className="w-4 h-4 text-white" />
+              <div className="flex-1 bg-slate-800/95 border-2 border-cyan-500/50 rounded-2xl px-6 py-4 shadow-lg">
+                <p className="text-xs text-cyan-400 font-black mb-2">PREGUNTA {currentQuestion + 1}</p>
+                <p className="text-white text-lg">{questions[currentQuestion]}</p>
               </div>
             </div>
-          </div>
-        ))}
+          )}
 
-        {questions[currentQuestion] && answers.length === currentQuestion && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 bg-slate-800/80 border border-cyan-500/30 rounded-2xl px-4 py-3">
-              <p className="text-xs text-cyan-400 font-bold mb-1">Pregunta {currentQuestion + 1}</p>
-              <p className="text-slate-100 text-sm">{questions[currentQuestion]}</p>
-            </div>
-          </div>
-        )}
-
-        {isGeneratingQuestion && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2 text-cyan-300">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Generando siguiente pregunta...</span>
+          {isGeneratingQuestion && (
+            <div className="flex gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                <Bot className="w-6 h-6 text-white" />
+              </div>
+              <div className="bg-slate-800/95 border-2 border-slate-600 rounded-2xl px-6 py-4">
+                <div className="flex items-center gap-3 text-cyan-300">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="text-base font-medium">Generando siguiente pregunta...</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {error && (
+            <div className="bg-red-500/20 border-2 border-red-500/50 rounded-2xl p-6 text-center">
+              <p className="text-red-300 text-lg mb-4">{error}</p>
+              <button
+                onClick={retryQuestion}
+                className="px-6 py-3 bg-red-500 hover:bg-red-400 text-white font-bold rounded-xl transition-all"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-cyan-500/30 p-4">
-        {answers.length < 10 ? (
-          <div className="flex gap-3">
-            <input
-              ref={inputRef}
-              type="text"
-              value={currentAnswer}
-              onChange={(e) => setCurrentAnswer(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSubmitAnswer()}
-              placeholder="Escribe tu respuesta..."
-              className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
-              disabled={isGeneratingQuestion}
-            />
+      <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t-2 border-cyan-500/40 p-6 shadow-xl">
+        <div className="max-w-4xl mx-auto">
+          {answers.length < 10 ? (
+            <div className="flex gap-4">
+              <input
+                ref={inputRef}
+                type="text"
+                value={currentAnswer}
+                onChange={(e) => setCurrentAnswer(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubmitAnswer()}
+                placeholder="Escribe tu respuesta..."
+                className="flex-1 bg-slate-800/90 border-2 border-slate-600 focus:border-cyan-500 rounded-xl px-6 py-4 text-white text-lg placeholder-slate-400 focus:outline-none transition-colors"
+                disabled={isGeneratingQuestion || !questions[currentQuestion]}
+              />
+              <button
+                onClick={handleSubmitAnswer}
+                disabled={!currentAnswer.trim() || isGeneratingQuestion || !questions[currentQuestion]}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white p-4 rounded-xl transition-all shadow-lg shadow-cyan-500/30"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={handleSubmitAnswer}
-              disabled={!currentAnswer.trim() || isGeneratingQuestion}
-              className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-cyan-500/30"
+              onClick={handleFinalSubmit}
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-white py-5 rounded-xl font-black text-xl transition-all shadow-2xl shadow-emerald-500/40 flex items-center justify-center gap-4"
             >
-              <ChevronRight className="w-5 h-5" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  Evaluando tus respuestas...
+                </>
+              ) : (
+                <>
+                  <Send className="w-6 h-6" />
+                  Enviar y Obtener Calificación
+                </>
+              )}
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleFinalSubmit}
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-3"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Evaluando respuestas...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5" />
-                Enviar y Obtener Calificación
-              </>
-            )}
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
