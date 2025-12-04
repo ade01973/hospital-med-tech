@@ -54,7 +54,7 @@ app.post('/api/chat', async (req, res) => {
     ];
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       contents: contents,
     });
 
@@ -82,7 +82,7 @@ Responde SOLO con un JSON válido en este formato exacto:
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
     });
 
