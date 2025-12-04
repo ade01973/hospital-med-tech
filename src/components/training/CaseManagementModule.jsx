@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
-import directoraImage from '../../assets/female-characters/female-character-8.png';
 
 const AVAILABLE_CASES = [
   {
@@ -228,8 +227,7 @@ const AVAILABLE_CASES = [
   }
 ];
 
-const femaleAvatars = import.meta.glob('../../assets/female-characters/*.png', { eager: true });
-const maleAvatars = import.meta.glob('../../assets/male-characters/*.png', { eager: true });
+const directoraImage = '/src/assets/female-characters/female-character-8.png';
 
 const CaseManagementModule = ({ onBack }) => {
   const [selectedCase, setSelectedCase] = useState(null);
@@ -250,11 +248,9 @@ const CaseManagementModule = ({ onBack }) => {
   const getPlayerAvatarImage = () => {
     if (playerAvatar.characterPreset) {
       const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
-      const avatars = gender === 'male' ? maleAvatars : femaleAvatars;
-      const key = `../../assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
-      return avatars[key]?.default || directoraImage;
+      return `/src/assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
     }
-    return directoraImage;
+    return '/src/assets/female-characters/female-character-1.png';
   };
 
   const formatText = (text) => {
@@ -264,11 +260,11 @@ const CaseManagementModule = ({ onBack }) => {
       .replace(/\n/g, '<br/>');
   };
 
-  const generateNextQuestion = async (previousAnswers, questionNumber, caseData = null) => {
+  const generateNextQuestion = async (previousAnswers, questionNumber) => {
     setIsGeneratingQuestion(true);
     setError(null);
     try {
-      const caseInfo = caseData || selectedCase;
+      const caseInfo = selectedCase;
       const answersContext = previousAnswers.map((a, i) => 
         `Pregunta ${i + 1}: ${a.question}\nRespuesta del estudiante: ${a.answer}`
       ).join('\n\n');
@@ -344,7 +340,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
     setEvaluation(null);
     setError(null);
     
-    const firstQuestion = await generateNextQuestion([], 1, caseData);
+    const firstQuestion = await generateNextQuestion([], 1);
     if (firstQuestion) {
       setQuestions([firstQuestion]);
     }
