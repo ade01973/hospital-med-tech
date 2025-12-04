@@ -345,15 +345,11 @@ const CaseManagementModule = ({ onBack }) => {
       .replace(/\n/g, '<br/>');
   };
 
-  const generateNextQuestion = async (previousAnswers, questionNumber, caseInfo = null, retryCount = 0) => {
+  const generateNextQuestion = async (previousAnswers, questionNumber) => {
     setIsGeneratingQuestion(true);
     setError(null);
-    
-    const maxRetries = 2;
-    const retryDelay = 1500;
-    const currentCase = caseInfo || selectedCase;
-    
     try {
+      const caseInfo = selectedCase;
       const answersContext = previousAnswers.map((a, i) => 
         `Pregunta ${i + 1}: ${a.question}\nRespuesta del estudiante: ${a.answer}`
       ).join('\n\n');
@@ -364,25 +360,25 @@ const CaseManagementModule = ({ onBack }) => {
         body: JSON.stringify({
           message: `Genera la pregunta número ${questionNumber} de 10 para este caso de estudio.`,
           history: [],
-          systemPrompt: `Eres un experto evaluador en gestión enfermera y ${currentCase.category.toLowerCase()}. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
+          systemPrompt: `Eres un experto evaluador en gestión enfermera y ${caseInfo.category.toLowerCase()}. Usa siempre la terminología "gestor/gestora enfermero/a". NUNCA uses "médico", "doctor" ni "enfermero clínico".
 
-CASO DE ESTUDIO: "${currentCase.title}"
+CASO DE ESTUDIO: "${caseInfo.title}"
 
 CONTEXTO:
-${currentCase.context}
+${caseInfo.context}
 
 PERSONAJES:
-${currentCase.characters.map(c => `- ${c.name} (${c.role}): ${c.description}`).join('\n')}
+${caseInfo.characters.map(c => `- ${c.name} (${c.role}): ${c.description}`).join('\n')}
 
 SITUACIÓN CRÍTICA:
-${currentCase.situation}
+${caseInfo.situation}
 
 RESPUESTAS ANTERIORES DEL ESTUDIANTE:
 ${answersContext || 'Ninguna aún (esta es la primera pregunta)'}
 
 INSTRUCCIONES:
 1. Genera UNA pregunta reflexiva y desafiante sobre el caso
-2. La pregunta debe evaluar competencias de ${currentCase.category.toLowerCase()}, gestión de conflictos o comunicación
+2. La pregunta debe evaluar competencias de ${caseInfo.category.toLowerCase()}, gestión de conflictos o comunicación
 3. Adapta la dificultad según las respuestas anteriores del estudiante
 4. Si las respuestas anteriores fueron superficiales, haz preguntas que profundicen más
 5. Si fueron buenas, aumenta la complejidad
@@ -391,7 +387,7 @@ INSTRUCCIONES:
 TEMAS A CUBRIR EN LAS 10 PREGUNTAS (adaptados al caso):
 1. Identificación del problema principal
 2. Análisis de las dinámicas del equipo
-3. Estrategias de ${currentCase.category.toLowerCase()}
+3. Estrategias de ${caseInfo.category.toLowerCase()}
 4. Manejo de situaciones críticas
 5. Apoyo a personal con diferentes niveles de experiencia
 6. Priorización en crisis
@@ -413,19 +409,10 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
       return data.response;
     } catch (error) {
       console.error('Error generating question:', error);
-      
-      if (retryCount < maxRetries) {
-        console.log(`Reintentando automáticamente... (intento ${retryCount + 2}/${maxRetries + 1})`);
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
-        return generateNextQuestion(previousAnswers, questionNumber, currentCase, retryCount + 1);
-      }
-      
       setError('Error al conectar con el servicio de IA. Por favor, intenta de nuevo.');
       return null;
     } finally {
-      if (retryCount === 0 || retryCount >= maxRetries) {
-        setIsGeneratingQuestion(false);
-      }
+      setIsGeneratingQuestion(false);
     }
   };
 
@@ -438,7 +425,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
     setEvaluation(null);
     setError(null);
     
-    const firstQuestion = await generateNextQuestion([], 1, caseData);
+    const firstQuestion = await generateNextQuestion([], 1);
     if (firstQuestion) {
       setQuestions([firstQuestion]);
     }
