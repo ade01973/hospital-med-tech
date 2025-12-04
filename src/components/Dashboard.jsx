@@ -457,52 +457,117 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Left - Elevator */}
+          {/* Left - Unified Game Panel (Modules + Level Start) */}
           <div>
             <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-black text-white">Módulos</h2>
-                <Star className="w-6 h-6 text-yellow-400" />
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Juego Principal</h2>
+                <div className="flex items-center gap-2">
+                  <Play className="w-5 h-5 text-cyan-400" />
+                  <Star className="w-5 h-5 text-yellow-400" />
+                </div>
               </div>
 
-              <div className="space-y-2 max-h-48 overflow-y-auto mb-4">
-                {TOPICS.map((topic) => {
-                  const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
-                  const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+              {/* Selected Module Info - Integrated */}
+              {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
+                <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-2xl p-4 mb-4 border-2 transition-all"
+                     style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="text-3xl">{currentTopic.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-black text-white leading-tight">{currentTopic.title}</h3>
+                      <p className="text-xs text-slate-400">{currentTopic.subtitle}</p>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full text-xs font-black ${isCurrentCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-400/50' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/50'}`}>
+                      {isCurrentCompleted ? '✓ Completado' : `Nivel ${selectedFloor}`}
+                    </div>
+                  </div>
 
-                  return (
+                  <div className="bg-slate-700/40 rounded-xl p-2 mb-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs text-slate-400 font-bold">PROGRESO</span>
+                      <span className="font-black text-sm text-cyan-300">{isCurrentCompleted ? '100%' : '0%'}</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-600 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all" style={{width: isCurrentCompleted ? '100%' : '0%'}}></div>
+                    </div>
+                  </div>
+
+                  {!isCurrentCompleted ? (
                     <button
-                      key={topic.id}
-                      onClick={() => setSelectedFloor(topic.id)}
-                      className={`w-full px-4 py-3 rounded-lg font-black text-sm uppercase tracking-wider border-2 transition-all ${
-                        selectedFloor === topic.id
-                          ? 'bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/30'
-                          : isCompleted 
-                            ? 'bg-emerald-500/10 border-emerald-400 text-emerald-300'
-                            : isUnlocked
-                              ? 'bg-slate-700/30 border-slate-500 hover:border-cyan-400'
-                              : 'bg-slate-800/20 border-slate-700 text-slate-500 cursor-not-allowed opacity-40'
-                      }`}
-                      disabled={!isUnlocked}
+                      onClick={() => {
+                        setSelectedLevelForGame(currentTopic);
+                        setShowPreGameModal(true);
+                      }}
+                      className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-400 hover:via-blue-400 hover:to-indigo-400 text-white font-black py-3 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2"
                     >
-                      {isCompleted ? '✓' : String(topic.id).padStart(2, '0')} {topic.title.substring(0, 10)}
+                      <Play className="w-5 h-5" />
+                      Iniciar Nivel
+                      <span className="text-xl">→</span>
                     </button>
-                  );
-                })}
+                  ) : (
+                    <div className="text-center py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+                      <p className="text-emerald-300 font-bold text-sm flex items-center justify-center gap-2">
+                        <span>✓</span> NIVEL COMPLETADO
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Module List - Compact */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Seleccionar Módulo</span>
+                  <span className="text-xs text-cyan-400 font-bold">{Object.keys(userData?.completedLevels || {}).length}/{TOPICS.length}</span>
+                </div>
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                  {TOPICS.map((topic) => {
+                    const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
+                    const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+
+                    return (
+                      <button
+                        key={topic.id}
+                        onClick={() => setSelectedFloor(topic.id)}
+                        className={`w-full px-3 py-2 rounded-lg font-bold text-xs uppercase tracking-wider border-2 transition-all flex items-center gap-2 ${
+                          selectedFloor === topic.id
+                            ? 'bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/20'
+                            : isCompleted 
+                              ? 'bg-emerald-500/10 border-emerald-400/50 text-emerald-300 hover:border-emerald-400'
+                              : isUnlocked
+                                ? 'bg-slate-700/30 border-slate-600 hover:border-cyan-400/70'
+                                : 'bg-slate-800/20 border-slate-700/50 text-slate-500 cursor-not-allowed opacity-40'
+                        }`}
+                        disabled={!isUnlocked}
+                      >
+                        <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black ${
+                          isCompleted ? 'bg-emerald-500/30 text-emerald-300' : 
+                          selectedFloor === topic.id ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-600/50'
+                        }`}>
+                          {isCompleted ? '✓' : topic.id}
+                        </span>
+                        <span className="flex-1 text-left truncate">{topic.title}</span>
+                        {!isUnlocked && <Lock className="w-3 h-3 text-slate-500" />}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="flex gap-2">
+              {/* Navigation Buttons */}
+              <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => selectedFloor > 1 && setSelectedFloor(selectedFloor - 1)}
-                  className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 rounded-lg text-xs"
+                  className="flex-1 bg-slate-700/60 hover:bg-slate-600/60 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center gap-1 border border-slate-600/50 transition-all"
                 >
-                  <ChevronUp size={16} className="inline" /> Bajar
+                  <ChevronDown size={14} /> Anterior
                 </button>
                 <button
                   onClick={() => selectedFloor < TOPICS.length && setSelectedFloor(selectedFloor + 1)}
-                  className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-xs"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-2 rounded-lg text-xs flex items-center justify-center gap-1 transition-all"
                 >
-                  <ChevronUp size={16} className="inline" /> Subir
+                  Siguiente <ChevronUp size={14} />
                 </button>
               </div>
 
@@ -513,47 +578,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
           {/* Center Column */}
           <div className="flex flex-col gap-6">
-            {/* Module Info */}
-            {currentTopic && (isCurrentUnlocked || isCurrentCompleted) && (
-              <div className="bg-slate-900/40 backdrop-blur-xl border-2 rounded-3xl p-6 shadow-2xl" 
-                   style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="text-4xl">{currentTopic.icon}</div>
-                  <div>
-                    <h3 className="text-xl font-black text-white">{currentTopic.title}</h3>
-                    <p className="text-sm text-slate-300">{currentTopic.subtitle}</p>
-                  </div>
-                </div>
-
-                <div className="bg-slate-800/50 rounded-xl p-3 mb-4 border border-slate-700">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-xs text-slate-400 font-bold">PROGRESO</span>
-                    <span className="font-black text-cyan-300">{isCurrentCompleted ? '✓ 100%' : '0%'}</span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{width: isCurrentCompleted ? '100%' : '0%'}}></div>
-                  </div>
-                </div>
-
-                {!isCurrentCompleted && (
-                  <button
-                    onClick={() => {
-                      setSelectedLevelForGame(currentTopic);
-                      setShowPreGameModal(true);
-                    }}
-                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl transition-all transform hover:scale-105"
-                  >
-                    Iniciar Nivel →
-                  </button>
-                )}
-
-                {isCurrentCompleted && (
-                  <div className="text-center py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
-                    <p className="text-emerald-300 font-black">✓ COMPLETADO</p>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Infografías Section - Separate Visual Frame */}
             <div className="bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-blue-900/40 backdrop-blur-xl border-2 border-purple-400/40 rounded-3xl p-5 shadow-2xl shadow-purple-500/20 relative overflow-hidden">
