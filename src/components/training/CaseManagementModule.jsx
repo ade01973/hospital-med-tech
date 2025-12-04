@@ -2,6 +2,91 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles, Flame, Crown, Gift, TrendingUp, Brain, Heart, Rocket, Medal, GraduationCap } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
 
+const FloatingOrbs = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute top-20 left-[10%] w-80 h-80 bg-cyan-500/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute bottom-20 right-[10%] w-96 h-96 bg-purple-500/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="absolute bottom-1/3 left-[20%] w-64 h-64 bg-pink-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/4 right-[20%] w-56 h-56 bg-amber-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2.5s' }} />
+    </div>
+  );
+};
+
+const GlowingStars = () => {
+  const stars = Array.from({ length: 30 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 3 + 1,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 5,
+    duration: Math.random() * 3 + 2
+  }));
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="absolute bg-white rounded-full animate-pulse"
+          style={{
+            width: star.size,
+            height: star.size,
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+            animationDelay: `${star.delay}s`,
+            animationDuration: `${star.duration}s`,
+            boxShadow: '0 0 6px 2px rgba(255,255,255,0.3)'
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+const AnimatedCounter = ({ value, suffix = '' }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  
+  useEffect(() => {
+    const duration = 1200;
+    const steps = 25;
+    const increment = value / steps;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= value) {
+        setDisplayValue(value);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(current));
+      }
+    }, duration / steps);
+    
+    return () => clearInterval(timer);
+  }, [value]);
+  
+  return <span>{displayValue.toLocaleString()}{suffix}</span>;
+};
+
+const StatCard = ({ icon: Icon, value, label, color, delay = 0 }) => (
+  <div 
+    className={`bg-gradient-to-br ${color} backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl transform hover:scale-105 transition-all duration-300 animate-fadeInUp`}
+    style={{ animationDelay: `${delay}ms` }}
+  >
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <p className="text-2xl font-black text-white"><AnimatedCounter value={value} /></p>
+        <p className="text-white/70 text-xs font-medium">{label}</p>
+      </div>
+    </div>
+  </div>
+);
+
 const AVAILABLE_CASES = [
   {
     id: 'liderazgo-turno-nocturno',
@@ -478,11 +563,8 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-indigo-950/60 to-slate-950/80" />
         
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-[10%] w-80 h-80 bg-cyan-500/20 rounded-full blur-[100px] animate-pulse" />
-          <div className="absolute bottom-20 right-[10%] w-96 h-96 bg-purple-500/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-blue-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
-        </div>
+        <FloatingOrbs />
+        <GlowingStars />
         
         <div className="relative z-10 h-full overflow-auto">
           <div className="min-h-full p-4 md:p-8">
@@ -540,50 +622,10 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div className="bg-gradient-to-br from-amber-500/30 to-orange-600/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                      <Trophy className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-white">{completedCases.length}</p>
-                      <p className="text-white/70 text-xs font-medium">Casos Completados</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-cyan-500/30 to-blue-600/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-white">{totalXP}</p>
-                      <p className="text-white/70 text-xs font-medium">XP Total</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-purple-500/30 to-pink-600/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                      <Target className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-white">{progressPercent}%</p>
-                      <p className="text-white/70 text-xs font-medium">Progreso</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-emerald-500/30 to-teal-600/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                      <Gift className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-white">{xpAvailable}</p>
-                      <p className="text-white/70 text-xs font-medium">XP Disponible</p>
-                    </div>
-                  </div>
-                </div>
+                <StatCard icon={Trophy} value={completedCases.length} label="Casos Completados" color="from-amber-500/30 to-orange-600/30" delay={0} />
+                <StatCard icon={Zap} value={totalXP} label="XP Total" color="from-cyan-500/30 to-blue-600/30" delay={100} />
+                <StatCard icon={Target} value={progressPercent} label="% Progreso" color="from-purple-500/30 to-pink-600/30" delay={200} />
+                <StatCard icon={Gift} value={xpAvailable} label="XP Disponible" color="from-emerald-500/30 to-teal-600/30" delay={300} />
               </div>
 
               <div className="mb-6 bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-2xl relative overflow-hidden">
@@ -595,7 +637,7 @@ Sé constructivo, específico y motivador en tu feedback. Usa terminología de g
                       <span className="text-white font-bold">Tu Progreso</span>
                     </div>
                     <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                      {progressPercent}%
+                      <AnimatedCounter value={progressPercent} suffix="%" />
                     </span>
                   </div>
                   <div className="h-4 bg-slate-900/80 rounded-full overflow-hidden shadow-inner border border-white/5">
