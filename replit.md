@@ -50,12 +50,23 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
 - **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. All 21 infographics complete. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
 - **AI Training Hub**: Comprehensive AI-powered training center styled as a separate dashboard with nurse manager office background. Features 5 specialized modules powered by Gemini AI:
-    - **Gestión de Casos**: Analyze clinical and management cases with AI feedback
+    - **Gestión de Casos**: Analyze clinical and management cases with AI feedback (9 complete cases: Liderazgo, Toma de Decisiones, Gestión del Conflicto, Comunicación, Trabajo en Equipo, Ética, Gestión del Cambio, Marketing Sanitario, Innovación)
     - **Toma de Decisiones**: Practice decision-making with scenarios (quick, complex, ethical, crisis)
     - **Liderazgo**: Develop leadership competencies with coaching and tests
     - **Comunicación**: Improve communication skills with role-play and techniques
     - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
   UI features: 3-column layout matching Dashboard style, office background image (`ai-training-bg.png`), animated particles, welcome card with user name, how-it-works guide, module grid with themed colors and icons. Each module has customized AI prompts with mandatory "gestor/gestora enfermero/a" terminology, conversation history, and 60s request timeout.
+- **Case Management Module (2025 UI)**: Modern gamified interface following Duolingo/Kahoot best practices:
+    - Glassmorphism design with backdrop blur and translucent cards
+    - User avatar displayed in top-right corner with status indicator
+    - Progress bar with shimmer animation showing case completion
+    - XP counter and case completion tracker
+    - Animated floating orbs background
+    - Micro-animations: hover scale (1.02), rotate effects, gradient text transitions
+    - Case cards with numbered badges, difficulty indicators, XP rewards (+150 XP)
+    - "Completed" badges on finished cases with emerald green styling
+    - Modern typography with gradient titles and improved line-height
+    - Enhanced spacing and border-radius (rounded-3xl: 24px)
 
 ### System Design Choices
 - **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.
