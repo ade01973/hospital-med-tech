@@ -199,6 +199,31 @@ const AVAILABLE_CASES = [
       { name: 'Comunidad Local', role: 'Público Objetivo', description: 'Familias, jóvenes, adultos y mayores que deben ser alcanzados con mensajes personalizados y relevantes.', emoji: '👥' }
     ],
     situation: `El equipo debe diseñar una campaña integral de marketing sanitario en dos semanas. Deben definir: título creativo, objetivos claros, mensaje clave, estrategias y tácticas (redes sociales, eventos comunitarios), cronograma, presupuesto, materiales promocionales y métodos de evaluación. La campaña debe ser culturalmente sensible, basada en evidencia y capaz de generar cambios reales en los hábitos de alimentación y actividad física de la comunidad.`
+  },
+  {
+    id: 'innovacion-enfermeria',
+    title: 'Innovación en Enfermería: Transformación Digital del Cuidado',
+    category: 'Innovación en Gestión Sanitaria',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '💡',
+    color: 'from-yellow-500 to-amber-500',
+    description: 'Un caso sobre implementación de tecnologías digitales, optimización de procesos y gestión del cambio innovador.',
+    context: `En un hospital referente en cuidados intensivos, el departamento de enfermería enfrenta retos significativos en la implementación de un nuevo modelo de atención que integra tecnologías digitales y métodos avanzados de cuidado al paciente. El cambio se centra en mejorar la eficacia del tratamiento y la eficiencia en la gestión de los recursos. Los desafíos únicos incluyen:
+
+**1. Integración de Tecnología Avanzada:** Implementar y adaptar nuevas tecnologías digitales en la rutina de enfermería para mejorar el seguimiento y la atención al paciente, incluyendo monitorización en tiempo real.
+
+**2. Optimización de Procesos de Atención:** Desarrollar y aplicar métodos innovadores para mejorar la eficiencia y la calidad de la atención al paciente sin perder la atención personalizada.
+
+**3. Formación y Adaptación del Personal:** Asegurar que el equipo de enfermería esté completamente capacitado y cómodo con los nuevos sistemas y procedimientos tecnológicos.
+
+**4. Gestión del Cambio:** Manejar la resistencia al cambio, mantener la moral del equipo y fomentar una cultura de innovación y mejora continua en el entorno de trabajo.`,
+    characters: [
+      { name: 'Ana Martínez', role: 'Directora de Enfermería', description: 'Responsable de liderar el proceso de transformación. Debe equilibrar la innovación tecnológica con el cuidado humano y gestionar la capacitación del equipo.', emoji: '👩‍⚕️' },
+      { name: 'Equipo de Enfermería', role: 'Personal Asistencial', description: 'Deben adaptarse a las nuevas tecnologías y métodos de atención, manteniendo la calidad del cuidado al paciente durante la transición.', emoji: '👥' },
+      { name: 'Personal Técnico', role: 'Soporte Tecnológico', description: 'Asisten en la implementación y mantenimiento de las nuevas tecnologías, proporcionando soporte técnico y formación al equipo.', emoji: '💻' }
+    ],
+    situation: `El hospital está experimentando una semana de alta demanda de atención, coincidiendo con la implementación del nuevo sistema de gestión sanitaria y monitorización de pacientes en tiempo real. Este período crítico pone a prueba la capacidad del equipo para adaptarse rápidamente a las nuevas tecnologías, manteniendo un nivel excepcional de atención al paciente. Ana debe asegurar que la transición sea fluida y eficaz, minimizando el impacto en la atención mientras maximiza los beneficios de la innovación.`
   }
 ];
 
