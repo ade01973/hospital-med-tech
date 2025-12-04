@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
+import directoraImage from '../../assets/female-characters/female-character-8.png';
 
 const AVAILABLE_CASES = [
   {
@@ -227,7 +228,8 @@ const AVAILABLE_CASES = [
   }
 ];
 
-const directoraImage = '/src/assets/female-characters/female-character-8.png';
+const femaleAvatars = import.meta.glob('../../assets/female-characters/*.png', { eager: true });
+const maleAvatars = import.meta.glob('../../assets/male-characters/*.png', { eager: true });
 
 const CaseManagementModule = ({ onBack }) => {
   const [selectedCase, setSelectedCase] = useState(null);
@@ -248,9 +250,11 @@ const CaseManagementModule = ({ onBack }) => {
   const getPlayerAvatarImage = () => {
     if (playerAvatar.characterPreset) {
       const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
-      return `/src/assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+      const avatars = gender === 'male' ? maleAvatars : femaleAvatars;
+      const key = `../../assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+      return avatars[key]?.default || directoraImage;
     }
-    return '/src/assets/female-characters/female-character-1.png';
+    return directoraImage;
   };
 
   const formatText = (text) => {
