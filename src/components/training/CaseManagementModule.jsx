@@ -98,6 +98,31 @@ const AVAILABLE_CASES = [
       { name: 'Carlos Vargas', role: 'Enfermero Recién Incorporado', description: 'Intenta encontrar el equilibrio entre ser informativo y empático, aprendiendo las complejidades de la comunicación en oncología.', emoji: '👨‍⚕️' }
     ],
     situation: `Durante una semana particularmente desafiante, con varios casos nuevos de diagnósticos complicados y decisiones de tratamiento difíciles, el equipo de enfermería debe manejar eficazmente la comunicación en múltiples frentes. Isabel debe liderar a su equipo para asegurar que la comunicación sea efectiva, empática y culturalmente sensible, tanto con los pacientes y sus familias como dentro del equipo multidisciplinar.`
+  },
+  {
+    id: 'trabajo-equipo-urologia',
+    title: 'Dinámicas de Trabajo en Equipo en la Unidad de Urología',
+    category: 'Trabajo en Equipo',
+    difficulty: 'Avanzado',
+    duration: '25-35 min',
+    icon: '🤝',
+    color: 'from-amber-500 to-orange-500',
+    description: 'Un caso sobre colaboración efectiva, integración de nuevos miembros y coordinación multidisciplinar.',
+    context: `La Unidad de Urología del Hospital Central enfrenta desafíos únicos que ponen a prueba la eficacia y cohesión de su equipo de enfermería. Esta unidad se especializa en una variedad de condiciones urológicas complejas, que van desde procedimientos quirúrgicos mínimamente invasivos hasta tratamientos para enfermedades crónicas. Los desafíos específicos incluyen:
+
+**1. Manejo de Casos Diversos y Complejos:** La unidad atiende a una amplia gama de pacientes, cada uno con sus propias necesidades específicas. Esto requiere que el equipo de enfermería esté bien informado y preparado para manejar una variedad de situaciones clínicas.
+
+**2. Coordinación entre Diversas Especialidades:** La atención efectiva en urología a menudo requiere la colaboración de diferentes especialidades. Esto incluye trabajar con oncólogos, nefrólogos, cirujanos, y otros, lo que puede presentar desafíos en términos de comunicación y coordinación.
+
+**3. Carga Emocional y Estrés:** Dado que muchos pacientes enfrentan diagnósticos y tratamientos difíciles, el equipo debe manejar no solo los aspectos clínicos, sino también el impacto emocional en los pacientes y sus familias.
+
+**4. Innovación y Actualización Constante:** La urología es un campo que evoluciona rápidamente, con nuevas tecnologías y tratamientos emergiendo regularmente. Mantenerse actualizado y adaptar estas innovaciones al trabajo diario es esencial pero desafiante.`,
+    characters: [
+      { name: 'Ana López', role: 'Jefa de Enfermeras', description: 'Se enfrenta al desafío de mantener un equipo unido y eficiente, asegurando que todos estén actualizados con las últimas prácticas y tecnologías.', emoji: '👩‍⚕️' },
+      { name: 'Carlos Pérez', role: 'Enfermero Experimentado', description: 'Con años de experiencia en cirugía urológica, es un pilar en el equipo, pero a veces encuentra dificultades para adaptarse a los métodos más nuevos.', emoji: '👨‍⚕️' },
+      { name: 'Sofía Martín', role: 'Enfermera Recién Incorporada', description: 'Trae conocimientos actualizados y nuevas perspectivas, pero se enfrenta al reto de integrarse en un equipo establecido sin causar fricciones.', emoji: '👩‍⚕️' }
+    ],
+    situation: `La unidad se enfrenta a una semana de alta demanda, con varios casos complicados que requieren una coordinación y colaboración excepcionales. Además, un nuevo tratamiento innovador está siendo introducido, lo que requiere una rápida adaptación y aprendizaje por parte del equipo. Ana debe liderar a su equipo a través de estos desafíos, asegurando que la atención al paciente se mantenga al más alto nivel mientras se fomenta un ambiente de trabajo en equipo efectivo y solidario.`
   }
 ];
 
