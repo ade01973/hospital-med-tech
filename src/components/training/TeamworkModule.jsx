@@ -329,20 +329,31 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   );
 };
 
-const FloatingParticles = () => (
+const PARTICLE_CONFIG = [...Array(20)].map((_, i) => ({
+  id: i,
+  width: (i * 3.7 % 6) + 2,
+  height: (i * 2.3 % 6) + 2,
+  left: (i * 17.3) % 100,
+  top: (i * 23.7) % 100,
+  color: ['#f59e0b', '#eab308', '#d97706', '#fbbf24'][i % 4],
+  duration: 8 + (i * 1.3) % 10,
+  delay: (i * 0.7) % 5
+}));
+
+const FloatingParticles = React.memo(() => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    {[...Array(20)].map((_, i) => (
+    {PARTICLE_CONFIG.map((p) => (
       <div
-        key={i}
+        key={p.id}
         className="absolute rounded-full opacity-30"
         style={{
-          width: Math.random() * 6 + 2 + 'px',
-          height: Math.random() * 6 + 2 + 'px',
-          left: Math.random() * 100 + '%',
-          top: Math.random() * 100 + '%',
-          background: `linear-gradient(135deg, ${['#f59e0b', '#eab308', '#d97706', '#fbbf24'][Math.floor(Math.random() * 4)]}, transparent)`,
-          animation: `float ${8 + Math.random() * 10}s ease-in-out infinite`,
-          animationDelay: `${Math.random() * 5}s`
+          width: p.width + 'px',
+          height: p.height + 'px',
+          left: p.left + '%',
+          top: p.top + '%',
+          background: `linear-gradient(135deg, ${p.color}, transparent)`,
+          animation: `float ${p.duration}s ease-in-out infinite`,
+          animationDelay: `${p.delay}s`
         }}
       />
     ))}
@@ -353,9 +364,9 @@ const FloatingParticles = () => (
       }
     `}</style>
   </div>
-);
+));
 
-const GlowingOrb = ({ color, size, left, top, delay }) => (
+const GlowingOrb = React.memo(({ color, size, left, top, delay }) => (
   <div
     className="absolute rounded-full blur-3xl opacity-20 animate-pulse"
     style={{
@@ -368,7 +379,7 @@ const GlowingOrb = ({ color, size, left, top, delay }) => (
       animationDuration: '4s'
     }}
   />
-);
+));
 
 const TEAMWORK_MODES = [
   {
@@ -2959,23 +2970,16 @@ Responde en español, de forma profesional y cercana.`
   );
 };
 
-const TeamworkModuleContent = ({ onBack }) => {
+const TeamworkModuleContent = React.memo(({ onBack }) => {
   const [selectedMode, setSelectedMode] = useState(null);
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedConflict, setSelectedConflict] = useState(null);
   const { loading, profile } = useTeamworkProfileContext();
 
-  console.log('TeamworkModuleContent render:', { selectedMode, loading, hasProfile: !!profile });
-
-  const handleSelectMode = (modeId) => {
-    console.log('Mode selected:', modeId);
-    try {
-      setSelectedMode(modeId);
-    } catch (err) {
-      console.error('Error selecting mode:', err);
-    }
-  };
+  const handleSelectMode = useCallback((modeId) => {
+    setSelectedMode(modeId);
+  }, []);
 
   if (loading) {
     return (
@@ -3085,7 +3089,7 @@ const TeamworkModuleContent = ({ onBack }) => {
       </div>
     </div>
   );
-};
+});
 
 class TeamworkErrorBoundary extends React.Component {
   constructor(props) {

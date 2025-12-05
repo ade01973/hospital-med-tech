@@ -74,21 +74,27 @@ export const useMissions = () => {
     checkAndResetMissions();
   }, []);
 
-  // Sincronizar cambios de localStorage cada segundo (polling)
+  // Sincronizar cambios de localStorage usando storage events (más eficiente)
   useEffect(() => {
-    const interval = setInterval(() => {
-      const savedDaily = localStorage.getItem('dailyMissions');
-      const savedWeekly = localStorage.getItem('weeklyMission');
-      
-      if (savedDaily) {
-        setDailyMissions(JSON.parse(savedDaily));
+    const handleStorageChange = (e) => {
+      if (e.key === 'dailyMissions' && e.newValue) {
+        try {
+          setDailyMissions(JSON.parse(e.newValue));
+        } catch (err) {
+          console.error('Error parsing dailyMissions:', err);
+        }
       }
-      if (savedWeekly) {
-        setWeeklyMission(JSON.parse(savedWeekly));
+      if (e.key === 'weeklyMission' && e.newValue) {
+        try {
+          setWeeklyMission(JSON.parse(e.newValue));
+        } catch (err) {
+          console.error('Error parsing weeklyMission:', err);
+        }
       }
-    }, 1000); // Sincronizar cada 1 segundo
+    };
 
-    return () => clearInterval(interval);
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Incrementar contador de preguntas respondidas
