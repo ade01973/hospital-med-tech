@@ -121,3 +121,36 @@ The application employs a modern web stack to deliver an interactive and gamifie
   - 503 overload error handling with retry support
 - **Generate with AI Buttons**: Purple/pink button in ScenarioSelector, TreeSelector, PrioritySelector
 - **Badge Indicator**: "IA" badge on dynamically generated items
+
+## Leadership Module Enhancements (Dec 2025)
+- **useLeadershipProfile Hook**: Dynamic leadership profile persistence
+  - Stores leadership styles (9 types), dimensions (5 metrics), sessions history
+  - Firestore integration with localStorage fallback
+  - Methods: addSession, getDominantStyles, getTrends, getCriticalAreas
+  - LeadershipProfileContext for component access
+- **New Leadership Modules** (4 new modes with "NUEVO" badges):
+  - **RolePlayMode** (🎭): Immersive AI role-play with 4 characters
+    - Carmen (resistant veteran), Pablo (overwhelmed novice), Dr. Martínez (interfering doctor), Marta (conflictive family member)
+    - 4 exchanges per conversation, dynamic personality reactions
+    - Character prompts with body language and emotional responses
+    - Violet/purple color theme
+  - **ChangeSimulator** (🏗️): 6-stage organizational change simulation
+    - Stages: Diagnosis, Stakeholders, Communication, Implementation, Resistance Management, Evaluation
+    - Visual stepper progress bar, per-stage scoring (X/10)
+    - Accumulated total score (max 60), session persistence
+    - Indigo/blue color theme
+  - **LeaderAnalytics** (📈): Leadership analytics dashboard
+    - Total sessions, average score, dominant styles visualization
+    - Score trends chart (last 10 sessions), dimensions circular progress
+    - Critical areas identification with improvement recommendations
+    - Cyan/teal color theme
+  - **MentorMode** (🎓): AI expert mentor with resource panel
+    - Collapsible resources sidebar: Readings, Practices, Theoretical Models
+    - MENTOR_RESOURCES data: 5 readings, 4 practices, 4 theoretical models
+    - Personalized coaching with leadership theory references (Kotter, Hersey-Blanchard, Goleman)
+    - Yellow/amber color theme
+- **Data Structures**:
+  - ROLEPLAY_CHARACTERS: 4 characters with detailed prompts
+  - CHANGE_STAGES: 6 stages with evaluation prompts
+  - MENTOR_RESOURCES: readings, practices, models
+- **Integration**: All modes accessible from ModeSelector with "NUEVO" badge animation

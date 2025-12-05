@@ -2716,6 +2716,1020 @@ Sé constructivo y específico. Contexto: gestión enfermera en España.`
   );
 };
 
+// ============================================
+// ROLE-PLAY INMERSIVO
+// ============================================
+const RolePlayMode = ({ onBack }) => {
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [result, setResult] = useState(null);
+  const [exchangeCount, setExchangeCount] = useState(0);
+  const messagesEndRef = useRef(null);
+  const { addSession } = useLeadershipProfileContext();
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const formatMessage = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br/>');
+  };
+
+  const parseEvaluation = (text) => {
+    const scoreMatch = text.match(/\*\*PUNTUACIÓN:\s*(\d+)\/10\*\*/i) || 
+                       text.match(/PUNTUACIÓN:\s*(\d+)\/10/i);
+    const styleMatch = text.match(/\*\*ESTILO.*?:\s*([^*\n]+)\*\*/i) ||
+                       text.match(/ESTILO.*?:\s*([^\n]+)/i);
+    
+    if (scoreMatch) {
+      return { 
+        score: parseInt(scoreMatch[1], 10), 
+        style: styleMatch ? styleMatch[1].trim() : null, 
+        feedback: text 
+      };
+    }
+    return null;
+  };
+
+  const startConversation = (character) => {
+    setSelectedCharacter(character);
+    setMessages([{
+      role: 'assistant',
+      content: `*${character.name} entra en tu despacho...*\n\n---\n\n**Contexto:** ${character.challenge}\n\n${character.name} te mira esperando tu respuesta. ¿Cómo inicias la conversación como líder?`
+    }]);
+    setExchangeCount(0);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+    const newExchangeCount = exchangeCount + 1;
+    setExchangeCount(newExchangeCount);
+
+    try {
+      const history = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const isLastExchange = newExchangeCount >= 4;
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history,
+          systemPrompt: `${selectedCharacter.prompt}
+
+CONTEXTO: Estás en el despacho del/la gestor/a enfermero/a. Este es el intercambio ${newExchangeCount} de la conversación.
+
+INSTRUCCIONES:
+- Responde SIEMPRE en primera persona como ${selectedCharacter.name}
+- Usa expresiones coloquiales y emocionales según tu personalidad
+- Reacciona de forma realista según cómo te traten
+- Incluye lenguaje corporal entre asteriscos (*suspira*, *cruza los brazos*, etc.)
+
+${isLastExchange ? `
+IMPORTANTE - ESTE ES EL ÚLTIMO INTERCAMBIO:
+Al final de tu respuesta, incluye una evaluación con este formato exacto:
+**PUNTUACIÓN: X/10**
+**ESTILO DETECTADO: [nombre del estilo]**
+**FEEDBACK:** Breve análisis de cómo manejó la conversación, qué hizo bien y qué podría mejorar.
+` : 'Mantén la conversación abierta para más intercambios.'}`
+        })
+      });
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+
+      const evaluation = parseEvaluation(data.response);
+      if (evaluation) {
+        addSession({
+          type: 'roleplay',
+          characterId: selectedCharacter.id,
+          score: evaluation.score,
+          maxScore: 10,
+          styleDetected: evaluation.style
+        });
+        setTimeout(() => {
+          setResult(evaluation);
+          setShowResult(true);
+        }, 1500);
+      }
+    } catch (error) {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (showResult && result) {
+    return (
+      <ScoreDisplay
+        score={result.score}
+        maxScore={10}
+        feedback={result.feedback.substring(0, 500) + '...'}
+        leadershipStyle={result.style}
+        onContinue={() => {
+          setSelectedCharacter(null);
+          setMessages([]);
+          setShowResult(false);
+          setResult(null);
+          setExchangeCount(0);
+        }}
+      />
+    );
+  }
+
+  if (!selectedCharacter) {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative">
+        <FloatingParticles />
+        <GlowingOrb color="#8b5cf6" size="300px" left="5%" top="20%" delay="0s" />
+        <GlowingOrb color="#a855f7" size="200px" left="80%" top="60%" delay="2s" />
+        
+        <div className="max-w-4xl mx-auto relative z-10">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="text-5xl mb-3">🎭</div>
+            <h1 className="text-3xl font-black text-white mb-3">
+              Role-Play <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">Inmersivo</span>
+            </h1>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              La IA interpreta personajes reales. Tú respondes como líder.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {ROLEPLAY_CHARACTERS.map((char) => (
+              <button
+                key={char.id}
+                onClick={() => startConversation(char)}
+                className={`bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-violet-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-violet-500/20 hover:scale-[1.02]`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${char.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl`}>
+                    {char.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-white mb-1">{char.name}</h3>
+                    <p className="text-violet-400 text-xs font-medium mb-2">{char.role}</p>
+                    <p className="text-slate-300 text-sm mb-3">{char.description}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs bg-slate-700/80 text-slate-300 px-2 py-1 rounded-lg">
+                        {char.personality.split(',')[0]}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="bg-slate-800 border-b-2 border-violet-500/50 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setSelectedCharacter(null)} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </button>
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedCharacter.color} flex items-center justify-center text-xl shadow-lg`}>
+            {selectedCharacter.icon}
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white">{selectedCharacter.name}</h1>
+            <p className="text-xs text-violet-300">{selectedCharacter.role}</p>
+          </div>
+        </div>
+        <div className="bg-violet-500/20 px-3 py-1 rounded-full text-violet-300 text-sm">
+          {exchangeCount}/4 intercambios
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/60 to-slate-800/40">
+        <FloatingParticles />
+        {messages.map((msg, idx) => (
+          <div 
+            key={idx} 
+            className={`flex gap-3 items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+          >
+            {msg.role === 'assistant' && (
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedCharacter.color} flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
+                <Theater className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm ${
+              msg.role === 'user'
+                ? 'bg-gradient-to-r from-violet-500/90 to-purple-500/90 text-white border border-violet-400/30'
+                : 'bg-slate-800/90 border-2 border-slate-600/80 text-slate-100'
+            }`}>
+              <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+            </div>
+            {msg.role === 'user' && <PlayerAvatarIcon size="md" />}
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex gap-3 justify-start animate-pulse">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedCharacter.color} flex items-center justify-center flex-shrink-0 shadow-xl`}>
+              <Theater className="w-5 h-5 text-white" />
+            </div>
+            <div className="bg-slate-800/90 border-2 border-slate-600/80 rounded-2xl px-5 py-4">
+              <div className="flex items-center gap-3 text-violet-300">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">{selectedCharacter.name} está pensando...</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="bg-slate-800 border-t-2 border-violet-500/50 p-4">
+        <form onSubmit={handleSubmit} className="flex gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={`Responde a ${selectedCharacter.name}...`}
+            className="flex-1 bg-slate-700 border-2 border-slate-500 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-violet-500"
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || isLoading}
+            className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// SIMULADOR DE CAMBIO ORGANIZACIONAL
+// ============================================
+const ChangeSimulator = ({ onBack }) => {
+  const [currentStage, setCurrentStage] = useState(0);
+  const [stageResponses, setStageResponses] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showFinalResult, setShowFinalResult] = useState(false);
+  const [stageScore, setStageScore] = useState(null);
+  const [totalScore, setTotalScore] = useState(0);
+  const [stageExchangeCount, setStageExchangeCount] = useState(0);
+  const messagesEndRef = useRef(null);
+  const { addSession } = useLeadershipProfileContext();
+
+  const stage = CHANGE_STAGES[currentStage];
+
+  useEffect(() => {
+    if (stage) {
+      setMessages([{
+        role: 'assistant',
+        content: `**ETAPA ${currentStage + 1}: ${stage.title}**\n\n${stage.icon} ${stage.description}\n\n---\n\nEscribe **"Comenzar"** para recibir el escenario de esta etapa.`
+      }]);
+      setStageScore(null);
+      setStageExchangeCount(0);
+    }
+  }, [currentStage]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const formatMessage = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br/>');
+  };
+
+  const parseStageScore = (text) => {
+    const match = text.match(/\*\*PUNTUACIÓN.*?:\s*(\d+)\/10\*\*/i) || 
+                  text.match(/PUNTUACIÓN.*?:\s*(\d+)\/10/i);
+    return match ? parseInt(match[1], 10) : null;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+    
+    const newExchangeCount = stageExchangeCount + 1;
+    setStageExchangeCount(newExchangeCount);
+    const isStartMessage = userMessage.toLowerCase().includes('comenzar') || userMessage.toLowerCase().includes('empezar');
+    const shouldEvaluate = !isStartMessage && newExchangeCount >= 1;
+
+    try {
+      const history = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history,
+          systemPrompt: `Eres un simulador de gestión del cambio organizacional para gestoras enfermeras.
+
+ETAPA ACTUAL: ${stage.title} (${currentStage + 1}/6)
+DESCRIPCIÓN: ${stage.description}
+OBJETIVO DE EVALUACIÓN: ${stage.prompt}
+
+CONTEXTO DEL CAMBIO:
+La unidad de hospitalización debe implementar un nuevo sistema de registros electrónicos y reorganizar los turnos de trabajo. Hay 25 enfermeras/os con distintos niveles de experiencia y actitudes hacia el cambio.
+
+INSTRUCCIONES:
+${isStartMessage ? `
+El usuario quiere comenzar. Presenta un escenario concreto para esta etapa con:
+- Situación específica relacionada con ${stage.title}
+- Personajes involucrados (usa nombres españoles como María, Antonio, Carmen)
+- Un desafío concreto que resolver
+- Pregunta directa: "¿Cómo actuarías como líder?"
+NO des puntuación todavía, solo presenta el escenario.
+` : `
+El usuario ha dado su respuesta de liderazgo. DEBES evaluar obligatoriamente:
+1. Describe brevemente las consecuencias de su decisión
+2. Da feedback constructivo sobre su enfoque
+3. OBLIGATORIO - Termina con esta línea exacta:
+   **PUNTUACIÓN ETAPA: X/10**
+   (donde X es un número del 1 al 10 según la calidad de su respuesta de liderazgo)
+
+CRITERIOS DE PUNTUACIÓN:
+- 9-10: Respuesta excepcional, considera múltiples perspectivas, comunicación empática
+- 7-8: Buena respuesta, enfoque correcto pero mejorable
+- 5-6: Respuesta básica, le falta profundidad
+- 3-4: Respuesta débil, no considera stakeholders o consecuencias
+- 1-2: Respuesta inadecuada o ausente
+`}
+
+IMPORTANTE:
+- Contexto español de gestión enfermera
+- Sé realista con las resistencias y obstáculos
+- Siempre en español`
+        })
+      });
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+
+      const parsedScore = parseStageScore(data.response);
+      const defaultScore = 5;
+      
+      if (!isStartMessage) {
+        const appliedScore = parsedScore !== null ? parsedScore : defaultScore;
+        setStageScore(appliedScore);
+        setTotalScore(prev => prev + appliedScore);
+        setStageResponses(prev => ({ ...prev, [currentStage]: { response: userMessage, score: appliedScore } }));
+      }
+    } catch (error) {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const nextStage = () => {
+    if (currentStage < CHANGE_STAGES.length - 1) {
+      setCurrentStage(prev => prev + 1);
+    } else {
+      addSession({
+        type: 'changesim',
+        score: totalScore,
+        maxScore: 60,
+        stageResponses
+      });
+      setShowFinalResult(true);
+    }
+  };
+
+  if (showFinalResult) {
+    const percentage = (totalScore / 60) * 100;
+    let feedback = '';
+    if (percentage >= 80) {
+      feedback = '¡Excelente gestión del cambio! Has demostrado competencias sólidas en todas las etapas.';
+    } else if (percentage >= 60) {
+      feedback = 'Buena capacidad de gestión del cambio. Hay algunas áreas donde puedes mejorar tu enfoque.';
+    } else {
+      feedback = 'La gestión del cambio requiere práctica. Revisa las etapas donde obtuviste menor puntuación.';
+    }
+
+    return (
+      <ScoreDisplay
+        score={totalScore}
+        maxScore={60}
+        feedback={feedback}
+        leadershipStyle="Gestión del Cambio"
+        onContinue={onBack}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="bg-slate-800 border-b-2 border-indigo-500/50 px-4 py-3 shadow-lg">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stage.color} flex items-center justify-center text-xl shadow-lg`}>
+              {stage.icon}
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white">{stage.title}</h1>
+              <p className="text-xs text-indigo-300">Etapa {currentStage + 1} de 6</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-indigo-300 text-sm font-medium">Puntuación Total</div>
+            <div className="text-white font-bold">{totalScore}/60</div>
+          </div>
+        </div>
+        
+        <div className="flex gap-1">
+          {CHANGE_STAGES.map((s, idx) => (
+            <div 
+              key={s.id}
+              className={`flex-1 h-2 rounded-full transition-all ${
+                idx < currentStage ? 'bg-indigo-500' :
+                idx === currentStage ? 'bg-indigo-400 animate-pulse' :
+                'bg-slate-600'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/60 to-slate-800/40">
+        <FloatingParticles />
+        {messages.map((msg, idx) => (
+          <div 
+            key={idx} 
+            className={`flex gap-3 items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+          >
+            {msg.role === 'assistant' && (
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stage.color} flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
+                <Layers className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm ${
+              msg.role === 'user'
+                ? 'bg-gradient-to-r from-indigo-500/90 to-blue-500/90 text-white border border-indigo-400/30'
+                : 'bg-slate-800/90 border-2 border-slate-600/80 text-slate-100'
+            }`}>
+              <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+            </div>
+            {msg.role === 'user' && <PlayerAvatarIcon size="md" />}
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex gap-3 justify-start animate-pulse">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stage.color} flex items-center justify-center flex-shrink-0 shadow-xl`}>
+              <Layers className="w-5 h-5 text-white" />
+            </div>
+            <div className="bg-slate-800/90 border-2 border-slate-600/80 rounded-2xl px-5 py-4">
+              <div className="flex items-center gap-3 text-indigo-300">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">Procesando tu decisión...</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {stageScore !== null ? (
+        <div className="bg-slate-800 border-t-2 border-indigo-500/50 p-4">
+          <div className="flex items-center justify-between bg-indigo-500/20 rounded-xl p-4">
+            <div>
+              <p className="text-indigo-300 text-sm">Puntuación de esta etapa</p>
+              <p className="text-white font-bold text-xl">{stageScore}/10</p>
+            </div>
+            <button
+              onClick={nextStage}
+              className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-400 hover:to-blue-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2"
+            >
+              <span>{currentStage < 5 ? 'Siguiente Etapa' : 'Ver Resultado Final'}</span>
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-slate-800 border-t-2 border-indigo-500/50 p-4">
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Escribe tu respuesta..."
+              className="flex-1 bg-slate-700 border-2 border-slate-500 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-400 hover:to-blue-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============================================
+// PANEL DE ANALÍTICA DEL LÍDER
+// ============================================
+const LeaderAnalytics = ({ onBack }) => {
+  const { profile, loading, getDominantStyles, getTrends, getCriticalAreas } = useLeadershipProfileContext();
+  
+  const dominantStyles = getDominantStyles();
+  const trends = getTrends(10);
+  const criticalAreas = getCriticalAreas();
+
+  const dimensionLabels = {
+    decisionMaturity: 'Madurez Decisiones',
+    emotionalMgmt: 'Gestión Emocional',
+    assertiveComm: 'Comunicación Asertiva',
+    influence: 'Capacidad Influencia',
+    adaptability: 'Adaptabilidad'
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mx-auto mb-4" />
+          <p className="text-slate-300">Cargando tu perfil de liderazgo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+      <FloatingParticles />
+      <GlowingOrb color="#06b6d4" size="300px" left="5%" top="20%" delay="0s" />
+      <GlowingOrb color="#14b8a6" size="200px" left="80%" top="60%" delay="2s" />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+
+        <div className="text-center mb-8">
+          <div className="text-5xl mb-3">📈</div>
+          <h1 className="text-3xl font-black text-white mb-3">
+            Panel de <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Analítica</span>
+          </h1>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+            Tu progreso y tendencias de liderazgo
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-cyan-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-slate-400 text-sm">Sesiones Totales</span>
+            </div>
+            <p className="text-3xl font-black text-white">{profile?.totalSessions || 0}</p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-emerald-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-slate-400 text-sm">Promedio</span>
+            </div>
+            <p className="text-3xl font-black text-white">{(profile?.averageScore || 0).toFixed(0)}%</p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-violet-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                <Crown className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-slate-400 text-sm">Estilo Dominante</span>
+            </div>
+            <p className="text-xl font-bold text-white truncate">
+              {dominantStyles[0]?.style || 'Sin datos'}
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-amber-500/30 rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-slate-400 text-sm">Áreas Críticas</span>
+            </div>
+            <p className="text-3xl font-black text-white">{criticalAreas.length}</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-cyan-500/30 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Crown className="w-5 h-5 text-cyan-400" />
+              Estilos Dominantes
+            </h3>
+            {dominantStyles.length > 0 ? (
+              <div className="space-y-3">
+                {dominantStyles.map((s, idx) => (
+                  <div key={s.style} className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white ${
+                      idx === 0 ? 'bg-gradient-to-br from-amber-500 to-yellow-500' :
+                      idx === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-500' :
+                      'bg-gradient-to-br from-amber-700 to-amber-800'
+                    }`}>
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white font-medium">{s.style}</p>
+                      <div className="w-full bg-slate-700 rounded-full h-2 mt-1">
+                        <div 
+                          className="bg-gradient-to-r from-cyan-500 to-teal-500 h-2 rounded-full"
+                          style={{ width: `${(s.avgScore / 5) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-cyan-400 font-medium">{s.count}x</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-slate-400">Completa más ejercicios para ver tus estilos dominantes.</p>
+            )}
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-cyan-500/30 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <LineChart className="w-5 h-5 text-cyan-400" />
+              Tendencia de Puntuaciones
+            </h3>
+            {trends.length > 0 ? (
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-slate-400 mb-2">
+                  <span>Últimas 10 sesiones</span>
+                  <span>Puntuación %</span>
+                </div>
+                <div className="flex items-end gap-1 h-24">
+                  {trends.map((t, idx) => (
+                    <div key={idx} className="flex-1 flex flex-col items-center">
+                      <div 
+                        className="w-full bg-gradient-to-t from-cyan-500 to-teal-400 rounded-t"
+                        style={{ height: `${t.score}%` }}
+                      />
+                      <span className="text-[8px] text-slate-500 mt-1">{t.date}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-slate-400">Completa más ejercicios para ver tu tendencia.</p>
+            )}
+          </div>
+        </div>
+
+        {profile?.dimensions && Object.values(profile.dimensions).some(v => v > 0) && (
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-cyan-500/30 rounded-2xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-cyan-400" />
+              Dimensiones de Liderazgo
+            </h3>
+            <div className="grid grid-cols-5 gap-4">
+              {Object.entries(profile.dimensions).map(([key, value]) => (
+                <div key={key} className="text-center">
+                  <div className="relative w-16 h-16 mx-auto mb-2">
+                    <svg className="w-16 h-16 transform -rotate-90">
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="#334155" strokeWidth="6" />
+                      <circle 
+                        cx="32" cy="32" r="28" fill="none" 
+                        stroke="url(#gradient)" strokeWidth="6"
+                        strokeDasharray={`${(value / 5) * 176} 176`}
+                        strokeLinecap="round"
+                      />
+                      <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#06b6d4" />
+                          <stop offset="100%" stopColor="#14b8a6" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
+                      {value.toFixed(1)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">{dimensionLabels[key]}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {criticalAreas.length > 0 && (
+          <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-2 border-amber-500/50 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-400" />
+              Áreas de Mejora Prioritarias
+            </h3>
+            <div className="space-y-3">
+              {criticalAreas.map((area) => (
+                <div key={area.dimension} className="flex items-center justify-between bg-slate-800/50 rounded-xl p-3">
+                  <span className="text-white">{area.label}</span>
+                  <span className="text-amber-400 font-bold">{area.value}/5</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// MODO MENTOR
+// ============================================
+const MentorMode = ({ onBack }) => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [selectedResourceType, setSelectedResourceType] = useState('readings');
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    setMessages([{
+      role: 'assistant',
+      content: `**¡Bienvenido/a al Modo Mentor!** 🎓\n\nSoy tu mentor experto en liderazgo enfermero. Estoy aquí para:\n\n• Resolver tus dudas sobre gestión y liderazgo\n• Aconsejarte sobre situaciones difíciles\n• Recomendarte lecturas y recursos\n• Ayudarte a desarrollar competencias específicas\n\n---\n\n¿Qué aspecto del liderazgo te gustaría explorar hoy? Puedes preguntarme sobre:\n- Estilos de liderazgo\n- Gestión de conflictos\n- Comunicación asertiva\n- Motivación de equipos\n- Gestión del cambio\n- Toma de decisiones\n\n*También puedes abrir el panel de recursos (📚) para ver lecturas y modelos teóricos.*`
+    }]);
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const formatMessage = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br/>');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+
+    try {
+      const history = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history,
+          systemPrompt: `Eres un mentor experto en liderazgo para gestoras y gestores enfermeros en España.
+
+TU ROL:
+- Eres un coach experimentado con 20+ años de experiencia en gestión sanitaria
+- Combinas teoría académica con experiencia práctica real
+- Tu tono es cálido pero profesional, empático pero exigente
+
+CÓMO RESPONDER:
+1. Escucha activamente y reformula la pregunta si es necesario
+2. Ofrece perspectiva teórica cuando sea relevante (cita modelos: Kotter, Hersey-Blanchard, Goleman, Bass & Avolio)
+3. Comparte ejemplos prácticos del contexto sanitario español
+4. Haz preguntas reflexivas para que el/la líder piense
+5. Sugiere acciones concretas y medibles
+
+MODELOS TEÓRICOS QUE CONOCES:
+- Las 4 I del Liderazgo Transformador (Influencia idealizada, Motivación inspiracional, Estimulación intelectual, Consideración individualizada)
+- Liderazgo Situacional de Hersey-Blanchard (Directivo, Persuasivo, Participativo, Delegativo)
+- Los 6 estilos de Goleman (Coercitivo, Orientativo, Afiliativo, Democrático, Ejemplar, Coach)
+- Los 8 pasos de Kotter para gestión del cambio
+- Inteligencia Emocional aplicada al liderazgo
+
+IMPORTANTE:
+- Siempre en español
+- Contexto de gestión enfermera en España
+- Si recomiendas lecturas, menciona recursos del panel
+- Anima a practicar y reflexionar, no solo a "saber"`
+        })
+      });
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex h-full">
+      <div className="flex-1 flex flex-col">
+        <div className="bg-slate-800 border-b-2 border-amber-500/50 px-4 py-3 flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center text-xl shadow-lg">
+              🎓
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white">Modo Mentor</h1>
+              <p className="text-xs text-amber-300">Tu coach de liderazgo personal</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowResources(!showResources)}
+            className={`p-2 rounded-xl transition-colors ${showResources ? 'bg-amber-500 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
+          >
+            <BookOpen className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/60 to-slate-800/40">
+          <FloatingParticles />
+          {messages.map((msg, idx) => (
+            <div 
+              key={idx} 
+              className={`flex gap-3 items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+            >
+              {msg.role === 'assistant' && (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+              )}
+              <div className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm ${
+                msg.role === 'user'
+                  ? 'bg-gradient-to-r from-amber-500/90 to-yellow-500/90 text-white border border-amber-400/30'
+                  : 'bg-slate-800/90 border-2 border-slate-600/80 text-slate-100'
+              }`}>
+                <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+              </div>
+              {msg.role === 'user' && <PlayerAvatarIcon size="md" />}
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex gap-3 justify-start animate-pulse">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center flex-shrink-0 shadow-xl">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <div className="bg-slate-800/90 border-2 border-slate-600/80 rounded-2xl px-5 py-4">
+                <div className="flex items-center gap-3 text-amber-300">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm">El mentor está reflexionando...</span>
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="bg-slate-800 border-t-2 border-amber-500/50 p-4">
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Pregunta al mentor..."
+              className="flex-1 bg-slate-700 border-2 border-slate-500 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-amber-500"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {showResources && (
+        <div className="w-80 bg-slate-800/95 border-l-2 border-amber-500/30 overflow-y-auto">
+          <div className="p-4 border-b border-slate-700">
+            <h3 className="text-lg font-bold text-white mb-3">📚 Recursos</h3>
+            <div className="flex gap-2">
+              {['readings', 'practices', 'models'].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedResourceType(type)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    selectedResourceType === type
+                      ? 'bg-amber-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  {type === 'readings' ? 'Lecturas' : type === 'practices' ? 'Prácticas' : 'Modelos'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-4 space-y-3">
+            {selectedResourceType === 'readings' && MENTOR_RESOURCES.readings.map((r, idx) => (
+              <div key={idx} className="bg-slate-700/50 rounded-xl p-3 border border-slate-600">
+                <h4 className="text-white font-medium text-sm mb-1">{r.title}</h4>
+                <p className="text-slate-400 text-xs">{r.author}</p>
+                <span className="inline-block mt-2 text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">
+                  {r.topic}
+                </span>
+              </div>
+            ))}
+
+            {selectedResourceType === 'practices' && MENTOR_RESOURCES.practices.map((p, idx) => (
+              <div key={idx} className="bg-slate-700/50 rounded-xl p-3 border border-slate-600">
+                <h4 className="text-white font-medium text-sm mb-1">{p.title}</h4>
+                <p className="text-slate-400 text-xs mb-2">{p.description}</p>
+                <span className={`inline-block text-xs px-2 py-0.5 rounded-full ${
+                  p.difficulty === 'Fácil' ? 'bg-emerald-500/20 text-emerald-400' :
+                  p.difficulty === 'Media' ? 'bg-amber-500/20 text-amber-400' :
+                  'bg-rose-500/20 text-rose-400'
+                }`}>
+                  {p.difficulty}
+                </span>
+              </div>
+            ))}
+
+            {selectedResourceType === 'models' && MENTOR_RESOURCES.models.map((m, idx) => (
+              <div key={idx} className="bg-slate-700/50 rounded-xl p-3 border border-slate-600">
+                <h4 className="text-white font-medium text-sm mb-1">{m.name}</h4>
+                <p className="text-slate-400 text-xs">{m.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ScenarioSelector = ({ onSelectScenario, onBack }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiScenarios, setAiScenarios] = useState([]);
@@ -2888,6 +3902,38 @@ const LeadershipModule = ({ onBack }) => {
     return (
       <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(190, 18, 60, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
         <MicroChallenges onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'roleplay') {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(139, 92, 246, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
+        <RolePlayMode onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'changesim') {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
+        <ChangeSimulator onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'analytics') {
+    return (
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(6, 182, 212, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
+        <LeaderAnalytics onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'mentor') {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
+        <MentorMode onBack={() => setCurrentMode(null)} />
       </div>
     );
   }
