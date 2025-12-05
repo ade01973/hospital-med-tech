@@ -736,8 +736,96 @@ const ParticipationStyleIdentifier = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [exchangeCount, setExchangeCount] = useState(0);
+  const [generatedScenario, setGeneratedScenario] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState(null);
   const messagesEndRef = useRef(null);
   const { addSession } = useTeamworkProfileContext();
+
+  const VALID_COLORS = ['amber', 'emerald', 'cyan', 'violet', 'rose', 'fuchsia', 'indigo', 'teal', 'orange', 'lime', 'pink', 'sky'];
+
+  const validateColor = (colorStr) => {
+    if (!colorStr) return 'from-fuchsia-500 to-pink-500';
+    const hasValidColors = VALID_COLORS.some(c => colorStr.includes(c));
+    return hasValidColors ? colorStr : 'from-fuchsia-500 to-pink-500';
+  };
+
+  const generateScenario = async () => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    setGeneratedScenario(null);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Genera un escenario nuevo para analizar estilos de participación',
+          history: [],
+          systemPrompt: `Eres un experto en gestión de equipos de enfermería y análisis de estilos de participación.
+
+GENERA UN NUEVO ESCENARIO original para analizar el estilo de participación de una gestora enfermera.
+
+El escenario debe:
+1. Ser diferente a los típicos (reparto de cargas, conflictos de turno, etc.)
+2. Involucrar dinámicas de equipo complejas
+3. Requerir toma de decisiones que revelen el estilo de participación
+4. Ser realista en un contexto hospitalario español
+
+RESPONDE EXACTAMENTE EN ESTE FORMATO JSON:
+{
+  "title": "Título del escenario (máx 5 palabras)",
+  "description": "Descripción breve del escenario (1 frase)",
+  "context": "Contexto detallado de la situación (2-3 frases)",
+  "icon": "emoji representativo",
+  "color": "from-[color1]-500 to-[color2]-500"
+}
+
+Colores disponibles: amber, emerald, cyan, violet, rose, fuchsia, indigo, teal, orange, lime, pink, sky
+
+Solo responde con el JSON, sin texto adicional.`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error de conexión con la IA');
+      }
+
+      const data = await response.json();
+      
+      if (!data || !data.response) {
+        throw new Error('Respuesta vacía de la IA');
+      }
+
+      const responseText = data.response;
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      
+      if (!jsonMatch) {
+        throw new Error('Formato de respuesta inválido');
+      }
+
+      const parsed = JSON.parse(jsonMatch[0]);
+
+      if (!parsed.title || !parsed.description || !parsed.context) {
+        throw new Error('Escenario incompleto generado');
+      }
+
+      setGeneratedScenario({
+        id: 'generated_' + Date.now(),
+        title: parsed.title.substring(0, 50),
+        description: parsed.description.substring(0, 150),
+        context: parsed.context,
+        icon: parsed.icon || '✨',
+        color: validateColor(parsed.color),
+        isGenerated: true
+      });
+    } catch (error) {
+      console.error('Error generating scenario:', error);
+      setGenerationError(error.message || 'No se pudo generar el escenario. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -1036,7 +1124,81 @@ Siempre en español, vocabulario sanitario apropiado.`
             ))}
           </div>
 
-          <div className="mt-8 bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700">
+          <div className="mt-6 mb-6">
+            <button
+              onClick={generateScenario}
+              disabled={isGenerating}
+              className="w-full bg-gradient-to-r from-fuchsia-600/30 to-rose-600/30 hover:from-fuchsia-600/50 hover:to-rose-600/50 border-2 border-dashed border-fuchsia-500/50 hover:border-fuchsia-400 rounded-2xl p-5 text-center transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center justify-center gap-3">
+                {isGenerating ? (
+                  <Loader2 className="w-6 h-6 text-fuchsia-400 animate-spin" />
+                ) : (
+                  <Sparkles className="w-6 h-6 text-fuchsia-400 group-hover:scale-110 transition-transform" />
+                )}
+                <span className="text-fuchsia-300 font-bold text-lg">
+                  {isGenerating ? 'Generando escenario...' : 'Generar Escenario con IA'}
+                </span>
+              </div>
+              <p className="text-slate-400 text-sm mt-2">
+                Crea un escenario personalizado único para analizar tu estilo
+              </p>
+            </button>
+
+            {generationError && (
+              <div className="mt-3 bg-red-500/20 border border-red-500/40 rounded-xl p-3 text-center">
+                <p className="text-red-300 text-sm">{generationError}</p>
+                <button 
+                  onClick={generateScenario}
+                  className="text-red-400 hover:text-red-300 text-sm mt-1 underline"
+                >
+                  Intentar de nuevo
+                </button>
+              </div>
+            )}
+
+            {generatedScenario && (
+              <div className="mt-4 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/10 border-2 border-fuchsia-500/40 rounded-2xl p-5 animate-fadeIn">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-fuchsia-400" />
+                  <span className="text-fuchsia-300 text-xs font-bold uppercase tracking-wide">Escenario Generado con IA</span>
+                </div>
+                <button
+                  onClick={() => startScenario(generatedScenario)}
+                  className="w-full text-left group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${generatedScenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-fuchsia-400/50 group-hover:scale-110 transition-transform`}>
+                      {generatedScenario.icon}
+                    </div>
+                    <div className="flex-1 pt-1">
+                      <h3 className="text-lg font-bold text-white mb-1 group-hover:text-fuchsia-100">{generatedScenario.title}</h3>
+                      <p className="text-slate-300 text-sm">{generatedScenario.description}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 flex items-center gap-2 text-fuchsia-400 text-sm font-medium group-hover:text-fuchsia-300">
+                    <Play className="w-4 h-4" />
+                    <span>Comenzar con este escenario</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </button>
+                
+                <div className="mt-3 pt-3 border-t border-fuchsia-500/20 flex justify-end">
+                  <button
+                    onClick={generateScenario}
+                    disabled={isGenerating}
+                    className="text-fuchsia-400 hover:text-fuchsia-300 text-sm flex items-center gap-1 disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
+                    Generar otro
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700">
             <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-fuchsia-400" />
               ¿Cómo funciona?
