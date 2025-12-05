@@ -7346,6 +7346,801 @@ REQUISITOS:
   );
 };
 
+const MEETING_TYPES = [
+  { id: 'daily', name: 'Daily/Huddle', icon: '☀️', duration: '10-15 min', color: 'from-amber-500 to-yellow-500', description: 'Sincronización rápida del equipo' },
+  { id: 'weekly', name: 'Reunión Semanal', icon: '📅', duration: '45-60 min', color: 'from-blue-500 to-cyan-500', description: 'Revisión de objetivos y planificación' },
+  { id: 'retrospective', name: 'Retrospectiva', icon: '🔄', duration: '60-90 min', color: 'from-violet-500 to-purple-500', description: 'Análisis de lo que funcionó y mejoras' },
+  { id: 'brainstorm', name: 'Brainstorming', icon: '💡', duration: '30-45 min', color: 'from-emerald-500 to-teal-500', description: 'Generación creativa de ideas' },
+  { id: 'decision', name: 'Toma de Decisiones', icon: '⚖️', duration: '30-60 min', color: 'from-rose-500 to-pink-500', description: 'Evaluar opciones y decidir' },
+  { id: 'handoff', name: 'Cambio de Turno', icon: '🔁', duration: '15-20 min', color: 'from-orange-500 to-red-500', description: 'Traspaso de información entre turnos' }
+];
+
+const FACILITATION_TECHNIQUES = [
+  { 
+    id: 'timeboxing', 
+    name: 'Timeboxing', 
+    icon: '⏱️', 
+    color: 'from-red-500 to-rose-500',
+    description: 'Asigna tiempo fijo a cada tema para mantener el ritmo',
+    tips: ['Usa un temporizador visible', 'Avisa cuando queden 2 minutos', 'Respeta los tiempos estrictamente']
+  },
+  { 
+    id: 'roundrobin', 
+    name: 'Round Robin', 
+    icon: '🔄', 
+    color: 'from-blue-500 to-cyan-500',
+    description: 'Cada persona habla por turnos, evitando que algunos dominen',
+    tips: ['Establece orden claro', 'Permite pasar si no hay nada que añadir', 'Limita tiempo por persona']
+  },
+  { 
+    id: 'parking', 
+    name: 'Parking Lot', 
+    icon: '🅿️', 
+    color: 'from-amber-500 to-yellow-500',
+    description: 'Aparca temas que se desvían para tratarlos después',
+    tips: ['Ten un espacio visible para anotar', 'Revisa el parking al final', 'Programa seguimiento si es necesario']
+  },
+  { 
+    id: 'fistoffive', 
+    name: 'Fist of Five', 
+    icon: '✋', 
+    color: 'from-emerald-500 to-teal-500',
+    description: 'Votación rápida con dedos (1-5) para medir consenso',
+    tips: ['5 = totalmente de acuerdo', '1 = totalmente en contra', 'Discute si hay 1s o 2s']
+  },
+  { 
+    id: 'silent', 
+    name: 'Brainstorming Silencioso', 
+    icon: '🤫', 
+    color: 'from-violet-500 to-purple-500',
+    description: 'Escritura individual antes de compartir para evitar sesgos',
+    tips: ['3-5 minutos de escritura', 'Luego compartir en grupo', 'Evita que los primeros influyan']
+  },
+  { 
+    id: 'plus_delta', 
+    name: 'Plus/Delta', 
+    icon: '➕', 
+    color: 'from-pink-500 to-rose-500',
+    description: 'Qué salió bien (+) y qué cambiar (Δ) para retrospectivas rápidas',
+    tips: ['Primero los positivos', 'Los deltas son mejoras, no críticas', 'Convierte deltas en acciones']
+  }
+];
+
+const MEETING_ROLES = [
+  { id: 'facilitator', name: 'Facilitador/a', icon: '🎯', color: 'from-violet-500 to-purple-500', responsibility: 'Guía la reunión, gestiona el tiempo y asegura participación de todos' },
+  { id: 'timekeeper', name: 'Controlador de Tiempo', icon: '⏰', color: 'from-red-500 to-rose-500', responsibility: 'Vigila el tiempo de cada punto y avisa cuando se acaba' },
+  { id: 'scribe', name: 'Secretario/a', icon: '📝', color: 'from-blue-500 to-cyan-500', responsibility: 'Documenta acuerdos, decisiones y tareas asignadas' },
+  { id: 'participant', name: 'Participante', icon: '👥', color: 'from-emerald-500 to-teal-500', responsibility: 'Contribuye activamente, escucha y respeta turnos' }
+];
+
+const MeetingsMode = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState('plan');
+  const [meetings, setMeetings] = useState([]);
+  const [showMeetingForm, setShowMeetingForm] = useState(false);
+  const [newMeeting, setNewMeeting] = useState({
+    title: '',
+    type: 'weekly',
+    date: '',
+    time: '',
+    duration: 60,
+    objective: '',
+    agenda: [{ topic: '', duration: 10 }],
+    participants: ''
+  });
+  const [agreements, setAgreements] = useState([]);
+  const [showAgreementForm, setShowAgreementForm] = useState(false);
+  const [newAgreement, setNewAgreement] = useState({
+    description: '',
+    responsible: '',
+    dueDate: '',
+    meetingId: null
+  });
+  const [selectedTechnique, setSelectedTechnique] = useState(null);
+  const [practiceMode, setPracticeMode] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiAgenda, setAiAgenda] = useState(null);
+
+  const generateAIAgenda = async (meetingType) => {
+    setAiLoading(true);
+    try {
+      const typeInfo = MEETING_TYPES.find(t => t.id === meetingType);
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera una agenda para una reunión tipo ${typeInfo?.name || meetingType}`,
+          systemPrompt: `Genera una agenda estructurada para una reunión de equipo de enfermería.
+
+FORMATO DE RESPUESTA (JSON estricto):
+{
+  "title": "Título sugerido para la reunión",
+  "objective": "Objetivo principal de la reunión en 1 frase",
+  "totalDuration": ${typeInfo?.duration?.split('-')[1]?.replace(' min', '') || 60},
+  "agenda": [
+    {"topic": "Tema 1", "duration": 5, "description": "Breve descripción"},
+    {"topic": "Tema 2", "duration": 10, "description": "Breve descripción"},
+    {"topic": "Tema 3", "duration": 15, "description": "Breve descripción"}
+  ],
+  "tips": ["Consejo 1", "Consejo 2", "Consejo 3"]
+}
+
+Tipo de reunión: ${typeInfo?.name || meetingType}
+Descripción: ${typeInfo?.description || ''}
+Duración aproximada: ${typeInfo?.duration || '60 min'}
+
+REQUISITOS:
+- Agenda realista para equipo sanitario
+- Tiempos que sumen la duración total
+- Incluir apertura y cierre
+- Solo responde con el JSON`
+        })
+      });
+      const data = await response.json();
+      try {
+        const agenda = JSON.parse(data.response);
+        setAiAgenda(agenda);
+      } catch {
+        setAiAgenda(null);
+      }
+    } catch (error) {
+      console.error('Error generating agenda:', error);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const addAgendaItem = () => {
+    setNewMeeting(prev => ({
+      ...prev,
+      agenda: [...prev.agenda, { topic: '', duration: 10 }]
+    }));
+  };
+
+  const updateAgendaItem = (index, field, value) => {
+    setNewMeeting(prev => ({
+      ...prev,
+      agenda: prev.agenda.map((item, i) => i === index ? { ...item, [field]: value } : item)
+    }));
+  };
+
+  const removeAgendaItem = (index) => {
+    setNewMeeting(prev => ({
+      ...prev,
+      agenda: prev.agenda.filter((_, i) => i !== index)
+    }));
+  };
+
+  const saveMeeting = () => {
+    if (!newMeeting.title.trim()) return;
+    const meeting = {
+      id: Date.now(),
+      ...newMeeting,
+      status: 'planned',
+      createdAt: new Date().toISOString()
+    };
+    setMeetings(prev => [...prev, meeting]);
+    setNewMeeting({
+      title: '',
+      type: 'weekly',
+      date: '',
+      time: '',
+      duration: 60,
+      objective: '',
+      agenda: [{ topic: '', duration: 10 }],
+      participants: ''
+    });
+    setShowMeetingForm(false);
+    setAiAgenda(null);
+  };
+
+  const applyAIAgenda = () => {
+    if (!aiAgenda) return;
+    setNewMeeting(prev => ({
+      ...prev,
+      title: aiAgenda.title || prev.title,
+      objective: aiAgenda.objective || prev.objective,
+      duration: aiAgenda.totalDuration || prev.duration,
+      agenda: aiAgenda.agenda?.map(a => ({ topic: a.topic, duration: a.duration })) || prev.agenda
+    }));
+    setAiAgenda(null);
+  };
+
+  const deleteMeeting = (id) => {
+    setMeetings(prev => prev.filter(m => m.id !== id));
+  };
+
+  const addAgreement = () => {
+    if (!newAgreement.description.trim()) return;
+    const agreement = {
+      id: Date.now(),
+      ...newAgreement,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+    setAgreements(prev => [...prev, agreement]);
+    setNewAgreement({ description: '', responsible: '', dueDate: '', meetingId: null });
+    setShowAgreementForm(false);
+  };
+
+  const updateAgreementStatus = (id, status) => {
+    setAgreements(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+  };
+
+  const deleteAgreement = (id) => {
+    setAgreements(prev => prev.filter(a => a.id !== id));
+  };
+
+  const tabs = [
+    { id: 'plan', name: 'Planificación', icon: '📋' },
+    { id: 'facilitate', name: 'Facilitación', icon: '🎯' },
+    { id: 'agreements', name: 'Acuerdos', icon: '✅' }
+  ];
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        {[...Array(18)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-teal-400/20"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              animation: `floatMeeting ${8 + Math.random() * 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 p-4 md:p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <button onClick={onBack} className="p-2.5 hover:bg-teal-500/20 rounded-xl transition-all group">
+                <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:text-white" />
+              </button>
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-500 via-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl shadow-teal-500/30 ring-2 ring-teal-400/30">
+                  <span className="text-2xl">📅</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-slate-800">
+                  <CheckCircle className="w-3 h-3 text-white" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-teal-200 via-cyan-200 to-emerald-200 bg-clip-text text-transparent">
+                  Reuniones Eficaces
+                </h1>
+                <p className="text-xs text-teal-300/80">Domina el arte de conducir reuniones productivas</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/30'
+                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span className="text-sm">{tab.name}</span>
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'plan' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-teal-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <span>📋</span> Tipos de Reunión
+                  </h2>
+                </div>
+                <p className="text-slate-300 mb-6">
+                  Elige el tipo de reunión adecuado según tu objetivo. Cada tipo tiene su estructura y duración óptima.
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  {MEETING_TYPES.map(type => (
+                    <button
+                      key={type.id}
+                      onClick={() => {
+                        setNewMeeting(prev => ({ ...prev, type: type.id }));
+                        setShowMeetingForm(true);
+                        generateAIAgenda(type.id);
+                      }}
+                      className={`bg-gradient-to-br ${type.color} rounded-xl p-4 text-left transition-all hover:scale-[1.02] group`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">{type.icon}</span>
+                        <div>
+                          <h3 className="font-bold text-white">{type.name}</h3>
+                          <p className="text-white/80 text-xs">{type.duration}</p>
+                        </div>
+                      </div>
+                      <p className="text-white/90 text-sm">{type.description}</p>
+                    </button>
+                  ))}
+                </div>
+
+                {showMeetingForm && (
+                  <div className="bg-slate-700/50 rounded-xl p-5 border border-teal-500/30 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-white flex items-center gap-2">
+                        <span>{MEETING_TYPES.find(t => t.id === newMeeting.type)?.icon}</span>
+                        Planificar Reunión
+                      </h3>
+                      <button onClick={() => { setShowMeetingForm(false); setAiAgenda(null); }} className="text-slate-400 hover:text-white">
+                        <ArrowLeft className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {aiLoading && (
+                      <div className="bg-violet-500/20 rounded-xl p-4 border border-violet-500/30 flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 text-violet-400 animate-spin" />
+                        <span className="text-violet-300">Generando agenda sugerida con IA...</span>
+                      </div>
+                    )}
+
+                    {aiAgenda && (
+                      <div className="bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-xl p-4 border border-violet-500/30">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-bold text-white flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-violet-400" />
+                            Agenda sugerida por IA
+                          </h4>
+                          <button
+                            onClick={applyAIAgenda}
+                            className="bg-violet-500 hover:bg-violet-400 text-white text-sm px-3 py-1 rounded-lg transition-colors"
+                          >
+                            Aplicar
+                          </button>
+                        </div>
+                        <p className="text-white font-medium mb-1">{aiAgenda.title}</p>
+                        <p className="text-slate-300 text-sm mb-3">{aiAgenda.objective}</p>
+                        <div className="space-y-1">
+                          {aiAgenda.agenda?.map((item, idx) => (
+                            <div key={idx} className="text-sm text-slate-300 flex items-center gap-2">
+                              <span className="text-violet-400">{item.duration} min</span>
+                              <span>{item.topic}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {aiAgenda.tips && (
+                          <div className="mt-3 pt-3 border-t border-violet-500/30">
+                            <p className="text-xs text-violet-400 mb-1">Consejos:</p>
+                            <ul className="text-xs text-slate-400 space-y-1">
+                              {aiAgenda.tips.map((tip, idx) => (
+                                <li key={idx}>• {tip}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Título de la reunión"
+                        value={newMeeting.title}
+                        onChange={e => setNewMeeting(prev => ({ ...prev, title: e.target.value }))}
+                        className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="date"
+                          value={newMeeting.date}
+                          onChange={e => setNewMeeting(prev => ({ ...prev, date: e.target.value }))}
+                          className="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500"
+                        />
+                        <input
+                          type="time"
+                          value={newMeeting.time}
+                          onChange={e => setNewMeeting(prev => ({ ...prev, time: e.target.value }))}
+                          className="w-28 bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500"
+                        />
+                      </div>
+                    </div>
+
+                    <textarea
+                      placeholder="Objetivo de la reunión"
+                      value={newMeeting.objective}
+                      onChange={e => setNewMeeting(prev => ({ ...prev, objective: e.target.value }))}
+                      className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                      rows={2}
+                    />
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-sm font-medium text-slate-300">Agenda</label>
+                        <button
+                          onClick={addAgendaItem}
+                          className="text-teal-400 hover:text-teal-300 text-sm flex items-center gap-1"
+                        >
+                          <Zap className="w-4 h-4" /> Añadir punto
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {newMeeting.agenda.map((item, idx) => (
+                          <div key={idx} className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder={`Punto ${idx + 1}`}
+                              value={item.topic}
+                              onChange={e => updateAgendaItem(idx, 'topic', e.target.value)}
+                              className="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 text-sm"
+                            />
+                            <input
+                              type="number"
+                              value={item.duration}
+                              onChange={e => updateAgendaItem(idx, 'duration', parseInt(e.target.value) || 0)}
+                              className="w-20 bg-slate-800 border border-slate-600 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-teal-500 text-sm text-center"
+                              min={1}
+                            />
+                            <span className="text-slate-400 text-sm self-center">min</span>
+                            {newMeeting.agenda.length > 1 && (
+                              <button
+                                onClick={() => removeAgendaItem(idx)}
+                                className="text-rose-400 hover:text-rose-300 p-2"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-2 text-right text-sm text-slate-400">
+                        Total: {newMeeting.agenda.reduce((sum, item) => sum + (item.duration || 0), 0)} min
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="Participantes (separados por coma)"
+                      value={newMeeting.participants}
+                      onChange={e => setNewMeeting(prev => ({ ...prev, participants: e.target.value }))}
+                      className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                    />
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={saveMeeting}
+                        className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-lg"
+                      >
+                        Guardar Reunión
+                      </button>
+                      <button
+                        onClick={() => { setShowMeetingForm(false); setAiAgenda(null); }}
+                        className="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2.5 px-4 rounded-xl transition-all"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {meetings.length > 0 && (
+                <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-teal-500/20">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span>📅</span> Mis Reuniones Planificadas
+                  </h3>
+                  <div className="space-y-3">
+                    {meetings.map(meeting => {
+                      const typeInfo = MEETING_TYPES.find(t => t.id === meeting.type);
+                      return (
+                        <div key={meeting.id} className="bg-slate-700/50 rounded-xl p-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-10 h-10 bg-gradient-to-br ${typeInfo?.color || 'from-slate-500 to-slate-600'} rounded-xl flex items-center justify-center text-xl`}>
+                                {typeInfo?.icon || '📅'}
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-white">{meeting.title}</h4>
+                                <p className="text-slate-400 text-sm">
+                                  {meeting.date && new Date(meeting.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' })}
+                                  {meeting.time && ` a las ${meeting.time}`}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => deleteMeeting(meeting.id)}
+                              className="text-slate-400 hover:text-rose-400 p-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          {meeting.objective && (
+                            <p className="text-slate-300 text-sm mt-2 pl-13">{meeting.objective}</p>
+                          )}
+                          {meeting.agenda?.length > 0 && meeting.agenda[0].topic && (
+                            <div className="mt-3 pl-13">
+                              <p className="text-xs text-teal-400 mb-1">Agenda:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {meeting.agenda.filter(a => a.topic).map((item, idx) => (
+                                  <span key={idx} className="text-xs bg-slate-600/50 text-slate-300 px-2 py-1 rounded-lg">
+                                    {item.topic} ({item.duration}min)
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'facilitate' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-teal-500/20">
+                <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                  <span>🎯</span> Técnicas de Facilitación
+                </h2>
+                <p className="text-slate-300 mb-6">
+                  Herramientas para mantener reuniones enfocadas, participativas y productivas.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  {FACILITATION_TECHNIQUES.map(tech => (
+                    <button
+                      key={tech.id}
+                      onClick={() => setSelectedTechnique(selectedTechnique === tech.id ? null : tech.id)}
+                      className={`bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-4 text-left transition-all ${
+                        selectedTechnique === tech.id ? 'ring-2 ring-teal-500' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className={`w-12 h-12 bg-gradient-to-br ${tech.color} rounded-xl flex items-center justify-center text-2xl shadow-lg`}>
+                          {tech.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-white">{tech.name}</h3>
+                        </div>
+                      </div>
+                      <p className="text-slate-300 text-sm mb-2">{tech.description}</p>
+                      
+                      {selectedTechnique === tech.id && (
+                        <div className="mt-3 pt-3 border-t border-slate-600">
+                          <p className="text-xs text-teal-400 font-medium mb-2">Consejos:</p>
+                          <ul className="space-y-1">
+                            {tech.tips.map((tip, idx) => (
+                              <li key={idx} className="text-slate-400 text-xs flex items-start gap-2">
+                                <span className="text-teal-400">•</span> {tip}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-teal-500/20">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span>👥</span> Roles en la Reunión
+                </h3>
+                <p className="text-slate-300 text-sm mb-4">
+                  Asignar roles claros mejora la eficacia de las reuniones. Rota los roles entre sesiones.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {MEETING_ROLES.map(role => (
+                    <div key={role.id} className="bg-slate-700/50 rounded-xl p-4 flex items-start gap-3">
+                      <div className={`w-10 h-10 bg-gradient-to-br ${role.color} rounded-xl flex items-center justify-center text-xl flex-shrink-0`}>
+                        {role.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-white">{role.name}</h4>
+                        <p className="text-slate-400 text-sm">{role.responsibility}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-teal-500/20 to-cyan-500/20 rounded-2xl p-6 border border-teal-500/30">
+                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-teal-400" />
+                  Checklist del Facilitador
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-teal-400 text-sm font-medium mb-2">Antes de la reunión:</p>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>✓ Definir objetivo claro</li>
+                      <li>✓ Preparar y enviar agenda</li>
+                      <li>✓ Confirmar asistentes</li>
+                      <li>✓ Preparar materiales</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-teal-400 text-sm font-medium mb-2">Durante la reunión:</p>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>✓ Empezar puntual</li>
+                      <li>✓ Recordar objetivo</li>
+                      <li>✓ Gestionar tiempos</li>
+                      <li>✓ Fomentar participación</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-teal-400 text-sm font-medium mb-2">Al cerrar:</p>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>✓ Resumir acuerdos</li>
+                      <li>✓ Asignar responsables</li>
+                      <li>✓ Definir próximos pasos</li>
+                      <li>✓ Agradecer participación</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-teal-400 text-sm font-medium mb-2">Después:</p>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>✓ Enviar acta/resumen</li>
+                      <li>✓ Hacer seguimiento</li>
+                      <li>✓ Evaluar eficacia</li>
+                      <li>✓ Mejorar para la próxima</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'agreements' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-teal-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <span>✅</span> Seguimiento de Acuerdos
+                  </h2>
+                  <button
+                    onClick={() => setShowAgreementForm(true)}
+                    className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-bold py-2 px-4 rounded-xl transition-all flex items-center gap-2"
+                  >
+                    <Zap className="w-4 h-4" />
+                    Nuevo Acuerdo
+                  </button>
+                </div>
+
+                {showAgreementForm && (
+                  <div className="bg-slate-700/50 rounded-xl p-5 mb-6 border border-teal-500/30">
+                    <h3 className="font-bold text-white mb-4">Registrar Acuerdo</h3>
+                    <div className="space-y-4">
+                      <textarea
+                        placeholder="Descripción del acuerdo o tarea"
+                        value={newAgreement.description}
+                        onChange={e => setNewAgreement(prev => ({ ...prev, description: e.target.value }))}
+                        className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                        rows={2}
+                      />
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          placeholder="Responsable"
+                          value={newAgreement.responsible}
+                          onChange={e => setNewAgreement(prev => ({ ...prev, responsible: e.target.value }))}
+                          className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                        />
+                        <input
+                          type="date"
+                          value={newAgreement.dueDate}
+                          onChange={e => setNewAgreement(prev => ({ ...prev, dueDate: e.target.value }))}
+                          className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500"
+                        />
+                      </div>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={addAgreement}
+                          className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          onClick={() => setShowAgreementForm(false)}
+                          className="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {agreements.length === 0 ? (
+                  <div className="text-center py-12 bg-slate-700/30 rounded-xl">
+                    <div className="text-5xl mb-4">📋</div>
+                    <p className="text-slate-300 mb-2">No hay acuerdos registrados</p>
+                    <p className="text-slate-500 text-sm">Registra los acuerdos de tus reuniones para hacer seguimiento</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {agreements.map(agreement => (
+                      <div key={agreement.id} className="bg-slate-700/50 rounded-xl p-4 flex items-center gap-4">
+                        <button
+                          onClick={() => updateAgreementStatus(agreement.id, agreement.status === 'completed' ? 'pending' : 'completed')}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${
+                            agreement.status === 'completed' 
+                              ? 'bg-emerald-500 text-white' 
+                              : 'bg-slate-600 hover:bg-slate-500'
+                          }`}
+                        >
+                          {agreement.status === 'completed' && <CheckCircle className="w-4 h-4" />}
+                        </button>
+                        <div className="flex-1">
+                          <p className={`font-medium ${agreement.status === 'completed' ? 'text-slate-400 line-through' : 'text-white'}`}>
+                            {agreement.description}
+                          </p>
+                          <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                            {agreement.responsible && <span>👤 {agreement.responsible}</span>}
+                            {agreement.dueDate && (
+                              <span className={new Date(agreement.dueDate) < new Date() && agreement.status !== 'completed' ? 'text-rose-400' : ''}>
+                                📅 {new Date(agreement.dueDate).toLocaleDateString('es-ES')}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => deleteAgreement(agreement.id)}
+                          className="p-2 hover:bg-rose-500/20 rounded-lg transition-colors text-slate-400 hover:text-rose-400"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl p-6 border border-emerald-500/30">
+                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-emerald-400" />
+                  Estadísticas de Acuerdos
+                </h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-white">{agreements.length}</p>
+                    <p className="text-slate-400 text-xs">Total acuerdos</p>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-emerald-400">{agreements.filter(a => a.status === 'completed').length}</p>
+                    <p className="text-slate-400 text-xs">Completados</p>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-amber-400">{agreements.filter(a => a.status === 'pending').length}</p>
+                    <p className="text-slate-400 text-xs">Pendientes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes floatMeeting {
+          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+          50% { transform: translateY(-25px) rotate(180deg); opacity: 0.6; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const ComingSoonMode = ({ title, icon, onBack }) => (
   <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
     <FloatingParticles />
@@ -7408,7 +8203,7 @@ const TeamworkModule = ({ onBack }) => {
       case 'teamProfile':
         return <TeamProfileMode onBack={handleBack} />;
       case 'meetings':
-        return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
+        return <MeetingsMode onBack={handleBack} />;
       default:
         return <ModeSelector onSelectMode={handleSelectMode} />;
     }
