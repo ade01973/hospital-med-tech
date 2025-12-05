@@ -1705,11 +1705,11 @@ const SituationalTest = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
-  // Sistema de regeneración: baraja los escenarios en cada intento
+  // Sistema de regeneración: baraja los escenarios y las opciones en cada intento
   const scenarios = useMemo(() => {
     const shuffled = [...ALL_SITUATIONAL_SCENARIOS].sort(() => Math.random() - 0.5);
-    // Seleccionar 20 escenarios aleatorios del pool de 22
-    return shuffled.slice(0, 20);
+    // Seleccionar 20 escenarios aleatorios del pool de 22 y aleatorizar sus opciones
+    return shuffleQuestionOptions(shuffled.slice(0, 20));
   }, []);
   
   const handleAnswer = (optionIndex) => {
@@ -1861,11 +1861,11 @@ const GeneralEvaluation = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
-  // Sistema de regeneración: baraja las preguntas en cada intento
+  // Sistema de regeneración: baraja las preguntas y las opciones en cada intento
   const questions = useMemo(() => {
     const shuffled = [...GENERAL_LEADERSHIP_QUESTIONS].sort(() => Math.random() - 0.5);
-    // Seleccionar 20 preguntas aleatorias del pool de 22
-    return shuffled.slice(0, 20);
+    // Seleccionar 20 preguntas aleatorias del pool de 22 y aleatorizar sus opciones
+    return shuffleQuestionOptions(shuffled.slice(0, 20));
   }, []);
   
   const handleAnswer = (optionIndex) => {
