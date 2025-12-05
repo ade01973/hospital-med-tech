@@ -877,6 +877,146 @@ const GENERAL_LEADERSHIP_QUESTIONS = [
       { text: 'Involucro al equipo en diseñar cómo hacer el cambio', style: 'Democrático' },
       { text: 'Proporciono apoyo y recursos para facilitar la transición', style: 'Servidor' }
     ]
+  },
+  {
+    id: 9,
+    question: '¿Cómo delegas tareas importantes?',
+    options: [
+      { text: 'Doy autonomía total y confío en el resultado', style: 'Laissez-faire' },
+      { text: 'Delego pero establezco puntos de control claros', style: 'Transaccional' },
+      { text: 'Identifico quién puede crecer con esa responsabilidad', style: 'Transformador' },
+      { text: 'Me aseguro de que tienen todo lo que necesitan antes de empezar', style: 'Servidor' }
+    ]
+  },
+  {
+    id: 10,
+    question: '¿Cómo manejas situaciones de crisis en tu equipo?',
+    options: [
+      { text: 'Tomo el control y doy instrucciones claras', style: 'Autocrático' },
+      { text: 'Consulto rápidamente con expertos y decido', style: 'Consultivo' },
+      { text: 'Mantengo la calma y doy ejemplo al equipo', style: 'Transformador' },
+      { text: 'Me centro en proteger emocionalmente a mi equipo', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 11,
+    question: '¿Qué haces cuando un miembro destaca positivamente?',
+    options: [
+      { text: 'Le reconozco públicamente y le propongo nuevos retos', style: 'Transformador' },
+      { text: 'Le recompenso según el sistema establecido', style: 'Transaccional' },
+      { text: 'Le pregunto cómo puedo ayudarle a seguir creciendo', style: 'Servidor' },
+      { text: 'Celebro su éxito con todo el equipo', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 12,
+    question: '¿Cómo estructuras las reuniones de equipo?',
+    options: [
+      { text: 'Sigo una agenda flexible con espacio para participación', style: 'Democrático' },
+      { text: 'Informo de lo necesario y pido feedback breve', style: 'Consultivo' },
+      { text: 'Las uso para inspirar y conectar con el propósito', style: 'Transformador' },
+      { text: 'Las mantengo cortas con objetivos claros y seguimiento', style: 'Transaccional' }
+    ]
+  },
+  {
+    id: 13,
+    question: '¿Cómo gestionas la formación de tu equipo?',
+    options: [
+      { text: 'Identifico las necesidades únicas de cada persona', style: 'Transformador' },
+      { text: 'Ofrezco las mismas oportunidades a todos', style: 'Democrático' },
+      { text: 'Pregunto qué formación necesitan y la facilito', style: 'Servidor' },
+      { text: 'Dejo que cada uno gestione su propio desarrollo', style: 'Laissez-faire' }
+    ]
+  },
+  {
+    id: 14,
+    question: '¿Cómo abordas los objetivos institucionales?',
+    options: [
+      { text: 'Los traduzco en beneficios para pacientes y equipo', style: 'Transformador' },
+      { text: 'Los comunico y establezco un sistema de seguimiento', style: 'Transaccional' },
+      { text: 'Los discuto con el equipo para decidir cómo abordarlos', style: 'Democrático' },
+      { text: 'Los transmito tal cual sin añadir mis opiniones', style: 'Laissez-faire' }
+    ]
+  },
+  {
+    id: 15,
+    question: 'Ante un bajo rendimiento sostenido, ¿cómo actúas?',
+    options: [
+      { text: 'Investigo las causas y busco cómo apoyar a la persona', style: 'Servidor' },
+      { text: 'Aplico el procedimiento establecido de forma justa', style: 'Transaccional' },
+      { text: 'Tengo una conversación profunda sobre expectativas y motivación', style: 'Transformador' },
+      { text: 'Intento proteger a la persona minimizando el impacto', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 16,
+    question: '¿Cómo fomentas el trabajo en equipo?',
+    options: [
+      { text: 'Creo una visión compartida que nos une', style: 'Transformador' },
+      { text: 'Organizo actividades y espacios para el vínculo grupal', style: 'Afiliativo' },
+      { text: 'Elimino obstáculos para que colaboren mejor', style: 'Servidor' },
+      { text: 'Establezco objetivos comunes y celebramos los logros', style: 'Democrático' }
+    ]
+  },
+  {
+    id: 17,
+    question: '¿Cómo compartes información con tu equipo?',
+    options: [
+      { text: 'Soy transparente y comparto todo lo que puedo', style: 'Democrático' },
+      { text: 'Comparto lo necesario para que hagan su trabajo', style: 'Transaccional' },
+      { text: 'Filtro para protegerles de información estresante', style: 'Afiliativo' },
+      { text: 'Conecto la información con el propósito mayor', style: 'Transformador' }
+    ]
+  },
+  {
+    id: 18,
+    question: '¿Qué papel juega la creatividad en tu liderazgo?',
+    options: [
+      { text: 'Animo constantemente a cuestionar y proponer', style: 'Transformador' },
+      { text: 'La valoro si está dentro de los procesos establecidos', style: 'Transaccional' },
+      { text: 'Dejo libertad total para explorar', style: 'Laissez-faire' },
+      { text: 'La facilito proporcionando tiempo y recursos', style: 'Servidor' }
+    ]
+  },
+  {
+    id: 19,
+    question: '¿Cómo manejas tu propio estrés como líder?',
+    options: [
+      { text: 'Lo oculto para no afectar al equipo', style: 'Afiliativo' },
+      { text: 'Soy transparente y modelo estrategias de afrontamiento', style: 'Transformador' },
+      { text: 'Me centro en cumplir objetivos sin dejar que me afecte', style: 'Transaccional' },
+      { text: 'Busco apoyo de mi equipo cuando lo necesito', style: 'Democrático' }
+    ]
+  },
+  {
+    id: 20,
+    question: '¿Cómo gestionas el tiempo de tu equipo?',
+    options: [
+      { text: 'Establezco prioridades claras y plazos definidos', style: 'Transaccional' },
+      { text: 'Pregunto qué necesitan para gestionar mejor su tiempo', style: 'Servidor' },
+      { text: 'Confío en que cada uno gestione su propia carga', style: 'Laissez-faire' },
+      { text: 'Les ayudo a conectar su trabajo con lo que importa', style: 'Transformador' }
+    ]
+  },
+  {
+    id: 21,
+    question: '¿Cómo manejas los rumores o información informal?',
+    options: [
+      { text: 'Los atajo con comunicación oficial clara', style: 'Autocrático' },
+      { text: 'Investigo su origen y abordo las preocupaciones subyacentes', style: 'Consultivo' },
+      { text: 'Los uso como termómetro del clima laboral', style: 'Transformador' },
+      { text: 'Los ignoro si no afectan al trabajo', style: 'Laissez-faire' }
+    ]
+  },
+  {
+    id: 22,
+    question: '¿Cómo equilibras las necesidades del equipo con las de la institución?',
+    options: [
+      { text: 'Busco soluciones que beneficien a ambas partes', style: 'Transformador' },
+      { text: 'Priorizo las necesidades de mi equipo siempre que puedo', style: 'Servidor' },
+      { text: 'Sigo las directrices institucionales con flexibilidad', style: 'Transaccional' },
+      { text: 'Involucro al equipo en encontrar el equilibrio', style: 'Democrático' }
+    ]
   }
 ];
 
@@ -1385,16 +1525,23 @@ const TransformationalTest = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
+  // Sistema de regeneración: baraja las preguntas en cada intento
+  const questions = useMemo(() => {
+    const shuffled = [...ALL_TRANSFORMATIONAL_QUESTIONS].sort(() => Math.random() - 0.5);
+    // Seleccionar 20 preguntas aleatorias del pool de 30
+    return shuffled.slice(0, 20);
+  }, []);
+  
   const handleAnswer = (optionIndex) => {
-    const option = TRANSFORMATIONAL_QUESTIONS[currentQuestion].options[optionIndex];
+    const option = questions[currentQuestion].options[optionIndex];
     const newAnswers = [...answers, { 
       questionId: currentQuestion, 
       score: option.score,
-      dimension: TRANSFORMATIONAL_QUESTIONS[currentQuestion].dimension
+      dimension: questions[currentQuestion].dimension
     }];
     setAnswers(newAnswers);
     
-    if (currentQuestion < TRANSFORMATIONAL_QUESTIONS.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResult(true);
@@ -1403,7 +1550,7 @@ const TransformationalTest = ({ onBack }) => {
   
   if (showResult) {
     const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
-    const maxScore = TRANSFORMATIONAL_QUESTIONS.length * 4;
+    const maxScore = questions.length * 4;
     
     const dimensions = {};
     answers.forEach(a => {
@@ -1472,7 +1619,7 @@ const TransformationalTest = ({ onBack }) => {
     );
   }
   
-  const question = TRANSFORMATIONAL_QUESTIONS[currentQuestion];
+  const question = questions[currentQuestion];
   
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
@@ -1500,14 +1647,14 @@ const TransformationalTest = ({ onBack }) => {
               </div>
             </div>
             <div className="bg-purple-500/20 px-4 py-2 rounded-xl">
-              <span className="text-purple-300 font-bold">{currentQuestion + 1}/{TRANSFORMATIONAL_QUESTIONS.length}</span>
+              <span className="text-purple-300 font-bold">{currentQuestion + 1}/{questions.length}</span>
             </div>
           </div>
           
           <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
             <div 
               className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
-              style={{ width: `${((currentQuestion + 1) / TRANSFORMATIONAL_QUESTIONS.length) * 100}%` }}
+              style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
             />
           </div>
           
@@ -1540,17 +1687,24 @@ const SituationalTest = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
+  // Sistema de regeneración: baraja los escenarios en cada intento
+  const scenarios = useMemo(() => {
+    const shuffled = [...ALL_SITUATIONAL_SCENARIOS].sort(() => Math.random() - 0.5);
+    // Seleccionar 20 escenarios aleatorios del pool de 22
+    return shuffled.slice(0, 20);
+  }, []);
+  
   const handleAnswer = (optionIndex) => {
-    const option = SITUATIONAL_SCENARIOS[currentScenario].options[optionIndex];
+    const option = scenarios[currentScenario].options[optionIndex];
     const newAnswers = [...answers, {
       scenarioId: currentScenario,
       score: option.score,
       styleChosen: option.style,
-      bestStyle: SITUATIONAL_SCENARIOS[currentScenario].bestStyle
+      bestStyle: scenarios[currentScenario].bestStyle
     }];
     setAnswers(newAnswers);
     
-    if (currentScenario < SITUATIONAL_SCENARIOS.length - 1) {
+    if (currentScenario < scenarios.length - 1) {
       setCurrentScenario(currentScenario + 1);
     } else {
       setShowResult(true);
@@ -1559,7 +1713,7 @@ const SituationalTest = ({ onBack }) => {
   
   if (showResult) {
     const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
-    const maxScore = SITUATIONAL_SCENARIOS.length * 4;
+    const maxScore = scenarios.length * 4;
     
     const styleCount = {};
     answers.forEach(a => {
@@ -1597,7 +1751,7 @@ const SituationalTest = ({ onBack }) => {
           </button>
           
           <RadarChart 
-            data={styleScores.map(s => s * (4 / SITUATIONAL_SCENARIOS.length) * 4)} 
+            data={styleScores.map(s => s * (4 / scenarios.length) * 4)} 
             labels={styleLabels} 
             title="Tu Uso de Estilos Situacionales"
           />
@@ -1617,7 +1771,7 @@ const SituationalTest = ({ onBack }) => {
     );
   }
   
-  const scenario = SITUATIONAL_SCENARIOS[currentScenario];
+  const scenario = scenarios[currentScenario];
   
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
@@ -1645,14 +1799,14 @@ const SituationalTest = ({ onBack }) => {
               </div>
             </div>
             <div className="bg-blue-500/20 px-4 py-2 rounded-xl">
-              <span className="text-blue-300 font-bold">{currentScenario + 1}/{SITUATIONAL_SCENARIOS.length}</span>
+              <span className="text-blue-300 font-bold">{currentScenario + 1}/{scenarios.length}</span>
             </div>
           </div>
           
           <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
             <div 
               className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all"
-              style={{ width: `${((currentScenario + 1) / SITUATIONAL_SCENARIOS.length) * 100}%` }}
+              style={{ width: `${((currentScenario + 1) / scenarios.length) * 100}%` }}
             />
           </div>
           
@@ -1689,15 +1843,22 @@ const GeneralEvaluation = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
+  // Sistema de regeneración: baraja las preguntas en cada intento
+  const questions = useMemo(() => {
+    const shuffled = [...GENERAL_LEADERSHIP_QUESTIONS].sort(() => Math.random() - 0.5);
+    // Seleccionar 20 preguntas aleatorias del pool de 22
+    return shuffled.slice(0, 20);
+  }, []);
+  
   const handleAnswer = (optionIndex) => {
-    const option = GENERAL_LEADERSHIP_QUESTIONS[currentQuestion].options[optionIndex];
+    const option = questions[currentQuestion].options[optionIndex];
     const newAnswers = [...answers, { 
       questionId: currentQuestion, 
       style: option.style
     }];
     setAnswers(newAnswers);
     
-    if (currentQuestion < GENERAL_LEADERSHIP_QUESTIONS.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResult(true);
@@ -1776,7 +1937,7 @@ const GeneralEvaluation = ({ onBack }) => {
     );
   }
   
-  const question = GENERAL_LEADERSHIP_QUESTIONS[currentQuestion];
+  const question = questions[currentQuestion];
   
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
@@ -1804,14 +1965,14 @@ const GeneralEvaluation = ({ onBack }) => {
               </div>
             </div>
             <div className="bg-amber-500/20 px-4 py-2 rounded-xl">
-              <span className="text-amber-300 font-bold">{currentQuestion + 1}/{GENERAL_LEADERSHIP_QUESTIONS.length}</span>
+              <span className="text-amber-300 font-bold">{currentQuestion + 1}/{questions.length}</span>
             </div>
           </div>
           
           <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
             <div 
               className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all"
-              style={{ width: `${((currentQuestion + 1) / GENERAL_LEADERSHIP_QUESTIONS.length) * 100}%` }}
+              style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
             />
           </div>
           
@@ -1844,6 +2005,7 @@ const MicroChallenges = ({ onBack }) => {
   const [userResponse, setUserResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [regenerateKey, setRegenerateKey] = useState(0);
   const [streak, setStreak] = useState(() => {
     const saved = localStorage.getItem('leadershipStreak');
     return saved ? parseInt(saved, 10) : 0;
@@ -1853,7 +2015,15 @@ const MicroChallenges = ({ onBack }) => {
     return saved ? parseInt(saved, 10) : 1;
   });
   
-  const availableChallenges = MICRO_CHALLENGES.filter(c => c.difficulty <= difficulty + 1);
+  // Sistema de regeneración: baraja los retos cada vez que se regenera
+  const availableChallenges = useMemo(() => {
+    const filtered = MICRO_CHALLENGES.filter(c => c.difficulty <= difficulty + 1);
+    return [...filtered].sort(() => Math.random() - 0.5);
+  }, [difficulty, regenerateKey]);
+  
+  const handleRegenerate = () => {
+    setRegenerateKey(prev => prev + 1);
+  };
   
   const startChallenge = (challenge) => {
     setCurrentChallenge(challenge);
@@ -2074,9 +2244,17 @@ Sé constructivo y específico. Contexto: gestión enfermera en España.`
               <span className="text-slate-300">Nivel: {difficulty}/3</span>
             </div>
           </div>
-          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block mb-4">
             Resuelve retos rápidos y mejora tu liderazgo
           </p>
+          
+          <button
+            onClick={handleRegenerate}
+            className="mt-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2 mx-auto hover:scale-105"
+          >
+            <RefreshCw className="w-5 h-5" />
+            <span>Regenerar Retos</span>
+          </button>
         </div>
         
         <div className="grid md:grid-cols-2 gap-4">
@@ -2222,9 +2400,16 @@ const LeadershipModule = ({ onBack }) => {
   const [currentMode, setCurrentMode] = useState(null);
   const [selectedScenario, setSelectedScenario] = useState(null);
 
+  const bgStyle = {
+    backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(6, 78, 59, 0.12), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed'
+  };
+
   if (currentMode === 'scenarios' && selectedScenario) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 flex flex-col">
+      <div className="fixed inset-0 z-50 flex flex-col" style={bgStyle}>
         <ScenarioChat 
           scenario={selectedScenario} 
           onBack={() => setSelectedScenario(null)} 
@@ -2235,7 +2420,7 @@ const LeadershipModule = ({ onBack }) => {
 
   if (currentMode === 'scenarios') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={bgStyle}>
         <ScenarioSelector 
           onSelectScenario={setSelectedScenario}
           onBack={() => setCurrentMode(null)}
@@ -2246,7 +2431,7 @@ const LeadershipModule = ({ onBack }) => {
 
   if (currentMode === 'transformational') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(88, 28, 135, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
         <TransformationalTest onBack={() => setCurrentMode(null)} />
       </div>
     );
@@ -2254,7 +2439,7 @@ const LeadershipModule = ({ onBack }) => {
 
   if (currentMode === 'situational') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(30, 64, 175, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
         <SituationalTest onBack={() => setCurrentMode(null)} />
       </div>
     );
@@ -2262,7 +2447,7 @@ const LeadershipModule = ({ onBack }) => {
 
   if (currentMode === 'general') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-amber-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(180, 83, 9, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
         <GeneralEvaluation onBack={() => setCurrentMode(null)} />
       </div>
     );
@@ -2270,14 +2455,22 @@ const LeadershipModule = ({ onBack }) => {
 
   if (currentMode === 'microchallenges') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-rose-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" style={{...bgStyle, backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(190, 18, 60, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`}}>
         <MicroChallenges onBack={() => setCurrentMode(null)} />
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto"
+      style={{
+        backgroundImage: `linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(6, 78, 59, 0.15), rgba(15, 23, 42, 0.92)), url(${leadershipBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <div className="bg-slate-800/80 backdrop-blur-xl border-b border-emerald-500/30 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
