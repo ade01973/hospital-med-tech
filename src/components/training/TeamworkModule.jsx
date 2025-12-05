@@ -1317,35 +1317,27 @@ const TeamworkModule = ({ onBack }) => {
   const [activeMode, setActiveMode] = useState(null);
   const profileData = useTeamworkProfile();
 
-  const handleBack = () => {
-    setActiveMode(null);
+  const renderActiveMode = () => {
+    switch (activeMode) {
+      case 'scenarios':
+        return (
+          <TeamworkProfileContext.Provider value={profileData}>
+            <ScenarioSimulator onBack={() => setActiveMode(null)} />
+          </TeamworkProfileContext.Provider>
+        );
+      case 'styleDetection':
+        return (
+          <TeamworkProfileContext.Provider value={profileData}>
+            <StyleDetection onBack={() => setActiveMode(null)} />
+          </TeamworkProfileContext.Provider>
+        );
+      default:
+        return null;
+    }
   };
 
-  if (profileData.loading) {
-    return (
-      <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-teal-950/20 to-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-300">Cargando módulo...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (activeMode === 'scenarios') {
-    return (
-      <TeamworkProfileContext.Provider value={profileData}>
-        <ScenarioSimulator onBack={handleBack} />
-      </TeamworkProfileContext.Provider>
-    );
-  }
-
-  if (activeMode === 'styleDetection') {
-    return (
-      <TeamworkProfileContext.Provider value={profileData}>
-        <StyleDetection onBack={handleBack} />
-      </TeamworkProfileContext.Provider>
-    );
+  if (activeMode) {
+    return renderActiveMode();
   }
 
   return (
