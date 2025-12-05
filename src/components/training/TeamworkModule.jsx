@@ -374,14 +374,6 @@ const TEAMWORK_MODES = [
     isNew: true
   },
   {
-    id: 'dysfunctions',
-    title: 'Disfunciones del Equipo',
-    description: 'Identifica y resuelve las 5 disfunciones de Lencioni',
-    icon: '🔧',
-    color: 'from-rose-500 to-pink-500',
-    features: ['Diagnóstico', 'Estrategias', 'Plan de acción']
-  },
-  {
     id: 'mentor',
     title: 'Modo Mentor',
     description: 'Coach experto en trabajo en equipo sanitario',
@@ -7417,8 +7409,6 @@ const TeamworkModule = ({ onBack }) => {
         return <TeamProfileMode onBack={handleBack} />;
       case 'meetings':
         return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
-      case 'dysfunctions':
-        return <ComingSoonMode title="Disfunciones del Equipo" icon="🔧" onBack={handleBack} />;
       default:
         return <ModeSelector onSelectMode={handleSelectMode} />;
     }
