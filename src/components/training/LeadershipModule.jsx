@@ -1109,6 +1109,24 @@ const getScoreCategory = (score, maxScore) => {
 
 const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+// Función para aleatorizar el orden de las opciones de una pregunta
+const shuffleOptions = (options) => {
+  const shuffled = [...options];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// Función para aleatorizar las opciones de cada pregunta en un array de preguntas
+const shuffleQuestionOptions = (questions) => {
+  return questions.map(q => ({
+    ...q,
+    options: shuffleOptions(q.options)
+  }));
+};
+
 const ModeSelector = ({ onSelectMode }) => {
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
@@ -1525,11 +1543,11 @@ const TransformationalTest = ({ onBack }) => {
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
   
-  // Sistema de regeneración: baraja las preguntas en cada intento
+  // Sistema de regeneración: baraja las preguntas y las opciones en cada intento
   const questions = useMemo(() => {
     const shuffled = [...ALL_TRANSFORMATIONAL_QUESTIONS].sort(() => Math.random() - 0.5);
-    // Seleccionar 20 preguntas aleatorias del pool de 30
-    return shuffled.slice(0, 20);
+    // Seleccionar 20 preguntas aleatorias del pool de 30 y aleatorizar sus opciones
+    return shuffleQuestionOptions(shuffled.slice(0, 20));
   }, []);
   
   const handleAnswer = (optionIndex) => {
