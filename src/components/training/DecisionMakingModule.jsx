@@ -1,6 +1,101 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Bot, User, Target, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Sparkles, Brain, GitBranch, ListOrdered, ArrowUp, ArrowDown, RotateCcw, Check, X } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { ArrowLeft, Send, Bot, User, Target, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Sparkles, Brain, GitBranch, ListOrdered, ArrowUp, ArrowDown, RotateCcw, Check, X, Flame, TrendingUp } from 'lucide-react';
 import decisionBg from '../../assets/decision-making-bg.png';
+
+const usePlayerAvatar = () => {
+  const [avatar, setAvatar] = useState(null);
+  
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('playerAvatar');
+      if (stored) {
+        setAvatar(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Error loading avatar:', e);
+    }
+  }, []);
+  
+  return avatar;
+};
+
+const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
+  const avatar = usePlayerAvatar();
+  const [imgError, setImgError] = useState(false);
+  const sizeClasses = {
+    xs: 'w-6 h-6',
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16'
+  };
+  
+  const FallbackAvatar = () => (
+    <div className={`${sizeClasses[size]} rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-lg ${className}`}>
+      <User className="w-1/2 h-1/2 text-white" />
+    </div>
+  );
+  
+  if (!avatar || !avatar.characterPreset || imgError) {
+    return <FallbackAvatar />;
+  }
+  
+  const gender = avatar.gender || 'female';
+  const preset = avatar.characterPreset;
+  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+  
+  return (
+    <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-cyan-400/50 ${className}`}>
+      <img 
+        src={imgPath}
+        alt="Tu avatar"
+        className="w-full h-full object-cover"
+        onError={() => setImgError(true)}
+      />
+    </div>
+  );
+};
+
+const FloatingParticles = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {[...Array(20)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute rounded-full opacity-30"
+        style={{
+          width: Math.random() * 6 + 2 + 'px',
+          height: Math.random() * 6 + 2 + 'px',
+          left: Math.random() * 100 + '%',
+          top: Math.random() * 100 + '%',
+          background: `linear-gradient(135deg, ${['#06b6d4', '#3b82f6', '#8b5cf6', '#10b981'][Math.floor(Math.random() * 4)]}, transparent)`,
+          animation: `float ${8 + Math.random() * 10}s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 5}s`
+        }}
+      />
+    ))}
+    <style>{`
+      @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+        50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
+      }
+    `}</style>
+  </div>
+);
+
+const GlowingOrb = ({ color, size, left, top, delay }) => (
+  <div
+    className="absolute rounded-full blur-3xl opacity-20 animate-pulse"
+    style={{
+      width: size,
+      height: size,
+      left,
+      top,
+      background: color,
+      animationDelay: delay,
+      animationDuration: '4s'
+    }}
+  />
+);
 
 const DECISION_SCENARIOS = [
   {
@@ -546,39 +641,107 @@ const ModeSelector = ({ onSelectMode }) => {
 };
 
 const ScenarioSelector = ({ onSelectScenario, onBack }) => {
+  const [scenarios, setScenarios] = useState(DECISION_SCENARIOS);
+  const [aiScenarios, setAiScenarios] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState(null);
+
+  const generateNewScenario = async () => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    try {
+      const response = await fetch('/api/generate-scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al generar escenario');
+      }
+      
+      const newScenario = await response.json();
+      setAiScenarios(prev => [newScenario, ...prev]);
+    } catch (error) {
+      console.error('Error generating scenario:', error);
+      setGenerationError('No se pudo generar el escenario. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const allScenarios = [...aiScenarios, ...scenarios];
+
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#06b6d4" size="300px" left="5%" top="20%" delay="0s" />
+      <GlowingOrb color="#3b82f6" size="200px" left="85%" top="60%" delay="2s" />
+      
+      <div className="max-w-5xl mx-auto relative z-10">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-cyan-400 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Escenarios de <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Decisión</span>
           </h1>
-          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Selecciona un caso para resolver</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block mb-4">Selecciona un caso para resolver o genera uno nuevo con IA</p>
+          
+          <button
+            onClick={generateNewScenario}
+            disabled={isGenerating}
+            className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex items-center gap-2 mx-auto hover:scale-105"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Generando caso nuevo...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                <span>Generar Caso con IA</span>
+              </>
+            )}
+          </button>
+          
+          {generationError && (
+            <p className="text-red-400 text-sm mt-3 bg-red-900/30 px-4 py-2 rounded-lg inline-block">{generationError}</p>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {DECISION_SCENARIOS.map((scenario) => (
+          {allScenarios.map((scenario, idx) => (
             <button
               key={scenario.id}
               onClick={() => onSelectScenario(scenario)}
-              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-cyan-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-cyan-500/20"
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-cyan-500/20 hover:scale-[1.02] hover:-translate-y-1 ${
+                idx < aiScenarios.length 
+                  ? 'border-purple-500/50 hover:border-purple-400' 
+                  : 'border-slate-600 hover:border-cyan-400'
+              }`}
+              style={{ animationDelay: `${idx * 0.05}s` }}
             >
+              {idx < aiScenarios.length && (
+                <div className="absolute top-3 right-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>IA</span>
+                </div>
+              )}
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
                   {scenario.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-100">{scenario.title}</h3>
                   <p className="text-cyan-400 text-xs font-medium mb-2">{scenario.category}</p>
-                  <p className="text-slate-300 text-sm mb-3">{scenario.description}</p>
+                  <p className="text-slate-300 text-sm mb-3 line-clamp-2">{scenario.description}</p>
                   <div className="flex items-center gap-3 text-xs text-slate-400">
                     <span className="flex items-center gap-1 bg-slate-700/80 px-2 py-1 rounded-lg">
                       <Clock className="w-3 h-3" />
@@ -765,37 +928,44 @@ IMPORTANTE:
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/60 to-slate-800/40">
+        <FloatingParticles />
         {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div 
+            key={idx} 
+            className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+            style={{ animationDelay: `${idx * 0.1}s` }}
+          >
             {msg.role === 'assistant' && (
-              <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                <Bot className="w-4 h-4 text-white" />
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
+                <Bot className="w-5 h-5 text-white" />
               </div>
             )}
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-lg ${
+            <div className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm ${
               msg.role === 'user'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                : 'bg-slate-800 border-2 border-slate-600 text-slate-100'
+                ? 'bg-gradient-to-r from-cyan-500/90 to-blue-500/90 text-white border border-cyan-400/30'
+                : 'bg-slate-800/90 border-2 border-slate-600/80 text-slate-100'
             }`}>
               <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
             </div>
             {msg.role === 'user' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <User className="w-4 h-4 text-white" />
-              </div>
+              <PlayerAvatarIcon size="md" />
             )}
           </div>
         ))}
         {isLoading && (
-          <div className="flex gap-3 justify-start">
-            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0`}>
-              <Bot className="w-4 h-4 text-white" />
+          <div className="flex gap-3 justify-start animate-pulse">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
+              <Bot className="w-5 h-5 text-white" />
             </div>
-            <div className="bg-slate-800 border-2 border-slate-600 rounded-2xl px-4 py-3 shadow-lg">
-              <div className="flex items-center gap-2 text-cyan-300">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Analizando situación...</span>
+            <div className="bg-slate-800/90 border-2 border-slate-600/80 rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm">
+              <div className="flex items-center gap-3 text-cyan-300">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                </div>
+                <span className="text-sm font-medium">Analizando situación...</span>
               </div>
             </div>
           </div>
@@ -827,33 +997,100 @@ IMPORTANTE:
 };
 
 const TreeSelector = ({ onSelectTree, onBack }) => {
+  const [trees, setTrees] = useState(DECISION_TREES);
+  const [aiTrees, setAiTrees] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState(null);
+
+  const generateNewTree = async () => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    try {
+      const response = await fetch('/api/generate-decision-tree', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al generar árbol');
+      }
+      
+      const newTree = await response.json();
+      setAiTrees(prev => [newTree, ...prev]);
+    } catch (error) {
+      console.error('Error generating tree:', error);
+      setGenerationError('No se pudo generar el árbol. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const allTrees = [...aiTrees, ...trees];
+
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#6366f1" size="280px" left="10%" top="25%" delay="0s" />
+      <GlowingOrb color="#3b82f6" size="200px" left="80%" top="55%" delay="1.5s" />
+      
+      <div className="max-w-4xl mx-auto relative z-10">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-indigo-400 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Árbol de <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Decisiones</span>
           </h1>
-          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Cada decisión tiene consecuencias. Elige sabiamente.</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block mb-4">Cada decisión tiene consecuencias. Elige sabiamente.</p>
+          
+          <button
+            onClick={generateNewTree}
+            disabled={isGenerating}
+            className="mt-4 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/30 flex items-center gap-2 mx-auto hover:scale-105"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Generando árbol nuevo...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                <span>Generar Árbol con IA</span>
+              </>
+            )}
+          </button>
+          
+          {generationError && (
+            <p className="text-red-400 text-sm mt-3 bg-red-900/30 px-4 py-2 rounded-lg inline-block">{generationError}</p>
+          )}
         </div>
 
         <div className="grid gap-4">
-          {DECISION_TREES.map((tree) => (
+          {allTrees.map((tree, idx) => (
             <button
               key={tree.id}
               onClick={() => onSelectTree(tree)}
-              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-indigo-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-indigo-500/20"
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-indigo-500/20 hover:scale-[1.01] hover:-translate-y-1 relative ${
+                idx < aiTrees.length 
+                  ? 'border-purple-500/50 hover:border-purple-400' 
+                  : 'border-slate-600 hover:border-indigo-400'
+              }`}
             >
+              {idx < aiTrees.length && (
+                <div className="absolute top-3 right-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>IA</span>
+                </div>
+              )}
               <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
                   {tree.icon}
                 </div>
                 <div className="flex-1">
@@ -861,7 +1098,7 @@ const TreeSelector = ({ onSelectTree, onBack }) => {
                   <p className="text-indigo-400 text-xs font-medium mb-2">{tree.category}</p>
                   <p className="text-slate-300 text-sm">{tree.description}</p>
                 </div>
-                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-indigo-400 transition-colors group-hover:translate-x-1" />
               </div>
             </button>
           ))}
@@ -875,24 +1112,30 @@ const DecisionTreeGame = ({ tree, onBack, onComplete }) => {
   const [currentNode, setCurrentNode] = useState(tree.initialNode);
   const [history, setHistory] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const node = tree.nodes[currentNode];
 
-  const handleChoice = (option) => {
-    setHistory([...history, { node: currentNode, choice: option.text }]);
-    
-    if (tree.nodes[option.next].isEnd) {
-      setCurrentNode(option.next);
-      setTimeout(() => setShowResult(true), 500);
-    } else {
-      setCurrentNode(option.next);
-    }
+  const handleChoice = (option, idx) => {
+    setSelectedOption(idx);
+    setTimeout(() => {
+      setHistory([...history, { node: currentNode, choice: option.text }]);
+      
+      if (tree.nodes[option.next].isEnd) {
+        setCurrentNode(option.next);
+        setTimeout(() => setShowResult(true), 500);
+      } else {
+        setCurrentNode(option.next);
+      }
+      setSelectedOption(null);
+    }, 300);
   };
 
   const handleRestart = () => {
     setCurrentNode(tree.initialNode);
     setHistory([]);
     setShowResult(false);
+    setSelectedOption(null);
   };
 
   if (showResult) {
@@ -907,61 +1150,111 @@ const DecisionTreeGame = ({ tree, onBack, onComplete }) => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#6366f1" size="300px" left="10%" top="20%" delay="0s" />
+      <GlowingOrb color="#3b82f6" size="200px" left="70%" top="60%" delay="2s" />
+      
+      <div className="max-w-3xl mx-auto relative z-10">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-indigo-400 hover:scale-105"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Salir</span>
           </button>
+          <div className="flex items-center gap-3">
+            <PlayerAvatarIcon size="md" />
+            <div className="bg-slate-800/90 backdrop-blur-sm px-3 py-2 rounded-xl border border-indigo-500/50">
+              <div className="flex items-center gap-2 text-indigo-300 text-sm font-medium">
+                <Flame className="w-4 h-4 text-orange-400" />
+                <span>{history.length} decisiones</span>
+              </div>
+            </div>
+          </div>
           <button
             onClick={handleRestart}
-            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-indigo-400 hover:scale-105"
           >
             <RotateCcw className="w-5 h-5" />
             <span>Reiniciar</span>
           </button>
         </div>
 
-        <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 rounded-2xl p-6 mb-6 shadow-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-xl shadow-lg`}>
+        <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-indigo-500/30 rounded-3xl p-6 mb-6 shadow-2xl shadow-indigo-500/10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-500/20 to-transparent rounded-full blur-2xl" />
+          
+          <div className="flex items-center gap-4 mb-5 relative">
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-2xl shadow-xl ring-2 ring-white/20`}>
               {tree.icon}
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">{tree.title}</h2>
-              <p className="text-sm text-indigo-300">{tree.category}</p>
+            <div className="flex-1">
+              <h2 className="text-xl font-black text-white">{tree.title}</h2>
+              <p className="text-sm text-indigo-300 font-medium">{tree.category}</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs bg-indigo-500/20 text-indigo-300 px-4 py-2 rounded-full font-bold border border-indigo-500/30">
+              <GitBranch className="w-4 h-4" />
+              <span>Decisión {history.length + 1}</span>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2 text-xs text-slate-300 mb-4 bg-slate-700/50 px-3 py-2 rounded-lg inline-flex">
-            <GitBranch className="w-4 h-4" />
-            <span>Decisión {history.length + 1}</span>
-          </div>
 
-          <p className="text-slate-100 leading-relaxed text-base">{node.text}</p>
+          <div className="bg-slate-700/50 rounded-2xl p-5 border border-slate-600/50">
+            <p className="text-slate-100 leading-relaxed text-base">{node.text}</p>
+          </div>
         </div>
 
         {node.options && (
           <div className="space-y-3">
+            <p className="text-indigo-300 text-sm font-medium mb-3 flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              ¿Qué decides hacer?
+            </p>
             {node.options.map((option, idx) => (
               <button
                 key={idx}
-                onClick={() => handleChoice(option)}
-                className="w-full bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-indigo-400 rounded-xl p-4 text-left transition-all group shadow-lg hover:shadow-indigo-500/20"
+                onClick={() => handleChoice(option, idx)}
+                disabled={selectedOption !== null}
+                className={`w-full bg-slate-800/90 backdrop-blur-xl border-2 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-indigo-500/20 ${
+                  selectedOption === idx 
+                    ? 'border-indigo-400 scale-[0.98] bg-indigo-900/50' 
+                    : 'border-slate-600 hover:border-indigo-400 hover:scale-[1.01] hover:-translate-y-1'
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                    {idx + 1}
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg transition-all ${
+                    selectedOption === idx 
+                      ? 'bg-indigo-500 scale-110' 
+                      : 'bg-gradient-to-br from-indigo-500 to-blue-500 group-hover:scale-110'
+                  }`}>
+                    {selectedOption === idx ? <Check className="w-5 h-5" /> : idx + 1}
                   </div>
-                  <p className="text-slate-100 group-hover:text-white text-sm flex-1">{option.text}</p>
-                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                  <p className="text-slate-100 group-hover:text-white text-sm flex-1 font-medium">{option.text}</p>
+                  <ChevronRight className={`w-5 h-5 transition-all ${
+                    selectedOption === idx 
+                      ? 'text-indigo-400 translate-x-1' 
+                      : 'text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-1'
+                  }`} />
                 </div>
               </button>
             ))}
+          </div>
+        )}
+        
+        {history.length > 0 && (
+          <div className="mt-6 bg-slate-800/60 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
+            <p className="text-xs text-slate-400 font-medium mb-3 flex items-center gap-2">
+              <TrendingUp className="w-3 h-3" />
+              Tu camino hasta aquí:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {history.map((h, idx) => (
+                <div key={idx} className="bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1.5 rounded-full border border-indigo-500/30 flex items-center gap-2">
+                  <span className="w-4 h-4 bg-indigo-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">{idx + 1}</span>
+                  <span className="truncate max-w-[150px]">{h.choice.substring(0, 30)}...</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -970,41 +1263,111 @@ const DecisionTreeGame = ({ tree, onBack, onComplete }) => {
 };
 
 const PrioritySelector = ({ onSelectExercise, onBack }) => {
+  const [exercises, setExercises] = useState(PRIORITIZATION_EXERCISES);
+  const [aiExercises, setAiExercises] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState(null);
+
+  const generateNewExercise = async () => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    try {
+      const response = await fetch('/api/generate-priority-exercise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al generar ejercicio');
+      }
+      
+      const newExercise = await response.json();
+      setAiExercises(prev => [newExercise, ...prev]);
+    } catch (error) {
+      console.error('Error generating exercise:', error);
+      setGenerationError('No se pudo generar el ejercicio. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const allExercises = [...aiExercises, ...exercises];
+
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#06b6d4" size="260px" left="8%" top="30%" delay="0s" />
+      <GlowingOrb color="#8b5cf6" size="200px" left="82%" top="50%" delay="1.5s" />
+      
+      <div className="max-w-4xl mx-auto relative z-10">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-cyan-400 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Priorización de <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Tareas</span>
           </h1>
-          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Ordena las tareas según su urgencia e importancia</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block mb-4">Ordena las tareas según su urgencia e importancia</p>
+          
+          <button
+            onClick={generateNewExercise}
+            disabled={isGenerating}
+            className="mt-4 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2 mx-auto hover:scale-105"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Generando ejercicio nuevo...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                <span>Generar Ejercicio con IA</span>
+              </>
+            )}
+          </button>
+          
+          {generationError && (
+            <p className="text-red-400 text-sm mt-3 bg-red-900/30 px-4 py-2 rounded-lg inline-block">{generationError}</p>
+          )}
         </div>
 
         <div className="grid gap-4">
-          {PRIORITIZATION_EXERCISES.map((exercise) => (
+          {allExercises.map((exercise, idx) => (
             <button
               key={exercise.id}
               onClick={() => onSelectExercise(exercise)}
-              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-cyan-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-cyan-500/20"
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-cyan-500/20 hover:scale-[1.01] hover:-translate-y-1 relative ${
+                idx < aiExercises.length 
+                  ? 'border-teal-500/50 hover:border-teal-400' 
+                  : 'border-slate-600 hover:border-cyan-400'
+              }`}
             >
+              {idx < aiExercises.length && (
+                <div className="absolute top-3 right-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>IA</span>
+                </div>
+              )}
               <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
                   {exercise.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-1 group-hover:text-cyan-100">{exercise.title}</h3>
                   <p className="text-slate-300 text-sm">{exercise.description}</p>
-                  <p className="text-cyan-400 text-xs mt-2 bg-slate-700/50 px-2 py-1 rounded-lg inline-block">{exercise.tasks.length} tareas para ordenar</p>
+                  <p className="text-cyan-400 text-xs mt-2 bg-slate-700/50 px-2 py-1 rounded-lg inline-flex items-center gap-1">
+                    <ListOrdered className="w-3 h-3" />
+                    {exercise.tasks.length} tareas para ordenar
+                  </p>
                 </div>
-                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-cyan-400 transition-colors" />
+                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-cyan-400 transition-colors group-hover:translate-x-1" />
               </div>
             </button>
           ))}
@@ -1019,6 +1382,7 @@ const PriorityGame = ({ exercise, onBack }) => {
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
   const moveUp = (index) => {
     if (index === 0) return;
@@ -1061,6 +1425,8 @@ const PriorityGame = ({ exercise, onBack }) => {
     return 'Necesitas trabajar más la priorización. Recuerda el principio: urgente + importante primero, importante pero no urgente después, y lo administrativo al final.';
   };
 
+  const correctCount = submitted ? userOrder.filter((task, idx) => task.priority === idx + 1).length : 0;
+
   if (showResult) {
     return (
       <ScoreDisplay
@@ -1072,33 +1438,78 @@ const PriorityGame = ({ exercise, onBack }) => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#06b6d4" size="250px" left="5%" top="30%" delay="0s" />
+      <GlowingOrb color="#8b5cf6" size="200px" left="80%" top="50%" delay="1.5s" />
+      
+      <div className="max-w-3xl mx-auto relative z-10">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-all bg-slate-800/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-slate-600 hover:border-cyan-400 hover:scale-105"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Salir</span>
           </button>
-        </div>
-
-        <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 rounded-2xl p-6 mb-6 shadow-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-xl shadow-lg`}>
-              {exercise.icon}
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">{exercise.title}</h2>
+          <div className="flex items-center gap-3">
+            <PlayerAvatarIcon size="md" />
+            <div className="bg-slate-800/90 backdrop-blur-sm px-3 py-2 rounded-xl border border-cyan-500/50">
+              <div className="flex items-center gap-2 text-cyan-300 text-sm font-medium">
+                <ListOrdered className="w-4 h-4" />
+                <span>{userOrder.length} tareas</span>
+              </div>
             </div>
           </div>
-          <p className="text-slate-200">{exercise.description}</p>
         </div>
 
-        <p className="text-cyan-400 font-medium text-sm mb-4 bg-slate-800/80 px-4 py-2 rounded-xl inline-block">
-          {submitted ? 'Resultado de tu priorización:' : 'Usa las flechas para ordenar de mayor a menor prioridad:'}
-        </p>
+        <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-cyan-500/30 rounded-3xl p-6 mb-6 shadow-2xl shadow-cyan-500/10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-500/20 to-transparent rounded-full blur-2xl" />
+          
+          <div className="flex items-center gap-4 mb-4 relative">
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-2xl shadow-xl ring-2 ring-white/20`}>
+              {exercise.icon}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-black text-white">{exercise.title}</h2>
+              <p className="text-sm text-cyan-300 font-medium">{exercise.description}</p>
+            </div>
+          </div>
+          
+          {submitted && (
+            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-700/50">
+              <div className="flex-1 bg-slate-700/50 rounded-full h-3 overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000"
+                  style={{ width: `${(correctCount / userOrder.length) * 100}%` }}
+                />
+              </div>
+              <span className="text-emerald-400 font-bold text-sm">{correctCount}/{userOrder.length} correctas</span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-cyan-400 font-medium text-sm flex items-center gap-2 bg-slate-800/80 px-4 py-2 rounded-xl">
+            {submitted ? (
+              <>
+                <CheckCircle className="w-4 h-4" />
+                Resultado de tu priorización:
+              </>
+            ) : (
+              <>
+                <ArrowUp className="w-4 h-4" />
+                <ArrowDown className="w-4 h-4 -ml-2" />
+                Ordena de mayor a menor prioridad:
+              </>
+            )}
+          </p>
+          {!submitted && (
+            <span className="text-xs text-slate-400 bg-slate-800/60 px-3 py-1 rounded-full">
+              1 = Más urgente
+            </span>
+          )}
+        </div>
 
         <div className="space-y-3 mb-6">
           {userOrder.map((task, index) => {
@@ -1108,56 +1519,57 @@ const PriorityGame = ({ exercise, onBack }) => {
             return (
               <div
                 key={task.id}
-                className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all shadow-lg ${
+                className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all shadow-xl backdrop-blur-sm ${
                   submitted
                     ? isCorrect
-                      ? 'bg-emerald-900/80 border-emerald-500'
+                      ? 'bg-emerald-900/70 border-emerald-500/70 shadow-emerald-500/20'
                       : isClose
-                        ? 'bg-amber-900/80 border-amber-500'
-                        : 'bg-red-900/80 border-red-500'
-                    : 'bg-slate-800/95 border-slate-600 hover:border-slate-500'
+                        ? 'bg-amber-900/70 border-amber-500/70 shadow-amber-500/20'
+                        : 'bg-red-900/70 border-red-500/70 shadow-red-500/20'
+                    : 'bg-slate-800/90 border-slate-600/80 hover:border-cyan-400/50 hover:shadow-cyan-500/10'
                 }`}
+                style={{
+                  animation: submitted ? `fadeIn 0.3s ease-out ${index * 0.1}s both` : 'none'
+                }}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shadow-lg ${
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-lg transition-all ${
                   submitted
                     ? isCorrect
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-gradient-to-br from-emerald-500 to-green-500 text-white'
                       : isClose
-                        ? 'bg-amber-500 text-white'
-                        : 'bg-red-500 text-white'
-                    : 'bg-cyan-500/30 text-cyan-400 border-2 border-cyan-500/50'
+                        ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white'
+                        : 'bg-gradient-to-br from-red-500 to-rose-500 text-white'
+                    : 'bg-gradient-to-br from-cyan-500/30 to-blue-500/30 text-cyan-400 border-2 border-cyan-500/50'
                 }`}>
-                  {index + 1}
+                  {submitted ? (isCorrect ? <Check className="w-5 h-5" /> : index + 1) : index + 1}
                 </div>
                 
-                <p className="flex-1 text-slate-100 text-sm">{task.text}</p>
+                <p className="flex-1 text-slate-100 text-sm font-medium">{task.text}</p>
                 
                 {!submitted && (
-                  <div className="flex flex-col gap-1">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
-                      className="p-1 bg-slate-700 hover:bg-slate-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-2 bg-slate-700/80 hover:bg-cyan-500/30 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-110 border border-slate-600 hover:border-cyan-500/50"
                     >
                       <ArrowUp className="w-4 h-4 text-slate-300" />
                     </button>
                     <button
                       onClick={() => moveDown(index)}
                       disabled={index === userOrder.length - 1}
-                      className="p-1 bg-slate-700 hover:bg-slate-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-2 bg-slate-700/80 hover:bg-cyan-500/30 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-110 border border-slate-600 hover:border-cyan-500/50"
                     >
                       <ArrowDown className="w-4 h-4 text-slate-300" />
                     </button>
                   </div>
                 )}
                 
-                {submitted && (
+                {submitted && !isCorrect && (
                   <div className="flex items-center gap-2">
-                    {isCorrect ? (
-                      <Check className="w-5 h-5 text-emerald-400" />
-                    ) : (
-                      <span className="text-xs text-slate-300 bg-slate-700/80 px-2 py-1 rounded">Correcto: {task.priority}º</span>
-                    )}
+                    <span className="text-xs text-slate-300 bg-slate-700/80 px-3 py-1.5 rounded-full border border-slate-600">
+                      Correcto: {task.priority}º
+                    </span>
                   </div>
                 )}
               </div>
@@ -1166,15 +1578,23 @@ const PriorityGame = ({ exercise, onBack }) => {
         </div>
 
         {submitted && (
-          <div className="bg-slate-800/95 border-2 border-slate-600 rounded-xl p-5 mb-6 shadow-xl">
-            <h3 className="text-cyan-400 font-bold mb-3">Explicación del orden correcto:</h3>
-            <div className="space-y-3">
+          <div className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600/80 rounded-2xl p-6 mb-6 shadow-xl">
+            <h3 className="text-cyan-400 font-bold mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Explicación del orden correcto:
+            </h3>
+            <div className="space-y-4">
               {[...exercise.tasks]
                 .sort((a, b) => a.priority - b.priority)
-                .map((task) => (
-                  <div key={task.id} className="text-sm">
-                    <p className="text-white font-medium">{task.priority}. {task.text}</p>
-                    <p className="text-slate-300 text-xs mt-1 pl-4">{task.explanation}</p>
+                .map((task, idx) => (
+                  <div key={task.id} className="flex gap-3 items-start">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg">
+                      {task.priority}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium text-sm">{task.text}</p>
+                      <p className="text-slate-400 text-xs mt-1">{task.explanation}</p>
+                    </div>
                   </div>
                 ))}
             </div>
@@ -1184,16 +1604,22 @@ const PriorityGame = ({ exercise, onBack }) => {
         {!submitted ? (
           <button
             onClick={handleSubmit}
-            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/30"
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-cyan-500/30 hover:scale-[1.02] hover:-translate-y-1"
           >
-            Comprobar Orden
+            <span className="flex items-center justify-center gap-2">
+              <CheckCircle className="w-5 h-5" />
+              Comprobar Orden
+            </span>
           </button>
         ) : (
           <button
             onClick={handleShowResult}
-            className="w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-indigo-500/30"
+            className="w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/30 hover:scale-[1.02] hover:-translate-y-1"
           >
-            Ver Puntuación Final
+            <span className="flex items-center justify-center gap-2">
+              <Trophy className="w-5 h-5" />
+              Ver Puntuación Final
+            </span>
           </button>
         )}
       </div>

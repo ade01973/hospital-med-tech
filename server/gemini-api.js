@@ -133,6 +133,312 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
   }
 });
 
+app.post('/api/generate-scenario', async (req, res) => {
+  try {
+    const { category } = req.body;
+    
+    const categories = [
+      'Gestión de Recursos Humanos',
+      'Gestión Asistencial', 
+      'Seguridad del Paciente',
+      'Recursos Materiales',
+      'Gestión de Conflictos',
+      'Gestión Estratégica',
+      'Liderazgo Enfermero',
+      'Calidad Asistencial'
+    ];
+    
+    const selectedCategory = category || categories[Math.floor(Math.random() * categories.length)];
+    
+    const prompt = `Genera un escenario de toma de decisiones para gestoras enfermeras sobre "${selectedCategory}".
+
+${TERMINOLOGY_RULES}
+
+Responde SOLO con un JSON válido en este formato exacto:
+{
+  "title": "Título breve y descriptivo del escenario",
+  "category": "${selectedCategory}",
+  "difficulty": "Intermedio",
+  "duration": "15-20 min",
+  "icon": "📋",
+  "color": "from-cyan-500 to-blue-500",
+  "description": "Descripción breve del dilema o situación (2-3 frases)",
+  "actors": ["Actor 1", "Actor 2", "Actor 3"],
+  "topics": ["Tema 1", "Tema 2", "Tema 3"]
+}
+
+IMPORTANTE:
+- El escenario debe ser REALISTA y basado en situaciones reales de gestión enfermera en hospitales españoles
+- Los actores deben ser profesionales de enfermería (supervisoras, enfermeras, TCAEs)
+- La descripción debe plantear un DILEMA que requiera toma de decisiones
+- Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
+- NO incluyas "id" en el JSON, se generará automáticamente`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error("No se pudo parsear la respuesta");
+    }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      throw new Error("JSON inválido en la respuesta");
+    }
+    
+    if (!parsed.title || !parsed.description || !parsed.actors) {
+      throw new Error("Respuesta incompleta de la IA");
+    }
+    
+    parsed.id = `escenario-ai-${Date.now()}`;
+    res.json(parsed);
+  } catch (error) {
+    console.error("Error generating scenario:", error);
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+app.post('/api/generate-decision-tree', async (req, res) => {
+  try {
+    const categories = [
+      'Recursos Humanos',
+      'Atención a Reclamaciones',
+      'Gestión de Crisis',
+      'Conflictos de Equipo',
+      'Seguridad del Paciente',
+      'Comunicación'
+    ];
+    
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    
+    const prompt = `Genera un árbol de decisiones para gestoras enfermeras sobre "${category}".
+
+${TERMINOLOGY_RULES}
+
+Responde SOLO con un JSON válido en este formato exacto:
+{
+  "title": "Título descriptivo del caso",
+  "description": "Descripción breve de la situación inicial (1-2 frases)",
+  "category": "${category}",
+  "icon": "🌙",
+  "color": "from-blue-500 to-indigo-500",
+  "initialNode": "start",
+  "nodes": {
+    "start": {
+      "text": "Descripción detallada de la situación inicial (3-4 frases). Incluye contexto, hora, personas involucradas y el problema específico. Termina con ¿Qué decides hacer?",
+      "options": [
+        { "text": "Opción 1 - descripción de la acción", "next": "node1" },
+        { "text": "Opción 2 - descripción de la acción", "next": "node2" },
+        { "text": "Opción 3 - descripción de la acción", "next": "node3" }
+      ]
+    },
+    "node1": {
+      "text": "Consecuencia de la opción 1. Qué pasa después.",
+      "options": [
+        { "text": "Siguiente opción A", "next": "end_good" },
+        { "text": "Siguiente opción B", "next": "end_medium" }
+      ]
+    },
+    "node2": {
+      "text": "Consecuencia de la opción 2.",
+      "options": [
+        { "text": "Siguiente opción", "next": "end_medium" }
+      ]
+    },
+    "node3": {
+      "text": "Consecuencia de la opción 3.",
+      "options": [
+        { "text": "Siguiente opción", "next": "end_bad" }
+      ]
+    },
+    "end_good": {
+      "text": "Resultado excelente.",
+      "isEnd": true,
+      "score": 9,
+      "feedback": "Excelente gestión."
+    },
+    "end_medium": {
+      "text": "Resultado aceptable.",
+      "isEnd": true,
+      "score": 6,
+      "feedback": "Decisión aceptable."
+    },
+    "end_bad": {
+      "text": "Resultado negativo.",
+      "isEnd": true,
+      "score": 3,
+      "feedback": "Esta decisión tuvo consecuencias negativas."
+    }
+  }
+}
+
+IMPORTANTE:
+- Crea al menos 6 nodos con diferentes caminos
+- Incluye al menos 3 finales diferentes (bueno, medio, malo)
+- Los scores van de 1 a 10
+- El feedback debe ser educativo y constructivo
+- Situaciones realistas de gestión enfermera en España
+- NO incluyas "id" en el JSON, se generará automáticamente`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error("No se pudo parsear la respuesta");
+    }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      throw new Error("JSON inválido en la respuesta");
+    }
+    
+    if (!parsed.title || !parsed.nodes || !parsed.initialNode) {
+      throw new Error("Respuesta incompleta de la IA");
+    }
+    
+    parsed.id = `tree-ai-${Date.now()}`;
+    res.json(parsed);
+  } catch (error) {
+    console.error("Error generating decision tree:", error);
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+app.post('/api/generate-priority-exercise', async (req, res) => {
+  try {
+    const contexts = [
+      'Inicio de turno de mañana',
+      'Turno de noche con imprevistos',
+      'Fin de turno con tareas pendientes',
+      'Situación de urgencia en la unidad',
+      'Día con alta carga asistencial',
+      'Supervisora gestionando múltiples demandas'
+    ];
+    
+    const context = contexts[Math.floor(Math.random() * contexts.length)];
+    
+    const prompt = `Genera un ejercicio de priorización de tareas para gestoras enfermeras en el contexto: "${context}".
+
+${TERMINOLOGY_RULES}
+
+Responde SOLO con un JSON válido en este formato exacto:
+{
+  "title": "Título descriptivo del ejercicio",
+  "description": "Contexto de la situación (hora, lugar, circunstancias). Máximo 2 frases.",
+  "icon": "emoji representativo",
+  "color": "from-cyan-500 to-blue-500",
+  "tasks": [
+    {
+      "id": 1,
+      "text": "Descripción de la tarea 1",
+      "priority": 1,
+      "explanation": "Por qué esta tarea es prioridad 1. Criterio clínico."
+    },
+    {
+      "id": 2,
+      "text": "Descripción de la tarea 2",
+      "priority": 2,
+      "explanation": "Por qué esta tarea es prioridad 2."
+    },
+    {
+      "id": 3,
+      "text": "Descripción de la tarea 3",
+      "priority": 3,
+      "explanation": "Por qué esta tarea es prioridad 3."
+    },
+    {
+      "id": 4,
+      "text": "Descripción de la tarea 4",
+      "priority": 4,
+      "explanation": "Por qué esta tarea es prioridad 4."
+    },
+    {
+      "id": 5,
+      "text": "Descripción de la tarea 5",
+      "priority": 5,
+      "explanation": "Por qué esta tarea es prioridad 5."
+    },
+    {
+      "id": 6,
+      "text": "Descripción de la tarea 6",
+      "priority": 6,
+      "explanation": "Por qué esta tarea es prioridad 6."
+    }
+  ]
+}
+
+CRITERIOS DE PRIORIZACIÓN (de mayor a menor):
+1. Emergencias vitales (dolor torácico, dificultad respiratoria, caídas inminentes)
+2. Medicación tiempo-dependiente (insulina, antibióticos IV)
+3. Valoraciones clínicas urgentes
+4. Tareas programadas con hora fija
+5. Cuidados de enfermería rutinarios
+6. Tareas administrativas y documentación
+
+IMPORTANTE:
+- Incluye EXACTAMENTE 6 tareas
+- Las prioridades deben ser del 1 al 6 (sin repetir)
+- Las explicaciones deben justificar el orden según criterios clínicos
+- Situaciones realistas de enfermería en España
+- NO incluyas "id" en el JSON principal, se generará automáticamente`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error("No se pudo parsear la respuesta");
+    }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      throw new Error("JSON inválido en la respuesta");
+    }
+    
+    if (!parsed.title || !parsed.tasks || !Array.isArray(parsed.tasks)) {
+      throw new Error("Respuesta incompleta de la IA");
+    }
+    
+    parsed.id = `priority-ai-${Date.now()}`;
+    res.json(parsed);
+  } catch (error) {
+    console.error("Error generating priority exercise:", error);
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
 const PORT = process.env.GEMINI_PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Gemini API server running on port ${PORT}`);
