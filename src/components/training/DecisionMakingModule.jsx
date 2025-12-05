@@ -933,7 +933,7 @@ IMPORTANTE:
         {messages.map((msg, idx) => (
           <div 
             key={idx} 
-            className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+            className={`flex gap-3 items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
             style={{ animationDelay: `${idx * 0.1}s` }}
           >
             {msg.role === 'assistant' && (
@@ -949,7 +949,9 @@ IMPORTANTE:
               <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
             </div>
             {msg.role === 'user' && (
-              <PlayerAvatarIcon size="md" />
+              <div className="flex-shrink-0">
+                <PlayerAvatarIcon size="md" />
+              </div>
             )}
           </div>
         ))}
