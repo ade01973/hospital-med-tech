@@ -2179,16 +2179,50 @@ Siempre en español.`
   );
 };
 
+const MENTOR_EXPERTISE = [
+  { id: 'belbin', name: 'Roles Belbin', icon: '🧩', color: 'from-purple-500 to-violet-500', desc: 'Los 9 roles de equipo' },
+  { id: 'tuckman', name: 'Fases Tuckman', icon: '📈', color: 'from-blue-500 to-cyan-500', desc: 'Desarrollo del equipo' },
+  { id: 'lencioni', name: 'Disfunciones', icon: '🔧', color: 'from-rose-500 to-pink-500', desc: 'Las 5 disfunciones' },
+  { id: 'delegacion', name: 'Delegación', icon: '📋', color: 'from-amber-500 to-orange-500', desc: 'Delegar efectivamente' },
+  { id: 'reuniones', name: 'Reuniones', icon: '📅', color: 'from-emerald-500 to-teal-500', desc: 'Reuniones productivas' },
+  { id: 'conflictos', name: 'Conflictos', icon: '⚔️', color: 'from-red-500 to-rose-500', desc: 'Resolver tensiones' },
+  { id: 'motivacion', name: 'Motivación', icon: '🔥', color: 'from-orange-500 to-yellow-500', desc: 'Inspirar al equipo' },
+  { id: 'comunicacion', name: 'Comunicación', icon: '💬', color: 'from-sky-500 to-blue-500', desc: 'Comunicar mejor' }
+];
+
+const MENTOR_RESOURCES = [
+  { title: 'Modelo Belbin', desc: '9 roles de equipo', icon: '🧩' },
+  { title: 'Etapas Tuckman', desc: 'Forming → Performing', icon: '📊' },
+  { title: '5 Disfunciones', desc: 'Pirámide de Lencioni', icon: '🔺' },
+  { title: 'Seguridad Psicológica', desc: 'Modelo Edmondson', icon: '🛡️' },
+  { title: 'Matriz Eisenhower', desc: 'Priorizar tareas', icon: '⚡' },
+  { title: 'RACI Matrix', desc: 'Roles y responsabilidades', icon: '📋' }
+];
+
 const MentorMode = ({ onBack }) => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: '¡Hola! Soy tu mentor experto en trabajo en equipo. 🎓\n\n**¿En qué puedo ayudarte hoy?**\n\n📚 **Teorías y modelos** - Belbin, Tuckman, Lencioni\n🔧 **Problemas de equipo** - Conflictos, desmotivación, falta de cohesión\n💡 **Estrategias** - Delegación, reuniones, comunicación\n🏥 **Equipos sanitarios** - Multidisciplinares, turnos, emergencias\n\nCuéntame tu situación y te ayudaré con estrategias concretas.'
+      content: '¡Bienvenido/a a tu sesión de mentoría! 🎓\n\nSoy tu coach experto en **trabajo en equipo sanitario**. Estoy aquí para ayudarte con cualquier desafío que enfrentes.\n\n**Puedo ayudarte con:**\n• Dinámicas de equipo y roles\n• Resolución de conflictos\n• Liderazgo y delegación\n• Comunicación efectiva\n• Reuniones productivas\n\n¿Qué situación te gustaría explorar hoy?'
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [sessionTime, setSessionTime] = useState(0);
+  const [selectedExpertise, setSelectedExpertise] = useState(null);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => setSessionTime(t => t + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -2200,9 +2234,25 @@ const MentorMode = ({ onBack }) => {
 
   const formatMessage = (text) => {
     return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-violet-300">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/•/g, '<span class="text-violet-400">•</span>')
       .replace(/\n/g, '<br/>');
+  };
+
+  const handleExpertiseClick = (expertise) => {
+    setSelectedExpertise(expertise);
+    const prompts = {
+      belbin: "Explícame los 9 roles de Belbin y cómo identificar mi rol dominante en el equipo",
+      tuckman: "¿Cuáles son las fases de desarrollo de un equipo según Tuckman y cómo facilitar cada transición?",
+      lencioni: "Explícame las 5 disfunciones de un equipo de Lencioni y cómo superarlas",
+      delegacion: "¿Cómo puedo delegar tareas de forma efectiva en mi equipo de enfermería?",
+      reuniones: "Dame consejos para hacer reuniones de equipo más productivas y breves",
+      conflictos: "Tengo un conflicto entre dos compañeros del equipo, ¿cómo puedo mediarlo?",
+      motivacion: "Mi equipo está desmotivado últimamente, ¿qué estrategias puedo usar?",
+      comunicacion: "¿Cómo mejorar la comunicación en un equipo multidisciplinar sanitario?"
+    };
+    setInput(prompts[expertise.id] || `Háblame sobre ${expertise.name}`);
   };
 
   const handleSubmit = async (e) => {
@@ -2211,6 +2261,7 @@ const MentorMode = ({ onBack }) => {
 
     const userMessage = input.trim();
     setInput('');
+    setSelectedExpertise(null);
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
@@ -2226,26 +2277,37 @@ const MentorMode = ({ onBack }) => {
         body: JSON.stringify({
           message: userMessage,
           history,
-          systemPrompt: `Eres un mentor experto en trabajo en equipo y dinámicas grupales, especializado en equipos sanitarios.
+          systemPrompt: `Eres un mentor experto y carismático en trabajo en equipo y dinámicas grupales, especializado en equipos sanitarios y de enfermería.
 
-TU EXPERTISE:
-1. **Roles de equipo (Belbin)**: Los 9 roles, cómo equilibrar equipos, identificar fortalezas
-2. **Etapas de desarrollo (Tuckman)**: Forming, Storming, Norming, Performing, cómo facilitar transiciones
-3. **Las 5 disfunciones (Lencioni)**: Falta de confianza, miedo al conflicto, falta de compromiso, evitar responsabilidad, falta de atención a resultados
-4. **Seguridad psicológica (Edmondson)**: Cómo crear entornos donde el equipo puede arriesgar
-5. **Delegación efectiva**: Matriz Eisenhower aplicada, niveles de delegación
-6. **Reuniones productivas**: Técnicas, roles, seguimiento
+TU EXPERTISE PROFUNDO:
+1. **Roles de equipo (Belbin)**: Los 9 roles (Cerebro, Investigador, Coordinador, Impulsor, Monitor, Cohesionador, Implementador, Finalizador, Especialista), cómo equilibrar equipos, identificar fortalezas y debilidades
+2. **Etapas de desarrollo (Tuckman)**: Forming, Storming, Norming, Performing, Adjourning - cómo facilitar cada transición, señales de cada fase
+3. **Las 5 disfunciones (Lencioni)**: Falta de confianza, miedo al conflicto, falta de compromiso, evitar responsabilidad, falta de atención a resultados - estrategias para cada una
+4. **Seguridad psicológica (Edmondson)**: Cómo crear entornos donde el equipo puede arriesgar, preguntar y fallar sin miedo
+5. **Delegación efectiva**: Matriz Eisenhower aplicada, los 5 niveles de delegación, seguimiento sin microgestión
+6. **Reuniones productivas**: Técnicas (stand-up, retrospectivas), roles (facilitador, timekeeper), seguimiento de acuerdos
+7. **Resolución de conflictos**: Modelo Thomas-Kilmann, mediación, conversaciones difíciles
+8. **Motivación de equipos**: Teoría de Herzberg, reconocimiento, propósito compartido
 
-ESTILO DE COACHING:
-- Haz preguntas poderosas antes de dar consejos
-- Ofrece frameworks y modelos teóricos cuando sean útiles
-- Da ejemplos prácticos del ámbito sanitario
-- Sugiere ejercicios o actividades concretas
-- Equilibra teoría con aplicación práctica
+ESTILO DE COACHING TRANSFORMADOR:
+- Haz preguntas poderosas y reflexivas antes de dar consejos directos
+- Usa el método socrático para guiar al aprendizaje
+- Ofrece frameworks y modelos teóricos cuando sean útiles, pero hazlos prácticos
+- Da ejemplos concretos del ámbito sanitario (urgencias, turnos, equipos multidisciplinares)
+- Sugiere ejercicios, dinámicas o actividades que puedan implementar
+- Equilibra teoría con aplicación inmediata
+- Celebra los pequeños avances y valida las dificultades
+- Usa metáforas y analogías para explicar conceptos complejos
 
-TONO: Cálido pero profesional, como un mentor experimentado. Empático pero directo.
+FORMATO DE RESPUESTAS:
+- Usa **negritas** para conceptos clave
+- Usa listas con • para pasos o elementos
+- Sé conciso pero profundo
+- Incluye una pregunta reflexiva al final cuando sea apropiado
 
-Siempre en español, contextualizado al ámbito sanitario/enfermería.`
+TONO: Cálido, empático, profesional y motivador. Como un mentor experimentado que ha visto de todo pero sigue creyendo en el potencial de cada equipo.
+
+Siempre en español, contextualizado al ámbito sanitario/enfermería española.`
         })
       });
 
@@ -2264,106 +2326,281 @@ Siempre en español, contextualizado al ámbito sanitario/enfermería.`
   const clearChat = () => {
     setMessages([{
       role: 'assistant',
-      content: '¡Nueva sesión de mentoría! 🎓 ¿Qué aspecto del trabajo en equipo quieres explorar?'
+      content: '¡Nueva sesión de mentoría iniciada! 🎓✨\n\nEstoy listo para explorar nuevos desafíos contigo. ¿Qué aspecto del trabajo en equipo te gustaría trabajar?'
     }]);
+    setSessionTime(0);
   };
 
-  const quickTopics = [
-    "Mi equipo está desmotivado",
-    "Cómo delegar mejor",
-    "Conflicto entre compañeros",
-    "Reuniones más productivas"
-  ];
+  const questionsAsked = messages.filter(m => m.role === 'user').length;
 
   return (
-    <div className="h-screen flex flex-col relative">
-      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-violet-500/30 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30">
-            <GraduationCap className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-black text-white">Modo Mentor</h1>
-            <p className="text-xs text-violet-300">Coach de trabajo en equipo</p>
-          </div>
-        </div>
-        <button onClick={clearChat} className="p-2 hover:bg-slate-700 rounded-xl transition-colors text-slate-400 hover:text-white">
-          <Trash2 className="w-5 h-5" />
-        </button>
+    <div className="h-screen flex relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-40 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-fuchsia-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-violet-400/20"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              animation: `float ${10 + Math.random() * 10}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`
+            }}
+          />
+        ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            {msg.role === 'assistant' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <GraduationCap className="w-4 h-4 text-white" />
+      <div className="flex-1 flex flex-col relative z-10">
+        <div className="bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border-b border-violet-500/30 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button onClick={onBack} className="p-2 hover:bg-violet-500/20 rounded-xl transition-all group">
+                <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:text-white" />
+              </button>
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-2xl flex items-center justify-center shadow-xl shadow-violet-500/40 ring-2 ring-violet-400/30">
+                  <GraduationCap className="w-7 h-7 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-slate-800">
+                  <Sparkles className="w-3 h-3 text-white" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-xl font-black bg-gradient-to-r from-violet-200 via-purple-200 to-fuchsia-200 bg-clip-text text-transparent">
+                  Mentor de Equipos
+                </h1>
+                <p className="text-xs text-violet-300/80 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                  Coach experto en trabajo en equipo sanitario
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-4 bg-slate-800/60 rounded-xl px-4 py-2 border border-violet-500/20">
+                <div className="flex items-center gap-2 text-violet-300">
+                  <Clock className="w-4 h-4" />
+                  <span className="text-sm font-mono">{formatTime(sessionTime)}</span>
+                </div>
+                <div className="w-px h-4 bg-violet-500/30" />
+                <div className="flex items-center gap-2 text-violet-300">
+                  <MessageCircle className="w-4 h-4" />
+                  <span className="text-sm">{questionsAsked}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowResources(!showResources)}
+                className={`p-2.5 rounded-xl transition-all ${showResources ? 'bg-violet-500 text-white' : 'hover:bg-violet-500/20 text-slate-300 hover:text-white'}`}
+              >
+                <BookOpen className="w-5 h-5" />
+              </button>
+              <button onClick={clearChat} className="p-2.5 hover:bg-rose-500/20 rounded-xl transition-all text-slate-400 hover:text-rose-400">
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto space-y-6">
+            {messages.map((msg, idx) => (
+              <div 
+                key={idx} 
+                className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                style={{ animation: 'fadeInUp 0.3s ease-out' }}
+              >
+                {msg.role === 'assistant' && (
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/30 ring-2 ring-violet-400/20">
+                    <GraduationCap className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                <div className={`max-w-[85%] rounded-2xl px-5 py-4 ${
+                  msg.role === 'user'
+                    ? 'bg-gradient-to-br from-violet-600 to-purple-600 text-white shadow-xl shadow-violet-500/20'
+                    : 'bg-slate-800/90 backdrop-blur border border-violet-500/20 text-slate-100 shadow-xl'
+                }`}>
+                  <div 
+                    className="text-sm leading-relaxed" 
+                    dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} 
+                  />
+                </div>
+                {msg.role === 'user' && <PlayerAvatarIcon size="md" />}
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex gap-4 justify-start" style={{ animation: 'fadeInUp 0.3s ease-out' }}>
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/30">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <div className="bg-slate-800/90 backdrop-blur border border-violet-500/20 rounded-2xl px-5 py-4 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                    <span className="text-sm text-violet-300">Reflexionando...</span>
+                  </div>
+                </div>
               </div>
             )}
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-              msg.role === 'user'
-                ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white'
-                : 'bg-slate-800/80 border border-slate-700 text-slate-100'
-            }`}>
-              <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
-            </div>
-            {msg.role === 'user' && <PlayerAvatarIcon size="sm" />}
+            <div ref={messagesEndRef} />
           </div>
-        ))}
-        {isLoading && (
-          <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-              <GraduationCap className="w-4 h-4 text-white" />
-            </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2 text-violet-300">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Pensando...</span>
+        </div>
+
+        {messages.length <= 2 && (
+          <div className="px-4 md:px-6 pb-4">
+            <div className="max-w-3xl mx-auto">
+              <p className="text-xs text-violet-400 mb-3 text-center font-medium">Elige un tema para comenzar</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {MENTOR_EXPERTISE.map((exp) => (
+                  <button
+                    key={exp.id}
+                    onClick={() => handleExpertiseClick(exp)}
+                    className={`bg-slate-800/80 hover:bg-slate-700/80 border border-violet-500/30 hover:border-violet-400/50 rounded-xl p-3 text-left transition-all group hover:scale-[1.02] hover:shadow-lg hover:shadow-violet-500/10 ${selectedExpertise?.id === exp.id ? 'ring-2 ring-violet-500 bg-violet-500/20' : ''}`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{exp.icon}</span>
+                      <span className="text-sm font-bold text-white group-hover:text-violet-200">{exp.name}</span>
+                    </div>
+                    <p className="text-xs text-slate-400">{exp.desc}</p>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
+
+        <div className="bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl border-t border-violet-500/30 p-4">
+          <div className="max-w-3xl mx-auto">
+            <form onSubmit={handleSubmit} className="flex gap-3">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Cuéntame tu situación o pregunta..."
+                  className="w-full bg-slate-800/80 border-2 border-violet-500/30 hover:border-violet-500/50 focus:border-violet-500 rounded-xl px-5 py-3.5 text-white placeholder-slate-400 focus:outline-none transition-all pr-12"
+                  disabled={isLoading}
+                />
+                <Lightbulb className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-violet-500/50" />
+              </div>
+              <button
+                type="submit"
+                disabled={!input.trim() || isLoading}
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 rounded-xl transition-all shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-[1.02] flex items-center gap-2 font-medium"
+              >
+                <Send className="w-5 h-5" />
+                <span className="hidden md:inline">Enviar</span>
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
 
-      {messages.length <= 2 && (
-        <div className="px-4 pb-2">
-          <div className="flex flex-wrap gap-2">
-            {quickTopics.map((topic, idx) => (
-              <button
-                key={idx}
-                onClick={() => setInput(topic)}
-                className="text-xs bg-violet-500/20 hover:bg-violet-500/30 border border-violet-500/40 text-violet-200 px-3 py-1.5 rounded-full transition-colors"
-              >
-                {topic}
-              </button>
-            ))}
+      {showResources && (
+        <div className="w-80 bg-slate-900/95 backdrop-blur-xl border-l border-violet-500/30 p-4 overflow-y-auto relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-violet-400" />
+              Recursos
+            </h3>
+            <button 
+              onClick={() => setShowResources(false)}
+              className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white md:hidden"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-xl p-4 border border-violet-500/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain className="w-5 h-5 text-violet-400" />
+                <span className="font-bold text-white">Modelos Teóricos</span>
+              </div>
+              <div className="space-y-2">
+                {MENTOR_RESOURCES.map((res, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setInput(`Explícame el ${res.title} y cómo aplicarlo en mi equipo`);
+                      setShowResources(false);
+                    }}
+                    className="w-full bg-slate-800/60 hover:bg-slate-700/60 rounded-lg p-2.5 text-left transition-all group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{res.icon}</span>
+                      <div>
+                        <p className="text-sm font-medium text-white group-hover:text-violet-200">{res.title}</p>
+                        <p className="text-xs text-slate-400">{res.desc}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-700">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-amber-400" />
+                <span className="font-bold text-white">Preguntas Sugeridas</span>
+              </div>
+              <div className="space-y-2">
+                {[
+                  "¿Cómo crear un buen ambiente de equipo?",
+                  "¿Cómo manejar un compañero difícil?",
+                  "¿Cómo motivar al equipo en turnos largos?",
+                  "¿Cómo integrar a alguien nuevo?"
+                ].map((q, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setInput(q);
+                      setShowResources(false);
+                    }}
+                    className="w-full text-left text-sm text-violet-300 hover:text-violet-200 bg-violet-500/10 hover:bg-violet-500/20 rounded-lg px-3 py-2 transition-all"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl p-4 border border-emerald-500/20">
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="w-5 h-5 text-emerald-400" />
+                <span className="font-bold text-white">Tu Sesión</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-800/60 rounded-lg p-3 text-center">
+                  <p className="text-2xl font-black text-white">{formatTime(sessionTime)}</p>
+                  <p className="text-xs text-slate-400">Tiempo</p>
+                </div>
+                <div className="bg-slate-800/60 rounded-lg p-3 text-center">
+                  <p className="text-2xl font-black text-white">{questionsAsked}</p>
+                  <p className="text-xs text-slate-400">Preguntas</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-violet-500/30 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Tu pregunta sobre trabajo en equipo..."
-            className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-violet-500"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-violet-500/30"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </form>
-      </div>
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+          50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+        }
+      `}</style>
     </div>
   );
 };
