@@ -1,23 +1,793 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2 } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle } from 'lucide-react';
+import leadershipBg from '../../assets/decision-making-bg.png';
 
-const LeadershipModule = ({ onBack }) => {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: '¡Bienvenido al módulo de **Liderazgo**! 🌟\n\nAquí desarrollarás las competencias de liderazgo esenciales para la gestión enfermera.\n\n**Áreas de entrenamiento:**\n\n👤 **Autoconocimiento** - Descubre tu estilo de liderazgo\n🔄 **Liderazgo Transformacional** - Inspira y motiva a tu equipo\n📊 **Liderazgo Situacional** - Adapta tu estilo al contexto\n🎯 **Gestión del Rendimiento** - Desarrolla a tu equipo\n💪 **Resiliencia** - Lidera en tiempos difíciles\n\n**¿Qué te gustaría explorar?**\n\nPuedes:\n- Pedirme un test de estilo de liderazgo\n- Practicar una situación de liderazgo específica\n- Aprender sobre un modelo de liderazgo\n- Resolver un desafío de equipo\n\n¿Por dónde empezamos?'
+const usePlayerAvatar = () => {
+  const [avatar, setAvatar] = useState(null);
+  
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('playerAvatar');
+      if (stored) {
+        setAvatar(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Error loading avatar:', e);
     }
-  ]);
+  }, []);
+  
+  return avatar;
+};
+
+const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
+  const avatar = usePlayerAvatar();
+  const [imgError, setImgError] = useState(false);
+  const sizeClasses = {
+    xs: 'w-6 h-6',
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16'
+  };
+  
+  const FallbackAvatar = () => (
+    <div className={`${sizeClasses[size]} rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg ${className}`}>
+      <User className="w-1/2 h-1/2 text-white" />
+    </div>
+  );
+  
+  if (!avatar || !avatar.characterPreset || imgError) {
+    return <FallbackAvatar />;
+  }
+  
+  const gender = avatar.gender || 'female';
+  const preset = avatar.characterPreset;
+  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+  
+  return (
+    <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-emerald-400/50 ${className}`}>
+      <img 
+        src={imgPath}
+        alt="Tu avatar"
+        className="w-full h-full object-cover object-top"
+        onError={() => setImgError(true)}
+      />
+    </div>
+  );
+};
+
+const FloatingParticles = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {[...Array(20)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute rounded-full opacity-30"
+        style={{
+          width: Math.random() * 6 + 2 + 'px',
+          height: Math.random() * 6 + 2 + 'px',
+          left: Math.random() * 100 + '%',
+          top: Math.random() * 100 + '%',
+          background: `linear-gradient(135deg, ${['#10b981', '#14b8a6', '#06b6d4', '#22c55e'][Math.floor(Math.random() * 4)]}, transparent)`,
+          animation: `float ${8 + Math.random() * 10}s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 5}s`
+        }}
+      />
+    ))}
+    <style>{`
+      @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+        50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
+      }
+    `}</style>
+  </div>
+);
+
+const GlowingOrb = ({ color, size, left, top, delay }) => (
+  <div
+    className="absolute rounded-full blur-3xl opacity-20 animate-pulse"
+    style={{
+      width: size,
+      height: size,
+      left,
+      top,
+      background: color,
+      animationDelay: delay,
+      animationDuration: '4s'
+    }}
+  />
+);
+
+const LEADERSHIP_MODES = [
+  {
+    id: 'scenarios',
+    title: 'Escenarios de Liderazgo',
+    description: 'Resuelve situaciones reales y descubre tu estilo de liderazgo',
+    icon: '🎯',
+    color: 'from-emerald-500 to-teal-500',
+    features: ['Chat interactivo', 'Evaluación de estilo', 'Puntuación 0-10']
+  },
+  {
+    id: 'transformational',
+    title: 'Test Liderazgo Transformador',
+    description: '10 preguntas para medir tu capacidad de inspirar y motivar',
+    icon: '🦋',
+    color: 'from-purple-500 to-pink-500',
+    features: ['10 preguntas clave', 'Gráfica de dimensiones', 'Áreas de mejora']
+  },
+  {
+    id: 'situational',
+    title: 'Test Liderazgo Situacional',
+    description: 'Evalúa tu capacidad de adaptar el estilo al contexto',
+    icon: '🔄',
+    color: 'from-blue-500 to-cyan-500',
+    features: ['Escenarios variables', 'Modelo Hersey-Blanchard', 'Feedback adaptativo']
+  },
+  {
+    id: 'general',
+    title: 'Evaluación General',
+    description: 'Descubre tu estilo de liderazgo predominante',
+    icon: '📊',
+    color: 'from-amber-500 to-orange-500',
+    features: ['Análisis completo', 'Identificación de estilo', 'Recomendaciones']
+  },
+  {
+    id: 'microchallenges',
+    title: 'Micro-retos Diarios',
+    description: 'Desafíos rápidos con dificultad progresiva',
+    icon: '⚡',
+    color: 'from-rose-500 to-red-500',
+    features: ['Retos gamificados', 'Niveles de dificultad', 'Racha de victorias']
+  }
+];
+
+const LEADERSHIP_SCENARIOS = [
+  {
+    id: 'resistencia-cambio',
+    title: 'Resistencia al Cambio en la Unidad',
+    category: 'Gestión del Cambio',
+    description: 'Tu equipo se resiste a implementar un nuevo protocolo digital. Debes liderar la transición.',
+    difficulty: 'Intermedio',
+    icon: '🔄',
+    color: 'from-emerald-500 to-teal-500'
+  },
+  {
+    id: 'conflicto-turnos',
+    title: 'Conflicto entre Turnos',
+    category: 'Resolución de Conflictos',
+    description: 'Hay tensiones entre el turno de mañana y el de noche. El clima laboral se deteriora.',
+    difficulty: 'Avanzado',
+    icon: '⚔️',
+    color: 'from-rose-500 to-pink-500'
+  },
+  {
+    id: 'motivar-equipo',
+    title: 'Equipo Desmotivado',
+    category: 'Motivación',
+    description: 'Tras meses de alta carga, tu equipo muestra signos de burnout y baja motivación.',
+    difficulty: 'Avanzado',
+    icon: '💪',
+    color: 'from-amber-500 to-orange-500'
+  },
+  {
+    id: 'enfermera-referente',
+    title: 'Desarrollo de Talento',
+    category: 'Desarrollo de Personas',
+    description: 'Una enfermera con potencial rechaza asumir el rol de referente. Debes convencerla.',
+    difficulty: 'Intermedio',
+    icon: '🌱',
+    color: 'from-green-500 to-emerald-500'
+  },
+  {
+    id: 'crisis-recursos',
+    title: 'Liderazgo en Crisis',
+    category: 'Gestión de Crisis',
+    description: 'Escasez de personal y materiales. Debes mantener la calidad asistencial con recursos limitados.',
+    difficulty: 'Experto',
+    icon: '🚨',
+    color: 'from-red-500 to-rose-500'
+  },
+  {
+    id: 'integracion-novel',
+    title: 'Integración de Personal Novel',
+    category: 'Onboarding',
+    description: 'Tres enfermeras recién graduadas se incorporan a tu unidad. Debes facilitar su integración.',
+    difficulty: 'Básico',
+    icon: '👥',
+    color: 'from-blue-500 to-indigo-500'
+  }
+];
+
+const TRANSFORMATIONAL_QUESTIONS = [
+  {
+    id: 1,
+    dimension: 'Influencia Idealizada',
+    question: '¿Cómo actuarías si descubres un error en un protocolo que tú misma implementaste?',
+    options: [
+      { text: 'Reconozco el error públicamente y lidero la corrección', score: 4, style: 'transformador' },
+      { text: 'Corrijo el error discretamente sin dar explicaciones', score: 2, style: 'transaccional' },
+      { text: 'Delego la corrección en otro miembro del equipo', score: 1, style: 'laissez-faire' },
+      { text: 'Espero a que alguien más lo detecte', score: 0, style: 'pasivo' }
+    ]
+  },
+  {
+    id: 2,
+    dimension: 'Motivación Inspiracional',
+    question: 'Tu equipo debe implementar un cambio difícil. ¿Cómo los motivarías?',
+    options: [
+      { text: 'Comparto una visión de futuro y cómo el cambio nos acerca a ella', score: 4, style: 'transformador' },
+      { text: 'Explico las consecuencias negativas de no cambiar', score: 2, style: 'transaccional' },
+      { text: 'Ofrezco incentivos por cumplir los objetivos del cambio', score: 2, style: 'transaccional' },
+      { text: 'Dejo que cada uno encuentre su propia motivación', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 3,
+    dimension: 'Estimulación Intelectual',
+    question: 'Una enfermera propone una idea poco convencional para mejorar un proceso. ¿Qué haces?',
+    options: [
+      { text: 'Animo a explorar la idea y facilito recursos para probarla', score: 4, style: 'transformador' },
+      { text: 'La evalúo según los protocolos existentes', score: 2, style: 'transaccional' },
+      { text: 'Le pido que la desarrolle ella sola y me presente resultados', score: 1, style: 'delegativo' },
+      { text: 'Le explico por qué hacemos las cosas como las hacemos', score: 1, style: 'directivo' }
+    ]
+  },
+  {
+    id: 4,
+    dimension: 'Consideración Individualizada',
+    question: '¿Cómo gestionas el desarrollo profesional de tu equipo?',
+    options: [
+      { text: 'Identifico las fortalezas únicas de cada persona y creo planes personalizados', score: 4, style: 'transformador' },
+      { text: 'Ofrezco las mismas oportunidades de formación a todos', score: 2, style: 'equitativo' },
+      { text: 'Priorizo a quienes muestran más iniciativa', score: 2, style: 'meritocrático' },
+      { text: 'Dejo que cada uno gestione su propio desarrollo', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 5,
+    dimension: 'Influencia Idealizada',
+    question: 'En una situación de alta presión, ¿cómo te comportas?',
+    options: [
+      { text: 'Mantengo la calma, doy ejemplo y apoyo emocionalmente al equipo', score: 4, style: 'transformador' },
+      { text: 'Me centro en dar instrucciones claras y supervisar el trabajo', score: 3, style: 'directivo' },
+      { text: 'Delego responsabilidades para poder centrarme en lo crítico', score: 2, style: 'delegativo' },
+      { text: 'Muestro mi preocupación para que el equipo entienda la gravedad', score: 1, style: 'reactivo' }
+    ]
+  },
+  {
+    id: 6,
+    dimension: 'Motivación Inspiracional',
+    question: '¿Cómo comunicas los objetivos de la unidad a tu equipo?',
+    options: [
+      { text: 'Conecto los objetivos con el propósito de cuidar mejor a los pacientes', score: 4, style: 'transformador' },
+      { text: 'Presento datos y métricas claras de lo que debemos lograr', score: 2, style: 'transaccional' },
+      { text: 'Explico las consecuencias de no cumplirlos', score: 1, style: 'coercitivo' },
+      { text: 'Los comunico y dejo que cada uno los interprete', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 7,
+    dimension: 'Estimulación Intelectual',
+    question: 'Ante un problema recurrente en la unidad, ¿cuál es tu enfoque?',
+    options: [
+      { text: 'Reúno al equipo para hacer un análisis creativo y buscar soluciones nuevas', score: 4, style: 'transformador' },
+      { text: 'Reviso los protocolos y busco dónde no se cumplen', score: 2, style: 'transaccional' },
+      { text: 'Consulto con expertos externos', score: 2, style: 'consultivo' },
+      { text: 'Aplico la solución que funcionó en el pasado', score: 1, style: 'tradicional' }
+    ]
+  },
+  {
+    id: 8,
+    dimension: 'Consideración Individualizada',
+    question: 'Una enfermera excelente pasa por un momento personal difícil. ¿Qué haces?',
+    options: [
+      { text: 'Tengo una conversación privada, ofrezco apoyo y adapto temporalmente su carga', score: 4, style: 'transformador' },
+      { text: 'Le informo de los recursos de apoyo disponibles en la institución', score: 2, style: 'formal' },
+      { text: 'Mantengo las expectativas pero soy comprensivo si hay algún fallo', score: 2, style: 'equilibrado' },
+      { text: 'Trato a todos igual independientemente de circunstancias personales', score: 1, style: 'imparcial' }
+    ]
+  },
+  {
+    id: 9,
+    dimension: 'Influencia Idealizada',
+    question: '¿Cómo construyes confianza con tu equipo?',
+    options: [
+      { text: 'Soy transparente, cumplo mis compromisos y admito mis errores', score: 4, style: 'transformador' },
+      { text: 'Demuestro competencia técnica y tomo buenas decisiones', score: 3, style: 'experto' },
+      { text: 'Mantengo una relación profesional y respeto jerárquico', score: 2, style: 'formal' },
+      { text: 'Defiendo siempre a mi equipo ante la dirección', score: 2, style: 'protector' }
+    ]
+  },
+  {
+    id: 10,
+    dimension: 'Motivación Inspiracional',
+    question: 'Cuando el equipo logra un éxito importante, ¿cómo lo celebras?',
+    options: [
+      { text: 'Reconozco públicamente el esfuerzo de todos y conecto el logro con nuestra misión', score: 4, style: 'transformador' },
+      { text: 'Comunico el éxito a dirección para que se reconozca al equipo', score: 3, style: 'promotor' },
+      { text: 'Organizo una pequeña celebración informal', score: 2, style: 'cercano' },
+      { text: 'Paso a enfocarme en el siguiente objetivo', score: 1, style: 'orientado-a-tarea' }
+    ]
+  }
+];
+
+const SITUATIONAL_SCENARIOS = [
+  {
+    id: 1,
+    scenario: 'Una enfermera recién incorporada (3 meses) te pide ayuda con un procedimiento complejo que nunca ha realizado.',
+    context: 'Alta motivación pero baja competencia',
+    bestStyle: 'Directivo',
+    options: [
+      { text: 'Le doy instrucciones detalladas paso a paso y superviso de cerca', style: 'Directivo', score: 4 },
+      { text: 'Le explico el procedimiento y le pido que me pregunte sus dudas', style: 'Persuasivo', score: 3 },
+      { text: 'Le sugiero que practique y me avise si tiene problemas', style: 'Participativo', score: 1 },
+      { text: 'Le digo que consulte el protocolo y lo intente sola', style: 'Delegativo', score: 0 }
+    ]
+  },
+  {
+    id: 2,
+    scenario: 'Una enfermera veterana (15 años) expresa frustración porque siente que sus ideas nunca se implementan.',
+    context: 'Alta competencia pero motivación descendente',
+    bestStyle: 'Participativo',
+    options: [
+      { text: 'Organizo una reunión para escuchar sus ideas y explorar cómo implementarlas', style: 'Participativo', score: 4 },
+      { text: 'Le explico las razones por las que algunas ideas no se implementaron', style: 'Persuasivo', score: 2 },
+      { text: 'Le doy más autonomía para que implemente sus propias mejoras', style: 'Delegativo', score: 2 },
+      { text: 'Le recuerdo los canales formales para proponer mejoras', style: 'Directivo', score: 0 }
+    ]
+  },
+  {
+    id: 3,
+    scenario: 'Un TCAE muy competente y motivado quiere asumir más responsabilidades en la unidad.',
+    context: 'Alta competencia y alta motivación',
+    bestStyle: 'Delegativo',
+    options: [
+      { text: 'Le asigno un proyecto y le doy autonomía para gestionarlo', style: 'Delegativo', score: 4 },
+      { text: 'Discutimos juntos qué responsabilidades podría asumir', style: 'Participativo', score: 3 },
+      { text: 'Le propongo un plan de desarrollo con objetivos claros', style: 'Persuasivo', score: 2 },
+      { text: 'Le asigno tareas específicas con supervisión regular', style: 'Directivo', score: 1 }
+    ]
+  },
+  {
+    id: 4,
+    scenario: 'Una enfermera que antes era excelente ha bajado su rendimiento tras una reorganización de turnos.',
+    context: 'Competencia demostrada pero motivación en declive',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Tengo una conversación para entender qué le pasa y buscar soluciones juntos', style: 'Persuasivo', score: 4 },
+      { text: 'Le doy espacio para adaptarse sin presionarla', style: 'Delegativo', score: 2 },
+      { text: 'Le recuerdo las expectativas y le pido que vuelva a su nivel anterior', style: 'Directivo', score: 1 },
+      { text: 'La involucro en decidir cómo mejorar la organización de turnos', style: 'Participativo', score: 3 }
+    ]
+  },
+  {
+    id: 5,
+    scenario: 'Un grupo de enfermeras nuevas debe aprender a usar un nuevo sistema de registro electrónico.',
+    context: 'Baja competencia en la tarea, motivación variable',
+    bestStyle: 'Directivo',
+    options: [
+      { text: 'Organizo una formación estructurada con práctica supervisada', style: 'Directivo', score: 4 },
+      { text: 'Les explico los beneficios del sistema y les doy manuales', style: 'Persuasivo', score: 2 },
+      { text: 'Les pido que exploren el sistema y me consulten dudas', style: 'Participativo', score: 1 },
+      { text: 'Las emparejo con usuarios expertos para que aprendan', style: 'Delegativo', score: 2 }
+    ]
+  },
+  {
+    id: 6,
+    scenario: 'Una supervisora adjunta muy capaz gestiona habitualmente la unidad en tu ausencia sin problemas.',
+    context: 'Alta competencia y alta motivación demostradas',
+    bestStyle: 'Delegativo',
+    options: [
+      { text: 'Le doy total autonomía y solo pido que me informe de lo relevante', style: 'Delegativo', score: 4 },
+      { text: 'Revisamos juntas la planificación antes de mi ausencia', style: 'Participativo', score: 2 },
+      { text: 'Le dejo instrucciones detalladas por si las necesita', style: 'Persuasivo', score: 1 },
+      { text: 'Establezco check-ins regulares durante mi ausencia', style: 'Directivo', score: 0 }
+    ]
+  },
+  {
+    id: 7,
+    scenario: 'Una enfermera con 5 años de experiencia ha sido asignada a una unidad completamente diferente a la que conoce.',
+    context: 'Competencia general alta pero específica baja, motivación moderada',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Le doy orientación sobre las especificidades de la unidad pero confío en su experiencia', style: 'Persuasivo', score: 4 },
+      { text: 'La trato como a cualquier enfermera nueva con formación completa', style: 'Directivo', score: 2 },
+      { text: 'Le pido que identifique sus necesidades de formación', style: 'Participativo', score: 2 },
+      { text: 'Confío en que su experiencia le permitirá adaptarse sola', style: 'Delegativo', score: 1 }
+    ]
+  },
+  {
+    id: 8,
+    scenario: 'Tu equipo debe implementar un nuevo protocolo de seguridad obligatorio que genera resistencia generalizada.',
+    context: 'Competencia variable, motivación baja por imposición externa',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Explico el por qué del protocolo, escucho preocupaciones y busco facilitar la adaptación', style: 'Persuasivo', score: 4 },
+      { text: 'Doy instrucciones claras y establezco un calendario de implementación', style: 'Directivo', score: 2 },
+      { text: 'Creo un grupo de trabajo para decidir cómo implementarlo', style: 'Participativo', score: 2 },
+      { text: 'Dejo que cada uno encuentre su forma de adaptarse', style: 'Delegativo', score: 0 }
+    ]
+  }
+];
+
+const GENERAL_LEADERSHIP_QUESTIONS = [
+  {
+    id: 1,
+    question: '¿Cómo prefieres tomar decisiones en tu equipo?',
+    options: [
+      { text: 'Analizo datos y decido lo mejor para el equipo', style: 'Autocrático' },
+      { text: 'Consulto al equipo pero tomo la decisión final', style: 'Consultivo' },
+      { text: 'Decidimos juntos por consenso', style: 'Democrático' },
+      { text: 'Dejo que el equipo decida y apoyo su elección', style: 'Laissez-faire' }
+    ]
+  },
+  {
+    id: 2,
+    question: '¿Qué te motiva más como líder?',
+    options: [
+      { text: 'Ver crecer y desarrollarse a mi equipo', style: 'Transformador' },
+      { text: 'Alcanzar los objetivos establecidos', style: 'Transaccional' },
+      { text: 'Servir las necesidades de mi equipo', style: 'Servidor' },
+      { text: 'Crear un ambiente de trabajo armonioso', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 3,
+    question: 'Ante un error de un miembro del equipo, ¿cómo reaccionas?',
+    options: [
+      { text: 'Lo uso como oportunidad de aprendizaje para todos', style: 'Transformador' },
+      { text: 'Aplico las consecuencias establecidas con justicia', style: 'Transaccional' },
+      { text: 'Pregunto cómo puedo ayudar a evitar que se repita', style: 'Servidor' },
+      { text: 'Minimizo el impacto para proteger al equipo', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 4,
+    question: '¿Cómo estableces expectativas con tu equipo?',
+    options: [
+      { text: 'Co-creamos juntos los objetivos y estándares', style: 'Democrático' },
+      { text: 'Comunico una visión inspiradora y dejo libertad en el cómo', style: 'Transformador' },
+      { text: 'Defino claramente las metas y los indicadores de éxito', style: 'Transaccional' },
+      { text: 'Les pregunto qué necesitan y adapto las expectativas', style: 'Servidor' }
+    ]
+  },
+  {
+    id: 5,
+    question: '¿Cómo gestionas las diferencias de opinión en tu equipo?',
+    options: [
+      { text: 'Facilito el diálogo hasta encontrar una solución que satisfaga a todos', style: 'Democrático' },
+      { text: 'Escucho todas las perspectivas y tomo la decisión que considero mejor', style: 'Consultivo' },
+      { text: 'Animo a explorar el conflicto como fuente de innovación', style: 'Transformador' },
+      { text: 'Busco rápidamente una solución para mantener la armonía', style: 'Afiliativo' }
+    ]
+  },
+  {
+    id: 6,
+    question: '¿Qué valoras más en un miembro de tu equipo?',
+    options: [
+      { text: 'Su creatividad y capacidad de proponer mejoras', style: 'Transformador' },
+      { text: 'Su fiabilidad y cumplimiento de compromisos', style: 'Transaccional' },
+      { text: 'Su capacidad de trabajar bien con los demás', style: 'Afiliativo' },
+      { text: 'Su autonomía y capacidad de autogestión', style: 'Laissez-faire' }
+    ]
+  },
+  {
+    id: 7,
+    question: '¿Cómo prefieres comunicarte con tu equipo?',
+    options: [
+      { text: 'Reuniones regulares de equipo para compartir información', style: 'Democrático' },
+      { text: 'Conversaciones individuales adaptadas a cada persona', style: 'Transformador' },
+      { text: 'Comunicaciones claras y estructuradas con seguimiento', style: 'Transaccional' },
+      { text: 'Política de puertas abiertas para cuando lo necesiten', style: 'Servidor' }
+    ]
+  },
+  {
+    id: 8,
+    question: 'Cuando hay que hacer cambios, ¿cuál es tu enfoque?',
+    options: [
+      { text: 'Inspiro al equipo con una visión de futuro mejor', style: 'Transformador' },
+      { text: 'Explico claramente qué hay que hacer y por qué', style: 'Transaccional' },
+      { text: 'Involucro al equipo en diseñar cómo hacer el cambio', style: 'Democrático' },
+      { text: 'Proporciono apoyo y recursos para facilitar la transición', style: 'Servidor' }
+    ]
+  }
+];
+
+const MICRO_CHALLENGES = [
+  {
+    id: 'motivar-referente',
+    difficulty: 1,
+    title: 'Motivar Referente',
+    challenge: '¿Cómo motivarías a una enfermera que rechaza asumir un rol de referente porque dice que "no es lo suyo"?',
+    hints: ['Considera sus miedos', 'Piensa en desarrollo gradual', 'Busca motivación intrínseca']
+  },
+  {
+    id: 'resistencia-cambio',
+    difficulty: 1,
+    title: 'Resistencia al Cambio',
+    challenge: 'Propón una estrategia para reducir la resistencia al cambio en tu unidad ante un nuevo protocolo de documentación.',
+    hints: ['Involucra al equipo', 'Comunica beneficios', 'Identifica aliados']
+  },
+  {
+    id: 'conflicto-turnos',
+    difficulty: 2,
+    title: 'Conflicto entre Turnos',
+    challenge: '¿Cómo actuarías ante un conflicto entre el turno de mañana y el de noche que está afectando la continuidad de cuidados?',
+    hints: ['Escucha ambas partes', 'Busca causas raíz', 'Crea espacios de encuentro']
+  },
+  {
+    id: 'burnout-equipo',
+    difficulty: 2,
+    title: 'Burnout en Equipo',
+    challenge: 'Tu equipo muestra signos de burnout tras meses de alta carga. ¿Qué acciones tomarías como líder?',
+    hints: ['Reconoce el esfuerzo', 'Busca recursos adicionales', 'Cuida el bienestar']
+  },
+  {
+    id: 'decision-impopular',
+    difficulty: 3,
+    title: 'Decisión Impopular',
+    challenge: 'Debes comunicar una decisión de dirección que sabes que será muy impopular en tu equipo. ¿Cómo lo harías?',
+    hints: ['Sé transparente', 'Explica el contexto', 'Escucha sin justificar']
+  },
+  {
+    id: 'conflicto-valores',
+    difficulty: 3,
+    title: 'Conflicto de Valores',
+    challenge: 'Una enfermera excelente técnicamente tiene actitudes que no encajan con los valores del equipo. ¿Cómo lo abordarías?',
+    hints: ['Conversación directa', 'Expectativas claras', 'Consecuencias definidas']
+  }
+];
+
+const EMOJIS_BY_SCORE = {
+  excellent: ['🎉', '🏆', '⭐', '🌟', '💫', '🚀', '👑', '💯'],
+  good: ['👏', '✨', '💪', '🎯', '👍', '😊', '🌈', '🔥'],
+  average: ['🤔', '📈', '💡', '🔄', '👀', '🌱', '📚', '⏳'],
+  poor: ['😕', '📉', '⚠️', '🔧', '💭', '🎓', '🔍', '📝']
+};
+
+const PHRASES_BY_SCORE = {
+  excellent: [
+    '¡Excepcional! Tu liderazgo inspira',
+    '¡Brillante! Un líder transformador en acción',
+    '¡Impresionante! Demuestras maestría en liderazgo',
+    '¡Sobresaliente! Tu equipo tiene suerte de tenerte'
+  ],
+  good: [
+    '¡Muy bien! Vas por buen camino',
+    '¡Buen trabajo! Tu liderazgo es sólido',
+    '¡Genial! Tienes las bases bien asentadas',
+    '¡Bien hecho! Sigue desarrollando tu potencial'
+  ],
+  average: [
+    'Hay potencial, pero margen de mejora',
+    'En desarrollo, sigue aprendiendo',
+    'Base correcta, pero puedes crecer más',
+    'Oportunidad de crecimiento detectada'
+  ],
+  poor: [
+    'Es momento de reflexionar sobre tu liderazgo',
+    'Hay áreas importantes que trabajar',
+    'El liderazgo se desarrolla, no te desanimes',
+    'Identifica tus áreas de mejora para crecer'
+  ]
+};
+
+const getScoreCategory = (score, maxScore) => {
+  const percentage = (score / maxScore) * 100;
+  if (percentage >= 80) return 'excellent';
+  if (percentage >= 60) return 'good';
+  if (percentage >= 40) return 'average';
+  return 'poor';
+};
+
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+const ModeSelector = ({ onSelectMode }) => {
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#10b981" size="300px" left="5%" top="20%" delay="0s" />
+      <GlowingOrb color="#14b8a6" size="200px" left="85%" top="60%" delay="2s" />
+      
+      <div className="max-w-5xl mx-auto relative z-10">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 px-6 py-3 rounded-2xl border border-emerald-500/30 mb-6">
+            <Brain className="w-8 h-8 text-emerald-400" />
+            <h1 className="text-3xl font-black text-white">
+              Centro de <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Liderazgo</span>
+            </h1>
+          </div>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+            Desarrolla y evalúa tus competencias de liderazgo enfermero
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {LEADERSHIP_MODES.map((mode, idx) => (
+            <button
+              key={mode.id}
+              onClick={() => onSelectMode(mode.id)}
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-emerald-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-emerald-500/20 hover:scale-[1.02] hover:-translate-y-1`}
+              style={{ animationDelay: `${idx * 0.1}s` }}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${mode.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
+                  {mode.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-white mb-1 group-hover:text-emerald-100">{mode.title}</h3>
+                  <p className="text-slate-300 text-sm mb-3">{mode.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {mode.features.map((feature, fidx) => (
+                      <span key={fidx} className="text-xs bg-slate-700/80 text-emerald-300 px-2 py-1 rounded-lg">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ScoreDisplay = ({ score, maxScore, feedback, leadershipStyle, onContinue, additionalInfo }) => {
+  const category = getScoreCategory(score, maxScore);
+  const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
+  const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
+  const percentage = Math.round((score / maxScore) * 100);
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <FloatingParticles />
+      <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-8 max-w-lg w-full text-center border-2 border-emerald-500/30 shadow-2xl">
+        <div className="text-8xl mb-4 animate-bounce">{emoji}</div>
+        <h2 className="text-2xl font-black text-white mb-2">{phrase}</h2>
+        
+        <div className="bg-slate-700/50 rounded-2xl p-6 my-6">
+          <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">
+            {score}/{maxScore}
+          </div>
+          <div className="w-full bg-slate-600 rounded-full h-3 mb-3">
+            <div 
+              className={`h-3 rounded-full transition-all duration-1000 ${
+                category === 'excellent' ? 'bg-gradient-to-r from-emerald-400 to-green-400' :
+                category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
+                category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
+                'bg-gradient-to-r from-rose-400 to-red-400'
+              }`}
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+          <p className="text-slate-300 text-sm">{percentage}% de puntuación</p>
+        </div>
+        
+        {leadershipStyle && (
+          <div className="bg-emerald-500/20 border border-emerald-500/40 rounded-xl p-4 mb-4">
+            <p className="text-emerald-300 font-bold text-lg mb-1">Tu estilo predominante:</p>
+            <p className="text-white text-xl font-black">{leadershipStyle}</p>
+          </div>
+        )}
+        
+        <p className="text-slate-200 text-sm mb-6 leading-relaxed">{feedback}</p>
+        
+        {additionalInfo && (
+          <div className="bg-slate-700/50 rounded-xl p-4 mb-6 text-left">
+            <p className="text-slate-300 text-sm whitespace-pre-line">{additionalInfo}</p>
+          </div>
+        )}
+        
+        <button
+          onClick={onContinue}
+          className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/30 hover:scale-105"
+        >
+          Continuar
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const RadarChart = ({ data, labels, title }) => {
+  const centerX = 150;
+  const centerY = 150;
+  const radius = 100;
+  const sides = data.length;
+  
+  const getPoint = (value, index) => {
+    const angle = (Math.PI * 2 * index) / sides - Math.PI / 2;
+    const r = (value / 4) * radius;
+    return {
+      x: centerX + r * Math.cos(angle),
+      y: centerY + r * Math.sin(angle)
+    };
+  };
+  
+  const getLabelPoint = (index) => {
+    const angle = (Math.PI * 2 * index) / sides - Math.PI / 2;
+    const r = radius + 30;
+    return {
+      x: centerX + r * Math.cos(angle),
+      y: centerY + r * Math.sin(angle)
+    };
+  };
+  
+  const gridLines = [0.25, 0.5, 0.75, 1].map(factor => {
+    const r = factor * radius;
+    const points = [];
+    for (let i = 0; i < sides; i++) {
+      const angle = (Math.PI * 2 * i) / sides - Math.PI / 2;
+      points.push({
+        x: centerX + r * Math.cos(angle),
+        y: centerY + r * Math.sin(angle)
+      });
+    }
+    return points.map(p => `${p.x},${p.y}`).join(' ');
+  });
+  
+  const dataPoints = data.map((value, index) => getPoint(value, index));
+  const dataPath = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+  
+  return (
+    <div className="bg-slate-800/80 rounded-2xl p-4 border border-emerald-500/30">
+      <h3 className="text-white font-bold text-center mb-4">{title}</h3>
+      <svg viewBox="0 0 300 300" className="w-full max-w-xs mx-auto">
+        {gridLines.map((points, idx) => (
+          <polygon key={idx} points={points} fill="none" stroke="#475569" strokeWidth="1" />
+        ))}
+        
+        {[...Array(sides)].map((_, i) => {
+          const end = getPoint(4, i);
+          return (
+            <line key={i} x1={centerX} y1={centerY} x2={end.x} y2={end.y} stroke="#475569" strokeWidth="1" />
+          );
+        })}
+        
+        <polygon points={dataPath} fill="rgba(16, 185, 129, 0.3)" stroke="#10b981" strokeWidth="2" />
+        
+        {dataPoints.map((point, idx) => (
+          <circle key={idx} cx={point.x} cy={point.y} r="5" fill="#10b981" />
+        ))}
+        
+        {labels.map((label, idx) => {
+          const pos = getLabelPoint(idx);
+          return (
+            <text
+              key={idx}
+              x={pos.x}
+              y={pos.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-slate-300 text-[10px]"
+            >
+              {label}
+            </text>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
+
+const ScenarioChat = ({ scenario, onBack }) => {
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [result, setResult] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  useEffect(() => {
+    setMessages([{
+      role: 'assistant',
+      content: `**${scenario.title}**\n\n📋 **Categoría:** ${scenario.category}\n⚡ **Dificultad:** ${scenario.difficulty}\n\n---\n\n${scenario.description}\n\n---\n\n¿Estás listo/a para demostrar tu liderazgo? Escribe **"Empezar"** para comenzar el escenario.`
+    }]);
+  }, [scenario]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const formatMessage = (text) => {
@@ -25,6 +795,22 @@ const LeadershipModule = ({ onBack }) => {
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/\n/g, '<br/>');
+  };
+
+  const parseEvaluation = (text) => {
+    const scoreMatch = text.match(/\*\*PUNTUACIÓN:\s*(\d+)\/10\*\*/i) || 
+                       text.match(/PUNTUACIÓN:\s*(\d+)\/10/i) ||
+                       text.match(/\*\*EVALUACIÓN:\s*(\d+)\/10\*\*/i);
+    
+    const styleMatch = text.match(/\*\*ESTILO.*?:\s*([^*\n]+)\*\*/i) ||
+                       text.match(/ESTILO.*?:\s*([^\n]+)/i);
+    
+    if (scoreMatch) {
+      const score = parseInt(scoreMatch[1], 10);
+      const style = styleMatch ? styleMatch[1].trim() : null;
+      return { score, style, feedback: text };
+    }
+    return null;
   };
 
   const handleSubmit = async (e) => {
@@ -37,7 +823,7 @@ const LeadershipModule = ({ onBack }) => {
     setIsLoading(true);
 
     try {
-      const history = messages.slice(1).map(msg => ({
+      const history = messages.map(msg => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }]
       }));
@@ -48,60 +834,1063 @@ const LeadershipModule = ({ onBack }) => {
         body: JSON.stringify({
           message: userMessage,
           history,
-          systemPrompt: `Eres un coach de liderazgo experto en gestión sanitaria y enfermería.
+          systemPrompt: `Eres un simulador de liderazgo para gestoras enfermeras.
 
-Tus áreas de expertise:
-1. **Estilos de liderazgo**: Transformacional, Transaccional, Situacional, Servant Leadership
-2. **Competencias de liderazgo enfermero**: Visión, comunicación, influencia, desarrollo de equipos
-3. **Modelos teóricos**: Hersey-Blanchard, Bass, Kouzes-Posner, Goleman
-4. **Inteligencia emocional**: Autoconciencia, autorregulación, motivación, empatía, habilidades sociales
+ESCENARIO: "${scenario.title}"
+CATEGORÍA: ${scenario.category}
+DESCRIPCIÓN: ${scenario.description}
 
-Cuando el usuario quiera:
-- **Test de liderazgo**: Hazle preguntas situacionales y evalúa su estilo predominante
-- **Práctica**: Simula situaciones donde debe ejercer liderazgo
-- **Teoría**: Explica modelos con ejemplos prácticos de enfermería
-- **Desafíos**: Presenta problemas reales de liderazgo en equipos sanitarios
+TU FUNCIÓN:
+1. Cuando el usuario diga "Empezar", presenta un escenario detallado de liderazgo con:
+   - Contexto específico del hospital/unidad
+   - Personas involucradas con nombres y roles
+   - El desafío de liderazgo concreto
+   - Pregunta qué haría como líder
 
-Siempre:
-- Conecta la teoría con la práctica enfermera
-- Ofrece feedback constructivo y específico
-- Sugiere acciones concretas de mejora
-- Usa ejemplos del ámbito sanitario
+2. Después de cada respuesta del usuario:
+   - Evalúa qué estilo de liderazgo está aplicando (Transformador, Transaccional, Situacional, Servidor, etc.)
+   - Muestra las consecuencias de sus decisiones
+   - Presenta nuevos desarrollos
+   - Guía hacia una resolución
 
-Responde en español con tono motivador y profesional.`
+3. Tras 3-4 intercambios, proporciona:
+   - **PUNTUACIÓN: X/10** (formato exacto)
+   - **ESTILO DETECTADO: [nombre del estilo]**
+   - Feedback sobre fortalezas y áreas de mejora
+   - Qué le falta para ser un líder transformador
+   - Qué le falta para ser un líder situacional
+   - Si el estilo aplicado era adecuado o no para este caso
+
+ESTILOS DE LIDERAZGO A DETECTAR:
+- Transformador: inspira, motiva, desarrolla personas
+- Transaccional: recompensas, objetivos, supervisión
+- Situacional: adapta el estilo al contexto
+- Servidor: prioriza necesidades del equipo
+- Autocrático: decide solo
+- Laissez-faire: deja hacer
+
+IMPORTANTE:
+- Siempre en español
+- Contexto de gestión enfermera en España
+- Sé exigente pero constructivo`
         })
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      const aiResponse = data.response;
+      
+      setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+      
+      const evaluation = parseEvaluation(aiResponse);
+      if (evaluation) {
+        setTimeout(() => {
+          setResult(evaluation);
+          setShowResult(true);
+        }, 1500);
+      }
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: '❌ Error al procesar. Por favor, intenta de nuevo.' 
+        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
       }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const clearChat = () => {
-    setMessages([{
-      role: 'assistant',
-      content: '¡Nuevo entrenamiento de liderazgo! 🌟 ¿Qué competencia quieres desarrollar hoy?'
-    }]);
-  };
-
-  const quickOptions = [
-    "Test de estilo de liderazgo",
-    "Liderazgo transformacional",
-    "Situación con equipo difícil",
-    "Cómo motivar a mi equipo"
-  ];
+  if (showResult && result) {
+    return (
+      <ScoreDisplay
+        score={result.score}
+        maxScore={10}
+        feedback={result.feedback.substring(0, 500) + '...'}
+        leadershipStyle={result.style}
+        onContinue={onBack}
+      />
+    );
+  }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-emerald-500/30 px-4 py-3 flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="bg-slate-800 border-b-2 border-emerald-500/50 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </button>
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-xl shadow-lg`}>
+            {scenario.icon}
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white">{scenario.title}</h1>
+            <p className="text-xs text-emerald-300">{scenario.category}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/60 to-slate-800/40">
+        <FloatingParticles />
+        {messages.map((msg, idx) => (
+          <div 
+            key={idx} 
+            className={`flex gap-3 items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
+          >
+            {msg.role === 'assistant' && (
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0 shadow-xl ring-2 ring-white/20`}>
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-xl backdrop-blur-sm ${
+              msg.role === 'user'
+                ? 'bg-gradient-to-r from-emerald-500/90 to-teal-500/90 text-white border border-emerald-400/30'
+                : 'bg-slate-800/90 border-2 border-slate-600/80 text-slate-100'
+            }`}>
+              <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+            </div>
+            {msg.role === 'user' && (
+              <div className="flex-shrink-0">
+                <PlayerAvatarIcon size="md" />
+              </div>
+            )}
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex gap-3 justify-start animate-pulse">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0 shadow-xl`}>
+              <Bot className="w-5 h-5 text-white" />
+            </div>
+            <div className="bg-slate-800/90 border-2 border-slate-600/80 rounded-2xl px-5 py-4">
+              <div className="flex items-center gap-3 text-emerald-300">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">Evaluando tu liderazgo...</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="bg-slate-800 border-t-2 border-emerald-500/50 p-4">
+        <form onSubmit={handleSubmit} className="flex gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="¿Cómo actuarías como líder?"
+            className="flex-1 bg-slate-700 border-2 border-slate-500 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || isLoading}
+            className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const TransformationalTest = ({ onBack }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  
+  const handleAnswer = (optionIndex) => {
+    const option = TRANSFORMATIONAL_QUESTIONS[currentQuestion].options[optionIndex];
+    const newAnswers = [...answers, { 
+      questionId: currentQuestion, 
+      score: option.score,
+      dimension: TRANSFORMATIONAL_QUESTIONS[currentQuestion].dimension
+    }];
+    setAnswers(newAnswers);
+    
+    if (currentQuestion < TRANSFORMATIONAL_QUESTIONS.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResult(true);
+    }
+  };
+  
+  if (showResult) {
+    const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
+    const maxScore = TRANSFORMATIONAL_QUESTIONS.length * 4;
+    
+    const dimensions = {};
+    answers.forEach(a => {
+      if (!dimensions[a.dimension]) {
+        dimensions[a.dimension] = { total: 0, count: 0 };
+      }
+      dimensions[a.dimension].total += a.score;
+      dimensions[a.dimension].count += 1;
+    });
+    
+    const dimensionLabels = Object.keys(dimensions);
+    const dimensionScores = dimensionLabels.map(d => dimensions[d].total / dimensions[d].count);
+    
+    const percentage = (totalScore / maxScore) * 100;
+    let feedback = '';
+    let areasToImprove = [];
+    
+    dimensionLabels.forEach((dim, idx) => {
+      if (dimensionScores[idx] < 3) {
+        areasToImprove.push(dim);
+      }
+    });
+    
+    if (percentage >= 80) {
+      feedback = '¡Excelente! Demuestras un liderazgo altamente transformador. Inspiras a tu equipo y promueves el desarrollo individual.';
+    } else if (percentage >= 60) {
+      feedback = 'Buen nivel de liderazgo transformador. Tienes fortalezas pero aún puedes potenciar algunas dimensiones.';
+    } else {
+      feedback = 'Tu liderazgo tiene elementos transformadores pero hay oportunidades significativas de mejora.';
+    }
+    
+    const additionalInfo = areasToImprove.length > 0 
+      ? `Áreas de mejora para ser un líder transformador:\n• ${areasToImprove.join('\n• ')}\n\nConsejos:\n• Trabaja en mostrar más coherencia entre lo que dices y haces\n• Inspira con una visión compartida del futuro\n• Estimula el pensamiento creativo de tu equipo\n• Conoce las necesidades individuales de cada persona`
+      : 'Mantienes un equilibrio excelente en las 4 dimensiones del liderazgo transformador. ¡Sigue así!';
+    
+    return (
+      <div className="min-h-screen p-4 relative">
+        <FloatingParticles />
+        <div className="max-w-2xl mx-auto">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+          
+          <RadarChart 
+            data={dimensionScores} 
+            labels={dimensionLabels.map(d => d.split(' ')[0])} 
+            title="Tu Perfil de Liderazgo Transformador"
+          />
+          
+          <div className="mt-6">
+            <ScoreDisplay
+              score={totalScore}
+              maxScore={maxScore}
+              feedback={feedback}
+              leadershipStyle="Transformador"
+              onContinue={onBack}
+              additionalInfo={additionalInfo}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  const question = TRANSFORMATIONAL_QUESTIONS[currentQuestion];
+  
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#a855f7" size="250px" left="10%" top="30%" delay="0s" />
+      
+      <div className="max-w-2xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+        
+        <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-purple-500/30 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl">
+                🦋
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Liderazgo Transformador</h2>
+                <p className="text-purple-300 text-sm">{question.dimension}</p>
+              </div>
+            </div>
+            <div className="bg-purple-500/20 px-4 py-2 rounded-xl">
+              <span className="text-purple-300 font-bold">{currentQuestion + 1}/{TRANSFORMATIONAL_QUESTIONS.length}</span>
+            </div>
+          </div>
+          
+          <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
+            <div 
+              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
+              style={{ width: `${((currentQuestion + 1) / TRANSFORMATIONAL_QUESTIONS.length) * 100}%` }}
+            />
+          </div>
+          
+          <p className="text-white text-lg mb-6 leading-relaxed">{question.question}</p>
+          
+          <div className="space-y-3">
+            {question.options.map((option, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                className="w-full text-left bg-slate-700/50 hover:bg-purple-500/20 border-2 border-slate-600 hover:border-purple-500 rounded-xl p-4 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-600 group-hover:bg-purple-500 flex items-center justify-center text-white font-bold transition-colors">
+                    {String.fromCharCode(65 + idx)}
+                  </div>
+                  <span className="text-slate-200 group-hover:text-white">{option.text}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SituationalTest = ({ onBack }) => {
+  const [currentScenario, setCurrentScenario] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  
+  const handleAnswer = (optionIndex) => {
+    const option = SITUATIONAL_SCENARIOS[currentScenario].options[optionIndex];
+    const newAnswers = [...answers, {
+      scenarioId: currentScenario,
+      score: option.score,
+      styleChosen: option.style,
+      bestStyle: SITUATIONAL_SCENARIOS[currentScenario].bestStyle
+    }];
+    setAnswers(newAnswers);
+    
+    if (currentScenario < SITUATIONAL_SCENARIOS.length - 1) {
+      setCurrentScenario(currentScenario + 1);
+    } else {
+      setShowResult(true);
+    }
+  };
+  
+  if (showResult) {
+    const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
+    const maxScore = SITUATIONAL_SCENARIOS.length * 4;
+    
+    const styleCount = {};
+    answers.forEach(a => {
+      styleCount[a.styleChosen] = (styleCount[a.styleChosen] || 0) + 1;
+    });
+    
+    const correctMatches = answers.filter(a => a.styleChosen === a.bestStyle).length;
+    
+    const percentage = (totalScore / maxScore) * 100;
+    let feedback = '';
+    
+    if (percentage >= 80) {
+      feedback = `¡Excelente adaptabilidad! Acertaste ${correctMatches}/${answers.length} estilos óptimos. Demuestras un dominio del liderazgo situacional.`;
+    } else if (percentage >= 60) {
+      feedback = `Buena capacidad de adaptación. Acertaste ${correctMatches}/${answers.length} estilos. Puedes mejorar tu lectura del contexto.`;
+    } else {
+      feedback = `Necesitas trabajar tu flexibilidad de estilos. Acertaste ${correctMatches}/${answers.length}. Recuerda: adapta tu liderazgo a la madurez del equipo.`;
+    }
+    
+    const styleLabels = ['Directivo', 'Persuasivo', 'Participativo', 'Delegativo'];
+    const styleScores = styleLabels.map(style => styleCount[style] || 0);
+    
+    const additionalInfo = `Distribución de estilos usados:\n• Directivo: ${styleCount['Directivo'] || 0} veces\n• Persuasivo: ${styleCount['Persuasivo'] || 0} veces\n• Participativo: ${styleCount['Participativo'] || 0} veces\n• Delegativo: ${styleCount['Delegativo'] || 0} veces\n\nRecuerda el modelo Hersey-Blanchard:\n• Directivo: para baja competencia, alta motivación\n• Persuasivo: para competencia creciente, motivación variable\n• Participativo: para alta competencia, motivación variable\n• Delegativo: para alta competencia, alta motivación`;
+    
+    return (
+      <div className="min-h-screen p-4 relative">
+        <FloatingParticles />
+        <div className="max-w-2xl mx-auto">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+          
+          <RadarChart 
+            data={styleScores.map(s => s * (4 / SITUATIONAL_SCENARIOS.length) * 4)} 
+            labels={styleLabels} 
+            title="Tu Uso de Estilos Situacionales"
+          />
+          
+          <div className="mt-6">
+            <ScoreDisplay
+              score={totalScore}
+              maxScore={maxScore}
+              feedback={feedback}
+              leadershipStyle="Situacional"
+              onContinue={onBack}
+              additionalInfo={additionalInfo}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  const scenario = SITUATIONAL_SCENARIOS[currentScenario];
+  
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#3b82f6" size="250px" left="10%" top="30%" delay="0s" />
+      
+      <div className="max-w-2xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+        
+        <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-blue-500/30 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl">
+                🔄
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Liderazgo Situacional</h2>
+                <p className="text-blue-300 text-sm">Adapta tu estilo al contexto</p>
+              </div>
+            </div>
+            <div className="bg-blue-500/20 px-4 py-2 rounded-xl">
+              <span className="text-blue-300 font-bold">{currentScenario + 1}/{SITUATIONAL_SCENARIOS.length}</span>
+            </div>
+          </div>
+          
+          <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all"
+              style={{ width: `${((currentScenario + 1) / SITUATIONAL_SCENARIOS.length) * 100}%` }}
+            />
+          </div>
+          
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
+            <p className="text-blue-200 text-sm italic">📍 Contexto: {scenario.context}</p>
+          </div>
+          
+          <p className="text-white text-lg mb-6 leading-relaxed">{scenario.scenario}</p>
+          
+          <div className="space-y-3">
+            {scenario.options.map((option, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                className="w-full text-left bg-slate-700/50 hover:bg-blue-500/20 border-2 border-slate-600 hover:border-blue-500 rounded-xl p-4 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-600 group-hover:bg-blue-500 flex items-center justify-center text-white font-bold transition-colors">
+                    {String.fromCharCode(65 + idx)}
+                  </div>
+                  <span className="text-slate-200 group-hover:text-white">{option.text}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GeneralEvaluation = ({ onBack }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  
+  const handleAnswer = (optionIndex) => {
+    const option = GENERAL_LEADERSHIP_QUESTIONS[currentQuestion].options[optionIndex];
+    const newAnswers = [...answers, { 
+      questionId: currentQuestion, 
+      style: option.style
+    }];
+    setAnswers(newAnswers);
+    
+    if (currentQuestion < GENERAL_LEADERSHIP_QUESTIONS.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResult(true);
+    }
+  };
+  
+  if (showResult) {
+    const styleCount = {};
+    answers.forEach(a => {
+      styleCount[a.style] = (styleCount[a.style] || 0) + 1;
+    });
+    
+    const dominantStyle = Object.entries(styleCount).sort((a, b) => b[1] - a[1])[0][0];
+    
+    const styleDescriptions = {
+      'Transformador': {
+        description: 'Inspiras y motivas a tu equipo hacia una visión compartida. Te centras en el desarrollo individual y en crear un propósito mayor.',
+        fitness: 'Muy adecuado para la gestión enfermera. Fomenta la innovación, el compromiso y el desarrollo profesional del equipo.',
+        improve: 'Asegúrate de no descuidar los objetivos operativos inmediatos. Combina inspiración con estructura.'
+      },
+      'Transaccional': {
+        description: 'Te enfocas en objetivos claros, recompensas por logros y supervisión del rendimiento. Valoras la estructura y la previsibilidad.',
+        fitness: 'Útil para tareas rutinarias y cuando hay que garantizar cumplimiento de protocolos. Puede limitar la creatividad.',
+        improve: 'Incorpora más elementos de inspiración y desarrollo personal. No todo es intercambio de recompensas.'
+      },
+      'Democrático': {
+        description: 'Valoras la participación del equipo en las decisiones. Buscas consenso y fomentas la colaboración.',
+        fitness: 'Muy adecuado para equipos maduros en enfermería. Aumenta el compromiso pero puede ralentizar decisiones urgentes.',
+        improve: 'En situaciones de crisis, sé capaz de tomar decisiones rápidas. No todo puede decidirse en grupo.'
+      },
+      'Servidor': {
+        description: 'Priorizas las necesidades del equipo. Te ves como un facilitador que ayuda a los demás a crecer.',
+        fitness: 'Excelente para crear equipos comprometidos y desarrollar talento. Muy valorado en enfermería.',
+        improve: 'No descuides tus propias necesidades. Asegúrate de establecer límites claros.'
+      },
+      'Consultivo': {
+        description: 'Consultas opiniones pero mantienes la autoridad en las decisiones finales. Equilibras participación y liderazgo.',
+        fitness: 'Muy equilibrado para gestión enfermera. Permite eficiencia manteniendo la voz del equipo.',
+        improve: 'Explica siempre el porqué de tus decisiones finales para mantener la confianza del equipo.'
+      },
+      'Laissez-faire': {
+        description: 'Das mucha autonomía al equipo. Intervienes poco y confías en la autogestión.',
+        fitness: 'Solo adecuado con equipos muy maduros y autónomos. Puede crear caos con personal inexperto.',
+        improve: 'Aumenta tu presencia y supervisión. El liderazgo requiere guía activa.'
+      },
+      'Autocrático': {
+        description: 'Tomas las decisiones de forma independiente. Valoras la eficiencia y el control.',
+        fitness: 'Puede ser necesario en emergencias, pero no es sostenible. Reduce la motivación del equipo.',
+        improve: 'Incorpora más participación del equipo. Escucha más y delega responsabilidades.'
+      },
+      'Afiliativo': {
+        description: 'Priorizas las relaciones y el bienestar emocional del equipo. Buscas armonía.',
+        fitness: 'Muy útil tras crisis o conflictos. Puede descuidar rendimiento si se usa en exceso.',
+        improve: 'No evites los conflictos necesarios. A veces hay que dar feedback difícil.'
+      }
+    };
+    
+    const styleInfo = styleDescriptions[dominantStyle] || {
+      description: 'Tienes un estilo de liderazgo único.',
+      fitness: 'Adapta tu liderazgo según el contexto.',
+      improve: 'Sigue desarrollando tus competencias.'
+    };
+    
+    const score = answers.filter(a => ['Transformador', 'Servidor', 'Democrático'].includes(a.style)).length;
+    const maxScore = answers.length;
+    
+    return (
+      <ScoreDisplay
+        score={score}
+        maxScore={maxScore}
+        feedback={styleInfo.description}
+        leadershipStyle={dominantStyle}
+        onContinue={onBack}
+        additionalInfo={`Adecuación en gestión enfermera:\n${styleInfo.fitness}\n\nÁreas de desarrollo:\n${styleInfo.improve}`}
+      />
+    );
+  }
+  
+  const question = GENERAL_LEADERSHIP_QUESTIONS[currentQuestion];
+  
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#f59e0b" size="250px" left="10%" top="30%" delay="0s" />
+      
+      <div className="max-w-2xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+        
+        <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-amber-500/30 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-2xl">
+                📊
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Evaluación General</h2>
+                <p className="text-amber-300 text-sm">Descubre tu estilo predominante</p>
+              </div>
+            </div>
+            <div className="bg-amber-500/20 px-4 py-2 rounded-xl">
+              <span className="text-amber-300 font-bold">{currentQuestion + 1}/{GENERAL_LEADERSHIP_QUESTIONS.length}</span>
+            </div>
+          </div>
+          
+          <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
+            <div 
+              className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all"
+              style={{ width: `${((currentQuestion + 1) / GENERAL_LEADERSHIP_QUESTIONS.length) * 100}%` }}
+            />
+          </div>
+          
+          <p className="text-white text-lg mb-6 leading-relaxed">{question.question}</p>
+          
+          <div className="space-y-3">
+            {question.options.map((option, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                className="w-full text-left bg-slate-700/50 hover:bg-amber-500/20 border-2 border-slate-600 hover:border-amber-500 rounded-xl p-4 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-600 group-hover:bg-amber-500 flex items-center justify-center text-white font-bold transition-colors">
+                    {String.fromCharCode(65 + idx)}
+                  </div>
+                  <span className="text-slate-200 group-hover:text-white">{option.text}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MicroChallenges = ({ onBack }) => {
+  const [currentChallenge, setCurrentChallenge] = useState(null);
+  const [userResponse, setUserResponse] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const [streak, setStreak] = useState(() => {
+    const saved = localStorage.getItem('leadershipStreak');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+  const [difficulty, setDifficulty] = useState(() => {
+    const saved = localStorage.getItem('leadershipDifficulty');
+    return saved ? parseInt(saved, 10) : 1;
+  });
+  
+  const availableChallenges = MICRO_CHALLENGES.filter(c => c.difficulty <= difficulty + 1);
+  
+  const startChallenge = (challenge) => {
+    setCurrentChallenge(challenge);
+    setUserResponse('');
+    setFeedback(null);
+  };
+  
+  const submitResponse = async () => {
+    if (!userResponse.trim() || isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userResponse,
+          systemPrompt: `Eres un evaluador de micro-retos de liderazgo para gestoras enfermeras.
+
+RETO: "${currentChallenge.challenge}"
+
+Evalúa la respuesta del usuario y proporciona:
+1. **PUNTUACIÓN: X/10** (formato exacto)
+2. **ESTILO DETECTADO:** [nombre del estilo de liderazgo aplicado]
+3. Feedback breve (máximo 3 frases) sobre:
+   - Fortalezas de la respuesta
+   - Área de mejora
+   - Si el estilo aplicado es adecuado para este reto
+
+Sé constructivo y específico. Contexto: gestión enfermera en España.`
+        })
+      });
+      
+      const data = await response.json();
+      const aiResponse = data.response;
+      
+      const scoreMatch = aiResponse.match(/\*\*PUNTUACIÓN:\s*(\d+)\/10\*\*/i);
+      const styleMatch = aiResponse.match(/\*\*ESTILO.*?:\s*([^*\n]+)\*\*/i);
+      
+      const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 5;
+      const style = styleMatch ? styleMatch[1].trim() : 'No identificado';
+      
+      if (score >= 7) {
+        const newStreak = streak + 1;
+        setStreak(newStreak);
+        localStorage.setItem('leadershipStreak', newStreak.toString());
+        
+        if (newStreak % 3 === 0 && difficulty < 3) {
+          const newDifficulty = difficulty + 1;
+          setDifficulty(newDifficulty);
+          localStorage.setItem('leadershipDifficulty', newDifficulty.toString());
+        }
+      } else {
+        setStreak(0);
+        localStorage.setItem('leadershipStreak', '0');
+      }
+      
+      setFeedback({ score, style, text: aiResponse });
+    } catch (error) {
+      setFeedback({ score: 0, style: 'Error', text: 'Error al evaluar. Intenta de nuevo.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  if (feedback) {
+    const category = getScoreCategory(feedback.score, 10);
+    const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
+    
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative">
+        <FloatingParticles />
+        <div className="max-w-2xl mx-auto relative z-10">
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-rose-500/30 shadow-xl text-center">
+            <div className="text-7xl mb-4">{emoji}</div>
+            <div className="text-4xl font-black text-white mb-2">{feedback.score}/10</div>
+            <div className="bg-rose-500/20 border border-rose-500/40 rounded-xl px-4 py-2 inline-block mb-4">
+              <span className="text-rose-300">Estilo: </span>
+              <span className="text-white font-bold">{feedback.style}</span>
+            </div>
+            
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Flame className="w-5 h-5 text-orange-400" />
+              <span className="text-orange-300 font-bold">Racha: {streak}</span>
+              <span className="text-slate-400">|</span>
+              <span className="text-slate-300">Nivel: {difficulty}</span>
+            </div>
+            
+            <p className="text-slate-200 text-sm mb-6 leading-relaxed whitespace-pre-line text-left">
+              {feedback.text.replace(/\*\*/g, '')}
+            </p>
+            
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => {
+                  setCurrentChallenge(null);
+                  setFeedback(null);
+                }}
+                className="bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-400 hover:to-red-400 text-white font-bold px-6 py-3 rounded-xl transition-all"
+              >
+                Nuevo Reto
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (currentChallenge) {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative">
+        <FloatingParticles />
+        <GlowingOrb color="#f43f5e" size="250px" left="10%" top="30%" delay="0s" />
+        
+        <div className="max-w-2xl mx-auto relative z-10">
+          <button
+            onClick={() => setCurrentChallenge(null)}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+          
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-rose-500/30 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-red-500 flex items-center justify-center text-2xl">
+                  ⚡
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white">{currentChallenge.title}</h2>
+                  <p className="text-rose-300 text-sm">Nivel {currentChallenge.difficulty}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-2 rounded-xl">
+                <Flame className="w-4 h-4 text-orange-400" />
+                <span className="text-orange-300 font-bold">{streak}</span>
+              </div>
+            </div>
+            
+            <div className="bg-slate-700/50 rounded-xl p-4 mb-6">
+              <p className="text-white text-lg leading-relaxed">{currentChallenge.challenge}</p>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-slate-400 text-sm mb-2">💡 Pistas:</p>
+              <div className="flex flex-wrap gap-2">
+                {currentChallenge.hints.map((hint, idx) => (
+                  <span key={idx} className="text-xs bg-slate-700/80 text-slate-300 px-2 py-1 rounded-lg">
+                    {hint}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <textarea
+              value={userResponse}
+              onChange={(e) => setUserResponse(e.target.value)}
+              placeholder="Escribe tu respuesta como líder..."
+              className="w-full bg-slate-700/50 border-2 border-slate-600 focus:border-rose-500 rounded-xl p-4 text-white placeholder-slate-400 resize-none h-32 focus:outline-none"
+              disabled={isLoading}
+            />
+            
+            <button
+              onClick={submitResponse}
+              disabled={!userResponse.trim() || isLoading}
+              className="w-full mt-4 bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-400 hover:to-red-400 disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Evaluando...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Enviar Respuesta</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#f43f5e" size="300px" left="5%" top="20%" delay="0s" />
+      
+      <div className="max-w-3xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+        
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-black text-white mb-3">
+            Micro-retos de <span className="bg-gradient-to-r from-rose-400 to-red-400 bg-clip-text text-transparent">Liderazgo</span>
+          </h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="bg-orange-500/20 px-4 py-2 rounded-xl flex items-center gap-2">
+              <Flame className="w-5 h-5 text-orange-400" />
+              <span className="text-orange-300 font-bold">Racha: {streak}</span>
+            </div>
+            <div className="bg-slate-700/80 px-4 py-2 rounded-xl">
+              <span className="text-slate-300">Nivel: {difficulty}/3</span>
+            </div>
+          </div>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+            Resuelve retos rápidos y mejora tu liderazgo
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-4">
+          {availableChallenges.map((challenge, idx) => (
+            <button
+              key={challenge.id}
+              onClick={() => startChallenge(challenge)}
+              className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-rose-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-rose-500/20 hover:scale-[1.02]"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex">
+                  {[...Array(challenge.difficulty)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-rose-400 fill-rose-400" />
+                  ))}
+                  {[...Array(3 - challenge.difficulty)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-slate-600" />
+                  ))}
+                </div>
+                <span className="text-rose-300 text-sm font-medium">Nivel {challenge.difficulty}</span>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2 group-hover:text-rose-100">{challenge.title}</h3>
+              <p className="text-slate-300 text-sm line-clamp-2">{challenge.challenge}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ScenarioSelector = ({ onSelectScenario, onBack }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiScenarios, setAiScenarios] = useState([]);
+  const [error, setError] = useState(null);
+  
+  const allScenarios = [...aiScenarios, ...LEADERSHIP_SCENARIOS];
+  
+  const generateScenario = async () => {
+    setIsGenerating(true);
+    setError(null);
+    
+    try {
+      const response = await fetch('/api/generate-leadership-scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!response.ok) throw new Error('Error generando escenario');
+      
+      const scenario = await response.json();
+      setAiScenarios(prev => [scenario, ...prev]);
+    } catch (err) {
+      setError('No se pudo generar el escenario. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+  
+  return (
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#10b981" size="300px" left="5%" top="20%" delay="0s" />
+      
+      <div className="max-w-5xl mx-auto relative z-10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+        
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-black text-white mb-3">
+            Escenarios de <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Liderazgo</span>
+          </h1>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block mb-4">
+            Demuestra tu capacidad de liderar en situaciones reales
+          </p>
+          
+          <button
+            onClick={generateScenario}
+            disabled={isGenerating}
+            className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg flex items-center gap-2 mx-auto hover:scale-105"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Generando...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                <span>Generar con IA</span>
+              </>
+            )}
+          </button>
+          
+          {error && (
+            <p className="text-red-400 text-sm mt-3">{error}</p>
+          )}
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-4">
+          {allScenarios.map((scenario, idx) => (
+            <button
+              key={scenario.id}
+              onClick={() => onSelectScenario(scenario)}
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-emerald-500/20 hover:scale-[1.02] ${
+                idx < aiScenarios.length 
+                  ? 'border-purple-500/50 hover:border-purple-400' 
+                  : 'border-slate-600 hover:border-emerald-400'
+              }`}
+            >
+              {idx < aiScenarios.length && (
+                <div className="absolute top-3 right-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>IA</span>
+                </div>
+              )}
+              <div className="flex items-start gap-4">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl`}>
+                  {scenario.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">{scenario.title}</h3>
+                  <p className="text-emerald-400 text-xs font-medium mb-2">{scenario.category}</p>
+                  <p className="text-slate-300 text-sm mb-3 line-clamp-2">{scenario.description}</p>
+                  <span className="text-xs bg-slate-700/80 text-slate-300 px-2 py-1 rounded-lg">
+                    {scenario.difficulty}
+                  </span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LeadershipModule = ({ onBack }) => {
+  const [currentMode, setCurrentMode] = useState(null);
+  const [selectedScenario, setSelectedScenario] = useState(null);
+
+  if (currentMode === 'scenarios' && selectedScenario) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 flex flex-col">
+        <ScenarioChat 
+          scenario={selectedScenario} 
+          onBack={() => setSelectedScenario(null)} 
+        />
+      </div>
+    );
+  }
+
+  if (currentMode === 'scenarios') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 overflow-y-auto">
+        <ScenarioSelector 
+          onSelectScenario={setSelectedScenario}
+          onBack={() => setCurrentMode(null)}
+        />
+      </div>
+    );
+  }
+
+  if (currentMode === 'transformational') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900/10 to-slate-900 z-50 overflow-y-auto">
+        <TransformationalTest onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'situational') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900/10 to-slate-900 z-50 overflow-y-auto">
+        <SituationalTest onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'general') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-amber-900/10 to-slate-900 z-50 overflow-y-auto">
+        <GeneralEvaluation onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  if (currentMode === 'microchallenges') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-rose-900/10 to-slate-900 z-50 overflow-y-auto">
+        <MicroChallenges onBack={() => setCurrentMode(null)} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-emerald-900/10 to-slate-900 z-50 overflow-y-auto">
+      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-emerald-500/30 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
             <ArrowLeft className="w-5 h-5 text-white" />
@@ -111,90 +1900,13 @@ Responde en español con tono motivador y profesional.`
           </div>
           <div>
             <h1 className="text-lg font-black text-white">Liderazgo</h1>
-            <p className="text-xs text-emerald-300">Desarrolla habilidades de líder</p>
+            <p className="text-xs text-emerald-300">Centro de desarrollo de liderazgo</p>
           </div>
         </div>
-        <button onClick={clearChat} className="p-2 hover:bg-slate-700 rounded-xl transition-colors text-slate-400 hover:text-white">
-          <Trash2 className="w-5 h-5" />
-        </button>
+        <PlayerAvatarIcon size="md" />
       </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            {msg.role === 'assistant' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-            )}
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-              msg.role === 'user'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
-                : 'bg-slate-800/80 border border-slate-700 text-slate-100'
-            }`}>
-              <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
-            </div>
-            {msg.role === 'user' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-                <User className="w-4 h-4 text-white" />
-              </div>
-            )}
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2 text-emerald-300">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Preparando coaching...</span>
-              </div>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Quick Options */}
-      {messages.length <= 2 && (
-        <div className="px-4 pb-2">
-          <div className="flex flex-wrap gap-2">
-            {quickOptions.map((opt, idx) => (
-              <button
-                key={idx}
-                onClick={() => setInput(opt)}
-                className="text-xs bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-200 px-3 py-1.5 rounded-full transition-colors"
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input */}
-      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-emerald-500/30 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Tu pregunta sobre liderazgo..."
-            className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-emerald-500/30"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </form>
-      </div>
+      
+      <ModeSelector onSelectMode={setCurrentMode} />
     </div>
   );
 };

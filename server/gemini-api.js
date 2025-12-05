@@ -439,6 +439,75 @@ IMPORTANTE:
   }
 });
 
+app.post('/api/generate-leadership-scenario', async (req, res) => {
+  try {
+    const categories = [
+      'Gestión del Cambio',
+      'Resolución de Conflictos',
+      'Motivación de Equipos',
+      'Desarrollo de Personas',
+      'Liderazgo en Crisis',
+      'Comunicación Estratégica',
+      'Toma de Decisiones'
+    ];
+    
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    
+    const prompt = `Genera un escenario de liderazgo para gestoras enfermeras sobre "${category}".
+
+${TERMINOLOGY_RULES}
+
+Responde SOLO con un JSON válido en este formato exacto:
+{
+  "title": "Título breve del escenario de liderazgo",
+  "category": "${category}",
+  "description": "Descripción del desafío de liderazgo (2-3 frases)",
+  "difficulty": "Intermedio",
+  "icon": "emoji representativo",
+  "color": "from-emerald-500 to-teal-500"
+}
+
+IMPORTANTE:
+- El escenario debe ser REALISTA y basado en situaciones reales de liderazgo enfermero
+- Debe plantear un desafío que requiera habilidades de liderazgo
+- Usa colores: from-emerald-500 to-teal-500, from-rose-500 to-pink-500, from-amber-500 to-orange-500
+- NO incluyas "id" en el JSON, se generará automáticamente`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error("No se pudo parsear la respuesta");
+    }
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      throw new Error("JSON inválido en la respuesta");
+    }
+    
+    if (!parsed.title || !parsed.description) {
+      throw new Error("Respuesta incompleta de la IA");
+    }
+    
+    parsed.id = `leadership-ai-${Date.now()}`;
+    res.json(parsed);
+  } catch (error) {
+    console.error("Error generating leadership scenario:", error);
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
 const PORT = process.env.GEMINI_PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Gemini API server running on port ${PORT}`);
