@@ -3029,167 +3029,171 @@ Genera una respuesta con este formato EXACTO:
                        results.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
 
     return (
-      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+      <div className="h-full flex flex-col relative">
         <FloatingParticles />
         
-        <div className="max-w-3xl mx-auto relative z-10 pb-8">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/20 to-violet-500/20 px-6 py-3 rounded-2xl border border-indigo-500/30 mb-4">
-              <Trophy className="w-8 h-8 text-amber-400" />
-              <h1 className="text-2xl font-black text-white">Resultados del Test</h1>
-            </div>
-          </div>
-
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-indigo-500/30 shadow-2xl mb-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-slate-400 text-sm">Puntuación Global</p>
-                <div className="flex items-baseline gap-2">
-                  <span className={`text-5xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
-                    {results.overallScore.toFixed(1)}
-                  </span>
-                  <span className="text-slate-400 text-xl">/10</span>
-                </div>
-              </div>
-              <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${scoreColor} flex items-center justify-center shadow-lg`}>
-                <span className="text-4xl">
-                  {results.overallScore >= 8 ? '🏆' : results.overallScore >= 6 ? '⭐' : results.overallScore >= 4 ? '📈' : '💪'}
-                </span>
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto relative z-10">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/20 to-violet-500/20 px-5 py-2.5 rounded-2xl border border-indigo-500/30">
+                <Trophy className="w-6 h-6 text-amber-400" />
+                <h1 className="text-xl font-black text-white">Resultados del Test</h1>
               </div>
             </div>
 
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-violet-400" />
-              Tu Perfil Radar
-            </h3>
-            
-            <div className="bg-slate-900/50 rounded-xl p-4 mb-4">
-              <RadarChart data={results.radarData} />
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {TEAMWORK_DIMENSIONS.map(dim => (
-                <div key={dim.id} className={`bg-gradient-to-br ${dim.color} rounded-xl p-3 text-center`}>
-                  <span className="text-2xl">{dim.icon}</span>
-                  <p className="text-white text-xs font-medium mt-1">{dim.name}</p>
-                  <p className="text-white/90 text-lg font-bold">{results.radarData[dim.id]?.toFixed(1) || '0'}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5">
-              <h3 className="text-lg font-bold text-emerald-400 mb-3 flex items-center gap-2">
-                <Star className="w-5 h-5" />
-                Tus Fortalezas
-              </h3>
-              <div className="space-y-2">
-                {results.strongAreas.map((area, idx) => area && (
-                  <div key={idx} className="flex items-center gap-3 bg-emerald-500/10 rounded-xl p-3">
-                    <span className="text-xl">{area.icon}</span>
-                    <span className="text-emerald-100 font-medium">{area.name}</span>
-                    <span className="ml-auto text-emerald-400 font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5">
-              <h3 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                Áreas de Mejora
-              </h3>
-              <div className="space-y-2">
-                {results.weakAreas.map((area, idx) => area && (
-                  <div key={idx} className="flex items-center gap-3 bg-amber-500/10 rounded-xl p-3">
-                    <span className="text-xl">{area.icon}</span>
-                    <span className="text-amber-100 font-medium">{area.name}</span>
-                    <span className="ml-auto text-amber-400 font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {results.aiConclusion && (
-            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-violet-500/30 shadow-2xl mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-white" />
-                </div>
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-indigo-500/30 shadow-2xl mb-4">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white">{results.aiConclusion.title}</h3>
-                  <p className="text-violet-300 text-sm">Conclusión Profesional</p>
+                  <p className="text-slate-400 text-xs">Puntuación Global</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                      {results.overallScore.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400 text-lg">/10</span>
+                  </div>
+                </div>
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${scoreColor} flex items-center justify-center shadow-lg`}>
+                  <span className="text-3xl">
+                    {results.overallScore >= 8 ? '🏆' : results.overallScore >= 6 ? '⭐' : results.overallScore >= 4 ? '📈' : '💪'}
+                  </span>
                 </div>
               </div>
 
-              {results.aiConclusion.summary && (
-                <p className="text-slate-200 mb-4 leading-relaxed">
-                  {results.aiConclusion.summary}
-                </p>
-              )}
+              <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-violet-400" />
+                Tu Perfil Radar
+              </h3>
+              
+              <div className="bg-slate-900/50 rounded-xl p-3 mb-3">
+                <RadarChart data={results.radarData} />
+              </div>
 
-              {results.aiConclusion.strengths?.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-emerald-400 font-bold mb-2 flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" /> Aspectos Destacados
-                  </h4>
-                  <ul className="space-y-1">
-                    {results.aiConclusion.strengths.map((s, i) => (
-                      <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
-                        <span className="text-emerald-400 mt-1">•</span> {s}
-                      </li>
-                    ))}
-                  </ul>
+              <div className="grid grid-cols-3 gap-2">
+                {TEAMWORK_DIMENSIONS.map(dim => (
+                  <div key={dim.id} className={`bg-gradient-to-br ${dim.color} rounded-xl p-2 text-center`}>
+                    <span className="text-lg">{dim.icon}</span>
+                    <p className="text-white text-[10px] font-medium">{dim.name}</p>
+                    <p className="text-white/90 text-sm font-bold">{results.radarData[dim.id]?.toFixed(1) || '0'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3">
+                <h3 className="text-sm font-bold text-emerald-400 mb-2 flex items-center gap-1">
+                  <Star className="w-4 h-4" />
+                  Fortalezas
+                </h3>
+                <div className="space-y-1.5">
+                  {results.strongAreas.map((area, idx) => area && (
+                    <div key={idx} className="flex items-center gap-2 bg-emerald-500/10 rounded-lg p-2">
+                      <span className="text-base">{area.icon}</span>
+                      <span className="text-emerald-100 text-xs font-medium flex-1">{area.name}</span>
+                      <span className="text-emerald-400 text-xs font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              {results.aiConclusion.improvements?.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4" /> Recomendaciones
-                  </h4>
-                  <ul className="space-y-1">
-                    {results.aiConclusion.improvements.map((s, i) => (
-                      <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
-                        <span className="text-amber-400 mt-1">•</span> {s}
-                      </li>
-                    ))}
-                  </ul>
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3">
+                <h3 className="text-sm font-bold text-amber-400 mb-2 flex items-center gap-1">
+                  <Target className="w-4 h-4" />
+                  Mejorar
+                </h3>
+                <div className="space-y-1.5">
+                  {results.weakAreas.map((area, idx) => area && (
+                    <div key={idx} className="flex items-center gap-2 bg-amber-500/10 rounded-lg p-2">
+                      <span className="text-base">{area.icon}</span>
+                      <span className="text-amber-100 text-xs font-medium flex-1">{area.name}</span>
+                      <span className="text-amber-400 text-xs font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            </div>
 
-              {results.aiConclusion.conclusion && (
-                <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-4 mt-4">
-                  <p className="text-violet-100 text-sm leading-relaxed italic">
-                    "{results.aiConclusion.conclusion}"
+            {results.aiConclusion && (
+              <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-4 border border-violet-500/30 shadow-2xl mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                    <GraduationCap className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white">{results.aiConclusion.title}</h3>
+                    <p className="text-violet-300 text-xs">Conclusión Profesional</p>
+                  </div>
+                </div>
+
+                {results.aiConclusion.summary && (
+                  <p className="text-slate-200 text-sm mb-3 leading-relaxed">
+                    {results.aiConclusion.summary}
                   </p>
-                </div>
-              )}
-            </div>
-          )}
+                )}
 
-          {isGeneratingConclusion && (
-            <div className="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 mb-6 text-center">
-              <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
-              <p className="text-slate-300">Generando conclusión profesional...</p>
-            </div>
-          )}
+                {results.aiConclusion.strengths?.length > 0 && (
+                  <div className="mb-3">
+                    <h4 className="text-emerald-400 text-xs font-bold mb-1 flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" /> Aspectos Destacados
+                    </h4>
+                    <ul className="space-y-0.5">
+                      {results.aiConclusion.strengths.slice(0, 2).map((s, i) => (
+                        <li key={i} className="text-slate-300 text-xs flex items-start gap-1">
+                          <span className="text-emerald-400">•</span> {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-          <div className="flex flex-col sm:flex-row gap-3">
+                {results.aiConclusion.improvements?.length > 0 && (
+                  <div className="mb-3">
+                    <h4 className="text-amber-400 text-xs font-bold mb-1 flex items-center gap-1">
+                      <Lightbulb className="w-3 h-3" /> Recomendaciones
+                    </h4>
+                    <ul className="space-y-0.5">
+                      {results.aiConclusion.improvements.slice(0, 2).map((s, i) => (
+                        <li key={i} className="text-slate-300 text-xs flex items-start gap-1">
+                          <span className="text-amber-400">•</span> {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {results.aiConclusion.conclusion && (
+                  <div className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
+                    <p className="text-violet-100 text-xs leading-relaxed italic">
+                      "{results.aiConclusion.conclusion}"
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {isGeneratingConclusion && (
+              <div className="bg-slate-800/90 rounded-xl p-4 border border-slate-700 mb-4 text-center">
+                <Loader2 className="w-6 h-6 text-violet-400 animate-spin mx-auto mb-2" />
+                <p className="text-slate-300 text-sm">Generando conclusión profesional...</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto flex gap-3">
             <button
               onClick={resetTest}
-              className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2"
+              className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 text-sm"
             >
-              <RefreshCw className="w-5 h-5" />
-              Repetir con Nuevas Preguntas
+              <RefreshCw className="w-4 h-4" />
+              Repetir Test
             </button>
             <button
               onClick={onBack}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2"
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-4 h-4" />
               Volver al Menú
             </button>
           </div>
