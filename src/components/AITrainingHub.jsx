@@ -252,7 +252,7 @@ const AITrainingHub = ({ onBack }) => {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent">
-                <ShimmerText>Centro de Entrenamiento IA</ShimmerText>
+                <ShimmerText>HUB IA Gest-Tech</ShimmerText>
               </h1>
               <p className="text-sm text-indigo-300/80 leading-relaxed">Desarrolla tus competencias con inteligencia artificial</p>
             </div>
