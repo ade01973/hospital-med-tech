@@ -258,11 +258,23 @@ const AITrainingHub = ({ onBack }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 backdrop-blur-xl px-5 py-3 rounded-2xl border-2 border-emerald-400/40 shadow-xl shadow-emerald-500/20 glow-button" style={{ '--glow-color': 'rgba(16, 185, 129, 0.3)' }}>
-            <span className="text-3xl">🤖</span>
+          <div className="flex items-center gap-3 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 backdrop-blur-xl px-4 py-2 rounded-2xl border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20 glow-button" style={{ '--glow-color': 'rgba(6, 182, 212, 0.3)' }}>
+            <div className="w-16 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30 flex items-end justify-center">
+              {playerAvatar.characterPreset ? (
+                <img 
+                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  alt="Tu Avatar"
+                  className="w-full h-full object-cover object-top scale-110"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-3xl">👤</span>
+                </div>
+              )}
+            </div>
             <div>
-              <span className="text-emerald-300 font-black text-sm block">Powered by</span>
-              <span className="text-white font-bold">Gemini AI</span>
+              <span className="text-cyan-300 font-black text-sm block">{playerAvatar.name || 'Gestor/a'}</span>
+              <span className="text-white/70 font-medium text-xs">En entrenamiento</span>
             </div>
           </div>
         </div>
