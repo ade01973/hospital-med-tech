@@ -236,6 +236,29 @@ const AITrainingHub = ({ onBack }) => {
 
       <div className="relative z-10 container mx-auto p-4 md:p-8 max-w-7xl">
         
+        {/* Título Principal Grande y Centrado */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center gap-3 mb-3">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/40 animate-pulse">
+              <Brain className="w-7 h-7 md:w-9 md:h-9 text-white" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent drop-shadow-2xl">
+              HUB IA Gest-Tech
+            </h1>
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40 animate-pulse">
+              <Sparkles className="w-7 h-7 md:w-9 md:h-9 text-white" />
+            </div>
+          </div>
+          <p className="text-lg md:text-xl text-cyan-200/80 font-medium max-w-2xl mx-auto">
+            Centro de Entrenamiento con Inteligencia Artificial para Gestión Enfermera
+          </p>
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+            <span className="text-emerald-300 text-sm font-bold">Sistema IA Activo</span>
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          </div>
+        </div>
+        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
           <button
             onClick={onBack}
