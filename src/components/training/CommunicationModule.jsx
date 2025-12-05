@@ -1601,68 +1601,73 @@ const CommunicationTest = ({ onBack }) => {
     const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
     
     return (
-      <div className="min-h-screen p-4 pb-24 relative overflow-y-auto">
+      <div className="h-screen flex flex-col relative">
         <FloatingParticles />
-        <div className="max-w-2xl mx-auto relative z-10">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Volver</span>
-          </button>
-          
-          <RadarChart 
-            data={dimensionScores} 
-            labels={dimensionLabels.map(d => d.split(' ')[0].substring(0, 8))} 
-            title="Tu Perfil Comunicativo"
-          />
-          
-          <div className="mt-6 bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 text-center border-2 border-purple-500/30 shadow-2xl">
-            <div className="text-6xl mb-3">{emoji}</div>
-            <h2 className="text-xl md:text-2xl font-black text-white mb-2">{phrase}</h2>
+        
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto relative z-10">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-slate-200 hover:text-white mb-4 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Volver</span>
+            </button>
             
-            <div className="bg-slate-700/50 rounded-2xl p-4 my-4">
-              <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                {totalScore}/{maxScore}
+            <RadarChart 
+              data={dimensionScores} 
+              labels={dimensionLabels.map(d => d.split(' ')[0].substring(0, 8))} 
+              title="Tu Perfil Comunicativo"
+            />
+            
+            <div className="mt-4 bg-slate-800/95 backdrop-blur-xl rounded-3xl p-5 md:p-6 text-center border-2 border-purple-500/30 shadow-2xl">
+              <div className="text-5xl mb-2">{emoji}</div>
+              <h2 className="text-lg md:text-xl font-black text-white mb-2">{phrase}</h2>
+              
+              <div className="bg-slate-700/50 rounded-2xl p-3 my-3">
+                <div className="text-3xl md:text-4xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                  {totalScore}/{maxScore}
+                </div>
+                <div className="w-full bg-slate-600 rounded-full h-2.5 mb-2">
+                  <div 
+                    className={`h-2.5 rounded-full transition-all duration-1000 ${
+                      category === 'excellent' ? 'bg-gradient-to-r from-purple-400 to-pink-400' :
+                      category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
+                      category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
+                      'bg-gradient-to-r from-rose-400 to-red-400'
+                    }`}
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+                <p className="text-slate-300 text-xs">{Math.round(percentage)}% de puntuación</p>
               </div>
-              <div className="w-full bg-slate-600 rounded-full h-3 mb-2">
-                <div 
-                  className={`h-3 rounded-full transition-all duration-1000 ${
-                    category === 'excellent' ? 'bg-gradient-to-r from-purple-400 to-pink-400' :
-                    category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
-                    category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
-                    'bg-gradient-to-r from-rose-400 to-red-400'
-                  }`}
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
-              <p className="text-slate-300 text-sm">{Math.round(percentage)}% de puntuación</p>
+              
+              <p className="text-slate-200 text-sm mb-3 leading-relaxed">{feedback}</p>
+              
+              {additionalInfo && (
+                <div className="bg-slate-700/50 rounded-xl p-3 text-left max-h-32 overflow-y-auto">
+                  <p className="text-slate-300 text-xs whitespace-pre-line">{additionalInfo}</p>
+                </div>
+              )}
             </div>
-            
-            <p className="text-slate-200 text-sm mb-4 leading-relaxed">{feedback}</p>
-            
-            {additionalInfo && (
-              <div className="bg-slate-700/50 rounded-xl p-4 mb-4 text-left max-h-40 overflow-y-auto">
-                <p className="text-slate-300 text-sm whitespace-pre-line">{additionalInfo}</p>
-              </div>
-            )}
-            
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
-              <button
-                onClick={handleRetakeTest}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-purple-500/30 hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <RefreshCw className="w-5 h-5" />
-                Repetir Test
-              </button>
-              <button
-                onClick={onBack}
-                className="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
-              >
-                Volver al Menú
-              </button>
-            </div>
+          </div>
+        </div>
+        
+        <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 p-4 z-20">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={handleRetakeTest}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-purple-500/30 hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Repetir Test
+            </button>
+            <button
+              onClick={onBack}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
+            >
+              Volver al Menú
+            </button>
           </div>
         </div>
       </div>
