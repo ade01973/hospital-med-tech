@@ -1,0 +1,237 @@
+Bloque 1 — Simulación de Escenarios de Comunicación Clínica y Gestora
+
+Igual que en liderazgo, pero centrado en habilidades comunicativas.
+
+Tipos de escenarios:
+
+Comunicación asertiva con un profesional
+
+Conversaciones difíciles
+
+Comunicación empática con pacientes/familias
+
+Resolución de conflictos entre profesionales
+
+Dar feedback correctivo sin generar resistencia
+
+Gestionar críticas y peticiones improcedentes
+
+El agente:
+
+Presenta el escenario.
+
+Evalúa la respuesta.
+
+Identifica el estilo comunicativo.
+
+Ofrece un mini feedback final.
+
+Con puntuación 0–10 y emojis cambiantes cada vez.
+
+2️⃣ Bloque 2 — Detección automática del estilo de comunicación
+
+El agente debe clasificar la respuesta del usuario en:
+
+Asertiva
+
+Pasiva
+
+Agresiva
+
+Pasivo-agresiva
+
+Manipuladora
+
+Empática / centrada en la persona
+
+Tras identificar el estilo:
+
+Explica si es adecuado para el caso.
+
+Sugiere cómo mejorar la comunicación en ese contexto.
+
+Ejemplo:
+
+“Tu respuesta fue correcta, pero refleja un estilo ligeramente pasivo. En un contexto de coordinación de equipo, esto podría diluir tu autoridad gestora.”
+
+3️⃣ Bloque 3 — Feedback final del escenario
+
+El agente debe generar:
+
+✔️ Una puntuación del 0 al 10
+✔️ Un emoji de alegría o tristeza diferente cada vez
+✔️ Una frase motivadora o reflexiva diferente cada vez
+✔️ Un análisis comunicativo con recomendaciones específicas
+
+Ejemplo:
+
+Puntuación: 7/10 🙂
+“¡Vas por buen camino! Tu comunicación muestra claridad, pero falta un toque de empatía que facilite la colaboración.”
+
+4️⃣ Bloque 4 — Modo Test: 10 preguntas para evaluar estilos comunicativos
+
+Igual que en liderazgo transformador, pero centrado en comunicación.
+
+Evalúa:
+
+Asertividad
+
+Claridad
+
+Empatía
+
+Escucha activa
+
+Regulación emocional
+
+Comunicación de malas noticias
+
+Negociación
+
+Influencia
+
+Manejo de conversaciones difíciles
+
+Feedback constructivo
+
+Al finalizar:
+
+Gráfica radar con nivel en cada dimensión.
+
+Áreas de mejora.
+
+Interpretación profesional (con base en el rol gestor enfermero).
+
+5️⃣ Bloque 5 — Evaluación de la Comunicación Asertiva
+
+Módulo específico donde:
+
+Se plantean frases o respuestas del usuario.
+
+El sistema las clasifica como:
+
+Asertivas adecuados
+
+Asertivas incompletas
+
+No asertivas
+
+Sugiere reformulaciones.
+
+Ejemplo de tarea:
+
+“Reformula esta frase para que sea asertiva: ‘No tengo tiempo para ayudarte ahora’.”
+
+6️⃣ Bloque 6 — Evaluación de la Empatía
+
+El agente analiza si el usuario:
+
+Reconoce emociones.
+
+Valida sentimientos.
+
+Responde sin juicio.
+
+Mantiene límites profesionales.
+
+El feedback final identifica:
+
+Empatía cognitiva
+
+Empatía emocional
+
+Empatía comunicativa
+
+Y propone estrategias de mejora.
+
+7️⃣ Bloque 7 — Gestión de Conflictos
+
+Escenarios donde se evalúa la capacidad de:
+
+Desescalar tensiones.
+
+Identificar intereses vs. posiciones.
+
+Reformular mensajes agresivos.
+
+Negociar acuerdos.
+
+Mantener profesionalidad bajo presión.
+
+El agente clasifica estrategias en:
+
+Colaborativas
+
+Competitivas
+
+Evitativas
+
+Compromiso
+
+Acomodación
+
+Y recomienda enfoques adaptados al ámbito clínico.
+
+8️⃣ Bloque 8 — Modo Role-play emocional
+
+La IA interpreta personajes con emociones intensas:
+
+Frustración
+
+Miedo
+
+Rabia
+
+Agotamiento
+
+Tristeza
+
+El usuario debe gestionar la conversación.
+
+La IA adapta la respuesta según el tono del usuario:
+
+Si detecta dureza → propone suavizar.
+Si detecta ambigüedad → pide concreción.
+Si detecta falta de escucha → recuerda validar al otro.
+
+Es una herramienta potentísima para entrenamiento comunicativo.
+
+9️⃣ Bloque 9 — Perfil Comunicativo Longitudinal
+
+Igual que en liderazgo, pero centrado en comunicación.
+
+Registra evolución en:
+
+Asertividad
+
+Empatía
+
+Claridad
+
+Gestión emocional
+
+Manejo de conflictos
+
+Escucha activa
+
+Permite al usuario ver su progreso visualmente.
+
+🔟 Bloque 10 — Modo Mentor en Comunicación Enfermera
+
+La IA actúa como:
+
+Coach comunicativo
+
+Mentor clínico
+
+Experto en gestión sanitaria
+
+Incluye:
+
+Recomendaciones personalizadas
+
+Lecturas o recursos
+
+Ejercicios prácticos para mejorar
+
+Técnicas de comunicación para equipos multidisciplinares

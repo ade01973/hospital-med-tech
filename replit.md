@@ -1,7 +1,7 @@
 # NURSE MANAGER - Simulador de Gestión Sanitaria
 
 ## Overview
-NURSE MANAGER is a gamified learning platform providing an interactive, quiz-based educational experience for nursing management students. It aims for high engagement with robust gamification, social features, and a visually animated user interface. Key capabilities include interactive quizzes with progressive module unlocking, an advanced gamification system (XP, ranks, leagues, achievements, real-time progress, leaderboards, daily rewards), social sharing, and an 8-tier professional nursing career progression system requiring near-perfect performance for top tiers. The platform features a healthcare management story arc with dynamic hospital cases, achievement badges, and professional hospital backgrounds.
+NURSE MANAGER is a gamified learning platform designed for nursing management students, offering an interactive, quiz-based educational experience. It aims for high engagement through robust gamification, social features, and a visually animated user interface. Key features include interactive quizzes with progressive module unlocking, an advanced gamification system (XP, ranks, leagues, achievements, real-time progress, leaderboards, daily rewards), social sharing, and an 8-tier professional nursing career progression. The platform integrates a healthcare management story arc with dynamic hospital cases, achievement badges, and professional hospital backgrounds.
 
 ## User Preferences
 - Fast development pace
@@ -12,154 +12,41 @@ NURSE MANAGER is a gamified learning platform providing an interactive, quiz-bas
 - Spanish language UI
 
 ## System Architecture
-The application employs a modern web stack to deliver an interactive and gamified user experience.
+The application uses a modern web stack to deliver an interactive and gamified user experience with a strong emphasis on visual engagement and a modular design.
 
 ### UI/UX Decisions
-- A gamified "hospital tower" interface serves as the central hub.
-- Extensive animations include confetti, smooth transitions, elevator door effects, particle effects, and responsive elements.
-- Custom avatar creation with gender selection, silhouettes, and skin tones.
-- Procedurally generated sound effects and background music.
-- Gradient designs for modals and a consistent Cyan-Blue gradient for professional elements.
-- Professional hospital backgrounds with parallax effects.
-- Cinematic welcome flow: 5-second avatar entrance, fullscreen video intro, smooth transition to dashboard.
-- **Infographics Gallery**: Gamified visual guide system showcasing 21 thematic infographics with advanced features: progress tracking (X/15 viewed with animated bar), Framer Motion stagger animations, confetti celebration on completion, favorites system with star toggle, search and category filters (Gestión, Liderazgo, Innovación, Comunicación, Equipo), 3D module number badges, skeleton shimmer loaders, and hover image previews. All progress persisted via localStorage.
+The user interface features a gamified "hospital tower" as the central hub, extensive animations (confetti, transitions, elevator effects, particle effects), custom avatar creation, procedural sound effects, and gradient designs. Professional hospital backgrounds with parallax effects are used. A cinematic welcome flow enhances the initial user experience. The Infographics Gallery offers a gamified visual guide with progress tracking, Framer Motion animations, favorites, search/filter capabilities, and skeleton loaders. Recent enhancements include Ultra-Visual UI elements like `FloatingOrbs`, `GlowingStars`, `FloatingParticles`, Glassmorphism effects, pulsing glow animations, micro-animations on hover, gradient text, and dynamic card hover effects across various modules.
 
 ### Technical Implementations
 - **Frontend**: React 19 with Vite.
 - **Styling**: Tailwind CSS v3 with custom animations.
-- **State Management**: `localStorage` for transient data (missions, leagues, login streaks) and Firestore for core game data.
+- **State Management**: `localStorage` for transient data and Firestore for core game data.
 - **Authentication**: Firebase anonymous login.
-- **Database**: Real-time Firestore for user progress, leaderboards, and game data.
-- **Gamification Core**:
-    - **Progressive Unlocking**: 22 sequential learning modules.
-    - **XP and Rank System**: Exponential XP curve (0-100,000 points across 8 tiers).
-    - **League System**: 5 competitive tiers with weekly rankings.
-    - **Login Streaks**: Daily rewards calendar with milestone badges and freeze mechanics.
-    - **Variable Scoring**: Points based on response speed, streak bonuses, and a life/heart system.
-    - **Missions**: Daily/Weekly missions.
-    - **Achievements**: 15-badge system across various categories, with rarity and XP rewards.
-    - **Dynamic Difficulty**: Team quests feature adjustable difficulty impacting questions, timer, damage, and rewards.
-    - **Dynamic Hospital Cases**: 8 randomized healthcare management story arc cases per session, with two difficulty levels (basic and "almost impossible") offering escalating rewards and requiring all correct answers for progression. Dynamic feedback (10 positive, 10 negative variants) is provided.
-- **Notifications**: Web Push API for streaks, missions, rank progress, and badge achievements.
-- **Sound System**: Web Audio API for procedural sound effects and background music.
-- **Social Sharing**: Integration for various platforms, supporting Web Share API.
-- **Leaderboards**: Global, Friend, and Weekly leaderboards with local persistence and animations.
-- **Team Challenges**: Supports team formation (2-4 players), cooperative quests with real quiz mechanics, health-based gameplay, and boss battles (e.g., Zombi Hospitalario) with shared health pools and scaling rewards.
-- **Career Progression**: An 8-tier professional nursing career roadmap with visual timeline, real-time progress tracking, and "Casi Perfecto" requirements for top tiers.
-- **Visual Celebrations**: Toast notifications and confetti animations upon completing challenges.
-- **Streak Loss Penalty**: Visual feedback and modal for losing a daily streak.
-- **Infographics System**: Gallery modal displaying 21 themed infographics (one per module) with interactive fullscreen viewer. Click any available infographic to view it at full screen within the app. Includes module icons, titles, subtitles, and status badges. All 21 infographics complete. Additional infographics can be easily added by placing images in `/src/assets/infographics/` and mapping them in the component.
-- **AI Training Hub**: Comprehensive AI-powered training center styled as a separate dashboard with nurse manager office background. Features 5 specialized modules powered by Gemini AI:
-    - **Gestión de Casos**: Analyze clinical and management cases with AI feedback (9 complete cases: Liderazgo, Toma de Decisiones, Gestión del Conflicto, Comunicación, Trabajo en Equipo, Ética, Gestión del Cambio, Marketing Sanitario, Innovación)
-    - **Toma de Decisiones**: Practice decision-making with scenarios (quick, complex, ethical, crisis)
-    - **Liderazgo**: Develop leadership competencies with coaching and tests
-    - **Comunicación**: Improve communication skills with role-play and techniques
-    - **Trabajo en Equipo**: Build teamwork abilities with simulations and assessments
-  UI features: 3-column layout matching Dashboard style, office background image (`ai-training-bg.png`), animated particles, welcome card with user name, how-it-works guide, module grid with themed colors and icons. Each module has customized AI prompts with mandatory "gestor/gestora enfermero/a" terminology, conversation history, and 60s request timeout.
-  **2025 Ultra-Visual UI Enhancements**:
-    - **FloatingOrbs**: 5 animated gradient orbs (cyan, purple, emerald, amber, indigo) with smooth floating animation
-    - **GlowingStars**: 25 twinkling star particles with random colors and positions
-    - **FloatingParticles**: 30 rising particles with rotation effect
-    - **Glassmorphism**: Enhanced backdrop-blur-xl, translucent cards with rounded-3xl borders
-    - **Glow Effects**: Pulsing glow animations on buttons and badges
-    - **Micro-animations**: Hover scale (1.02-1.1), translateY(-8px), icon rotation, smooth cubic-bezier transitions
-    - **Gradient Text**: Shimmer effect on main titles, gradient-to-r text colors
-    - **Card Hover Effects**: Dynamic shadows matching module theme colors
-    - **Interactive Elements**: Emoji grid with hover animations, step badges with scale effects
-    - **Typography**: Larger titles (text-2xl to text-3xl), improved line-height, font-black weights
-- **Case Management Module (2025 Ultra-Visual UI)**: Highly gamified, visually stunning interface following Duolingo/Kahoot best practices:
-    - **Visual Effects**: FloatingOrbs component with 5 animated gradient orbs (cyan, purple, blue, pink, amber), GlowingStars with 30 twinkling star particles
-    - **Statistics Dashboard**: 4 animated StatCards showing Completed Cases, Total XP, Progress %, and Available XP with AnimatedCounter component
-    - **Featured Case Section**: Highlighted "RECOMENDADO" card for the next uncompleted case with crown icon and pulsing badge
-    - **Progress Tracking**: Animated progress bar with shimmer effect, percentage counter, and completion statistics
-    - **Case Cards**: Compact modern design with gradient backgrounds based on completion status (emerald for completed, amber for recommended, slate for pending)
-    - **Gamification Elements**: Streak indicator with flame icon, XP rewards display (+150 XP per case), numbered badges, difficulty indicators
-    - **User Profile**: Avatar with online status indicator, profile integration in header
-    - **Micro-animations**: Hover scale (1.01-1.1), rotate effects (2-6deg), staggered fadeInUp animations with delays, gradient text transitions
-    - **Information Panels**: "How it Works" guide with emoji steps, Statistics panel with accuracy, best streak, level, and average time
-    - **Responsive Design**: Optimized layout for mobile (p-4) and desktop (p-8), grid adjustments for different screen sizes
-    - **Color Scheme**: Deep indigo-purple-slate gradient background, cyan/purple accent highlights, emerald completion badges
+- **Database**: Real-time Firestore for user data.
+- **Gamification Core**: Includes a progressive unlocking system for 22 modules, an exponential XP and 8-tier rank system, 5-tier competitive league system, daily login streaks, variable scoring, daily/weekly missions, a 15-badge achievement system, and dynamic difficulty for team quests. It also features 8 randomized dynamic hospital cases with two difficulty levels.
+- **Notifications**: Web Push API for game events.
+- **Sound System**: Web Audio API for procedural sound and music.
+- **Social Sharing**: Web Share API integration.
+- **Leaderboards**: Global, Friend, and Weekly leaderboards.
+- **Team Challenges**: Supports 2-4 player cooperative quests with real quiz mechanics and boss battles.
+- **Career Progression**: An 8-tier visual roadmap with "Casi Perfecto" requirements for top tiers.
+- **AI Training Hub**: A separate dashboard with 5 specialized modules powered by Google Gemini AI (Gestión de Casos, Toma de Decisiones, Liderazgo, Comunicación, Trabajo en Equipo). These modules feature customized AI prompts, conversation history, and a 60s request timeout.
+- **Specialized Module Enhancements**:
+    - **Case Management**: Highly gamified interface with visual effects, statistics dashboard, featured case section, and animated progress tracking.
+    - **Decision Making**: Incorporates player avatar integration, visual effects, AI content generation, and "Generate with AI" buttons.
+    - **Leadership**: Features a `useLeadershipProfile` hook for persistence and includes new modes like `RolePlayMode` (AI character generation), `ChangeSimulator` (6-stage simulation with AI scenarios), `LeaderAnalytics` (dashboard), and `MentorMode` (AI expert mentor with resource panel).
+    - **Communication**: Includes a `useCommunicationProfile` hook and 8 training modes: `ScenarioSelector` (AI-generated scenarios), `RolePlayMode` (emotional role-play), `CommunicationTest` (10-dimension assessment), `AssertiveMode` (DESC technique), `EmpathyMode`, `ConflictMode`, `CommunicationAnalytics`, and `MentorMode`. All communication modes feature visual effects and AI integration for scoring and feedback.
 
 ### System Design Choices
-- **Gamified Progression**: Emphasis on exponential XP, competitive leagues, and diverse gamification elements.
-- **Responsive and Animated UI**: Focus on smooth transitions, custom animations, and a dynamic interface.
-- **Modular Component Design**: Utilizes reusable React components and custom hooks.
-- **Hybrid Persistence**: Combines `localStorage` for temporary data with Firestore for permanent game data.
+The system prioritizes gamified progression, a responsive and highly animated UI, modular component design using React, and hybrid data persistence combining `localStorage` with Firestore.
 
 ## External Dependencies
-- **Firebase**: Authentication (anonymous login) and Firestore (real-time database).
+- **Firebase**: Authentication (anonymous) and Firestore (real-time database).
 - **React 19**: Frontend library.
-- **Vite**: Build tool with proxy configuration for API calls.
+- **Vite**: Build tool and proxy for API calls.
 - **Tailwind CSS v3**: Utility-first CSS framework.
 - **Lucide React**: Icon library.
-- **Web Audio API**: For procedural sound generation.
-- **Web Share API**: For native mobile social sharing.
-- **Web Push API**: For browser push notifications.
-- **Google Gemini AI**: AI-powered training modules via `@google/genai` library. API runs on Express server (port 3001) with Vite proxy.
-
-## Server Architecture
-- **Frontend**: Vite dev server on port 5000
-- **Gemini API Server**: Express.js server on port 3001 (`server/gemini-api.js`)
-  - POST `/api/chat` - General chat with custom system prompts
-  - POST `/api/generate-quiz` - Generate quiz questions from topics
-  - POST `/api/generate-scenario` - Generate decision-making scenarios with AI
-  - POST `/api/generate-decision-tree` - Generate interactive decision trees with AI
-  - POST `/api/generate-priority-exercise` - Generate task prioritization exercises with AI
-  - Vite proxies `/api/*` requests to the Gemini server
-
-## Decision Making Module Enhancements (Dec 2025)
-- **Player Avatar Integration**: Custom PlayerAvatarIcon component with hook usePlayerAvatar
-  - Multiple sizes (xs, sm, md, lg, xl)
-  - Robust fallback to User icon for missing/failed images
-  - Uses `new URL()` for Vite-compatible asset resolution
-  - Integrated in ScenarioChat, DecisionTreeGame, PriorityGame
-- **Visual Effects**: FloatingParticles (20 animated particles), GlowingOrb (blur effect orbs)
-- **AI Content Generation**: Three endpoints for dynamic content with:
-  - Server-side ID generation (no ID in AI prompts)
-  - JSON validation with try/catch
-  - Required field validation
-  - 503 overload error handling with retry support
-- **Generate with AI Buttons**: Purple/pink button in ScenarioSelector, TreeSelector, PrioritySelector
-- **Badge Indicator**: "IA" badge on dynamically generated items
-
-## Leadership Module Enhancements (Dec 2025)
-- **useLeadershipProfile Hook**: Dynamic leadership profile persistence
-  - Stores leadership styles (9 types), dimensions (5 metrics), sessions history
-  - Firestore integration with localStorage fallback
-  - Methods: addSession, getDominantStyles, getTrends, getCriticalAreas
-  - LeadershipProfileContext for component access (fallback returns loading: false)
-- **New Leadership Modules** (4 new modes with "NUEVO" badges):
-  - **RolePlayMode** (🎭): Immersive AI role-play with 4 characters + AI generation
-    - Carmen (resistant veteran), Pablo (overwhelmed novice), Dr. Martínez (interfering doctor), Marta (conflictive family member)
-    - **AI Character Generation**: Button to generate new unique characters with AI
-    - Generated characters displayed with "IA" badge, fuchsia/pink theme
-    - 4 exchanges per conversation, dynamic personality reactions
-    - Character prompts with body language and emotional responses
-    - Error handling with visual feedback
-    - Violet/purple color theme
-  - **ChangeSimulator** (🏗️): 6-stage organizational change simulation + AI scenarios
-    - **Scenario Selector**: Choose between default or AI-generated change scenarios
-    - **AI Scenario Generation**: Button to generate new organizational change contexts
-    - Stages: Diagnosis, Stakeholders, Communication, Implementation, Resistance Management, Evaluation
-    - Visual stepper progress bar, per-stage scoring (X/10)
-    - Dynamic context injection into AI prompts
-    - Accumulated total score (max 60), session persistence
-    - Error handling with visual feedback
-    - Indigo/blue color theme
-  - **LeaderAnalytics** (📈): Leadership analytics dashboard
-    - Total sessions, average score, dominant styles visualization
-    - Score trends chart (last 10 sessions), dimensions circular progress
-    - Critical areas identification with improvement recommendations
-    - Fixed loading state (no longer stuck loading indefinitely)
-    - Cyan/teal color theme
-  - **MentorMode** (🎓): AI expert mentor with resource panel
-    - Collapsible resources sidebar: Readings, Practices, Theoretical Models
-    - MENTOR_RESOURCES data: 5 readings, 4 practices, 4 theoretical models
-    - Personalized coaching with leadership theory references (Kotter, Hersey-Blanchard, Goleman)
-    - Yellow/amber color theme
-- **Data Structures**:
-  - ROLEPLAY_CHARACTERS: 4 characters with detailed prompts
-  - CHANGE_STAGES: 6 stages with evaluation prompts
-  - MENTOR_RESOURCES: readings, practices, models
-  - DEFAULT_CHANGE_SCENARIO: Default scenario for ChangeSimulator
-- **Integration**: All modes accessible from ModeSelector with "NUEVO" badge animation
+- **Web Audio API**: For sound effects and background music.
+- **Web Share API**: For native social sharing.
+- **Web Push API**: For browser notifications.
+- **Google Gemini AI**: Powers AI-driven training modules via `@google/genai` library, with an Express.js server backend.
