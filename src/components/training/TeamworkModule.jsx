@@ -932,34 +932,39 @@ ESTILOS POSIBLES (elige UNO):
 - lider_facilitador: Guía al equipo, fomenta participación, desarrolla a otros
 - miembro_pasivo: Mínima iniciativa, sigue instrucciones, no propone
 
-Tu respuesta DEBE contener este formato EXACTO al final:
+Tu respuesta DEBE contener EXACTAMENTE estos marcadores:
 
 ---ANÁLISIS DE ESTILO---
 
 [ESTILO:nombre_del_estilo]
-
 [ADECUADO:si/no]
+[PUNTUACION:X] (número del 0 al 10, evalúa calidad de la participación)
+[EMOJI:emoji] (un emoji emocional que represente el resultado, diferente cada vez: 😄🎯💪🌟🏆✨🚀💫🎉👏🤔💡📈🔥⭐)
+[FRASE:frase motivadora o correctiva de 1-2 líneas]
 
-**Tu Estilo de Participación:**
-Has adoptado un estilo [nombre], que [análisis de si es adecuado o no para ESTA situación específica con explicación detallada].
-
-**Ejemplo de Feedback Contextual:**
-"Has adoptado un estilo competitivo, que puede ser útil para tomar decisiones rápidas, pero en este contexto disminuye la cohesión del equipo."
+**Análisis de tu Participación:**
+[Descripción detallada de cómo participó el usuario, qué decisiones tomó, cómo se comunicó con el equipo, qué actitudes mostró]
 
 **Comportamientos Observados:**
-- [comportamiento 1 que indica el estilo]
-- [comportamiento 2 que indica el estilo]
-- [comportamiento 3 que indica el estilo]
+- [comportamiento 1 específico que indica el estilo]
+- [comportamiento 2 específico que indica el estilo]
+- [comportamiento 3 específico que indica el estilo]
 
 **Impacto en el Equipo:**
-[Descripción de cómo este estilo afecta al equipo en esta situación]
+[Descripción de cómo este estilo afecta al equipo en esta situación concreta]
 
-**Recomendaciones:**
-- [recomendación 1 específica]
-- [recomendación 2 específica]
+**Sugerencias para Mejorar la Colaboración:**
+- [sugerencia 1 concreta y accionable]
+- [sugerencia 2 concreta y accionable]
+- [sugerencia 3 concreta y accionable]
 
 **Alternativa Sugerida:**
-Para esta situación, un estilo más [nombre estilo alternativo] podría ser más efectivo porque [razón].` : '';
+Para esta situación, un estilo más [nombre estilo alternativo] podría ser más efectivo porque [razón].
+
+EJEMPLO DE RESPUESTA:
+[PUNTUACION:8]
+[EMOJI:😄]
+[FRASE:¡Muy bien! Has promovido la cooperación entre turnos. Para avanzar más, considera reforzar la delegación compartida y el reconocimiento del equipo.]` : '';
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -994,20 +999,33 @@ Siempre en español, vocabulario sanitario apropiado.`
       if (shouldAnalyze && responseText.includes('[ESTILO:')) {
         const styleMatch = responseText.match(/\[ESTILO:(\w+)\]/);
         const adequateMatch = responseText.match(/\[ADECUADO:(si|no)\]/i);
+        const scoreMatch = responseText.match(/\[PUNTUACION:(\d+)\]/);
+        const emojiMatch = responseText.match(/\[EMOJI:([^\]]+)\]/);
+        const phraseMatch = responseText.match(/\[FRASE:([^\]]+)\]/);
         
         if (styleMatch) {
           const detectedStyle = styleMatch[1].toLowerCase();
           const isAdequate = adequateMatch ? adequateMatch[1].toLowerCase() === 'si' : true;
+          const score = scoreMatch ? Math.min(10, Math.max(0, parseInt(scoreMatch[1]))) : (isAdequate ? 7 : 4);
+          const emoji = emojiMatch ? emojiMatch[1].trim() : (score >= 7 ? '😄' : score >= 5 ? '🤔' : '💪');
+          const phrase = phraseMatch ? phraseMatch[1].trim() : '';
           
           const cleanAnalysis = responseText
             .replace(/\[ESTILO:\w+\]/, '')
             .replace(/\[ADECUADO:(si|no)\]/i, '')
-            .replace(/---ANÁLISIS DE ESTILO---/g, '');
+            .replace(/\[PUNTUACION:\d+\]/, '')
+            .replace(/\[EMOJI:[^\]]+\]/, '')
+            .replace(/\[FRASE:[^\]]+\]/, '')
+            .replace(/---ANÁLISIS DE ESTILO---/g, '')
+            .trim();
           
           setResult({
             style: detectedStyle,
             isAdequate: isAdequate,
-            analysis: cleanAnalysis.trim(),
+            score: score,
+            emoji: emoji,
+            phrase: phrase,
+            analysis: cleanAnalysis,
             scenario: selectedScenario
           });
           setPhase('result');
@@ -1018,12 +1036,12 @@ Siempre en español, vocabulario sanitario apropiado.`
             scenarioTitle: selectedScenario.title,
             detectedStyle: detectedStyle,
             isStyleAdequate: isAdequate,
-            score: isAdequate ? 8 : 5,
+            score: score,
             maxScore: 10,
             teamSkills: {
-              colaboracion: isAdequate ? 8 : 5,
-              coordinacion: isAdequate ? 7 : 4,
-              cohesion: isAdequate ? 8 : 4
+              colaboracion: Math.round(score * 0.9),
+              coordinacion: Math.round(score * 0.8),
+              cohesion: Math.round(score * 0.85)
             }
           });
         }
@@ -1234,6 +1252,9 @@ Siempre en español, vocabulario sanitario apropiado.`
 
   if (phase === 'result' && result) {
     const styleData = COLLABORATIVE_STYLES.find(s => s.id === result.style) || COLLABORATIVE_STYLES[0];
+    const scoreColor = result.score >= 8 ? 'from-emerald-500 to-green-500' : 
+                       result.score >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       result.score >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
     
     return (
       <div className="h-screen flex flex-col relative">
@@ -1242,37 +1263,60 @@ Siempre en español, vocabulario sanitario apropiado.`
         <div className="flex-1 overflow-y-auto p-4">
           <div className="max-w-2xl mx-auto relative z-10 pb-8">
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-fuchsia-500/30 shadow-2xl">
-              <div className="text-center mb-6">
-                <div className="text-6xl mb-3 animate-pulse">{styleData.icon}</div>
-                <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">Tu Estilo de Participación</p>
-                <h2 className="text-3xl font-black bg-gradient-to-r from-fuchsia-400 to-rose-400 bg-clip-text text-transparent">
+              
+              <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 rounded-2xl p-5 mb-5 border border-slate-600/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${scoreColor} flex items-center justify-center shadow-lg`}>
+                      <span className="text-3xl font-black text-white">{result.score}</span>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase tracking-wide">Puntuación</p>
+                      <p className="text-white text-xl font-bold">{result.score}/10 <span className="text-3xl ml-1">{result.emoji}</span></p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {result.isAdequate ? (
+                      <span className="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-1 font-medium border border-emerald-500/30">
+                        <CheckCircle className="w-3 h-3" /> Adecuado
+                      </span>
+                    ) : (
+                      <span className="bg-amber-500/20 text-amber-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-1 font-medium border border-amber-500/30">
+                        <AlertTriangle className="w-3 h-3" /> Mejorable
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                {result.phrase && (
+                  <div className="bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-xl p-4">
+                    <p className="text-fuchsia-100 text-sm leading-relaxed italic">
+                      "{result.phrase}"
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center mb-5">
+                <div className="text-5xl mb-2">{styleData.icon}</div>
+                <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Tu Estilo de Participación</p>
+                <h2 className="text-2xl font-black bg-gradient-to-r from-fuchsia-400 to-rose-400 bg-clip-text text-transparent">
                   {styleData.name}
                 </h2>
               </div>
 
-              <div className={`bg-gradient-to-br ${styleData.color} rounded-2xl p-5 mb-5 relative overflow-hidden`}>
-                <div className="absolute top-2 right-2">
-                  {result.isAdequate ? (
-                    <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 font-medium">
-                      <CheckCircle className="w-3 h-3" /> Adecuado para esta situación
-                    </span>
-                  ) : (
-                    <span className="bg-red-500/30 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 font-medium">
-                      <AlertTriangle className="w-3 h-3" /> Podría mejorarse
-                    </span>
-                  )}
-                </div>
-                <p className="text-white/90 text-lg mt-4">{styleData.description}</p>
+              <div className={`bg-gradient-to-br ${styleData.color} rounded-2xl p-4 mb-5 relative overflow-hidden`}>
+                <p className="text-white/90">{styleData.description}</p>
               </div>
 
-              <div className="bg-fuchsia-500/20 border border-fuchsia-500/40 rounded-xl p-4 mb-5">
+              <div className="bg-fuchsia-500/20 border border-fuchsia-500/40 rounded-xl p-3 mb-5">
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${result.scenario?.color || 'from-fuchsia-500 to-rose-500'} rounded-xl flex items-center justify-center text-xl shadow-lg`}>
+                  <div className={`w-10 h-10 bg-gradient-to-br ${result.scenario?.color || 'from-fuchsia-500 to-rose-500'} rounded-xl flex items-center justify-center text-lg shadow-lg`}>
                     {result.scenario?.icon || '🎭'}
                   </div>
                   <div>
                     <p className="text-fuchsia-300 text-xs">Escenario analizado</p>
-                    <p className="text-white text-lg font-bold">{result.scenario?.title}</p>
+                    <p className="text-white font-bold">{result.scenario?.title}</p>
                   </div>
                 </div>
               </div>
