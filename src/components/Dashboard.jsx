@@ -595,39 +595,39 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 </div>
               </div>
 
+              {/* Hub de IA Gest-Tech - Below Training, Above Daily Challenge */}
+              <button
+                onClick={() => setShowAITraining(true)}
+                className="mt-5 w-full bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-5 text-left transition-all hover:scale-[1.01] hover:border-emerald-400 group shadow-xl shadow-emerald-500/10"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">🤖</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-xl font-black bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">Hub de IA Gest-Tech</h3>
+                        <span className="bg-emerald-500/30 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold border border-emerald-400/50">5 Módulos</span>
+                      </div>
+                      <p className="text-emerald-200/80 text-sm">Entrenamiento avanzado con Inteligencia Artificial</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-emerald-500/20 px-3 py-1.5 rounded-xl border border-emerald-400/50">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                      <span className="text-emerald-300 text-xs font-bold">IA Activa</span>
+                    </div>
+                    <span className="text-emerald-400 text-xl group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                </div>
+              </button>
+
               {/* Daily Challenge - Below */}
               <div className="mt-5">
                 <DailyChallenge />
               </div>
             </div>
-
-            {/* Hub de IA Gest-Tech - Below Training */}
-            <button
-              onClick={() => setShowAITraining(true)}
-              className="mt-6 w-full bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-3xl p-6 text-left transition-all hover:scale-[1.01] hover:border-emerald-400 group shadow-2xl shadow-emerald-500/10"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/40 group-hover:scale-110 transition-transform">
-                    <span className="text-3xl">🤖</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-2xl font-black bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">Hub de IA Gest-Tech</h3>
-                      <span className="bg-emerald-500/30 px-3 py-1 rounded-full text-xs text-emerald-200 font-bold border border-emerald-400/50">5 Módulos</span>
-                    </div>
-                    <p className="text-emerald-200/80 text-sm">Entrenamiento avanzado con Inteligencia Artificial especializada en gestión sanitaria</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-emerald-500/20 px-4 py-2 rounded-xl border border-emerald-400/50">
-                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                    <span className="text-emerald-300 text-sm font-bold">IA Activa</span>
-                  </div>
-                  <span className="text-emerald-400 text-2xl group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </div>
-            </button>
           </div>
 
           {/* Right Column - All Other Features */}
