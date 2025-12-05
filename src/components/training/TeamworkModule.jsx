@@ -300,23 +300,25 @@ const GlowingOrb = ({ color, size, left, top, delay }) => (
   />
 );
 
+const COLLABORATIVE_STYLES = [
+  { id: 'colaborativo', name: 'Colaborativo', icon: '🤝', color: 'from-emerald-500 to-teal-500', description: 'Busca el beneficio mutuo y la sinergia del grupo' },
+  { id: 'competitivo', name: 'Competitivo', icon: '⚔️', color: 'from-red-500 to-orange-500', description: 'Enfocado en ganar y destacar sobre otros' },
+  { id: 'evitativo', name: 'Evitativo', icon: '🚪', color: 'from-slate-500 to-gray-500', description: 'Tiende a evadir conflictos y responsabilidades' },
+  { id: 'acomodativo', name: 'Acomodativo', icon: '🕊️', color: 'from-sky-500 to-blue-500', description: 'Prioriza las necesidades de otros sobre las propias' },
+  { id: 'compromiso', name: 'Compromiso', icon: '⚖️', color: 'from-amber-500 to-yellow-500', description: 'Busca soluciones intermedias que satisfagan a todos' },
+  { id: 'coordinador', name: 'Coordinador', icon: '👔', color: 'from-violet-500 to-purple-500', description: 'Organiza y facilita el trabajo del equipo' },
+  { id: 'lider_facilitador', name: 'Líder Facilitador', icon: '🌟', color: 'from-fuchsia-500 to-pink-500', description: 'Guía al equipo hacia objetivos compartidos' },
+  { id: 'miembro_pasivo', name: 'Miembro Pasivo', icon: '💤', color: 'from-zinc-500 to-stone-500', description: 'Participación mínima, sigue instrucciones sin iniciativa' }
+];
+
 const TEAMWORK_MODES = [
-  {
-    id: 'belbin',
-    title: 'Test Roles Belbin',
-    description: 'Descubre tu rol predominante en equipos de trabajo',
-    icon: '🧩',
-    color: 'from-amber-500 to-yellow-500',
-    features: ['9 roles de equipo', 'Análisis personalizado', 'Fortalezas y debilidades'],
-    isNew: true
-  },
   {
     id: 'simulation',
     title: 'Simulación de Dinámicas',
     description: 'Simula situaciones reales de equipos clínicos con IA',
     icon: '🎮',
     color: 'from-orange-500 to-amber-500',
-    features: ['Escenarios infinitos', 'Puntuación 0-10', 'Feedback personalizado'],
+    features: ['Detección de estilo', 'Puntuación 0-10', 'Feedback personalizado'],
     isNew: true
   },
   {
@@ -506,344 +508,6 @@ const ModeSelector = ({ onSelectMode }) => {
               </div>
             </button>
           ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const BelbinTest = ({ onBack }) => {
-  const [started, setStarted] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const { addSession } = useTeamworkProfileContext();
-
-  const BELBIN_QUESTIONS = useMemo(() => [
-    {
-      id: 1,
-      question: 'Cuando trabajo en equipo, mi contribución más valiosa es:',
-      options: [
-        { text: 'Aporto ideas originales y creativas', role: 'cerebro', score: 4 },
-        { text: 'Busco contactos y recursos externos', role: 'investigador', score: 4 },
-        { text: 'Coordino al equipo y delego tareas', role: 'coordinador', score: 4 },
-        { text: 'Impulso al equipo hacia los objetivos', role: 'impulsor', score: 4 }
-      ]
-    },
-    {
-      id: 2,
-      question: 'Si hay un problema en el equipo, generalmente yo:',
-      options: [
-        { text: 'Analizo todas las opciones antes de decidir', role: 'monitor', score: 4 },
-        { text: 'Busco el consenso y la armonía', role: 'cohesionador', score: 4 },
-        { text: 'Organizo un plan de acción práctico', role: 'implementador', score: 4 },
-        { text: 'Me aseguro de que no queden cabos sueltos', role: 'finalizador', score: 4 }
-      ]
-    },
-    {
-      id: 3,
-      question: 'Los demás valoran de mí que:',
-      options: [
-        { text: 'Aporto conocimiento técnico especializado', role: 'especialista', score: 4 },
-        { text: 'Genero soluciones innovadoras', role: 'cerebro', score: 4 },
-        { text: 'Traigo información y contactos del exterior', role: 'investigador', score: 4 },
-        { text: 'Mantengo al equipo enfocado y motivado', role: 'impulsor', score: 4 }
-      ]
-    },
-    {
-      id: 4,
-      question: 'En las reuniones de equipo, suelo:',
-      options: [
-        { text: 'Facilitar la participación de todos', role: 'coordinador', score: 4 },
-        { text: 'Evaluar críticamente las propuestas', role: 'monitor', score: 4 },
-        { text: 'Mediar cuando hay tensiones', role: 'cohesionador', score: 4 },
-        { text: 'Tomar notas y seguir la agenda', role: 'finalizador', score: 4 }
-      ]
-    },
-    {
-      id: 5,
-      question: 'Mi debilidad más reconocida en equipos es:',
-      options: [
-        { text: 'A veces mis ideas son poco prácticas', role: 'cerebro', score: 4 },
-        { text: 'Pierdo interés cuando la novedad pasa', role: 'investigador', score: 4 },
-        { text: 'Puedo delegar demasiado trabajo', role: 'coordinador', score: 4 },
-        { text: 'A veces soy demasiado directo', role: 'impulsor', score: 4 }
-      ]
-    },
-    {
-      id: 6,
-      question: 'Cuando el equipo enfrenta un desafío nuevo:',
-      options: [
-        { text: 'Investigo cómo lo han resuelto otros', role: 'investigador', score: 4 },
-        { text: 'Propongo una estrategia estructurada', role: 'implementador', score: 4 },
-        { text: 'Me aseguro de que todos estén alineados', role: 'cohesionador', score: 4 },
-        { text: 'Busco la solución más innovadora', role: 'cerebro', score: 4 }
-      ]
-    },
-    {
-      id: 7,
-      question: 'Al final de un proyecto, generalmente:',
-      options: [
-        { text: 'Reviso que todo esté perfecto antes de entregar', role: 'finalizador', score: 4 },
-        { text: 'Evalúo qué aprendimos para el futuro', role: 'monitor', score: 4 },
-        { text: 'Celebro los logros con el equipo', role: 'cohesionador', score: 4 },
-        { text: 'Ya estoy pensando en el siguiente reto', role: 'impulsor', score: 4 }
-      ]
-    },
-    {
-      id: 8,
-      question: 'Prefiero trabajar en equipos donde pueda:',
-      options: [
-        { text: 'Aplicar mi expertise técnico', role: 'especialista', score: 4 },
-        { text: 'Organizar y ejecutar planes', role: 'implementador', score: 4 },
-        { text: 'Liderar y tomar decisiones', role: 'coordinador', score: 4 },
-        { text: 'Innovar y proponer cambios', role: 'cerebro', score: 4 }
-      ]
-    },
-    {
-      id: 9,
-      question: 'Cuando hay conflicto en el equipo:',
-      options: [
-        { text: 'Busco un acuerdo que satisfaga a todos', role: 'cohesionador', score: 4 },
-        { text: 'Analizo objetivamente quién tiene razón', role: 'monitor', score: 4 },
-        { text: 'Presiono para resolverlo rápido y seguir', role: 'impulsor', score: 4 },
-        { text: 'Propongo una solución creativa', role: 'cerebro', score: 4 }
-      ]
-    }
-  ], []);
-
-  const calculateResults = () => {
-    const roleScores = {};
-    BELBIN_ROLES.forEach(r => { roleScores[r.id] = 0; });
-    
-    answers.forEach(a => {
-      if (a.role && roleScores[a.role] !== undefined) {
-        roleScores[a.role] += a.score;
-      }
-    });
-
-    const sortedRoles = Object.entries(roleScores)
-      .sort((a, b) => b[1] - a[1])
-      .map(([roleId, score]) => ({
-        ...BELBIN_ROLES.find(r => r.id === roleId),
-        score
-      }));
-
-    return sortedRoles;
-  };
-
-  const handleAnswer = (option) => {
-    const newAnswers = [...answers, option];
-    setAnswers(newAnswers);
-
-    if (currentQuestion + 1 < BELBIN_QUESTIONS.length) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setShowResults(true);
-      const results = calculateResults();
-      addSession({
-        type: 'belbin',
-        belbinRole: results[0]?.id,
-        roleScore: results[0]?.score,
-        score: results[0]?.score,
-        maxScore: BELBIN_QUESTIONS.length * 4
-      });
-    }
-  };
-
-  const handleRetake = () => {
-    setAnswers([]);
-    setCurrentQuestion(0);
-    setShowResults(false);
-    setStarted(true);
-  };
-
-  if (showResults) {
-    const results = calculateResults();
-    const topRole = results[0];
-    const secondRole = results[1];
-    const thirdRole = results[2];
-
-    return (
-      <div className="h-screen flex flex-col relative">
-        <FloatingParticles />
-        
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="max-w-2xl mx-auto relative z-10">
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 text-slate-200 hover:text-white mb-4 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Volver</span>
-            </button>
-
-            <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-amber-500/30 shadow-2xl">
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-3">{topRole?.icon}</div>
-                <h2 className="text-2xl font-black text-white mb-1">Tu Rol Dominante</h2>
-                <p className="text-amber-400 font-bold text-xl">{topRole?.name}</p>
-              </div>
-
-              <div className={`bg-gradient-to-br ${topRole?.color} p-4 rounded-2xl mb-6`}>
-                <p className="text-white text-center font-medium">{topRole?.description}</p>
-              </div>
-
-              <div className="grid gap-4 mb-6">
-                <div className="bg-slate-700/50 rounded-xl p-4">
-                  <h4 className="text-green-400 font-bold mb-2 flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" /> Fortalezas
-                  </h4>
-                  <ul className="space-y-1">
-                    {topRole?.strengths.map((s, i) => (
-                      <li key={i} className="text-slate-200 text-sm flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />{s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="bg-slate-700/50 rounded-xl p-4">
-                  <h4 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" /> Áreas de Mejora
-                  </h4>
-                  <ul className="space-y-1">
-                    {topRole?.weaknesses.map((w, i) => (
-                      <li key={i} className="text-slate-200 text-sm flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full" />{w}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-slate-700/30 rounded-xl p-4">
-                <h4 className="text-slate-300 font-medium mb-3">Roles Secundarios</h4>
-                <div className="flex gap-3">
-                  {[secondRole, thirdRole].filter(Boolean).map((role, i) => (
-                    <div key={i} className="flex-1 bg-slate-700/50 rounded-xl p-3 text-center">
-                      <div className="text-2xl mb-1">{role.icon}</div>
-                      <p className="text-white text-sm font-medium">{role.name}</p>
-                      <p className="text-amber-400 text-xs">{role.score} pts</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 p-4 z-20">
-          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              onClick={handleRetake}
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-amber-500/30 hover:scale-105 flex items-center justify-center gap-2"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Repetir Test
-            </button>
-            <button
-              onClick={onBack}
-              className="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
-            >
-              Volver al Menú
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!started) {
-    return (
-      <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
-        <FloatingParticles />
-        <GlowingOrb color="#f59e0b" size="250px" left="10%" top="20%" delay="0s" />
-
-        <div className="max-w-lg mx-auto relative z-10">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Volver</span>
-          </button>
-
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-8 border-2 border-amber-500/30 shadow-2xl text-center">
-            <div className="text-6xl mb-4">🧩</div>
-            <h2 className="text-2xl font-black text-white mb-3">Test de Roles Belbin</h2>
-            <p className="text-slate-300 mb-6">
-              Descubre cuál es tu rol natural en un equipo de trabajo. 
-              Este test de 9 preguntas identificará tus fortalezas y cómo contribuyes mejor al equipo.
-            </p>
-
-            <div className="bg-slate-700/50 rounded-xl p-4 mb-6 text-left">
-              <h4 className="text-amber-400 font-bold mb-2">Los 9 Roles de Belbin:</h4>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                {BELBIN_ROLES.map(role => (
-                  <div key={role.id} className="text-2xl" title={role.name}>
-                    {role.icon}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={() => setStarted(true)}
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg shadow-amber-500/30 hover:scale-105 flex items-center justify-center gap-2 w-full"
-            >
-              <Play className="w-5 h-5" />
-              Comenzar Test
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const question = BELBIN_QUESTIONS[currentQuestion];
-
-  return (
-    <div className="min-h-screen p-4 md:p-8 relative">
-      <FloatingParticles />
-      <GlowingOrb color="#f59e0b" size="250px" left="10%" top="30%" delay="0s" />
-      
-      <div className="max-w-2xl mx-auto relative z-10">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Volver</span>
-        </button>
-        
-        <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border-2 border-amber-500/30 shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-amber-400 font-medium">Pregunta {currentQuestion + 1}/{BELBIN_QUESTIONS.length}</span>
-            <span className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-sm">Roles Belbin</span>
-          </div>
-          
-          <div className="w-full bg-slate-700 rounded-full h-2 mb-6">
-            <div 
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 h-2 rounded-full transition-all"
-              style={{ width: `${((currentQuestion + 1) / BELBIN_QUESTIONS.length) * 100}%` }}
-            />
-          </div>
-          
-          <h2 className="text-xl font-bold text-white mb-6 leading-relaxed">
-            {question.question}
-          </h2>
-          
-          <div className="space-y-3">
-            {question.options.map((option, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleAnswer(option)}
-                className="w-full text-left bg-slate-700/50 hover:bg-amber-500/20 border-2 border-slate-600 hover:border-amber-400 rounded-xl p-4 transition-all group"
-              >
-                <span className="text-slate-200 group-hover:text-white">{option.text}</span>
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -1149,24 +813,27 @@ Tu respuesta DEBE terminar con este formato EXACTO (respeta los corchetes y la e
 
 [PUNTUACION:X] (donde X es un número del 0 al 10)
 
-**Análisis de Competencias de Trabajo en Equipo:**
+[ESTILO:nombre_estilo] (DEBE ser UNO de: colaborativo, competitivo, evitativo, acomodativo, compromiso, coordinador, lider_facilitador, miembro_pasivo)
 
-📊 **Comunicación:** X/10 - [breve análisis]
-🤝 **Colaboración:** X/10 - [breve análisis]  
-👥 **Coordinación:** X/10 - [breve análisis]
-🎯 **Resolución de problemas:** X/10 - [breve análisis]
-💪 **Liderazgo situacional:** X/10 - [breve análisis]
+[ESTILO_ADECUADO:si/no]
 
-**Puntos Fuertes:**
-- [punto 1]
-- [punto 2]
+**Análisis del Estilo Colaborativo:**
+Has adoptado un estilo [nombre del estilo], que [análisis contextual de si es adecuado o no para esta situación específica, explicando por qué].
 
-**Áreas de Mejora:**
-- [área 1]
-- [área 2]
+**Análisis de tu Participación:**
+[Descripción detallada de cómo el usuario participó en el escenario, qué decisiones tomó, cómo interactuó con el equipo]
 
-**Recomendación Final:**
-[Consejo personalizado para mejorar el trabajo en equipo]` : '';
+**Puntos Fuertes Detectados:**
+- [fortaleza 1 específica observada]
+- [fortaleza 2 específica observada]
+
+**Sugerencias para Mejorar la Colaboración:**
+- [sugerencia concreta 1]
+- [sugerencia concreta 2]
+- [sugerencia concreta 3]
+
+**Frase Motivadora:**
+[Una frase motivadora o correctiva personalizada según el desempeño]` : '';
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -1208,11 +875,24 @@ Siempre en español.`
 
       if (shouldEvaluate && responseText.includes('[PUNTUACION:')) {
         const scoreMatch = responseText.match(/\[PUNTUACION:(\d+(?:\.\d+)?)\]/);
+        const styleMatch = responseText.match(/\[ESTILO:(\w+)\]/);
+        const adequateMatch = responseText.match(/\[ESTILO_ADECUADO:(si|no)\]/i);
+        
         if (scoreMatch) {
           const score = parseFloat(scoreMatch[1]);
+          const detectedStyle = styleMatch ? styleMatch[1].toLowerCase() : 'colaborativo';
+          const isStyleAdequate = adequateMatch ? adequateMatch[1].toLowerCase() === 'si' : true;
+          
+          const cleanFeedback = responseText
+            .replace(/\[PUNTUACION:\d+(?:\.\d+)?\]/, '')
+            .replace(/\[ESTILO:\w+\]/, '')
+            .replace(/\[ESTILO_ADECUADO:(si|no)\]/i, '');
+          
           setEvaluation({
             score: Math.min(10, Math.max(0, score)),
-            feedback: responseText.replace(/\[PUNTUACION:\d+(?:\.\d+)?\]/, '')
+            feedback: cleanFeedback,
+            collaborativeStyle: detectedStyle,
+            isStyleAdequate: isStyleAdequate
           });
           setPhase('results');
           
@@ -1222,6 +902,7 @@ Siempre en español.`
             scenarioTitle: selectedScenario.title,
             score: score,
             maxScore: 10,
+            collaborativeStyle: detectedStyle,
             teamSkills: {
               colaboracion: score * 0.9,
               coordinacion: score * 0.85,
@@ -1386,47 +1067,87 @@ Siempre en español.`
   if (phase === 'results' && evaluation) {
     const category = getScoreCategory(evaluation.score, 10);
     const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
-    const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
     const percentage = Math.round((evaluation.score / 10) * 100);
     
+    const detectedStyleData = COLLABORATIVE_STYLES.find(s => s.id === evaluation.collaborativeStyle) || COLLABORATIVE_STYLES[0];
+    
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="h-screen flex flex-col relative">
         <FloatingParticles />
-        <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-8 max-w-lg w-full text-center border-2 border-orange-500/30 shadow-2xl">
-          <div className="text-8xl mb-4 animate-bounce">{emoji}</div>
-          <h2 className="text-2xl font-black text-white mb-2">{phrase}</h2>
-          
-          <div className="bg-slate-700/50 rounded-2xl p-6 my-6">
-            <div className="text-5xl font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
-              {evaluation.score.toFixed(1)}/10
+        
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto relative z-10 pb-8">
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-orange-500/30 shadow-2xl">
+              <div className="text-center mb-6">
+                <div className="text-7xl mb-3 animate-bounce">{emoji}</div>
+                <div className="text-5xl font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
+                  {evaluation.score.toFixed(1)}/10
+                </div>
+                <div className="w-full bg-slate-600 rounded-full h-3 mb-2 max-w-xs mx-auto">
+                  <div 
+                    className={`h-3 rounded-full transition-all duration-1000 ${
+                      category === 'excellent' ? 'bg-gradient-to-r from-emerald-400 to-green-400' :
+                      category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
+                      category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
+                      'bg-gradient-to-r from-rose-400 to-red-400'
+                    }`}
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+                <p className="text-slate-400 text-sm">{percentage}% de puntuación</p>
+              </div>
+
+              <div className={`bg-gradient-to-br ${detectedStyleData.color} rounded-2xl p-5 mb-5 relative overflow-hidden`}>
+                <div className="absolute top-2 right-2">
+                  {evaluation.isStyleAdequate ? (
+                    <span className="bg-white/20 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" /> Adecuado
+                    </span>
+                  ) : (
+                    <span className="bg-red-500/30 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" /> Mejorable
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-5xl">{detectedStyleData.icon}</div>
+                  <div>
+                    <p className="text-white/80 text-xs uppercase tracking-wide">Tu estilo colaborativo</p>
+                    <h3 className="text-2xl font-black text-white">{detectedStyleData.name}</h3>
+                    <p className="text-white/90 text-sm mt-1">{detectedStyleData.description}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-500/20 border border-orange-500/40 rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${selectedScenario?.color || 'from-orange-500 to-amber-500'} rounded-xl flex items-center justify-center text-xl shadow-lg`}>
+                    {selectedScenario?.icon || '🎮'}
+                  </div>
+                  <div>
+                    <p className="text-orange-300 text-xs">Escenario completado</p>
+                    <p className="text-white text-lg font-bold">{selectedScenario?.title}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-700/50 rounded-xl p-4 mb-5">
+                <h4 className="text-amber-400 font-bold mb-3 flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4" /> Feedback Detallado
+                </h4>
+                <div className="max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                  <div 
+                    className="text-slate-200 text-sm leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{ __html: formatMessage(evaluation.feedback) }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="w-full bg-slate-600 rounded-full h-3 mb-3">
-              <div 
-                className={`h-3 rounded-full transition-all duration-1000 ${
-                  category === 'excellent' ? 'bg-gradient-to-r from-emerald-400 to-green-400' :
-                  category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
-                  category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
-                  'bg-gradient-to-r from-rose-400 to-red-400'
-                }`}
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-            <p className="text-slate-300 text-sm">{percentage}% de puntuación</p>
           </div>
-          
-          <div className="bg-orange-500/20 border border-orange-500/40 rounded-xl p-4 mb-4">
-            <p className="text-orange-300 font-bold text-lg mb-1">Escenario completado:</p>
-            <p className="text-white text-xl font-black">{selectedScenario?.title}</p>
-          </div>
-          
-          <div className="bg-slate-700/50 rounded-xl p-4 mb-6 text-left max-h-48 overflow-y-auto">
-            <div 
-              className="text-slate-300 text-sm whitespace-pre-line"
-              dangerouslySetInnerHTML={{ __html: formatMessage(evaluation.feedback) }}
-            />
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-3">
+        </div>
+
+        <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 p-4 z-20">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
             <button
               onClick={resetSimulator}
               className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold px-6 py-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:scale-105 flex items-center justify-center gap-2"
@@ -1883,8 +1604,6 @@ const TeamworkModule = ({ onBack }) => {
 
   const renderContent = () => {
     switch (currentMode) {
-      case 'belbin':
-        return <BelbinTest onBack={handleBack} />;
       case 'simulation':
         return <CollaborativeScenarioSimulator onBack={handleBack} />;
       case 'mentor':
