@@ -3296,71 +3296,91 @@ const GroupDynamicsMode = ({ onBack }) => {
     setIsLoading(true);
     setError(null);
 
+    const hospitalUnits = ['UCI', 'Urgencias', 'Hospitalización Médica', 'Hospitalización Quirúrgica', 'Pediatría', 'Oncología', 'Cardiología', 'Traumatología', 'Neurología', 'Geriatría', 'Neonatología', 'Psiquiatría', 'Rehabilitación', 'Paliativos'];
+    const shifts = ['turno de mañana', 'turno de tarde', 'turno de noche', 'turno de fin de semana', 'guardia de 24 horas'];
+    const teamSizes = ['equipo reducido (3 personas)', 'equipo estándar (5-6 personas)', 'equipo ampliado (8+ personas)', 'equipo multidisciplinar'];
+    const challenges = ['alta carga asistencial', 'situación de emergencia', 'conflicto interpersonal', 'cambio de protocolo', 'falta de recursos', 'paciente complejo', 'familiar difícil', 'nuevo miembro del equipo', 'auditoría interna', 'evento adverso reciente'];
+    
+    const randomUnit = hospitalUnits[Math.floor(Math.random() * hospitalUnits.length)];
+    const randomShift = shifts[Math.floor(Math.random() * shifts.length)];
+    const randomTeam = teamSizes[Math.floor(Math.random() * teamSizes.length)];
+    const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+    const uniqueId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: `Genera un escenario interactivo para evaluar el rol de "${role.name}" en un equipo de enfermería hospitalaria.
+          message: `Genera un escenario COMPLETAMENTE NUEVO Y ÚNICO para evaluar el rol de "${role.name}" en un equipo de enfermería hospitalaria.
+
+ID ÚNICO DE GENERACIÓN: ${uniqueId}
+¡IMPORTANTE! Este escenario debe ser DIFERENTE a cualquier otro generado antes. Usa creatividad máxima.
+
+PARÁMETROS ALEATORIOS PARA ESTE ESCENARIO:
+- Unidad hospitalaria: ${randomUnit}
+- Turno: ${randomShift}  
+- Composición del equipo: ${randomTeam}
+- Desafío principal: ${randomChallenge}
 
 ROL A EVALUAR: ${role.name}
 DESCRIPCIÓN: ${role.description}
 HABILIDADES CLAVE: ${role.skills.join(', ')}
-CONTEXTOS TÍPICOS: ${role.scenarios.join(', ')}
 
 GENERA UN JSON con este formato EXACTO:
 {
-  "title": "Título breve del escenario (5-8 palabras)",
-  "context": "Descripción del contexto hospitalario (2-3 frases, situación realista)",
-  "situation": "Situación específica que requiere actuar en el rol de ${role.name} (2-3 frases)",
+  "title": "Título breve y ÚNICO del escenario (5-8 palabras, relacionado con ${randomUnit} y ${randomChallenge})",
+  "context": "Descripción del contexto en ${randomUnit} durante ${randomShift}, con ${randomTeam}, enfrentando ${randomChallenge} (2-3 frases, situación muy específica y realista)",
+  "situation": "Situación concreta que requiere actuar en el rol de ${role.name} (2-3 frases)",
   "steps": [
     {
       "id": 1,
-      "prompt": "Pregunta o situación que el usuario debe resolver actuando como ${role.name}",
+      "prompt": "Primera situación específica relacionada con ${randomChallenge} que el usuario debe resolver como ${role.name}",
       "options": [
-        {"id": "a", "text": "Opción de respuesta A (comportamiento típico del rol)", "effectiveness": 8, "roleAlignment": 9},
-        {"id": "b", "text": "Opción de respuesta B (comportamiento alternativo)", "effectiveness": 6, "roleAlignment": 5},
-        {"id": "c", "text": "Opción de respuesta C (comportamiento menos adecuado)", "effectiveness": 3, "roleAlignment": 2}
+        {"id": "a", "text": "Opción concreta A", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "b", "text": "Opción concreta B", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "c", "text": "Opción concreta C", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)}
       ]
     },
     {
       "id": 2,
-      "prompt": "Segunda situación para evaluar el rol",
+      "prompt": "Segunda situación que escala o cambia el contexto inicial",
       "options": [
-        {"id": "a", "text": "Opción A", "effectiveness": 7, "roleAlignment": 8},
-        {"id": "b", "text": "Opción B", "effectiveness": 9, "roleAlignment": 9},
-        {"id": "c", "text": "Opción C", "effectiveness": 4, "roleAlignment": 3}
+        {"id": "a", "text": "Opción A", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "b", "text": "Opción B", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "c", "text": "Opción C", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)}
       ]
     },
     {
       "id": 3,
-      "prompt": "Tercera situación para evaluar el rol",
+      "prompt": "Tercera situación con un giro inesperado o complicación",
       "options": [
-        {"id": "a", "text": "Opción A", "effectiveness": 5, "roleAlignment": 4},
-        {"id": "b", "text": "Opción B", "effectiveness": 8, "roleAlignment": 7},
-        {"id": "c", "text": "Opción C", "effectiveness": 9, "roleAlignment": 9}
+        {"id": "a", "text": "Opción A", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "b", "text": "Opción B", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "c", "text": "Opción C", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)}
       ]
     },
     {
       "id": 4,
-      "prompt": "Cuarta situación para evaluar el rol",
+      "prompt": "Cuarta situación que resuelve o cierra el escenario",
       "options": [
-        {"id": "a", "text": "Opción A", "effectiveness": 9, "roleAlignment": 8},
-        {"id": "b", "text": "Opción B", "effectiveness": 6, "roleAlignment": 5},
-        {"id": "c", "text": "Opción C", "effectiveness": 3, "roleAlignment": 2}
+        {"id": "a", "text": "Opción A", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "b", "text": "Opción B", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)},
+        {"id": "c", "text": "Opción C", "effectiveness": (número 1-10), "roleAlignment": (número 1-10)}
       ]
     }
   ]
 }
 
-REGLAS:
-- El escenario debe ser realista y específico de enfermería hospitalaria
-- Las opciones deben tener diferentes niveles de efectividad (1-10) y alineación con el rol (1-10)
-- Incluye exactamente 4 pasos/situaciones
-- Las opciones deben ser plausibles y sin una respuesta obvia
-- Contextualiza en unidades como urgencias, hospitalización, UCI, etc.
+REGLAS OBLIGATORIAS:
+- NUNCA repitas escenarios - cada generación debe ser única y creativa
+- Usa el contexto aleatorio (${randomUnit}, ${randomShift}, ${randomTeam}, ${randomChallenge}) para crear una historia coherente
+- Las opciones deben ser TODAS plausibles - no debe haber una respuesta "obvia"
+- Varía las puntuaciones: a veces la opción A es mejor, a veces B, a veces C
+- Incluye detalles específicos: nombres de colegas, situaciones concretas, diálogos
+- El escenario debe tener una narrativa que fluya entre los 4 pasos
 - Solo responde con el JSON, sin texto adicional`,
-          systemPrompt: 'Eres un experto en dinámicas de equipos sanitarios y desarrollo de competencias profesionales en enfermería.'
+          systemPrompt: 'Eres un experto creativo en dinámicas de equipos sanitarios. Cada escenario que generas es ÚNICO, con historias originales, personajes diferentes y situaciones novedosas. Nunca repites contenido.'
         })
       });
 
