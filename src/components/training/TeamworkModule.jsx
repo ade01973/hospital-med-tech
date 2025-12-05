@@ -407,6 +407,24 @@ const TEAMWORK_MODES = [
     color: 'from-cyan-500 to-blue-500',
     features: ['6 dimensiones', 'Escenarios IA', 'Recomendaciones personalizadas'],
     isNew: true
+  },
+  {
+    id: 'roleplay',
+    title: 'Role-Play de Equipo',
+    description: 'Interactúa con perfiles de profesionales simulados por IA',
+    icon: '🎭',
+    color: 'from-fuchsia-500 to-pink-500',
+    features: ['6 perfiles', 'Chat dinámico', 'Feedback inmediato'],
+    isNew: true
+  },
+  {
+    id: 'teamProfile',
+    title: 'Mi Perfil de Equipo',
+    description: 'Tu evolución y perfil longitudinal de trabajo en equipo',
+    icon: '📈',
+    color: 'from-emerald-500 to-green-500',
+    features: ['Métricas', 'Gráficos', 'Evolución temporal'],
+    isNew: true
   }
 ];
 
@@ -4752,6 +4770,800 @@ Solo responde con el JSON, sin texto adicional.`,
   return null;
 };
 
+const ROLEPLAY_PROFILES = [
+  {
+    id: 'novice',
+    name: 'Enfermera Novata Insegura',
+    icon: '🌱',
+    color: 'from-green-500 to-emerald-500',
+    description: 'Recién graduada, necesita orientación y apoyo',
+    personality: 'Tímida, hace muchas preguntas, duda de sí misma, busca validación constante',
+    challenges: ['Miedo a cometer errores', 'No pregunta por vergüenza', 'Se bloquea ante decisiones']
+  },
+  {
+    id: 'dominant',
+    name: 'Enfermera Veterana Dominante',
+    icon: '👑',
+    color: 'from-purple-500 to-violet-500',
+    description: 'Mucha experiencia, puede ser imponente',
+    personality: 'Segura, directa, a veces brusca, cuestiona decisiones de otros, le cuesta delegar',
+    challenges: ['Resistencia al cambio', 'Subestima a los nuevos', 'Impone su criterio']
+  },
+  {
+    id: 'unmotivated',
+    name: 'Profesional Desmotivado',
+    icon: '😔',
+    color: 'from-slate-500 to-gray-500',
+    description: 'Ha perdido la ilusión por el trabajo',
+    personality: 'Apático, hace lo mínimo, se queja constantemente, contagia negatividad',
+    challenges: ['Bajo rendimiento', 'Afecta al clima', 'No participa en mejoras']
+  },
+  {
+    id: 'uncooperative',
+    name: 'Profesional que No Coopera',
+    icon: '🚫',
+    color: 'from-red-500 to-orange-500',
+    description: 'Trabaja de forma aislada, evita colaborar',
+    personality: 'Individualista, rechaza ayuda, no comparte información, evasivo',
+    challenges: ['Fragmenta el equipo', 'No comunica', 'Genera desconfianza']
+  },
+  {
+    id: 'overworker',
+    name: 'Profesional que Trabaja en Exceso',
+    icon: '🔥',
+    color: 'from-amber-500 to-yellow-500',
+    description: 'Se sobrecarga y no delega',
+    personality: 'Perfeccionista, no confía en otros, acumula tareas, se agota',
+    challenges: ['Burnout inminente', 'No delega', 'Crea dependencia']
+  },
+  {
+    id: 'saturated',
+    name: 'Equipo Saturado',
+    icon: '⚠️',
+    color: 'from-rose-500 to-pink-500',
+    description: 'Alta carga asistencial, estrés colectivo',
+    personality: 'Estresados, comunicación mínima, errores frecuentes, tensión palpable',
+    challenges: ['Priorización difícil', 'Conflictos por sobrecarga', 'Riesgo de errores']
+  }
+];
+
+const ROLEPLAY_CONTEXTS = [
+  'Inicio de turno de mañana con alta ocupación',
+  'Cambio de turno con pacientes críticos',
+  'Momento de máxima carga asistencial',
+  'Reunión de equipo semanal',
+  'Situación de urgencia en planta',
+  'Incorporación de nuevo personal',
+  'Después de incidente con paciente',
+  'Planificación de tareas del turno'
+];
+
+const RolePlayTeamMode = ({ onBack }) => {
+  const { addSession } = useTeamworkProfileContext();
+  const [phase, setPhase] = useState('intro');
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [context, setContext] = useState('');
+  const [interactionCount, setInteractionCount] = useState(0);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const startRolePlay = async (profile) => {
+    setSelectedProfile(profile);
+    setIsLoading(true);
+    const randomContext = ROLEPLAY_CONTEXTS[Math.floor(Math.random() * ROLEPLAY_CONTEXTS.length)];
+    setContext(randomContext);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Eres ${profile.name} en un hospital español. 
+CONTEXTO: ${randomContext}
+PERSONALIDAD: ${profile.personality}
+DESAFÍOS TÍPICOS: ${profile.challenges.join(', ')}
+
+Inicia una conversación breve (2-3 frases) mostrando tu personalidad. Actúa como este personaje de forma realista. Usa lenguaje coloquial español. NO uses asteriscos ni descripciones de acciones, solo diálogo directo.`,
+          systemPrompt: `Eres un actor interpretando a "${profile.name}" para un ejercicio de formación en trabajo en equipo sanitario. Mantén el personaje de forma consistente. Responde siempre en español con lenguaje natural y coloquial. Sé breve (2-4 frases por respuesta).`
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessages([{
+          role: 'character',
+          content: data.response,
+          profile: profile
+        }]);
+        setPhase('chat');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
+
+    const userMessage = inputMessage.trim();
+    setInputMessage('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+    setInteractionCount(prev => prev + 1);
+
+    const conversationHistory = messages.map(m => 
+      m.role === 'user' ? `Usuario: ${m.content}` : `${selectedProfile.name}: ${m.content}`
+    ).join('\n');
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Eres ${selectedProfile.name}. PERSONALIDAD: ${selectedProfile.personality}
+CONTEXTO: ${context}
+CONVERSACIÓN PREVIA:
+${conversationHistory}
+
+El usuario dice: "${userMessage}"
+
+Responde como tu personaje (2-4 frases). Reacciona de forma coherente con tu personalidad. Si el usuario muestra buena coordinación/empatía, puedes ir mejorando tu actitud gradualmente. NO uses asteriscos ni descripciones, solo diálogo directo.`,
+          systemPrompt: `Mantén el personaje de "${selectedProfile.name}" de forma consistente. Responde en español coloquial. Sé breve y natural.`
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(prev => [...prev, {
+          role: 'character',
+          content: data.response,
+          profile: selectedProfile
+        }]);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const finishRolePlay = async () => {
+    setPhase('evaluating');
+    setIsLoading(true);
+
+    const conversationHistory = messages.map(m => 
+      m.role === 'user' ? `TÚ: ${m.content}` : `${selectedProfile.name}: ${m.content}`
+    ).join('\n');
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Evalúa esta interacción de trabajo en equipo entre un/a enfermero/a y "${selectedProfile.name}" (${selectedProfile.description}).
+
+CONTEXTO: ${context}
+CONVERSACIÓN:
+${conversationHistory}
+
+Genera un JSON con este formato EXACTO:
+{
+  "coordination": {"score": (1-10), "feedback": "Evaluación de capacidad de coordinación (2 frases)"},
+  "tone": {"score": (1-10), "feedback": "Evaluación del tono usado (2 frases)"},
+  "collaboration": {"score": (1-10), "feedback": "Evaluación del enfoque colaborativo (2 frases)"},
+  "empathy": {"score": (1-10), "feedback": "Evaluación de la empatía mostrada (2 frases)"},
+  "effectiveness": {"score": (1-10), "feedback": "Evaluación de la efectividad de la intervención (2 frases)"},
+  "overallScore": (1-10),
+  "characterReaction": "Cómo reaccionó el personaje a tu intervención (1-2 frases)",
+  "strengths": ["Fortaleza 1", "Fortaleza 2"],
+  "improvements": ["Área de mejora 1", "Área de mejora 2"],
+  "tips": ["Consejo práctico 1", "Consejo práctico 2"]
+}
+
+Solo responde con el JSON.`,
+          systemPrompt: 'Eres un experto en evaluación de competencias de trabajo en equipo en enfermería. Evalúa de forma constructiva y específica.'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        let evalData;
+        try {
+          const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            evalData = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('Parse error:', e);
+        }
+
+        setEvaluation(evalData);
+
+        if (evalData) {
+          addSession({
+            type: 'roleplay_team',
+            profileId: selectedProfile.id,
+            profileName: selectedProfile.name,
+            score: evalData.overallScore,
+            maxScore: 10,
+            coordination: evalData.coordination?.score || 5,
+            collaboration: evalData.collaboration?.score || 5,
+            empathy: evalData.empathy?.score || 5,
+            interactionCount,
+            teamSkills: {
+              coordinacion: Math.round(evalData.coordination?.score || 5),
+              colaboracion: Math.round(evalData.collaboration?.score || 5),
+              cohesion: Math.round(evalData.empathy?.score || 5)
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+      setIsLoading(false);
+      setPhase('results');
+    }
+  };
+
+  const resetRolePlay = () => {
+    setPhase('intro');
+    setSelectedProfile(null);
+    setMessages([]);
+    setEvaluation(null);
+    setInteractionCount(0);
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="h-full overflow-y-auto p-4 md:p-8 relative">
+        <FloatingParticles />
+        <GlowingOrb color="#d946ef" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#ec4899" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-4xl mx-auto relative z-10 pb-24">
+          <button onClick={onBack} className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600">
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-fuchsia-500/20 to-pink-500/20 px-6 py-3 rounded-2xl border border-fuchsia-500/30 mb-4">
+              <span className="text-3xl">🎭</span>
+              <h1 className="text-2xl font-black text-white">Role-Play de Trabajo en Equipo</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Interactúa con profesionales simulados por IA y mejora tus habilidades
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-fuchsia-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-amber-400" />
+              ¿Cómo funciona?
+            </h3>
+            <ul className="space-y-2 text-slate-300 text-sm">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Elige un perfil de profesional con el que quieras practicar</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Mantén una conversación natural con el personaje</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>La IA reacciona dinámicamente según tus respuestas</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Al finalizar, recibe feedback sobre coordinación, tono y empatía</span>
+              </li>
+            </ul>
+          </div>
+
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-fuchsia-400" />
+            Elige un Perfil
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {ROLEPLAY_PROFILES.map((profile, idx) => (
+              <button
+                key={profile.id}
+                onClick={() => startRolePlay(profile)}
+                disabled={isLoading}
+                className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-fuchsia-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-fuchsia-500/20 hover:scale-[1.02] hover:-translate-y-1 disabled:opacity-50"
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${profile.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
+                    {profile.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-fuchsia-100">{profile.name}</h3>
+                    <p className="text-slate-300 text-sm mb-2">{profile.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {profile.challenges.map((ch, i) => (
+                        <span key={i} className="text-xs bg-slate-700/80 text-fuchsia-300 px-2 py-0.5 rounded-lg">{ch}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {isLoading && (
+            <div className="mt-6 text-center">
+              <Loader2 className="w-8 h-8 text-fuchsia-400 animate-spin mx-auto mb-2" />
+              <p className="text-slate-300">Preparando el role-play...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'chat') {
+    return (
+      <div className="h-full flex flex-col relative">
+        <div className="bg-slate-800/90 backdrop-blur-xl border-b border-fuchsia-500/30 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button onClick={resetRolePlay} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+                <ArrowLeft className="w-5 h-5 text-white" />
+              </button>
+              <div className={`w-10 h-10 bg-gradient-to-br ${selectedProfile.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                <span className="text-xl">{selectedProfile.icon}</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white">{selectedProfile.name}</h1>
+                <p className="text-xs text-fuchsia-300">{context}</p>
+              </div>
+            </div>
+            <button
+              onClick={finishRolePlay}
+              disabled={messages.length < 3}
+              className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white font-bold py-2 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center gap-2"
+            >
+              <CheckCircle className="w-4 h-4" />
+              Finalizar
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] rounded-2xl p-4 ${
+                msg.role === 'user' 
+                  ? 'bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white' 
+                  : 'bg-slate-700 text-slate-200'
+              }`}>
+                {msg.role === 'character' && (
+                  <div className="flex items-center gap-2 mb-2 text-xs text-slate-400">
+                    <span>{msg.profile.icon}</span>
+                    <span>{msg.profile.name}</span>
+                  </div>
+                )}
+                <p className="text-sm leading-relaxed">{msg.content}</p>
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-slate-700 rounded-2xl p-4">
+                <Loader2 className="w-5 h-5 text-fuchsia-400 animate-spin" />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="bg-slate-800/90 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto flex gap-3">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              placeholder="Escribe tu respuesta..."
+              className="flex-1 bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-fuchsia-500"
+              disabled={isLoading}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!inputMessage.trim() || isLoading}
+              className="bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-400 hover:to-pink-400 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
+          <p className="text-center text-slate-500 text-xs mt-2">
+            Mínimo 3 intercambios para evaluar • {messages.filter(m => m.role === 'user').length} mensajes enviados
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'evaluating') {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-pink-500 rounded-full animate-ping opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-pink-500 rounded-full flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Evaluando tu interacción</h2>
+          <p className="text-slate-300">Analizando coordinación, tono y colaboración...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && evaluation) {
+    const scoreColor = evaluation.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
+                       evaluation.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       evaluation.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto relative z-10 pb-24">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-fuchsia-500/20 to-pink-500/20 px-5 py-2.5 rounded-2xl border border-fuchsia-500/30">
+                <Trophy className="w-6 h-6 text-amber-400" />
+                <h1 className="text-xl font-black text-white">Evaluación del Role-Play</h1>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-fuchsia-500/30 shadow-2xl mb-4">
+              <div className="flex items-center gap-4 mb-4">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedProfile.color} flex items-center justify-center shadow-lg`}>
+                  <span className="text-3xl">{selectedProfile.icon}</span>
+                </div>
+                <div>
+                  <p className="text-slate-400 text-xs">Interacción con</p>
+                  <p className="text-white font-bold text-lg">{selectedProfile.name}</p>
+                  <p className="text-fuchsia-300 text-xs">{interactionCount} intercambios</p>
+                </div>
+                <div className="ml-auto text-right">
+                  <p className="text-slate-400 text-xs">Puntuación</p>
+                  <p className={`text-4xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                    {evaluation.overallScore}/10
+                  </p>
+                </div>
+              </div>
+
+              {evaluation.characterReaction && (
+                <div className="bg-slate-700/50 rounded-xl p-3 mb-4">
+                  <p className="text-slate-300 text-sm italic">"{evaluation.characterReaction}"</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                {evaluation.coordination && (
+                  <div className="bg-blue-500/20 border border-blue-500/30 rounded-xl p-3">
+                    <p className="text-blue-300 text-xs mb-1">Coordinación</p>
+                    <p className="text-2xl font-bold text-blue-400">{evaluation.coordination.score}/10</p>
+                  </div>
+                )}
+                {evaluation.tone && (
+                  <div className="bg-amber-500/20 border border-amber-500/30 rounded-xl p-3">
+                    <p className="text-amber-300 text-xs mb-1">Tono</p>
+                    <p className="text-2xl font-bold text-amber-400">{evaluation.tone.score}/10</p>
+                  </div>
+                )}
+                {evaluation.collaboration && (
+                  <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3">
+                    <p className="text-emerald-300 text-xs mb-1">Colaboración</p>
+                    <p className="text-2xl font-bold text-emerald-400">{evaluation.collaboration.score}/10</p>
+                  </div>
+                )}
+                {evaluation.empathy && (
+                  <div className="bg-pink-500/20 border border-pink-500/30 rounded-xl p-3">
+                    <p className="text-pink-300 text-xs mb-1">Empatía</p>
+                    <p className="text-2xl font-bold text-pink-400">{evaluation.empathy.score}/10</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {evaluation.strengths && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-3">
+                <h4 className="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                  <Star className="w-4 h-4" /> Fortalezas
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {evaluation.strengths.map((s, i) => (
+                    <span key={i} className="text-xs bg-emerald-500/30 text-emerald-200 px-2 py-1 rounded-lg">✓ {s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.improvements && (
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
+                <h4 className="text-amber-400 font-bold text-sm mb-2 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" /> Áreas de Mejora
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {evaluation.improvements.map((a, i) => (
+                    <span key={i} className="text-xs bg-amber-500/30 text-amber-200 px-2 py-1 rounded-lg">→ {a}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.tips && (
+              <div className="bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-xl p-4">
+                <h4 className="text-fuchsia-400 font-bold text-sm mb-2 flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4" /> Consejos Prácticos
+                </h4>
+                <ul className="space-y-1">
+                  {evaluation.tips.map((t, i) => (
+                    <li key={i} className="text-slate-200 text-sm">💡 {t}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto flex gap-3">
+            <button
+              onClick={resetRolePlay}
+              className="flex-1 bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-400 hover:to-pink-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 text-sm"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Nuevo Role-Play
+            </button>
+            <button
+              onClick={onBack}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+            >
+              <Home className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const TeamProfileMode = ({ onBack }) => {
+  const { profile, loading, getDominantRoles, getTrends } = useTeamworkProfileContext();
+  
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-emerald-400 animate-spin" />
+      </div>
+    );
+  }
+
+  const dominantRoles = getDominantRoles();
+  const trends = getTrends(10);
+  
+  const teamSkills = profile?.teamSkills || {};
+  const belbinRoles = profile?.belbinRoles || {};
+  
+  const cooperationLevel = Math.round(teamSkills.colaboracion || 0);
+  const coordinationLevel = Math.round(teamSkills.coordinacion || 0);
+  const cohesionLevel = Math.round(teamSkills.cohesion || 0);
+  const avgScore = profile?.averageScore || 0;
+  const totalSessions = profile?.totalSessions || 0;
+
+  const getSkillColor = (value) => {
+    if (value >= 8) return 'from-emerald-500 to-green-500';
+    if (value >= 6) return 'from-amber-500 to-yellow-500';
+    if (value >= 4) return 'from-orange-500 to-amber-500';
+    return 'from-red-500 to-rose-500';
+  };
+
+  const maxTrendScore = Math.max(...trends.map(t => t.score), 100);
+
+  return (
+    <div className="h-full overflow-y-auto p-4 md:p-8 relative">
+      <FloatingParticles />
+      <GlowingOrb color="#10b981" size="280px" left="5%" top="15%" delay="0s" />
+      <GlowingOrb color="#22c55e" size="200px" left="80%" top="55%" delay="2s" />
+
+      <div className="max-w-4xl mx-auto relative z-10 pb-24">
+        <button onClick={onBack} className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600">
+          <ArrowLeft className="w-5 h-5" />
+          <span>Volver</span>
+        </button>
+
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/20 to-green-500/20 px-6 py-3 rounded-2xl border border-emerald-500/30 mb-4">
+            <span className="text-3xl">📈</span>
+            <h1 className="text-2xl font-black text-white">Mi Perfil de Trabajo en Equipo</h1>
+          </div>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+            Tu evolución y competencias en trabajo colaborativo
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-emerald-500/30">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs">Sesiones Totales</p>
+                <p className="text-3xl font-black text-white">{totalSessions}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-amber-500/30">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-xl flex items-center justify-center">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs">Puntuación Media</p>
+                <p className="text-3xl font-black text-white">{avgScore.toFixed(1)}%</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-violet-500/30">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs">Rol Predominante</p>
+                <p className="text-lg font-bold text-white">{dominantRoles[0]?.role || 'Por determinar'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-slate-600 mb-6">
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-emerald-400" />
+            Competencias de Equipo
+          </h3>
+          
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-slate-300 text-sm flex items-center gap-2">
+                  <Handshake className="w-4 h-4 text-blue-400" /> Nivel de Cooperación
+                </span>
+                <span className="text-white font-bold">{cooperationLevel}/10</span>
+              </div>
+              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                <div className={`h-full bg-gradient-to-r ${getSkillColor(cooperationLevel)} rounded-full transition-all duration-500`} style={{ width: `${cooperationLevel * 10}%` }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-slate-300 text-sm flex items-center gap-2">
+                  <Network className="w-4 h-4 text-emerald-400" /> Eficacia en Coordinación
+                </span>
+                <span className="text-white font-bold">{coordinationLevel}/10</span>
+              </div>
+              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                <div className={`h-full bg-gradient-to-r ${getSkillColor(coordinationLevel)} rounded-full transition-all duration-500`} style={{ width: `${coordinationLevel * 10}%` }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-slate-300 text-sm flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-pink-400" /> Empatía en Contexto Grupal
+                </span>
+                <span className="text-white font-bold">{cohesionLevel}/10</span>
+              </div>
+              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                <div className={`h-full bg-gradient-to-r ${getSkillColor(cohesionLevel)} rounded-full transition-all duration-500`} style={{ width: `${cohesionLevel * 10}%` }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-slate-300 text-sm flex items-center gap-2">
+                  <Users className="w-4 h-4 text-amber-400" /> Capacidad de Mantener Clima
+                </span>
+                <span className="text-white font-bold">{Math.round((cooperationLevel + cohesionLevel) / 2)}/10</span>
+              </div>
+              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                <div className={`h-full bg-gradient-to-r ${getSkillColor((cooperationLevel + cohesionLevel) / 2)} rounded-full transition-all duration-500`} style={{ width: `${((cooperationLevel + cohesionLevel) / 2) * 10}%` }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {dominantRoles.length > 0 && (
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-violet-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Crown className="w-5 h-5 text-violet-400" />
+              Roles Predominantes en Equipos
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              {dominantRoles.map((role, idx) => (
+                <div key={role.role} className={`bg-gradient-to-br ${idx === 0 ? 'from-amber-500/20 to-yellow-500/20 border-amber-500/40' : 'from-slate-700/50 to-slate-600/50 border-slate-500/30'} border rounded-xl p-3 text-center`}>
+                  <div className="text-2xl mb-1">{idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}</div>
+                  <p className="text-white font-bold text-sm">{role.role}</p>
+                  <p className="text-slate-400 text-xs">{role.count} veces</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {trends.length > 0 && (
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-cyan-500/30">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <LineChart className="w-5 h-5 text-cyan-400" />
+              Evolución de Sesiones
+            </h3>
+            <div className="h-32 flex items-end gap-2">
+              {trends.map((t, idx) => (
+                <div key={idx} className="flex-1 flex flex-col items-center">
+                  <div 
+                    className={`w-full bg-gradient-to-t ${t.score >= 80 ? 'from-emerald-500 to-green-400' : t.score >= 60 ? 'from-amber-500 to-yellow-400' : 'from-orange-500 to-red-400'} rounded-t-lg transition-all hover:opacity-80`}
+                    style={{ height: `${(t.score / maxTrendScore) * 100}%`, minHeight: '10%' }}
+                    title={`${t.date}: ${t.score.toFixed(0)}%`}
+                  />
+                  <p className="text-slate-500 text-[10px] mt-1 rotate-0">{t.date}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between mt-2 text-xs text-slate-500">
+              <span>Sesiones anteriores</span>
+              <span>Más reciente →</span>
+            </div>
+          </div>
+        )}
+
+        {totalSessions === 0 && (
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-8 border border-slate-600 text-center">
+            <div className="text-6xl mb-4">🌱</div>
+            <h3 className="text-xl font-bold text-white mb-2">¡Empieza tu Perfil!</h3>
+            <p className="text-slate-300 mb-4">
+              Completa ejercicios en los otros módulos para construir tu perfil de trabajo en equipo.
+            </p>
+            <button
+              onClick={onBack}
+              className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white font-bold py-3 px-6 rounded-xl transition-all"
+            >
+              Explorar Módulos
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const CONFLICT_TYPES = [
   {
     id: 'nurse_doctor',
@@ -5597,6 +6409,10 @@ const TeamworkModule = ({ onBack }) => {
         return <ConflictSimulatorMode onBack={handleBack} />;
       case 'cohesion':
         return <CohesionEvaluatorMode onBack={handleBack} />;
+      case 'roleplay':
+        return <RolePlayTeamMode onBack={handleBack} />;
+      case 'teamProfile':
+        return <TeamProfileMode onBack={handleBack} />;
       case 'meetings':
         return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
       case 'dysfunctions':
