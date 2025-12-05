@@ -49,7 +49,7 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
       <img 
         src={imgPath}
         alt="Tu avatar"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover object-top"
         onError={() => setImgError(true)}
       />
     </div>
