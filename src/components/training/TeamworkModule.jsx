@@ -6589,6 +6589,771 @@ Solo responde con el JSON, sin texto adicional.`,
   return null;
 };
 
+const DELEGATION_LEVELS = [
+  { 
+    level: 1, 
+    name: 'Investiga', 
+    icon: '🔍', 
+    color: 'from-blue-500 to-cyan-500',
+    description: 'Investiga y dame todas las opciones. Yo decido.',
+    autonomy: 20,
+    example: 'Busca proveedores de material y prepárame un informe comparativo.'
+  },
+  { 
+    level: 2, 
+    name: 'Recomienda', 
+    icon: '💡', 
+    color: 'from-teal-500 to-emerald-500',
+    description: 'Investiga y recomiéndame una opción. Yo apruebo.',
+    autonomy: 40,
+    example: 'Evalúa las opciones y recomiéndame la mejor. Me dices antes de actuar.'
+  },
+  { 
+    level: 3, 
+    name: 'Consulta', 
+    icon: '🤝', 
+    color: 'from-amber-500 to-yellow-500',
+    description: 'Decide tú, pero consúltame antes de actuar.',
+    autonomy: 60,
+    example: 'Organiza el turno del fin de semana, pero coméntalo conmigo antes de publicarlo.'
+  },
+  { 
+    level: 4, 
+    name: 'Actúa e Informa', 
+    icon: '📣', 
+    color: 'from-orange-500 to-red-500',
+    description: 'Decide y actúa. Infórmame después de hacerlo.',
+    autonomy: 80,
+    example: 'Gestiona el pedido de farmacia y luego me cuentas cómo fue.'
+  },
+  { 
+    level: 5, 
+    name: 'Autonomía Total', 
+    icon: '🚀', 
+    color: 'from-violet-500 to-purple-500',
+    description: 'Hazlo tú completamente. No necesitas informarme.',
+    autonomy: 100,
+    example: 'Encárgate del inventario mensual como consideres mejor.'
+  }
+];
+
+const DELEGATION_MATRIX_QUADRANTS = [
+  { 
+    id: 'urgent-important', 
+    name: 'Urgente + Importante', 
+    icon: '🔥',
+    color: 'from-red-500 to-rose-500',
+    action: 'HACER TÚ MISMO',
+    description: 'Crisis, emergencias, deadlines críticos',
+    examples: ['Emergencia con paciente', 'Error crítico en medicación', 'Auditoría mañana'],
+    delegable: false
+  },
+  { 
+    id: 'not-urgent-important', 
+    name: 'No Urgente + Importante', 
+    icon: '🎯',
+    color: 'from-emerald-500 to-teal-500',
+    action: 'PLANIFICAR Y DELEGAR PARCIALMENTE',
+    description: 'Desarrollo, mejoras, formación',
+    examples: ['Formar al equipo', 'Mejorar protocolos', 'Planificar turnos mes siguiente'],
+    delegable: true
+  },
+  { 
+    id: 'urgent-not-important', 
+    name: 'Urgente + No Importante', 
+    icon: '📞',
+    color: 'from-amber-500 to-orange-500',
+    action: 'DELEGAR',
+    description: 'Interrupciones, algunas reuniones, tareas operativas',
+    examples: ['Llamadas rutinarias', 'Pedidos estándar', 'Reuniones informativas'],
+    delegable: true
+  },
+  { 
+    id: 'not-urgent-not-important', 
+    name: 'No Urgente + No Importante', 
+    icon: '🗑️',
+    color: 'from-slate-500 to-gray-500',
+    action: 'ELIMINAR O AUTOMATIZAR',
+    description: 'Tareas que no aportan valor',
+    examples: ['Emails innecesarios', 'Reuniones sin objetivo', 'Tareas duplicadas'],
+    delegable: false
+  }
+];
+
+const DELEGATION_SCENARIOS = [
+  {
+    id: 1,
+    title: 'Turno sobrecargado',
+    context: 'Es lunes por la mañana y tienes 3 ingresos nuevos, 2 altas pendientes, y la supervisora te pide que prepares un informe para la reunión de las 14h.',
+    tasks: [
+      { name: 'Valoración de ingresos nuevos', urgent: true, important: true },
+      { name: 'Documentación de altas', urgent: true, important: false },
+      { name: 'Informe para reunión', urgent: true, important: true },
+      { name: 'Actualizar plan de cuidados', urgent: false, important: true },
+      { name: 'Organizar armario de material', urgent: false, important: false }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Nueva enfermera en el equipo',
+    context: 'Acaba de incorporarse María, una enfermera recién graduada. Es su segunda semana y debes asignarle responsabilidades.',
+    tasks: [
+      { name: 'Administración de medicación IV', urgent: true, important: true },
+      { name: 'Toma de constantes', urgent: false, important: true },
+      { name: 'Registro en historia clínica', urgent: false, important: true },
+      { name: 'Atender llamadas de pacientes', urgent: true, important: false },
+      { name: 'Preparar material para curas', urgent: false, important: false }
+    ]
+  },
+  {
+    id: 3,
+    title: 'Fin de semana con personal reducido',
+    context: 'Es sábado y solo estáis 2 enfermeras para 20 pacientes. Una auxiliar está de baja.',
+    tasks: [
+      { name: 'Medicación de alto riesgo', urgent: true, important: true },
+      { name: 'Movilizaciones de pacientes', urgent: false, important: true },
+      { name: 'Documentar evoluciones', urgent: false, important: true },
+      { name: 'Reposición de stocks', urgent: false, important: false },
+      { name: 'Responder emails', urgent: false, important: false }
+    ]
+  }
+];
+
+const DelegationMode = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState('matrix');
+  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [selectedQuadrant, setSelectedQuadrant] = useState(null);
+  const [practiceMode, setPracticeMode] = useState(false);
+  const [currentScenario, setCurrentScenario] = useState(null);
+  const [taskAssignments, setTaskAssignments] = useState({});
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiScenario, setAiScenario] = useState(null);
+  const [delegatedTasks, setDelegatedTasks] = useState([]);
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [newTask, setNewTask] = useState({ name: '', person: '', level: 3, dueDate: '', notes: '' });
+
+  const generateAIScenario = async () => {
+    setAiLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Genera un escenario de delegación para enfermería',
+          systemPrompt: `Genera un escenario realista de delegación para una enfermera gestora en un hospital español.
+
+FORMATO DE RESPUESTA (JSON estricto):
+{
+  "title": "Título breve del escenario",
+  "context": "Descripción de la situación en 2-3 frases",
+  "tasks": [
+    {"name": "Tarea 1", "urgent": true/false, "important": true/false},
+    {"name": "Tarea 2", "urgent": true/false, "important": true/false},
+    {"name": "Tarea 3", "urgent": true/false, "important": true/false},
+    {"name": "Tarea 4", "urgent": true/false, "important": true/false},
+    {"name": "Tarea 5", "urgent": true/false, "important": true/false}
+  ]
+}
+
+REQUISITOS:
+- Exactamente 5 tareas variadas
+- Mezcla de urgentes/no urgentes e importantes/no importantes
+- Contexto realista de hospital (UCI, urgencias, planta, consultas...)
+- Incluir tareas delegables y no delegables
+- Solo responde con el JSON, sin texto adicional`
+        })
+      });
+      const data = await response.json();
+      try {
+        const scenario = JSON.parse(data.response);
+        setAiScenario(scenario);
+        setCurrentScenario(scenario);
+        setTaskAssignments({});
+        setShowFeedback(false);
+      } catch {
+        setCurrentScenario(DELEGATION_SCENARIOS[Math.floor(Math.random() * DELEGATION_SCENARIOS.length)]);
+      }
+    } catch (error) {
+      setCurrentScenario(DELEGATION_SCENARIOS[Math.floor(Math.random() * DELEGATION_SCENARIOS.length)]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const startPractice = (scenario = null) => {
+    if (scenario) {
+      setCurrentScenario(scenario);
+    } else {
+      setCurrentScenario(DELEGATION_SCENARIOS[Math.floor(Math.random() * DELEGATION_SCENARIOS.length)]);
+    }
+    setTaskAssignments({});
+    setShowFeedback(false);
+    setPracticeMode(true);
+  };
+
+  const assignTask = (taskName, quadrant) => {
+    setTaskAssignments(prev => ({ ...prev, [taskName]: quadrant }));
+  };
+
+  const evaluateAssignments = () => {
+    setShowFeedback(true);
+  };
+
+  const getCorrectQuadrant = (task) => {
+    if (task.urgent && task.important) return 'urgent-important';
+    if (!task.urgent && task.important) return 'not-urgent-important';
+    if (task.urgent && !task.important) return 'urgent-not-important';
+    return 'not-urgent-not-important';
+  };
+
+  const getScore = () => {
+    if (!currentScenario) return 0;
+    let correct = 0;
+    currentScenario.tasks.forEach(task => {
+      if (taskAssignments[task.name] === getCorrectQuadrant(task)) {
+        correct++;
+      }
+    });
+    return Math.round((correct / currentScenario.tasks.length) * 100);
+  };
+
+  const addDelegatedTask = () => {
+    if (!newTask.name.trim()) return;
+    const task = {
+      id: Date.now(),
+      ...newTask,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+    setDelegatedTasks(prev => [...prev, task]);
+    setNewTask({ name: '', person: '', level: 3, dueDate: '', notes: '' });
+    setShowTaskForm(false);
+  };
+
+  const updateTaskStatus = (taskId, status) => {
+    setDelegatedTasks(prev => prev.map(t => t.id === taskId ? { ...t, status } : t));
+  };
+
+  const deleteTask = (taskId) => {
+    setDelegatedTasks(prev => prev.filter(t => t.id !== taskId));
+  };
+
+  const tabs = [
+    { id: 'matrix', name: 'Matriz', icon: '📊' },
+    { id: 'levels', name: 'Niveles', icon: '📈' },
+    { id: 'practice', name: 'Práctica', icon: '🎮' },
+    { id: 'tracking', name: 'Seguimiento', icon: '📋' }
+  ];
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-lime-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-yellow-400/20"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              animation: `floatParticle ${8 + Math.random() * 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 p-4 md:p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <button onClick={onBack} className="p-2.5 hover:bg-yellow-500/20 rounded-xl transition-all group">
+                <ArrowLeft className="w-5 h-5 text-slate-300 group-hover:text-white" />
+              </button>
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 via-lime-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl shadow-yellow-500/30 ring-2 ring-yellow-400/30">
+                  <span className="text-2xl">📋</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center ring-2 ring-slate-800">
+                  <CheckCircle className="w-3 h-3 text-white" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-yellow-200 via-lime-200 to-emerald-200 bg-clip-text text-transparent">
+                  Delegación Efectiva
+                </h1>
+                <p className="text-xs text-yellow-300/80">Aprende a delegar tareas de forma estratégica</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setPracticeMode(false); }}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-yellow-500 to-lime-500 text-white shadow-lg shadow-yellow-500/30'
+                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span className="text-sm">{tab.name}</span>
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'matrix' && !practiceMode && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span>📊</span> Matriz de Delegación (Eisenhower)
+                </h2>
+                <p className="text-slate-300 mb-6">
+                  Clasifica las tareas según su urgencia e importancia para decidir qué hacer tú mismo, qué delegar y qué eliminar.
+                </p>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  {DELEGATION_MATRIX_QUADRANTS.map(quadrant => (
+                    <button
+                      key={quadrant.id}
+                      onClick={() => setSelectedQuadrant(selectedQuadrant === quadrant.id ? null : quadrant.id)}
+                      className={`bg-gradient-to-br ${quadrant.color} rounded-2xl p-5 text-left transition-all hover:scale-[1.02] ${
+                        selectedQuadrant === quadrant.id ? 'ring-4 ring-white/50 scale-[1.02]' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-3xl">{quadrant.icon}</span>
+                        <div>
+                          <h3 className="font-bold text-white">{quadrant.name}</h3>
+                          <p className="text-white/90 text-sm font-medium">{quadrant.action}</p>
+                        </div>
+                      </div>
+                      <p className="text-white/80 text-sm mb-3">{quadrant.description}</p>
+                      
+                      {selectedQuadrant === quadrant.id && (
+                        <div className="mt-4 pt-4 border-t border-white/20">
+                          <p className="text-white/90 text-xs font-medium mb-2">Ejemplos:</p>
+                          <ul className="space-y-1">
+                            {quadrant.examples.map((ex, idx) => (
+                              <li key={idx} className="text-white/80 text-xs flex items-center gap-2">
+                                <span>•</span> {ex}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-500/20 to-lime-500/20 rounded-2xl p-6 border border-yellow-500/30">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Play className="w-5 h-5 text-yellow-400" />
+                    Practica con escenarios
+                  </h3>
+                </div>
+                <p className="text-slate-300 text-sm mb-4">
+                  Pon a prueba tus habilidades clasificando tareas en escenarios reales de enfermería.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => startPractice()}
+                    className="flex-1 bg-gradient-to-r from-yellow-500 to-lime-500 hover:from-yellow-400 hover:to-lime-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-yellow-500/30 flex items-center justify-center gap-2"
+                  >
+                    <Play className="w-5 h-5" />
+                    Escenario Aleatorio
+                  </button>
+                  <button
+                    onClick={generateAIScenario}
+                    disabled={aiLoading}
+                    className="flex-1 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-violet-500/30 flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                    Generar con IA
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'matrix' && practiceMode && currentScenario && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white">{currentScenario.title}</h2>
+                  <button
+                    onClick={() => setPracticeMode(false)}
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-slate-300 bg-slate-700/50 rounded-xl p-4 mb-6">{currentScenario.context}</p>
+
+                <h3 className="font-bold text-white mb-4">Clasifica cada tarea en su cuadrante:</h3>
+                
+                <div className="space-y-3 mb-6">
+                  {currentScenario.tasks.map((task, idx) => (
+                    <div key={idx} className="bg-slate-700/50 rounded-xl p-4">
+                      <p className="text-white font-medium mb-3">{task.name}</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {DELEGATION_MATRIX_QUADRANTS.map(q => (
+                          <button
+                            key={q.id}
+                            onClick={() => assignTask(task.name, q.id)}
+                            disabled={showFeedback}
+                            className={`text-xs py-2 px-3 rounded-lg transition-all ${
+                              taskAssignments[task.name] === q.id
+                                ? `bg-gradient-to-r ${q.color} text-white font-bold`
+                                : 'bg-slate-600/50 text-slate-300 hover:bg-slate-600'
+                            } ${showFeedback && getCorrectQuadrant(task) === q.id ? 'ring-2 ring-emerald-400' : ''}`}
+                          >
+                            {q.icon} {q.name.split('+')[0]}
+                          </button>
+                        ))}
+                      </div>
+                      {showFeedback && (
+                        <div className={`mt-2 text-xs ${
+                          taskAssignments[task.name] === getCorrectQuadrant(task) 
+                            ? 'text-emerald-400' 
+                            : 'text-rose-400'
+                        }`}>
+                          {taskAssignments[task.name] === getCorrectQuadrant(task) 
+                            ? '✓ Correcto' 
+                            : `✗ Debería estar en: ${DELEGATION_MATRIX_QUADRANTS.find(q => q.id === getCorrectQuadrant(task))?.name}`
+                          }
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {!showFeedback ? (
+                  <button
+                    onClick={evaluateAssignments}
+                    disabled={Object.keys(taskAssignments).length < currentScenario.tasks.length}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg"
+                  >
+                    Evaluar mis respuestas
+                  </button>
+                ) : (
+                  <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-xl p-6 border border-emerald-500/30">
+                    <div className="text-center mb-4">
+                      <p className="text-4xl font-black text-white mb-2">{getScore()}%</p>
+                      <p className="text-emerald-300">
+                        {getScore() >= 80 ? '¡Excelente! Dominas la matriz' : 
+                         getScore() >= 60 ? 'Bien, pero puedes mejorar' : 
+                         'Necesitas más práctica'}
+                      </p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => startPractice()}
+                        className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                      >
+                        Otro escenario
+                      </button>
+                      <button
+                        onClick={() => setPracticeMode(false)}
+                        className="flex-1 bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                      >
+                        Volver
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'levels' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20">
+                <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                  <span>📈</span> Los 5 Niveles de Delegación
+                </h2>
+                <p className="text-slate-300 mb-6">
+                  No toda delegación es igual. Elige el nivel de autonomía apropiado según la tarea y la persona.
+                </p>
+
+                <div className="space-y-4">
+                  {DELEGATION_LEVELS.map(level => (
+                    <button
+                      key={level.level}
+                      onClick={() => setSelectedLevel(selectedLevel === level.level ? null : level.level)}
+                      className={`w-full bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-4 text-left transition-all ${
+                        selectedLevel === level.level ? 'ring-2 ring-yellow-500' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-14 h-14 bg-gradient-to-br ${level.color} rounded-xl flex items-center justify-center text-2xl shadow-lg flex-shrink-0`}>
+                          {level.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-yellow-400 font-mono text-sm">Nivel {level.level}</span>
+                            <h3 className="font-bold text-white">{level.name}</h3>
+                          </div>
+                          <p className="text-slate-300 text-sm">{level.description}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-slate-400 mb-1">Autonomía</div>
+                          <div className="w-24 h-2 bg-slate-600 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full bg-gradient-to-r ${level.color} transition-all`}
+                              style={{ width: `${level.autonomy}%` }}
+                            />
+                          </div>
+                          <div className="text-xs text-white font-bold mt-1">{level.autonomy}%</div>
+                        </div>
+                      </div>
+                      
+                      {selectedLevel === level.level && (
+                        <div className="mt-4 pt-4 border-t border-slate-600">
+                          <p className="text-xs text-yellow-400 font-medium mb-2">Ejemplo práctico:</p>
+                          <p className="text-slate-300 text-sm bg-slate-800/50 rounded-lg p-3 italic">
+                            "{level.example}"
+                          </p>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl p-6 border border-amber-500/30">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-amber-400" />
+                  Consejos para elegir el nivel
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-slate-800/50 rounded-xl p-4">
+                    <h4 className="font-bold text-emerald-400 mb-2">✓ Delega más cuando:</h4>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>• La persona tiene experiencia</li>
+                      <li>• La tarea no es crítica</li>
+                      <li>• Hay margen para errores</li>
+                      <li>• Quieres desarrollar al equipo</li>
+                    </ul>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4">
+                    <h4 className="font-bold text-rose-400 mb-2">✗ Delega menos cuando:</h4>
+                    <ul className="text-slate-300 text-sm space-y-1">
+                      <li>• La persona es nueva</li>
+                      <li>• Alto riesgo para pacientes</li>
+                      <li>• Requiere tu firma/autorización</li>
+                      <li>• Es la primera vez que lo hace</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'practice' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span>🎮</span> Casos Prácticos
+                </h2>
+                <p className="text-slate-300 mb-6">
+                  Elige un escenario para practicar tus habilidades de delegación o genera uno nuevo con IA.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  {DELEGATION_SCENARIOS.map(scenario => (
+                    <button
+                      key={scenario.id}
+                      onClick={() => { setActiveTab('matrix'); startPractice(scenario); }}
+                      className="bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-5 text-left transition-all group hover:scale-[1.02]"
+                    >
+                      <h3 className="font-bold text-white mb-2 group-hover:text-yellow-300">{scenario.title}</h3>
+                      <p className="text-slate-400 text-sm mb-3 line-clamp-2">{scenario.context}</p>
+                      <div className="flex items-center gap-2 text-yellow-400 text-sm">
+                        <Play className="w-4 h-4" />
+                        <span>{scenario.tasks.length} tareas</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => { setActiveTab('matrix'); generateAIScenario(); }}
+                  disabled={aiLoading}
+                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-lg shadow-violet-500/30 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {aiLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                  Generar Escenario con IA
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'tracking' && (
+            <div className="space-y-6">
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <span>📋</span> Seguimiento de Tareas Delegadas
+                  </h2>
+                  <button
+                    onClick={() => setShowTaskForm(true)}
+                    className="bg-gradient-to-r from-yellow-500 to-lime-500 hover:from-yellow-400 hover:to-lime-400 text-white font-bold py-2 px-4 rounded-xl transition-all flex items-center gap-2"
+                  >
+                    <Zap className="w-4 h-4" />
+                    Nueva Tarea
+                  </button>
+                </div>
+
+                {showTaskForm && (
+                  <div className="bg-slate-700/50 rounded-xl p-5 mb-6 border border-yellow-500/30">
+                    <h3 className="font-bold text-white mb-4">Añadir tarea delegada</h3>
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <input
+                        type="text"
+                        placeholder="Nombre de la tarea"
+                        value={newTask.name}
+                        onChange={e => setNewTask(prev => ({ ...prev, name: e.target.value }))}
+                        className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-yellow-500"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Persona asignada"
+                        value={newTask.person}
+                        onChange={e => setNewTask(prev => ({ ...prev, person: e.target.value }))}
+                        className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-yellow-500"
+                      />
+                      <select
+                        value={newTask.level}
+                        onChange={e => setNewTask(prev => ({ ...prev, level: parseInt(e.target.value) }))}
+                        className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-500"
+                      >
+                        {DELEGATION_LEVELS.map(l => (
+                          <option key={l.level} value={l.level}>Nivel {l.level}: {l.name}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="date"
+                        value={newTask.dueDate}
+                        onChange={e => setNewTask(prev => ({ ...prev, dueDate: e.target.value }))}
+                        className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-500"
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Notas adicionales (opcional)"
+                      value={newTask.notes}
+                      onChange={e => setNewTask(prev => ({ ...prev, notes: e.target.value }))}
+                      className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-yellow-500 mb-4"
+                      rows={2}
+                    />
+                    <div className="flex gap-3">
+                      <button
+                        onClick={addDelegatedTask}
+                        className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        onClick={() => setShowTaskForm(false)}
+                        className="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-xl transition-all"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {delegatedTasks.length === 0 ? (
+                  <div className="text-center py-12 bg-slate-700/30 rounded-xl">
+                    <div className="text-5xl mb-4">📋</div>
+                    <p className="text-slate-300 mb-2">No hay tareas delegadas todavía</p>
+                    <p className="text-slate-500 text-sm">Añade tareas para hacer seguimiento</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {delegatedTasks.map(task => {
+                      const levelInfo = DELEGATION_LEVELS.find(l => l.level === task.level);
+                      return (
+                        <div key={task.id} className="bg-slate-700/50 rounded-xl p-4 flex items-center gap-4">
+                          <button
+                            onClick={() => updateTaskStatus(task.id, task.status === 'completed' ? 'pending' : 'completed')}
+                            className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                              task.status === 'completed' 
+                                ? 'bg-emerald-500 text-white' 
+                                : 'bg-slate-600 hover:bg-slate-500'
+                            }`}
+                          >
+                            {task.status === 'completed' && <CheckCircle className="w-4 h-4" />}
+                          </button>
+                          <div className="flex-1">
+                            <p className={`font-medium ${task.status === 'completed' ? 'text-slate-400 line-through' : 'text-white'}`}>
+                              {task.name}
+                            </p>
+                            <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                              <span>👤 {task.person || 'Sin asignar'}</span>
+                              <span className={`bg-gradient-to-r ${levelInfo?.color} bg-clip-text text-transparent font-bold`}>
+                                {levelInfo?.icon} Nivel {task.level}
+                              </span>
+                              {task.dueDate && <span>📅 {task.dueDate}</span>}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => deleteTask(task.id)}
+                            className="p-2 hover:bg-rose-500/20 rounded-lg transition-colors text-slate-400 hover:text-rose-400"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl p-6 border border-emerald-500/30">
+                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-emerald-400" />
+                  Estadísticas de Delegación
+                </h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-white">{delegatedTasks.length}</p>
+                    <p className="text-slate-400 text-xs">Total tareas</p>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-emerald-400">{delegatedTasks.filter(t => t.status === 'completed').length}</p>
+                    <p className="text-slate-400 text-xs">Completadas</p>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-black text-amber-400">{delegatedTasks.filter(t => t.status === 'pending').length}</p>
+                    <p className="text-slate-400 text-xs">Pendientes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+          50% { transform: translateY(-25px) rotate(180deg); opacity: 0.6; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const ComingSoonMode = ({ title, icon, onBack }) => (
   <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
     <FloatingParticles />
@@ -6639,7 +7404,7 @@ const TeamworkModule = ({ onBack }) => {
       case 'analytics':
         return <TeamworkAnalytics onBack={handleBack} />;
       case 'delegation':
-        return <ComingSoonMode title="Delegación Efectiva" icon="📋" onBack={handleBack} />;
+        return <DelegationMode onBack={handleBack} />;
       case 'dynamics':
         return <GroupDynamicsMode onBack={handleBack} />;
       case 'conflicts':
