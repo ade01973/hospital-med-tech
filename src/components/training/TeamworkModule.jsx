@@ -593,10 +593,10 @@ const SCENARIO_TYPES = [
 ];
 
 const EMOJIS_BY_SCORE = {
-  excellent: ['🎉', '🏆', '⭐', '🌟', '💫', '🚀', '👑', '💯'],
-  good: ['👏', '✨', '💪', '🎯', '👍', '😊', '🌈', '🔥'],
-  average: ['🤔', '📈', '💡', '🔄', '👀', '🌱', '📚', '⏳'],
-  poor: ['😕', '📉', '⚠️', '🔧', '💭', '🎓', '🔍', '📝']
+  excellent: ['🎉', '🏆', '⭐', '🌟', '💫', '🚀', '👑', '💯', '🥇', '✨', '🔥', '💎', '🎯', '🙌', '🦸', '💪'],
+  good: ['👏', '✨', '💪', '🎯', '👍', '😊', '🌈', '🔥', '🌻', '💚', '🎖️', '👌', '🤩', '💐', '🧩', '⚡'],
+  average: ['🤔', '📈', '💡', '🔄', '👀', '🌱', '📚', '⏳', '🧭', '🔑', '🌤️', '🎓', '📊', '🛠️', '🧠', '💭'],
+  poor: ['😕', '📉', '⚠️', '🔧', '💭', '🎓', '🔍', '📝', '🌅', '🔄', '🎯', '💪', '🚶', '🌱', '📖', '🛤️']
 };
 
 const PHRASES_BY_SCORE = {
@@ -604,25 +604,57 @@ const PHRASES_BY_SCORE = {
     '¡Excepcional! Tu trabajo en equipo es ejemplar',
     '¡Brillante! Dominas la colaboración',
     '¡Impresionante! Nivel experto en equipos',
-    '¡Sobresaliente! Tu equipo tiene suerte de tenerte'
+    '¡Sobresaliente! Tu equipo tiene suerte de tenerte',
+    '¡Extraordinario! Lideras con el ejemplo',
+    '¡Fantástico! Eres un referente para el equipo',
+    '¡Espectacular! Tu desempeño es inspirador',
+    '¡Magnífico! Construyes equipos ganadores',
+    '¡Increíble! Tu coordinación es admirable',
+    '¡Excelente! Tienes madera de líder',
+    '¡Asombroso! Transmites confianza al equipo',
+    '¡Perfecto! Eres el alma del equipo'
   ],
   good: [
     '¡Muy bien! Colaboras con eficacia',
     '¡Buen trabajo! Tu coordinación es efectiva',
     '¡Genial! Tienes buenas bases de equipo',
-    '¡Bien hecho! Sigue desarrollando tu potencial'
+    '¡Bien hecho! Sigue desarrollando tu potencial',
+    '¡Vas por buen camino! El equipo confía en ti',
+    '¡Sólido! Tu aporte al equipo es valioso',
+    '¡Positivo! Contribuyes al éxito grupal',
+    '¡Prometedor! Tus habilidades crecen cada día',
+    '¡Notable! El trabajo en equipo te sale natural',
+    '¡Efectivo! Sabes cómo sumar al equipo',
+    '¡Competente! Tu rol en el equipo está claro',
+    '¡Capaz! Demuestras buenas competencias'
   ],
   average: [
     'Hay potencial, pero puedes mejorar',
     'En desarrollo, sigue practicando',
     'Base correcta, pero puedes crecer más',
-    'Oportunidad de crecimiento detectada'
+    'Oportunidad de crecimiento detectada',
+    'Estás en el camino, no pares ahora',
+    'Con más práctica llegarás lejos',
+    'Tienes la base, solo falta pulir',
+    'El progreso se construye paso a paso',
+    'Cada ejercicio te acerca a la meta',
+    'Tu esfuerzo dará frutos pronto',
+    'Sigue adelante, la mejora está cerca',
+    'Buen intento, la próxima será mejor'
   ],
   poor: [
     'Es momento de trabajar el trabajo en equipo',
     'Necesitas práctica, no te rindas',
     'Cada intento es una oportunidad de aprender',
-    'La mejora viene con la práctica constante'
+    'La mejora viene con la práctica constante',
+    'No te desanimes, todos empezamos así',
+    'El camino del experto comienza con un paso',
+    'Practica hoy para brillar mañana',
+    'Los grandes líderes también fueron principiantes',
+    'Tu siguiente intento puede ser el bueno',
+    'Aprende de esto y vuelve más fuerte',
+    'La perseverancia es la clave del éxito',
+    'Cada error es una lección valiosa'
   ]
 };
 
@@ -1265,6 +1297,9 @@ Siempre en español, vocabulario sanitario apropiado.`
     const scoreColor = result.score >= 8 ? 'from-emerald-500 to-green-500' : 
                        result.score >= 6 ? 'from-amber-500 to-yellow-500' : 
                        result.score >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+    const styleCategory = getScoreCategory(result.score, 10);
+    const styleEmoji = result.emoji || getRandomElement(EMOJIS_BY_SCORE[styleCategory]);
+    const stylePhrase = result.phrase || getRandomElement(PHRASES_BY_SCORE[styleCategory]);
     
     return (
       <div className="h-screen flex flex-col relative">
@@ -1274,6 +1309,13 @@ Siempre en español, vocabulario sanitario apropiado.`
           <div className="max-w-2xl mx-auto relative z-10 pb-8">
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-fuchsia-500/30 shadow-2xl">
               
+              <div className="text-center mb-4">
+                <div className="text-6xl mb-2 animate-bounce">{styleEmoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-fuchsia-400 to-rose-400 bg-clip-text text-transparent">
+                  {stylePhrase}
+                </p>
+              </div>
+              
               <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 rounded-2xl p-5 mb-5 border border-slate-600/50">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -1282,7 +1324,7 @@ Siempre en español, vocabulario sanitario apropiado.`
                     </div>
                     <div>
                       <p className="text-slate-400 text-xs uppercase tracking-wide">Puntuación</p>
-                      <p className="text-white text-xl font-bold">{result.score}/10 <span className="text-3xl ml-1">{result.emoji}</span></p>
+                      <p className="text-white text-xl font-bold">{result.score}/10</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -1297,14 +1339,6 @@ Siempre en español, vocabulario sanitario apropiado.`
                     )}
                   </div>
                 </div>
-                
-                {result.phrase && (
-                  <div className="bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-xl p-4">
-                    <p className="text-fuchsia-100 text-sm leading-relaxed italic">
-                      "{result.phrase}"
-                    </p>
-                  </div>
-                )}
               </div>
 
               <div className="text-center mb-5">
@@ -1918,6 +1952,7 @@ Siempre en español.`
   if (phase === 'results' && evaluation) {
     const category = getScoreCategory(evaluation.score, 10);
     const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
+    const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
     const percentage = Math.round((evaluation.score / 10) * 100);
     
     const detectedStyleData = COLLABORATIVE_STYLES.find(s => s.id === evaluation.collaborativeStyle) || COLLABORATIVE_STYLES[0];
@@ -1931,6 +1966,9 @@ Siempre en español.`
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-orange-500/30 shadow-2xl">
               <div className="text-center mb-6">
                 <div className="text-7xl mb-3 animate-bounce">{emoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-3">
+                  {phrase}
+                </p>
                 <div className="text-5xl font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
                   {evaluation.score.toFixed(1)}/10
                 </div>
@@ -3028,6 +3066,9 @@ Genera una respuesta con este formato EXACTO:
     const scoreColor = results.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
                        results.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
                        results.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+    const testCategory = getScoreCategory(results.overallScore, 10);
+    const testEmoji = getRandomElement(EMOJIS_BY_SCORE[testCategory]);
+    const testPhrase = getRandomElement(PHRASES_BY_SCORE[testCategory]);
 
     return (
       <div className="h-full flex flex-col relative">
@@ -3043,6 +3084,13 @@ Genera una respuesta con este formato EXACTO:
             </div>
 
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-indigo-500/30 shadow-2xl mb-4">
+              <div className="text-center mb-4">
+                <div className="text-6xl mb-2 animate-bounce">{testEmoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                  {testPhrase}
+                </p>
+              </div>
+              
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-slate-400 text-xs">Puntuación Global</p>
@@ -3778,6 +3826,9 @@ Solo responde con el JSON, sin texto adicional.`,
     const scoreColor = evaluation.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
                        evaluation.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
                        evaluation.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+    const dynamicsCategory = getScoreCategory(evaluation.overallScore, 10);
+    const dynamicsEmoji = getRandomElement(EMOJIS_BY_SCORE[dynamicsCategory]);
+    const dynamicsPhrase = getRandomElement(PHRASES_BY_SCORE[dynamicsCategory]);
 
     return (
       <div className="h-full flex flex-col relative">
@@ -3793,6 +3844,13 @@ Solo responde con el JSON, sin texto adicional.`,
             </div>
 
             <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-emerald-500/30 shadow-2xl mb-4">
+              <div className="text-center mb-4">
+                <div className="text-6xl mb-2 animate-bounce">{dynamicsEmoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                  {dynamicsPhrase}
+                </p>
+              </div>
+              
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-slate-400 text-xs">Puntuación Global</p>
