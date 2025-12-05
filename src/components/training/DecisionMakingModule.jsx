@@ -707,12 +707,22 @@ IMPORTANTE:
         }, 1500);
       }
     } catch (error) {
+      console.error('Error en chat:', error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
+        content: '❌ **Error de conexión**\n\nEl servicio de IA está temporalmente ocupado. Por favor, espera unos segundos e intenta de nuevo.\n\n*Puedes volver a escribir tu mensaje.*' 
       }]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (messages.length > 1) {
+      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+      if (lastUserMsg) {
+        setInput(lastUserMsg.content);
+      }
     }
   };
 

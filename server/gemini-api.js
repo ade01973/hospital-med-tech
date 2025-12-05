@@ -6,11 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// DON'T DELETE THIS COMMENT
-// This API key is from Gemini Developer API Key, not vertex AI API Key
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
 
-// Terminología obligatoria para todos los prompts
 const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
 - Usa EXCLUSIVAMENTE los términos "gestor enfermero" o "gestora enfermera" para referirse a profesionales de gestión enfermera.
@@ -37,11 +34,39 @@ Responde siempre en español de forma clara, profesional y educativa.
 Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function callGeminiWithRetry(contents, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: contents,
+      });
+      return response;
+    } catch (error) {
+      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
+      
+      if (error.status === 503 || error.message?.includes('overloaded')) {
+        if (attempt < maxRetries) {
+          const delay = Math.pow(2, attempt) * 1000;
+          console.log(`Waiting ${delay}ms before retry...`);
+          await sleep(delay);
+          continue;
+        }
+      }
+      
+      if (attempt === maxRetries) {
+        throw error;
+      }
+    }
+  }
+}
+
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, history = [], systemPrompt: customPrompt } = req.body;
 
-    // Combinar prompt personalizado con reglas de terminología obligatorias
     const systemPrompt = customPrompt 
       ? `${customPrompt}\n\n${TERMINOLOGY_RULES}`
       : DEFAULT_SYSTEM_PROMPT;
@@ -53,15 +78,19 @@ app.post('/api/chat', async (req, res) => {
       { role: "user", parts: [{ text: message }] }
     ];
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: contents,
-    });
-
+    const response = await callGeminiWithRetry(contents);
     res.json({ response: response.text || "Lo siento, no pude generar una respuesta." });
   } catch (error) {
     console.error("Error calling Gemini:", error);
-    res.status(500).json({ error: `Error al comunicarse con Gemini: ${error.message}` });
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera unos segundos e intenta de nuevo.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: `Error al comunicarse con la IA: ${error.message}` });
+    }
   }
 });
 
@@ -81,13 +110,10 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
-
+    const response = await callGeminiWithRetry(prompt);
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
     if (jsonMatch) {
       res.json(JSON.parse(jsonMatch[0]));
     } else {
@@ -95,7 +121,15 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
     }
   } catch (error) {
     console.error("Error generating quiz:", error);
-    res.status(500).json({ error: error.message });
+    
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({ 
+        error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera unos segundos e intenta de nuevo.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
   }
 });
 
