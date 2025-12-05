@@ -83,30 +83,42 @@ const useTeamworkProfile = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
+      const loadFromLocalStorage = () => {
+        try {
+          const stored = localStorage.getItem('teamworkProfile');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            return { ...defaultProfile, ...parsed };
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage teamwork profile:', e);
+        }
+        localStorage.setItem('teamworkProfile', JSON.stringify(defaultProfile));
+        return defaultProfile;
+      };
+
       try {
         const user = auth.currentUser;
         if (user) {
-          const docRef = doc(db, 'teamworkProfiles', user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setProfile(docSnap.data());
-          } else {
-            await setDoc(docRef, defaultProfile);
-            setProfile(defaultProfile);
+          try {
+            const docRef = doc(db, 'teamworkProfiles', user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              setProfile({ ...defaultProfile, ...docSnap.data() });
+            } else {
+              await setDoc(docRef, defaultProfile);
+              setProfile(defaultProfile);
+            }
+          } catch (firebaseError) {
+            console.error('Firebase error, falling back to localStorage:', firebaseError);
+            setProfile(loadFromLocalStorage());
           }
         } else {
-          const stored = localStorage.getItem('teamworkProfile');
-          if (stored) {
-            setProfile(JSON.parse(stored));
-          } else {
-            localStorage.setItem('teamworkProfile', JSON.stringify(defaultProfile));
-            setProfile(defaultProfile);
-          }
+          setProfile(loadFromLocalStorage());
         }
       } catch (error) {
         console.error('Error loading teamwork profile:', error);
-        const stored = localStorage.getItem('teamworkProfile');
-        setProfile(stored ? JSON.parse(stored) : defaultProfile);
+        setProfile(defaultProfile);
       } finally {
         setLoading(false);
       }
@@ -2952,6 +2964,29 @@ const TeamworkModuleContent = ({ onBack }) => {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedConflict, setSelectedConflict] = useState(null);
+  const { loading } = useTeamworkProfileContext();
+
+  if (loading) {
+    return (
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        style={{
+          backgroundImage: `url(${leadershipBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" />
+        <div className="relative z-10 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30 animate-pulse">
+            <Users className="w-8 h-8 text-white" />
+          </div>
+          <p className="text-white font-bold">Cargando módulo...</p>
+          <Loader2 className="w-6 h-6 text-amber-400 animate-spin mx-auto mt-3" />
+        </div>
+      </div>
+    );
+  }
 
   const handleBack = () => {
     if (selectedScenario) {
@@ -3041,11 +3076,63 @@ const TeamworkModuleContent = ({ onBack }) => {
   );
 };
 
+class TeamworkErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('TeamworkModule Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{
+            backgroundImage: `url(${leadershipBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" />
+          <div className="relative z-10 text-center max-w-md mx-4">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
+              <AlertTriangle className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">Error en el módulo</h2>
+            <p className="text-slate-300 mb-4">Ha ocurrido un error al cargar el módulo. Por favor, inténtalo de nuevo.</p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                this.props.onBack();
+              }}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg"
+            >
+              Volver al Hub
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const TeamworkModule = ({ onBack }) => {
   return (
-    <TeamworkProfileProvider>
-      <TeamworkModuleContent onBack={onBack} />
-    </TeamworkProfileProvider>
+    <TeamworkErrorBoundary onBack={onBack}>
+      <TeamworkProfileProvider>
+        <TeamworkModuleContent onBack={onBack} />
+      </TeamworkProfileProvider>
+    </TeamworkErrorBoundary>
   );
 };
 
