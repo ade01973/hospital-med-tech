@@ -461,7 +461,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           <div className="lg:col-span-2">
             <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
               <div className="flex justify-between items-center mb-5">
-                <h2 className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Juego Principal</h2>
+                <h2 className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Entrenamiento de la Gestora Enfermera</h2>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-400/50">
                     <Play className="w-4 h-4 text-cyan-400" />
@@ -600,6 +600,34 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <DailyChallenge />
               </div>
             </div>
+
+            {/* Hub de IA Gest-Tech - Below Training */}
+            <button
+              onClick={() => setShowAITraining(true)}
+              className="mt-6 w-full bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-3xl p-6 text-left transition-all hover:scale-[1.01] hover:border-emerald-400 group shadow-2xl shadow-emerald-500/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/40 group-hover:scale-110 transition-transform">
+                    <span className="text-3xl">🤖</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-2xl font-black bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">Hub de IA Gest-Tech</h3>
+                      <span className="bg-emerald-500/30 px-3 py-1 rounded-full text-xs text-emerald-200 font-bold border border-emerald-400/50">5 Módulos</span>
+                    </div>
+                    <p className="text-emerald-200/80 text-sm">Entrenamiento avanzado con Inteligencia Artificial especializada en gestión sanitaria</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-emerald-500/20 px-4 py-2 rounded-xl border border-emerald-400/50">
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span className="text-emerald-300 text-sm font-bold">IA Activa</span>
+                  </div>
+                  <span className="text-emerald-400 text-2xl group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </div>
+            </button>
           </div>
 
           {/* Right Column - All Other Features */}
@@ -621,20 +649,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
-              {/* AI Training Button */}
-              <button
-                onClick={() => setShowAITraining(true)}
-                className="bg-gradient-to-br from-emerald-900/50 to-teal-900/50 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-xl">🤖</span>
-                  </div>
-                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold">5</span>
-                </div>
-                <h3 className="text-sm font-black text-white">Centro IA</h3>
-                <p className="text-xs text-emerald-200/70">Entrenamiento</p>
-              </button>
 
               {/* Hospital Cases Button */}
               <button
