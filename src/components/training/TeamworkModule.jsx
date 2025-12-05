@@ -389,6 +389,15 @@ const TEAMWORK_MODES = [
     color: 'from-violet-500 to-purple-500',
     features: ['Coaching personal', 'Recursos', 'Técnicas avanzadas'],
     isNew: true
+  },
+  {
+    id: 'conflicts',
+    title: 'Conflictos Interprofesionales',
+    description: 'Simula y resuelve tensiones entre profesionales sanitarios',
+    icon: '⚔️',
+    color: 'from-red-500 to-rose-500',
+    features: ['5 tipos de conflicto', 'Escenarios IA', 'Evaluación 4 dimensiones'],
+    isNew: true
   }
 ];
 
@@ -3994,6 +4003,737 @@ Solo responde con el JSON, sin texto adicional.`,
   return null;
 };
 
+const CONFLICT_TYPES = [
+  {
+    id: 'nurse_doctor',
+    name: 'Enfermera vs. Médico',
+    icon: '⚕️',
+    color: 'from-red-500 to-rose-500',
+    description: 'Tensiones por diferencias de criterio clínico o jerarquía',
+    examples: ['Discrepancia en indicaciones', 'Falta de comunicación', 'Órdenes contradictorias']
+  },
+  {
+    id: 'auxiliary_nurse',
+    name: 'Auxiliar vs. Enfermera',
+    icon: '🤝',
+    color: 'from-orange-500 to-amber-500',
+    description: 'Conflictos por delegación de tareas o roles',
+    examples: ['Límites de competencias', 'Sobrecarga de trabajo', 'Supervisión inadecuada']
+  },
+  {
+    id: 'shift_tension',
+    name: 'Turno Mañana vs. Noche',
+    icon: '🌓',
+    color: 'from-indigo-500 to-violet-500',
+    description: 'Fricciones entre turnos por continuidad asistencial',
+    examples: ['Tareas pendientes', 'Información incompleta', 'Percepción de injusticia']
+  },
+  {
+    id: 'patient_distribution',
+    name: 'Distribución de Pacientes',
+    icon: '📊',
+    color: 'from-teal-500 to-cyan-500',
+    description: 'Tensiones por reparto desigual de carga asistencial',
+    examples: ['Pacientes complejos', 'Número desigual', 'Zonas de trabajo']
+  },
+  {
+    id: 'clinical_criteria',
+    name: 'Diferencias de Criterio Clínico',
+    icon: '🧠',
+    color: 'from-purple-500 to-fuchsia-500',
+    description: 'Choques por distintas perspectivas profesionales',
+    examples: ['Protocolos vs. experiencia', 'Prioridades asistenciales', 'Enfoque terapéutico']
+  }
+];
+
+const CONFLICT_CONTEXTS = [
+  'UCI durante turno nocturno con alta ocupación',
+  'Urgencias en fin de semana con múltiples emergencias',
+  'Planta de hospitalización con déficit de personal',
+  'Quirófano tras intervención prolongada',
+  'Oncología durante tratamiento paliativo',
+  'Pediatría con padres exigentes',
+  'Geriatría con paciente agitado',
+  'Cardiología tras parada cardíaca',
+  'Traumatología con accidentado múltiple',
+  'Psiquiatría con paciente en crisis'
+];
+
+const CONFLICT_TRIGGERS = [
+  'un comentario percibido como despectivo',
+  'una orden dada sin explicación',
+  'una tarea delegada en el último momento',
+  'información crítica no comunicada',
+  'una decisión tomada unilateralmente',
+  'un error atribuido injustamente',
+  'una carga de trabajo desigual',
+  'un cambio de protocolo no consensuado',
+  'una queja de un familiar',
+  'una situación de estrés extremo'
+];
+
+const ConflictSimulatorMode = ({ onBack }) => {
+  const { addSession } = useTeamworkProfileContext();
+  const [phase, setPhase] = useState('intro');
+  const [selectedConflict, setSelectedConflict] = useState(null);
+  const [scenario, setScenario] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [responses, setResponses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [error, setError] = useState(null);
+
+  const generateConflictScenario = async (conflict) => {
+    setIsLoading(true);
+    setError(null);
+
+    const randomContext = CONFLICT_CONTEXTS[Math.floor(Math.random() * CONFLICT_CONTEXTS.length)];
+    const randomTrigger = CONFLICT_TRIGGERS[Math.floor(Math.random() * CONFLICT_TRIGGERS.length)];
+    const uniqueId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
+    const professionalNames = ['Carmen', 'Lucía', 'María', 'Ana', 'Rosa', 'Elena', 'Laura', 'Marta', 'Paula', 'Sofía', 'Carlos', 'Javier', 'Miguel', 'Pedro', 'Luis', 'David', 'Pablo', 'Sergio', 'Andrés', 'Manuel'];
+    const name1 = professionalNames[Math.floor(Math.random() * professionalNames.length)];
+    let name2 = professionalNames[Math.floor(Math.random() * professionalNames.length)];
+    while (name2 === name1) name2 = professionalNames[Math.floor(Math.random() * professionalNames.length)];
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera un escenario de CONFLICTO INTERPROFESIONAL completamente ÚNICO para entrenamiento de gestión sanitaria.
+
+ID ÚNICO: ${uniqueId}
+¡IMPORTANTE! Cada escenario debe ser DIFERENTE y CREATIVO. Nunca repitas situaciones.
+
+TIPO DE CONFLICTO: ${conflict.name}
+DESCRIPCIÓN: ${conflict.description}
+EJEMPLOS DE SITUACIONES: ${conflict.examples.join(', ')}
+
+PARÁMETROS ALEATORIOS:
+- Contexto: ${randomContext}
+- Detonante: ${randomTrigger}
+- Profesionales involucrados: ${name1} y ${name2}
+
+Genera un JSON con este formato EXACTO:
+{
+  "title": "Título breve del conflicto (6-10 palabras)",
+  "context": "Descripción detallada del contexto en ${randomContext}, incluyendo ambiente, hora, carga de trabajo (3-4 frases)",
+  "conflict": "Descripción del conflicto entre ${name1} y ${name2}, detonado por ${randomTrigger} (3-4 frases, con diálogo inicial)",
+  "yourRole": "Tu papel como profesional de enfermería que debe intervenir",
+  "steps": [
+    {
+      "id": 1,
+      "situation": "Primera fase del conflicto - la tensión escala (incluir diálogo entre ${name1} y ${name2})",
+      "options": [
+        {"id": "a", "text": "Respuesta que fomenta cooperación", "cooperation": 9, "frictionReduction": 8, "climatePreservation": 9, "sharedSolution": 8},
+        {"id": "b", "text": "Respuesta neutral o parcialmente efectiva", "cooperation": 5, "frictionReduction": 5, "climatePreservation": 6, "sharedSolution": 5},
+        {"id": "c", "text": "Respuesta que podría agravar el conflicto", "cooperation": 2, "frictionReduction": 2, "climatePreservation": 3, "sharedSolution": 2}
+      ]
+    },
+    {
+      "id": 2,
+      "situation": "Segunda fase - el conflicto se intensifica o cambia de dirección",
+      "options": [
+        {"id": "a", "text": "Opción A", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "b", "text": "Opción B", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "c", "text": "Opción C", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)}
+      ]
+    },
+    {
+      "id": 3,
+      "situation": "Tercera fase - momento crítico de decisión",
+      "options": [
+        {"id": "a", "text": "Opción A", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "b", "text": "Opción B", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "c", "text": "Opción C", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)}
+      ]
+    },
+    {
+      "id": 4,
+      "situation": "Cuarta fase - resolución o consecuencias",
+      "options": [
+        {"id": "a", "text": "Opción A", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "b", "text": "Opción B", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)},
+        {"id": "c", "text": "Opción C", "cooperation": (1-10), "frictionReduction": (1-10), "climatePreservation": (1-10), "sharedSolution": (1-10)}
+      ]
+    }
+  ]
+}
+
+REGLAS OBLIGATORIAS:
+- NUNCA repitas escenarios - cada generación debe ser ÚNICA
+- Las opciones deben ser REALISTAS y plausibles en el contexto sanitario español
+- Varía las puntuaciones - a veces la opción A es mejor, a veces B o C
+- Incluye DIÁLOGOS concretos entre los profesionales
+- El conflicto debe tener una progresión narrativa coherente
+- Evalúa cada opción en las 4 dimensiones: cooperación, reducción de fricción, preservación del clima, solución compartida
+- Solo responde con el JSON, sin texto adicional`,
+          systemPrompt: 'Eres un experto en gestión de conflictos en equipos sanitarios. Creas escenarios de conflicto interprofesional realistas, intensos pero educativos, con diálogos auténticos y situaciones que reflejan la realidad de la enfermería hospitalaria española.'
+        })
+      });
+
+      if (!response.ok) throw new Error('Error generando escenario');
+
+      const data = await response.json();
+      let scenarioData;
+
+      try {
+        const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          scenarioData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No JSON found');
+        }
+      } catch (e) {
+        throw new Error('Error parseando respuesta');
+      }
+
+      if (!scenarioData.steps || scenarioData.steps.length < 4) {
+        throw new Error('Escenario incompleto');
+      }
+
+      setScenario(scenarioData);
+      setPhase('scenario');
+      setCurrentStep(0);
+      setResponses([]);
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Error generando el escenario. Inténtalo de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectOption = (option) => {
+    const newResponses = [...responses, {
+      step: currentStep,
+      option: option,
+      cooperation: option.cooperation,
+      frictionReduction: option.frictionReduction,
+      climatePreservation: option.climatePreservation,
+      sharedSolution: option.sharedSolution
+    }];
+    setResponses(newResponses);
+
+    if (currentStep < scenario.steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      generateEvaluation(newResponses);
+    }
+  };
+
+  const generateEvaluation = async (allResponses) => {
+    setPhase('evaluating');
+    setIsLoading(true);
+
+    const avgCooperation = allResponses.reduce((a, r) => a + r.cooperation, 0) / allResponses.length;
+    const avgFriction = allResponses.reduce((a, r) => a + r.frictionReduction, 0) / allResponses.length;
+    const avgClimate = allResponses.reduce((a, r) => a + r.climatePreservation, 0) / allResponses.length;
+    const avgSolution = allResponses.reduce((a, r) => a + r.sharedSolution, 0) / allResponses.length;
+    const overallScore = (avgCooperation + avgFriction + avgClimate + avgSolution) / 4;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera una evaluación profesional para un/a enfermero/a que ha completado un ejercicio de gestión de conflictos interprofesionales.
+
+TIPO DE CONFLICTO: ${selectedConflict.name}
+ESCENARIO: ${scenario.title}
+CONTEXTO: ${scenario.context}
+
+RESULTADOS EN LAS 4 DIMENSIONES:
+- Fomento de cooperación: ${avgCooperation.toFixed(1)}/10
+- Reducción de fricción: ${avgFriction.toFixed(1)}/10
+- Preservación del clima laboral: ${avgClimate.toFixed(1)}/10
+- Promoción de soluciones compartidas: ${avgSolution.toFixed(1)}/10
+- Puntuación global: ${overallScore.toFixed(1)}/10
+
+RESPUESTAS DEL USUARIO:
+${allResponses.map((r, i) => `Paso ${i + 1}: "${r.option.text}" (Coop: ${r.cooperation}, Fricción: ${r.frictionReduction}, Clima: ${r.climatePreservation}, Solución: ${r.sharedSolution})`).join('\n')}
+
+Genera un JSON con este formato EXACTO:
+{
+  "cooperationAnalysis": {
+    "score": ${avgCooperation.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre cómo fomentó la cooperación",
+    "tips": ["Consejo 1 para mejorar cooperación", "Consejo 2"]
+  },
+  "frictionAnalysis": {
+    "score": ${avgFriction.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre reducción de fricción",
+    "tips": ["Consejo 1 para reducir fricción", "Consejo 2"]
+  },
+  "climateAnalysis": {
+    "score": ${avgClimate.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre preservación del clima laboral",
+    "tips": ["Consejo 1 para mantener buen clima", "Consejo 2"]
+  },
+  "solutionAnalysis": {
+    "score": ${avgSolution.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre promoción de soluciones compartidas",
+    "tips": ["Consejo 1 para soluciones compartidas", "Consejo 2"]
+  },
+  "conflictStyle": "Nombre del estilo de gestión de conflictos predominante (ej: Colaborativo, Competitivo, Evitativo, Acomodativo, Compromiso)",
+  "overallConclusion": "Párrafo de conclusión profesional (4-5 frases) integrando todas las dimensiones, destacando fortalezas, áreas de mejora y recomendaciones específicas para enfermería"
+}
+
+Solo responde con el JSON, sin texto adicional.`,
+          systemPrompt: 'Eres un experto en gestión de conflictos y desarrollo profesional en enfermería. Proporcionas feedback constructivo, específico y motivador.'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        let evalData;
+
+        try {
+          const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            evalData = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('Error parsing evaluation:', e);
+        }
+
+        setEvaluation({
+          ...evalData,
+          overallScore,
+          avgCooperation,
+          avgFriction,
+          avgClimate,
+          avgSolution,
+          responses: allResponses
+        });
+
+        addSession({
+          type: 'conflict_simulation',
+          conflictType: selectedConflict.id,
+          conflictName: selectedConflict.name,
+          score: overallScore,
+          maxScore: 10,
+          cooperation: avgCooperation,
+          frictionReduction: avgFriction,
+          climatePreservation: avgClimate,
+          sharedSolution: avgSolution,
+          conflictStyle: evalData?.conflictStyle || 'No determinado',
+          teamSkills: {
+            colaboracion: Math.round(avgCooperation),
+            coordinacion: Math.round(avgSolution),
+            cohesion: Math.round(avgClimate)
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Error generating evaluation:', err);
+      setEvaluation({
+        overallScore,
+        avgCooperation,
+        avgFriction,
+        avgClimate,
+        avgSolution,
+        responses: allResponses
+      });
+    } finally {
+      setIsLoading(false);
+      setPhase('results');
+    }
+  };
+
+  const resetExercise = () => {
+    setPhase('intro');
+    setSelectedConflict(null);
+    setScenario(null);
+    setCurrentStep(0);
+    setResponses([]);
+    setEvaluation(null);
+    setError(null);
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        <GlowingOrb color="#ef4444" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#f43f5e" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-4xl mx-auto relative z-10 pb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-rose-500/20 px-6 py-3 rounded-2xl border border-red-500/30 mb-4">
+              <span className="text-3xl">⚔️</span>
+              <h1 className="text-2xl font-black text-white">Simulador de Conflictos Interprofesionales</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Aprende a gestionar tensiones entre profesionales sanitarios
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-red-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-red-400" />
+              Dimensiones de Evaluación
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3 text-center">
+                <Handshake className="w-6 h-6 text-emerald-400 mx-auto mb-1" />
+                <p className="text-emerald-300 text-xs font-medium">Cooperación</p>
+              </div>
+              <div className="bg-blue-500/20 border border-blue-500/30 rounded-xl p-3 text-center">
+                <Shield className="w-6 h-6 text-blue-400 mx-auto mb-1" />
+                <p className="text-blue-300 text-xs font-medium">Reducción Fricción</p>
+              </div>
+              <div className="bg-amber-500/20 border border-amber-500/30 rounded-xl p-3 text-center">
+                <Heart className="w-6 h-6 text-amber-400 mx-auto mb-1" />
+                <p className="text-amber-300 text-xs font-medium">Clima Laboral</p>
+              </div>
+              <div className="bg-violet-500/20 border border-violet-500/30 rounded-xl p-3 text-center">
+                <Puzzle className="w-6 h-6 text-violet-400 mx-auto mb-1" />
+                <p className="text-violet-300 text-xs font-medium">Soluciones Compartidas</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-red-400" />
+            Elige un Tipo de Conflicto
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {CONFLICT_TYPES.map((conflict, idx) => (
+              <button
+                key={conflict.id}
+                onClick={() => {
+                  setSelectedConflict(conflict);
+                  generateConflictScenario(conflict);
+                }}
+                disabled={isLoading}
+                className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-red-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-red-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden disabled:opacity-50"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${conflict.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
+                    {conflict.icon}
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-red-100">{conflict.name}</h3>
+                    <p className="text-slate-300 text-sm mb-2">{conflict.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {conflict.examples.map((ex, i) => (
+                        <span key={i} className="text-xs bg-slate-700/80 text-red-300 px-2 py-0.5 rounded-lg">
+                          {ex}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {error && (
+            <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl p-4 text-center">
+              <p className="text-red-300">{error}</p>
+              <button
+                onClick={() => setError(null)}
+                className="mt-2 text-red-400 hover:text-red-300 text-sm underline"
+              >
+                Cerrar
+              </button>
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="mt-6 text-center">
+              <Loader2 className="w-8 h-8 text-red-400 animate-spin mx-auto mb-2" />
+              <p className="text-slate-300">Generando escenario de conflicto...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'scenario' && scenario) {
+    const currentStepData = scenario.steps[currentStep];
+    const progress = ((currentStep + 1) / scenario.steps.length) * 100;
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <div className="bg-slate-800/90 backdrop-blur-xl border-b border-red-500/30 px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <button onClick={resetExercise} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+                <ArrowLeft className="w-5 h-5 text-white" />
+              </button>
+              <div className={`w-10 h-10 bg-gradient-to-br ${selectedConflict.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                <span className="text-xl">{selectedConflict.icon}</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white">{scenario.title}</h1>
+                <p className="text-xs text-red-300">Paso {currentStep + 1} de {scenario.steps.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-slate-700 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-red-500 to-rose-500 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto">
+            {currentStep === 0 && (
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-xl p-4 mb-4 border border-red-500/30">
+                <h3 className="text-sm font-bold text-red-400 mb-2">Contexto</h3>
+                <p className="text-slate-200 text-sm mb-3">{scenario.context}</p>
+                <h3 className="text-sm font-bold text-amber-400 mb-2">El Conflicto</h3>
+                <p className="text-slate-200 text-sm mb-3">{scenario.conflict}</p>
+                <h3 className="text-sm font-bold text-emerald-400 mb-2">Tu Rol</h3>
+                <p className="text-slate-200 text-sm">{scenario.yourRole}</p>
+              </div>
+            )}
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-slate-600 shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-red-300 text-xs">Situación {currentStep + 1}</p>
+                  <p className="text-white font-medium">¿Cómo actuarías?</p>
+                </div>
+              </div>
+
+              <p className="text-slate-200 mb-5 leading-relaxed bg-slate-700/50 rounded-xl p-4 border-l-4 border-red-500">
+                {currentStepData.situation}
+              </p>
+
+              <div className="space-y-3">
+                {currentStepData.options.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelectOption(option)}
+                    className="w-full text-left bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-red-400 rounded-xl p-4 transition-all group"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm font-bold text-white group-hover:bg-red-500 transition-colors">
+                        {option.id.toUpperCase()}
+                      </div>
+                      <p className="flex-1 text-slate-200 text-sm leading-relaxed">{option.text}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'evaluating') {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-rose-500 rounded-full animate-ping opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Evaluando tu gestión del conflicto</h2>
+          <p className="text-slate-300">Analizando cooperación, fricción, clima y soluciones...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && evaluation) {
+    const scoreColor = evaluation.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
+                       evaluation.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       evaluation.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+    const conflictCategory = getScoreCategory(evaluation.overallScore, 10);
+    const conflictEmoji = getRandomElement(EMOJIS_BY_SCORE[conflictCategory]);
+    const conflictPhrase = getRandomElement(PHRASES_BY_SCORE[conflictCategory]);
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto relative z-10">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-rose-500/20 px-5 py-2.5 rounded-2xl border border-red-500/30">
+                <Trophy className="w-6 h-6 text-amber-400" />
+                <h1 className="text-xl font-black text-white">Evaluación del Conflicto</h1>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-red-500/30 shadow-2xl mb-4">
+              <div className="text-center mb-4">
+                <div className="text-6xl mb-2 animate-bounce">{conflictEmoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
+                  {conflictPhrase}
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-slate-400 text-xs">Puntuación Global</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                      {evaluation.overallScore.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400 text-lg">/10</span>
+                  </div>
+                </div>
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedConflict.color} flex items-center justify-center shadow-lg`}>
+                  <span className="text-3xl">{selectedConflict.icon}</span>
+                </div>
+              </div>
+
+              {evaluation.conflictStyle && (
+                <div className="bg-violet-500/20 border border-violet-500/30 rounded-xl p-3 mb-4 text-center">
+                  <p className="text-violet-300 text-xs">Tu estilo de gestión de conflictos</p>
+                  <p className="text-white font-bold text-lg">{evaluation.conflictStyle}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3 text-center">
+                  <Handshake className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
+                  <p className="text-slate-400 text-xs mb-1">Cooperación</p>
+                  <p className="text-2xl font-bold text-emerald-400">{evaluation.avgCooperation.toFixed(1)}</p>
+                </div>
+                <div className="bg-blue-500/20 border border-blue-500/30 rounded-xl p-3 text-center">
+                  <Shield className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                  <p className="text-slate-400 text-xs mb-1">Reducción Fricción</p>
+                  <p className="text-2xl font-bold text-blue-400">{evaluation.avgFriction.toFixed(1)}</p>
+                </div>
+                <div className="bg-amber-500/20 border border-amber-500/30 rounded-xl p-3 text-center">
+                  <Heart className="w-5 h-5 text-amber-400 mx-auto mb-1" />
+                  <p className="text-slate-400 text-xs mb-1">Clima Laboral</p>
+                  <p className="text-2xl font-bold text-amber-400">{evaluation.avgClimate.toFixed(1)}</p>
+                </div>
+                <div className="bg-violet-500/20 border border-violet-500/30 rounded-xl p-3 text-center">
+                  <Puzzle className="w-5 h-5 text-violet-400 mx-auto mb-1" />
+                  <p className="text-slate-400 text-xs mb-1">Soluciones</p>
+                  <p className="text-2xl font-bold text-violet-400">{evaluation.avgSolution.toFixed(1)}</p>
+                </div>
+              </div>
+            </div>
+
+            {evaluation.cooperationAnalysis && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-3">
+                <h3 className="text-sm font-bold text-emerald-400 mb-2 flex items-center gap-2">
+                  <Handshake className="w-4 h-4" />
+                  Fomento de Cooperación
+                </h3>
+                <p className="text-slate-200 text-sm mb-2">{evaluation.cooperationAnalysis.assessment}</p>
+                <div className="flex flex-wrap gap-1">
+                  {evaluation.cooperationAnalysis.tips?.map((tip, i) => (
+                    <span key={i} className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-lg">💡 {tip}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.frictionAnalysis && (
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-3">
+                <h3 className="text-sm font-bold text-blue-400 mb-2 flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Reducción de Fricción
+                </h3>
+                <p className="text-slate-200 text-sm mb-2">{evaluation.frictionAnalysis.assessment}</p>
+                <div className="flex flex-wrap gap-1">
+                  {evaluation.frictionAnalysis.tips?.map((tip, i) => (
+                    <span key={i} className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-lg">💡 {tip}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.climateAnalysis && (
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
+                <h3 className="text-sm font-bold text-amber-400 mb-2 flex items-center gap-2">
+                  <Heart className="w-4 h-4" />
+                  Preservación del Clima
+                </h3>
+                <p className="text-slate-200 text-sm mb-2">{evaluation.climateAnalysis.assessment}</p>
+                <div className="flex flex-wrap gap-1">
+                  {evaluation.climateAnalysis.tips?.map((tip, i) => (
+                    <span key={i} className="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded-lg">💡 {tip}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.solutionAnalysis && (
+              <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-4 mb-3">
+                <h3 className="text-sm font-bold text-violet-400 mb-2 flex items-center gap-2">
+                  <Puzzle className="w-4 h-4" />
+                  Soluciones Compartidas
+                </h3>
+                <p className="text-slate-200 text-sm mb-2">{evaluation.solutionAnalysis.assessment}</p>
+                <div className="flex flex-wrap gap-1">
+                  {evaluation.solutionAnalysis.tips?.map((tip, i) => (
+                    <span key={i} className="text-xs bg-violet-500/20 text-violet-300 px-2 py-1 rounded-lg">💡 {tip}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.overallConclusion && (
+              <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-4 border border-amber-500/30">
+                <h3 className="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Conclusión
+                </h3>
+                <p className="text-slate-200 text-sm leading-relaxed italic">
+                  "{evaluation.overallConclusion}"
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto flex gap-3">
+            <button
+              onClick={resetExercise}
+              className="flex-1 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2 text-sm"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Otro Conflicto
+            </button>
+            <button
+              onClick={onBack}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+            >
+              <Home className="w-4 h-4" />
+              Volver al Menú
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const ComingSoonMode = ({ title, icon, onBack }) => (
   <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
     <FloatingParticles />
@@ -4047,6 +4787,8 @@ const TeamworkModule = ({ onBack }) => {
         return <ComingSoonMode title="Delegación Efectiva" icon="📋" onBack={handleBack} />;
       case 'dynamics':
         return <GroupDynamicsMode onBack={handleBack} />;
+      case 'conflicts':
+        return <ConflictSimulatorMode onBack={handleBack} />;
       case 'meetings':
         return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
       case 'dysfunctions':
