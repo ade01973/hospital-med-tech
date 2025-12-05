@@ -1,6 +1,241 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo, useCallback, createContext, useContext } from 'react';
+import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle, Theater, LineChart, BookOpen, Layers, UserCircle, MessageCircle, Settings, Lightbulb, GraduationCap, Heart, Shield, Volume2 } from 'lucide-react';
 import leadershipBg from '../../assets/leadership-bg.png';
+import { db, auth } from '../../firebase';
+import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+
+// ============================================
+// HOOK: useLeadershipProfile - Perfil Dinámico de Liderazgo
+// ============================================
+const LeadershipProfileContext = createContext(null);
+
+const useLeadershipProfile = () => {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Estructura inicial del perfil
+  const defaultProfile = {
+    styles: {
+      transformador: 0,
+      situacional: 0,
+      transaccional: 0,
+      servidor: 0,
+      democratico: 0,
+      autocratico: 0,
+      laissezFaire: 0,
+      afiliativo: 0,
+      consultivo: 0
+    },
+    stylesCounts: {
+      transformador: 0,
+      situacional: 0,
+      transaccional: 0,
+      servidor: 0,
+      democratico: 0,
+      autocratico: 0,
+      laissezFaire: 0,
+      afiliativo: 0,
+      consultivo: 0
+    },
+    dimensions: {
+      decisionMaturity: 0,
+      emotionalMgmt: 0,
+      assertiveComm: 0,
+      influence: 0,
+      adaptability: 0
+    },
+    dimensionsCounts: {
+      decisionMaturity: 0,
+      emotionalMgmt: 0,
+      assertiveComm: 0,
+      influence: 0,
+      adaptability: 0
+    },
+    sessions: [],
+    totalSessions: 0,
+    averageScore: 0,
+    lastUpdated: null
+  };
+
+  // Cargar perfil al montar
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const docRef = doc(db, 'leaderProfiles', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data());
+          } else {
+            // Crear perfil inicial
+            await setDoc(docRef, defaultProfile);
+            setProfile(defaultProfile);
+          }
+        } else {
+          // Fallback a localStorage
+          const stored = localStorage.getItem('leadershipProfile');
+          if (stored) {
+            setProfile(JSON.parse(stored));
+          } else {
+            localStorage.setItem('leadershipProfile', JSON.stringify(defaultProfile));
+            setProfile(defaultProfile);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading leadership profile:', error);
+        // Fallback a localStorage
+        const stored = localStorage.getItem('leadershipProfile');
+        setProfile(stored ? JSON.parse(stored) : defaultProfile);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProfile();
+  }, []);
+
+  // Guardar sesión y actualizar perfil
+  const addSession = useCallback(async (sessionData) => {
+    if (!profile) return;
+
+    const newSession = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      ...sessionData
+    };
+
+    const updatedProfile = { ...profile };
+    updatedProfile.sessions = [...(updatedProfile.sessions || []).slice(-49), newSession];
+    updatedProfile.totalSessions = (updatedProfile.totalSessions || 0) + 1;
+    
+    // Actualizar promedio de puntuación
+    if (sessionData.score !== undefined && sessionData.maxScore) {
+      const percentage = (sessionData.score / sessionData.maxScore) * 100;
+      const prevTotal = (updatedProfile.averageScore || 0) * ((updatedProfile.totalSessions || 1) - 1);
+      updatedProfile.averageScore = (prevTotal + percentage) / updatedProfile.totalSessions;
+    }
+
+    // Actualizar estilo detectado
+    if (sessionData.styleDetected) {
+      const styleKey = sessionData.styleDetected.toLowerCase().replace(/[áéíóú\s-]/g, match => {
+        const map = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', ' ': '', '-': '' };
+        return map[match] || match;
+      });
+      if (updatedProfile.styles[styleKey] !== undefined) {
+        updatedProfile.stylesCounts[styleKey] = (updatedProfile.stylesCounts[styleKey] || 0) + 1;
+        // Promedio ponderado del estilo
+        const count = updatedProfile.stylesCounts[styleKey];
+        const prevAvg = updatedProfile.styles[styleKey] || 0;
+        updatedProfile.styles[styleKey] = ((prevAvg * (count - 1)) + (sessionData.score / sessionData.maxScore * 5)) / count;
+      }
+    }
+
+    // Actualizar dimensiones si se proporcionan
+    if (sessionData.dimensions) {
+      Object.entries(sessionData.dimensions).forEach(([dim, value]) => {
+        if (updatedProfile.dimensions[dim] !== undefined) {
+          updatedProfile.dimensionsCounts[dim] = (updatedProfile.dimensionsCounts[dim] || 0) + 1;
+          const count = updatedProfile.dimensionsCounts[dim];
+          const prevAvg = updatedProfile.dimensions[dim] || 0;
+          updatedProfile.dimensions[dim] = ((prevAvg * (count - 1)) + value) / count;
+        }
+      });
+    }
+
+    updatedProfile.lastUpdated = new Date().toISOString();
+
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, 'leaderProfiles', user.uid);
+        await setDoc(docRef, updatedProfile, { merge: true });
+      }
+      localStorage.setItem('leadershipProfile', JSON.stringify(updatedProfile));
+      setProfile(updatedProfile);
+    } catch (error) {
+      console.error('Error saving session:', error);
+      localStorage.setItem('leadershipProfile', JSON.stringify(updatedProfile));
+      setProfile(updatedProfile);
+    }
+  }, [profile]);
+
+  // Obtener estilos dominantes
+  const getDominantStyles = useCallback(() => {
+    if (!profile || !profile.stylesCounts) return [];
+    return Object.entries(profile.stylesCounts)
+      .filter(([_, count]) => count > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([style, count]) => ({
+        style: style.charAt(0).toUpperCase() + style.slice(1),
+        count,
+        avgScore: profile.styles[style] || 0
+      }));
+  }, [profile]);
+
+  // Obtener tendencias (últimas N sesiones)
+  const getTrends = useCallback((n = 10) => {
+    if (!profile || !profile.sessions) return [];
+    return profile.sessions.slice(-n).map(s => ({
+      date: new Date(s.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
+      score: s.score && s.maxScore ? (s.score / s.maxScore * 100) : 0,
+      type: s.type,
+      style: s.styleDetected
+    }));
+  }, [profile]);
+
+  // Obtener áreas críticas
+  const getCriticalAreas = useCallback(() => {
+    if (!profile || !profile.dimensions) return [];
+    return Object.entries(profile.dimensions)
+      .filter(([_, value]) => value > 0 && value < 3)
+      .map(([dim, value]) => ({
+        dimension: dim,
+        value: value.toFixed(1),
+        label: {
+          decisionMaturity: 'Madurez en Decisiones',
+          emotionalMgmt: 'Gestión Emocional',
+          assertiveComm: 'Comunicación Asertiva',
+          influence: 'Capacidad de Influencia',
+          adaptability: 'Adaptabilidad'
+        }[dim] || dim
+      }));
+  }, [profile]);
+
+  return {
+    profile,
+    loading,
+    addSession,
+    getDominantStyles,
+    getTrends,
+    getCriticalAreas
+  };
+};
+
+export const LeadershipProfileProvider = ({ children }) => {
+  const profileData = useLeadershipProfile();
+  return (
+    <LeadershipProfileContext.Provider value={profileData}>
+      {children}
+    </LeadershipProfileContext.Provider>
+  );
+};
+
+export const useLeadershipProfileContext = () => {
+  const context = useContext(LeadershipProfileContext);
+  if (!context) {
+    // Return a fallback when not wrapped in provider
+    return {
+      profile: null,
+      loading: true,
+      addSession: () => {},
+      getDominantStyles: () => [],
+      getTrends: () => [],
+      getCriticalAreas: () => []
+    };
+  }
+  return context;
+};
 
 const usePlayerAvatar = () => {
   const [avatar, setAvatar] = useState(null);
@@ -107,12 +342,21 @@ const LEADERSHIP_MODES = [
     features: ['Chat interactivo', 'Evaluación de estilo', 'Puntuación 0-10']
   },
   {
+    id: 'roleplay',
+    title: 'Role-Play Inmersivo',
+    description: 'La IA interpreta personajes reales y tú respondes como líder',
+    icon: '🎭',
+    color: 'from-violet-500 to-purple-500',
+    features: ['4 personajes únicos', 'Reacción dinámica', 'Feedback inmediato'],
+    isNew: true
+  },
+  {
     id: 'transformational',
     title: 'Test Liderazgo Transformador',
-    description: '10 preguntas para medir tu capacidad de inspirar y motivar',
+    description: '20 preguntas para medir tu capacidad de inspirar y motivar',
     icon: '🦋',
     color: 'from-purple-500 to-pink-500',
-    features: ['10 preguntas clave', 'Gráfica de dimensiones', 'Áreas de mejora']
+    features: ['20 preguntas clave', 'Gráfica de dimensiones', 'Áreas de mejora']
   },
   {
     id: 'situational',
@@ -123,12 +367,39 @@ const LEADERSHIP_MODES = [
     features: ['Escenarios variables', 'Modelo Hersey-Blanchard', 'Feedback adaptativo']
   },
   {
+    id: 'changesim',
+    title: 'Simulador de Cambio',
+    description: 'Gestiona un proceso de cambio organizacional completo',
+    icon: '🏗️',
+    color: 'from-indigo-500 to-blue-500',
+    features: ['6 etapas del cambio', 'Simulación de equipo', 'Estrategia integral'],
+    isNew: true
+  },
+  {
     id: 'general',
     title: 'Evaluación General',
     description: 'Descubre tu estilo de liderazgo predominante',
     icon: '📊',
     color: 'from-amber-500 to-orange-500',
     features: ['Análisis completo', 'Identificación de estilo', 'Recomendaciones']
+  },
+  {
+    id: 'analytics',
+    title: 'Panel de Analítica',
+    description: 'Dashboard con tu progreso, tendencias y recomendaciones',
+    icon: '📈',
+    color: 'from-cyan-500 to-teal-500',
+    features: ['Métricas detalladas', 'Tendencias semanales', 'Áreas críticas'],
+    isNew: true
+  },
+  {
+    id: 'mentor',
+    title: 'Modo Mentor',
+    description: 'Un experto en liderazgo enfermero te guía y aconseja',
+    icon: '🎓',
+    color: 'from-yellow-500 to-amber-500',
+    features: ['Lecturas recomendadas', 'Modelos teóricos', 'Coaching personal'],
+    isNew: true
   },
   {
     id: 'microchallenges',
@@ -139,6 +410,143 @@ const LEADERSHIP_MODES = [
     features: ['Retos gamificados', 'Niveles de dificultad', 'Racha de victorias']
   }
 ];
+
+// ============================================
+// PERSONAJES PARA ROLE-PLAY
+// ============================================
+const ROLEPLAY_CHARACTERS = [
+  {
+    id: 'veterana-resistente',
+    name: 'Carmen',
+    role: 'Enfermera Veterana Resistente',
+    description: 'Lleva 25 años en la unidad y no ve necesidad de cambios',
+    icon: '👩‍⚕️',
+    color: 'from-rose-500 to-red-500',
+    personality: 'Escéptica, experimentada, algo cínica pero competente',
+    challenge: 'Resistencia al cambio y defensa del "siempre se ha hecho así"',
+    prompt: `Eres Carmen, una enfermera veterana de 52 años con 25 años de experiencia en esta unidad.
+PERSONALIDAD: Escéptica ante los cambios, muy competente técnicamente, algo cínica. Respetas a quienes demuestran conocimiento real, pero desconfías de "los nuevos métodos de gestión". Usas frases como "ya he visto esto antes", "esto no va a funcionar", "los jóvenes no saben lo que es trabajar de verdad".
+COMPORTAMIENTO: Respondes con escepticismo inicial. Si el líder usa argumentos débiles, te reafirmas. Si muestra empatía real y reconoce tu experiencia, te ablandas gradualmente. Si te imponen sin escucharte, te vuelves pasivo-agresiva.`
+  },
+  {
+    id: 'novato-desbordado',
+    name: 'Pablo',
+    role: 'Profesional Novato Desbordado',
+    description: 'Recién graduado, inseguro y abrumado por la responsabilidad',
+    icon: '👨‍⚕️',
+    color: 'from-sky-500 to-blue-500',
+    personality: 'Ansioso, perfeccionista, miedo a fallar, muy motivado',
+    challenge: 'Gestión de la inseguridad y desarrollo de confianza',
+    prompt: `Eres Pablo, un enfermero de 24 años recién graduado, en su segundo mes de trabajo.
+PERSONALIDAD: Muy motivado pero inseguro. Perfeccionista que teme cometer errores. Te comparas constantemente con los veteranos y sientes que no estás a la altura. Trabajas horas extra para compensar tu "inexperiencia".
+COMPORTAMIENTO: Muestras ansiedad cuando se te asignan tareas nuevas. Preguntas mucho para asegurarte. Si recibes feedback negativo duro, te hundes. Si el líder te apoya y normaliza el aprendizaje, ganas confianza gradualmente.`
+  },
+  {
+    id: 'medico-interrumpe',
+    name: 'Dr. Martínez',
+    role: 'Médico que Interrumpe Procesos',
+    description: 'Interfiere en las funciones de enfermería y cuestiona decisiones',
+    icon: '🩺',
+    color: 'from-amber-500 to-orange-500',
+    personality: 'Impaciente, jerárquico, competente pero poco colaborativo',
+    challenge: 'Gestión interdisciplinar y defensa del rol enfermero',
+    prompt: `Eres el Dr. Martínez, un médico adjunto de 45 años, competente pero con visión jerárquica.
+PERSONALIDAD: Impaciente, interrumpes los procesos de enfermería porque "no hay tiempo". Cuestionas decisiones de enfermería en público. Crees que "al final el médico es el responsable". No eres malvado, solo tienes una visión anticuada de roles.
+COMPORTAMIENTO: Interrumpes sin pedir permiso. Si el líder se muestra sumiso, sigues. Si el líder defiende el rol con datos y respeto profesional, reculas. Si te confrontan agresivamente, escalar el conflicto.`
+  },
+  {
+    id: 'familiar-conflictivo',
+    name: 'Marta (familiar)',
+    role: 'Familiar Conflictivo',
+    description: 'Exigente, desconfiada y con quejas constantes',
+    icon: '👤',
+    color: 'from-purple-500 to-violet-500',
+    personality: 'Ansiosa, miedosa (lo disfraza de enfado), necesita control',
+    challenge: 'Gestión emocional y comunicación en conflicto',
+    prompt: `Eres Marta, de 48 años, hija de un paciente ingresado.
+PERSONALIDAD: Estás muy asustada por la situación de tu madre, pero lo manifiestas como enfado y exigencias. Necesitas sentir que controlas algo. Cuestionas todo: medicación, horarios, personal. Amenazas con "hablar con dirección".
+COMPORTAMIENTO: Llegas ya alterada. Si te ignoran o responden defensivamente, escalas. Si el líder valida tus emociones ("entiendo que estés preocupada"), empiezas a bajar la guardia. Si te dan información clara y tiempo, te calmas.`
+  }
+];
+
+// ============================================
+// ETAPAS DEL SIMULADOR DE CAMBIO
+// ============================================
+const CHANGE_STAGES = [
+  {
+    id: 'diagnosis',
+    title: 'Diagnóstico del Problema',
+    description: 'Identifica la situación actual y la necesidad de cambio',
+    icon: '🔍',
+    color: 'from-blue-500 to-cyan-500',
+    prompt: 'Analiza la situación actual de la unidad y presenta el problema que requiere cambio. El usuario debe demostrar capacidad diagnóstica.'
+  },
+  {
+    id: 'stakeholders',
+    title: 'Análisis de Stakeholders',
+    description: 'Identifica aliados, resistentes y neutrales',
+    icon: '👥',
+    color: 'from-purple-500 to-pink-500',
+    prompt: 'Presenta los distintos perfiles de stakeholders. El usuario debe mostrar capacidad de mapear intereses y poder.'
+  },
+  {
+    id: 'communication',
+    title: 'Estrategia de Comunicación',
+    description: 'Diseña cómo comunicar el cambio',
+    icon: '📢',
+    color: 'from-amber-500 to-orange-500',
+    prompt: 'El usuario debe diseñar un plan de comunicación. Evalúa si considera diferentes audiencias, timing y canales.'
+  },
+  {
+    id: 'implementation',
+    title: 'Implementación',
+    description: 'Ejecuta el plan de cambio',
+    icon: '🚀',
+    color: 'from-emerald-500 to-teal-500',
+    prompt: 'Simula la fase de implementación con obstáculos imprevistos. Evalúa adaptabilidad y toma de decisiones.'
+  },
+  {
+    id: 'resistance',
+    title: 'Manejo de Resistencia',
+    description: 'Gestiona las oposiciones que surgen',
+    icon: '🛡️',
+    color: 'from-rose-500 to-red-500',
+    prompt: 'Presenta resistencias activas al cambio. Evalúa empatía, firmeza y capacidad de negociación.'
+  },
+  {
+    id: 'evaluation',
+    title: 'Evaluación Final',
+    description: 'Mide resultados y aprende',
+    icon: '📊',
+    color: 'from-indigo-500 to-violet-500',
+    prompt: 'Cierra el ciclo con evaluación de resultados. El usuario debe mostrar pensamiento crítico y aprendizaje.'
+  }
+];
+
+// ============================================
+// RECURSOS DEL MENTOR
+// ============================================
+const MENTOR_RESOURCES = {
+  readings: [
+    { title: 'Liderazgo Transformacional en Enfermería', author: 'Bass & Avolio adaptado', topic: 'transformacional' },
+    { title: 'Modelo de Liderazgo Situacional', author: 'Hersey & Blanchard', topic: 'situacional' },
+    { title: 'Inteligencia Emocional para Líderes', author: 'Goleman', topic: 'emocional' },
+    { title: 'Gestión del Cambio en Organizaciones Sanitarias', author: 'Kotter adaptado', topic: 'cambio' },
+    { title: 'Comunicación Asertiva en Equipos de Salud', author: 'Various', topic: 'comunicacion' }
+  ],
+  practices: [
+    { title: 'Diario de reflexión de liderazgo', description: '5 minutos diarios de autoevaluación', difficulty: 'Fácil' },
+    { title: 'Feedback 360°', description: 'Pide retroalimentación a 3 personas de tu equipo', difficulty: 'Media' },
+    { title: 'Shadowing de un líder admirado', description: 'Observa cómo actúa un líder que admiras', difficulty: 'Media' },
+    { title: 'Caso de estudio semanal', description: 'Analiza un caso real de tu unidad', difficulty: 'Alta' }
+  ],
+  models: [
+    { name: 'Las 4 I del Liderazgo Transformador', description: 'Influencia idealizada, Motivación inspiracional, Estimulación intelectual, Consideración individualizada' },
+    { name: 'Modelo Hersey-Blanchard', description: 'Directivo, Persuasivo, Participativo, Delegativo según madurez del colaborador' },
+    { name: 'Los 8 pasos de Kotter', description: 'Marco para gestionar el cambio organizacional' },
+    { name: 'Estilos de Goleman', description: 'Coercitivo, Orientativo, Afiliativo, Democrático, Ejemplar, Coach' }
+  ]
+};
 
 const LEADERSHIP_SCENARIOS = [
   {
@@ -1152,9 +1560,14 @@ const ModeSelector = ({ onSelectMode }) => {
             <button
               key={mode.id}
               onClick={() => onSelectMode(mode.id)}
-              className={`bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-emerald-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-emerald-500/20 hover:scale-[1.02] hover:-translate-y-1`}
+              className={`bg-slate-800/90 backdrop-blur-xl border-2 ${mode.isNew ? 'border-violet-500/60 ring-1 ring-violet-400/30' : 'border-slate-600'} hover:border-emerald-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-emerald-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden`}
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
+              {mode.isNew && (
+                <div className="absolute top-2 right-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse shadow-lg">
+                  NUEVO
+                </div>
+              )}
               <div className="flex items-start gap-4">
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${mode.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
                   {mode.icon}
