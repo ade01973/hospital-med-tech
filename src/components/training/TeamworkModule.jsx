@@ -349,11 +349,12 @@ const TEAMWORK_MODES = [
   },
   {
     id: 'dynamics',
-    title: 'Dinámicas de Grupo',
-    description: 'Actividades para mejorar la cohesión del equipo',
+    title: 'Dinámicas de Roles',
+    description: 'Evalúa tu desempeño en 8 roles funcionales del equipo',
     icon: '🤝',
     color: 'from-emerald-500 to-teal-500',
-    features: ['Team building', 'Ice breakers', 'Resolución conflictos']
+    features: ['8 roles funcionales', 'Escenarios IA', 'Feedback detallado'],
+    isNew: true
   },
   {
     id: 'meetings',
@@ -3205,6 +3206,716 @@ Genera una respuesta con este formato EXACTO:
   return null;
 };
 
+const FUNCTIONAL_ROLES = [
+  {
+    id: 'facilitador',
+    name: 'Facilitador',
+    icon: '🎯',
+    color: 'from-emerald-500 to-teal-500',
+    description: 'Guía procesos grupales y asegura la participación de todos',
+    skills: ['Escucha activa', 'Gestión del tiempo', 'Síntesis de ideas'],
+    scenarios: ['Reunión de equipo', 'Sesión de formación', 'Comité de calidad']
+  },
+  {
+    id: 'moderador',
+    name: 'Moderador',
+    icon: '⚖️',
+    color: 'from-blue-500 to-indigo-500',
+    description: 'Mantiene el orden y equilibra las intervenciones',
+    skills: ['Imparcialidad', 'Control de tiempos', 'Gestión de turnos'],
+    scenarios: ['Debate clínico', 'Sesión de casos', 'Reunión interdisciplinar']
+  },
+  {
+    id: 'coordinador',
+    name: 'Coordinador',
+    icon: '👔',
+    color: 'from-violet-500 to-purple-500',
+    description: 'Organiza recursos y sincroniza acciones del equipo',
+    skills: ['Planificación', 'Delegación', 'Seguimiento'],
+    scenarios: ['Cambio de turno', 'Emergencia', 'Proyecto de mejora']
+  },
+  {
+    id: 'puente',
+    name: 'Puente entre profesionales',
+    icon: '🌉',
+    color: 'from-cyan-500 to-sky-500',
+    description: 'Conecta diferentes disciplinas y facilita la comunicación',
+    skills: ['Comunicación interdisciplinar', 'Traducción técnica', 'Networking'],
+    scenarios: ['Pase de visita', 'Alta compleja', 'Interconsulta']
+  },
+  {
+    id: 'experto',
+    name: 'Experto técnico',
+    icon: '🔬',
+    color: 'from-amber-500 to-orange-500',
+    description: 'Aporta conocimiento especializado al equipo',
+    skills: ['Conocimiento profundo', 'Enseñanza', 'Resolución técnica'],
+    scenarios: ['Procedimiento complejo', 'Formación de nuevos', 'Protocolo específico']
+  },
+  {
+    id: 'mediador',
+    name: 'Mediador de conflictos',
+    icon: '🕊️',
+    color: 'from-rose-500 to-pink-500',
+    description: 'Resuelve tensiones y construye consensos',
+    skills: ['Empatía', 'Negociación', 'Gestión emocional'],
+    scenarios: ['Conflicto entre compañeros', 'Queja de paciente', 'Desacuerdo clínico']
+  },
+  {
+    id: 'motivador',
+    name: 'Motivador',
+    icon: '🔥',
+    color: 'from-yellow-500 to-amber-500',
+    description: 'Inspira y mantiene el ánimo del equipo',
+    skills: ['Entusiasmo', 'Reconocimiento', 'Energía positiva'],
+    scenarios: ['Turno difícil', 'Cambio organizacional', 'Meta de equipo']
+  },
+  {
+    id: 'observador',
+    name: 'Observador crítico',
+    icon: '👁️',
+    color: 'from-slate-500 to-gray-600',
+    description: 'Analiza objetivamente y aporta perspectiva externa',
+    skills: ['Análisis objetivo', 'Pensamiento crítico', 'Feedback constructivo'],
+    scenarios: ['Evaluación de proceso', 'Auditoría', 'Mejora continua']
+  }
+];
+
+const GroupDynamicsMode = ({ onBack }) => {
+  const { addSession } = useTeamworkProfileContext();
+  const [phase, setPhase] = useState('intro');
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [scenario, setScenario] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [responses, setResponses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [error, setError] = useState(null);
+
+  const generateScenario = async (role) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera un escenario interactivo para evaluar el rol de "${role.name}" en un equipo de enfermería hospitalaria.
+
+ROL A EVALUAR: ${role.name}
+DESCRIPCIÓN: ${role.description}
+HABILIDADES CLAVE: ${role.skills.join(', ')}
+CONTEXTOS TÍPICOS: ${role.scenarios.join(', ')}
+
+GENERA UN JSON con este formato EXACTO:
+{
+  "title": "Título breve del escenario (5-8 palabras)",
+  "context": "Descripción del contexto hospitalario (2-3 frases, situación realista)",
+  "situation": "Situación específica que requiere actuar en el rol de ${role.name} (2-3 frases)",
+  "steps": [
+    {
+      "id": 1,
+      "prompt": "Pregunta o situación que el usuario debe resolver actuando como ${role.name}",
+      "options": [
+        {"id": "a", "text": "Opción de respuesta A (comportamiento típico del rol)", "effectiveness": 8, "roleAlignment": 9},
+        {"id": "b", "text": "Opción de respuesta B (comportamiento alternativo)", "effectiveness": 6, "roleAlignment": 5},
+        {"id": "c", "text": "Opción de respuesta C (comportamiento menos adecuado)", "effectiveness": 3, "roleAlignment": 2}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Segunda situación para evaluar el rol",
+      "options": [
+        {"id": "a", "text": "Opción A", "effectiveness": 7, "roleAlignment": 8},
+        {"id": "b", "text": "Opción B", "effectiveness": 9, "roleAlignment": 9},
+        {"id": "c", "text": "Opción C", "effectiveness": 4, "roleAlignment": 3}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Tercera situación para evaluar el rol",
+      "options": [
+        {"id": "a", "text": "Opción A", "effectiveness": 5, "roleAlignment": 4},
+        {"id": "b", "text": "Opción B", "effectiveness": 8, "roleAlignment": 7},
+        {"id": "c", "text": "Opción C", "effectiveness": 9, "roleAlignment": 9}
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Cuarta situación para evaluar el rol",
+      "options": [
+        {"id": "a", "text": "Opción A", "effectiveness": 9, "roleAlignment": 8},
+        {"id": "b", "text": "Opción B", "effectiveness": 6, "roleAlignment": 5},
+        {"id": "c", "text": "Opción C", "effectiveness": 3, "roleAlignment": 2}
+      ]
+    }
+  ]
+}
+
+REGLAS:
+- El escenario debe ser realista y específico de enfermería hospitalaria
+- Las opciones deben tener diferentes niveles de efectividad (1-10) y alineación con el rol (1-10)
+- Incluye exactamente 4 pasos/situaciones
+- Las opciones deben ser plausibles y sin una respuesta obvia
+- Contextualiza en unidades como urgencias, hospitalización, UCI, etc.
+- Solo responde con el JSON, sin texto adicional`,
+          systemPrompt: 'Eres un experto en dinámicas de equipos sanitarios y desarrollo de competencias profesionales en enfermería.'
+        })
+      });
+
+      if (!response.ok) throw new Error('Error generando escenario');
+
+      const data = await response.json();
+      let scenarioData;
+
+      try {
+        const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          scenarioData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No JSON found');
+        }
+      } catch (e) {
+        throw new Error('Error parseando respuesta');
+      }
+
+      if (!scenarioData.steps || scenarioData.steps.length < 4) {
+        throw new Error('Escenario incompleto');
+      }
+
+      setScenario(scenarioData);
+      setPhase('scenario');
+      setCurrentStep(0);
+      setResponses([]);
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Error generando el escenario. Inténtalo de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectOption = (option) => {
+    const newResponses = [...responses, {
+      step: currentStep,
+      option: option,
+      effectiveness: option.effectiveness,
+      roleAlignment: option.roleAlignment
+    }];
+    setResponses(newResponses);
+
+    if (currentStep < scenario.steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      generateEvaluation(newResponses);
+    }
+  };
+
+  const generateEvaluation = async (allResponses) => {
+    setPhase('evaluating');
+    setIsLoading(true);
+
+    const avgEffectiveness = allResponses.reduce((a, r) => a + r.effectiveness, 0) / allResponses.length;
+    const avgAlignment = allResponses.reduce((a, r) => a + r.roleAlignment, 0) / allResponses.length;
+    const overallScore = ((avgEffectiveness + avgAlignment) / 2);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera una evaluación profesional para un/a enfermero/a que ha completado un ejercicio de rol de equipo.
+
+ROL EVALUADO: ${selectedRole.name}
+DESCRIPCIÓN DEL ROL: ${selectedRole.description}
+HABILIDADES CLAVE: ${selectedRole.skills.join(', ')}
+
+ESCENARIO: ${scenario.title}
+CONTEXTO: ${scenario.context}
+
+RESULTADOS:
+- Efectividad promedio: ${avgEffectiveness.toFixed(1)}/10
+- Alineación con el rol: ${avgAlignment.toFixed(1)}/10
+- Puntuación global: ${overallScore.toFixed(1)}/10
+
+RESPUESTAS DEL USUARIO:
+${allResponses.map((r, i) => `Paso ${i + 1}: Opción "${r.option.text}" (Efectividad: ${r.effectiveness}, Alineación: ${r.roleAlignment})`).join('\n')}
+
+Genera un JSON con este formato EXACTO:
+{
+  "roleEffectiveness": {
+    "score": ${avgEffectiveness.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre si el rol fue desempeñado eficazmente",
+    "strengths": ["Fortaleza 1 específica", "Fortaleza 2 específica"],
+    "improvements": ["Área de mejora 1", "Área de mejora 2"]
+  },
+  "complementarity": {
+    "score": ${(Math.random() * 3 + 5).toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre complementariedad con otros roles del equipo",
+    "suggestedRoles": ["Rol complementario 1", "Rol complementario 2"],
+    "gaps": "Descripción de qué falta en la complementariedad"
+  },
+  "adaptability": {
+    "score": ${avgAlignment.toFixed(1)},
+    "assessment": "Evaluación de 2-3 frases sobre capacidad de adaptación",
+    "tips": ["Consejo práctico 1 para mejorar adaptabilidad", "Consejo práctico 2", "Consejo práctico 3"]
+  },
+  "overallConclusion": "Párrafo de conclusión profesional (3-4 frases) integrando efectividad, complementariedad y adaptabilidad, con recomendaciones específicas para enfermería"
+}
+
+Solo responde con el JSON, sin texto adicional.`,
+          systemPrompt: 'Eres un experto en evaluación de competencias de equipos sanitarios y desarrollo profesional de enfermería.'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        let evalData;
+
+        try {
+          const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            evalData = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('Error parsing evaluation:', e);
+        }
+
+        setEvaluation({
+          ...evalData,
+          overallScore,
+          avgEffectiveness,
+          avgAlignment,
+          responses: allResponses
+        });
+      }
+    } catch (err) {
+      console.error('Error generating evaluation:', err);
+      setEvaluation({
+        overallScore,
+        avgEffectiveness,
+        avgAlignment,
+        responses: allResponses,
+        roleEffectiveness: {
+          score: avgEffectiveness,
+          assessment: 'Evaluación basada en tus respuestas.',
+          strengths: ['Participación activa', 'Toma de decisiones'],
+          improvements: ['Práctica continua', 'Explorar otros roles']
+        },
+        complementarity: {
+          score: 6,
+          assessment: 'Tu rol puede complementarse con otros del equipo.',
+          suggestedRoles: ['Coordinador', 'Mediador'],
+          gaps: 'Considera desarrollar habilidades complementarias.'
+        },
+        adaptability: {
+          score: avgAlignment,
+          assessment: 'Tu capacidad de adaptación al rol evaluado.',
+          tips: ['Practica en diferentes contextos', 'Observa a compañeros expertos', 'Solicita feedback']
+        },
+        overallConclusion: 'Has completado la evaluación de rol. Continúa practicando para mejorar tu desempeño en equipos sanitarios.'
+      });
+    } finally {
+      setIsLoading(false);
+      setPhase('results');
+
+      addSession({
+        type: 'role_dynamics',
+        role: selectedRole.id,
+        roleName: selectedRole.name,
+        score: overallScore,
+        maxScore: 10,
+        effectiveness: avgEffectiveness,
+        roleAlignment: avgAlignment,
+        teamSkills: {
+          colaboracion: avgAlignment,
+          coordinacion: avgEffectiveness,
+          cohesion: (avgEffectiveness + avgAlignment) / 2
+        }
+      });
+    }
+  };
+
+  const resetExercise = () => {
+    setPhase('intro');
+    setSelectedRole(null);
+    setScenario(null);
+    setCurrentStep(0);
+    setResponses([]);
+    setEvaluation(null);
+    setError(null);
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        <GlowingOrb color="#10b981" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#14b8a6" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="bg-slate-800/80 backdrop-blur-xl border-b border-emerald-500/30 px-4 py-3 flex items-center gap-3">
+          <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </button>
+          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+            <Handshake className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-black text-white">Dinámicas de Roles</h1>
+            <p className="text-xs text-emerald-300">Evalúa tu desempeño en roles funcionales</p>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-4xl mx-auto relative z-10">
+            <div className="text-center mb-6">
+              <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block text-sm">
+                Selecciona un rol funcional para practicar en un escenario simulado
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+              {FUNCTIONAL_ROLES.map((role) => (
+                <button
+                  key={role.id}
+                  onClick={() => setSelectedRole(role)}
+                  className={`bg-slate-800/90 backdrop-blur-xl border-2 ${
+                    selectedRole?.id === role.id 
+                      ? 'border-emerald-400 ring-2 ring-emerald-400/30' 
+                      : 'border-slate-600 hover:border-emerald-400/50'
+                  } rounded-xl p-4 text-left transition-all group`}
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${role.color} flex items-center justify-center text-2xl mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                    {role.icon}
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-1">{role.name}</h3>
+                  <p className="text-slate-400 text-xs line-clamp-2">{role.description}</p>
+                </button>
+              ))}
+            </div>
+
+            {selectedRole && (
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-emerald-500/30 mb-4">
+                <div className="flex items-start gap-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedRole.color} flex items-center justify-center text-3xl shadow-xl`}>
+                    {selectedRole.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white mb-1">{selectedRole.name}</h3>
+                    <p className="text-slate-300 text-sm mb-3">{selectedRole.description}</p>
+                    
+                    <div className="mb-3">
+                      <p className="text-emerald-400 text-xs font-medium mb-1">Habilidades clave:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedRole.skills.map((skill, idx) => (
+                          <span key={idx} className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-slate-400 text-xs font-medium mb-1">Contextos típicos:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedRole.scenarios.map((sc, idx) => (
+                          <span key={idx} className="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">
+                            {sc}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/40 rounded-xl p-4 mb-4 text-center">
+                <p className="text-red-300 text-sm">{error}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-4xl mx-auto">
+            <button
+              onClick={() => generateScenario(selectedRole)}
+              disabled={!selectedRole || isLoading}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Generando escenario...
+                </>
+              ) : (
+                <>
+                  <Play className="w-5 h-5" />
+                  Iniciar Simulación
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'scenario' && scenario) {
+    const step = scenario.steps[currentStep];
+    const progress = ((currentStep + 1) / scenario.steps.length) * 100;
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="bg-slate-800/80 backdrop-blur-xl border-b border-emerald-500/30 px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedRole.color} flex items-center justify-center text-xl shadow-lg`}>
+                {selectedRole.icon}
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">{scenario.title}</p>
+                <p className="text-slate-400 text-xs">Rol: {selectedRole.name}</p>
+              </div>
+            </div>
+            <span className="text-emerald-400 text-sm font-medium">{currentStep + 1}/{scenario.steps.length}</span>
+          </div>
+          <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-2xl mx-auto relative z-10">
+            {currentStep === 0 && (
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-xl p-4 border border-slate-700 mb-4">
+                <h3 className="text-emerald-400 font-bold text-sm mb-2">Contexto</h3>
+                <p className="text-slate-200 text-sm mb-2">{scenario.context}</p>
+                <p className="text-slate-300 text-sm">{scenario.situation}</p>
+              </div>
+            )}
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-emerald-500/30 shadow-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30">
+                  Situación {currentStep + 1}
+                </span>
+              </div>
+
+              <h2 className="text-lg font-bold text-white mb-6 leading-relaxed">
+                {step.prompt}
+              </h2>
+
+              <div className="space-y-3">
+                {step.options.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelectOption(option)}
+                    className="w-full p-4 rounded-xl border-2 border-slate-600 bg-slate-700/50 text-slate-200 hover:border-emerald-400/50 hover:bg-slate-700 transition-all text-left group"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm font-bold text-white group-hover:bg-emerald-500 transition-colors">
+                        {option.id.toUpperCase()}
+                      </div>
+                      <p className="flex-1 text-sm leading-relaxed">{option.text}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'evaluating') {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-ping opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Evaluando tu desempeño</h2>
+          <p className="text-slate-300">Analizando efectividad, complementariedad y adaptabilidad...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && evaluation) {
+    const scoreColor = evaluation.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
+                       evaluation.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       evaluation.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto relative z-10">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 px-5 py-2.5 rounded-2xl border border-emerald-500/30">
+                <Trophy className="w-6 h-6 text-amber-400" />
+                <h1 className="text-xl font-black text-white">Evaluación del Rol: {selectedRole.name}</h1>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-emerald-500/30 shadow-2xl mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-slate-400 text-xs">Puntuación Global</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                      {evaluation.overallScore.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400 text-lg">/10</span>
+                  </div>
+                </div>
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedRole.color} flex items-center justify-center shadow-lg`}>
+                  <span className="text-3xl">{selectedRole.icon}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-700/50 rounded-xl p-3 text-center">
+                  <p className="text-slate-400 text-xs mb-1">Efectividad</p>
+                  <p className="text-2xl font-bold text-emerald-400">{evaluation.avgEffectiveness.toFixed(1)}</p>
+                </div>
+                <div className="bg-slate-700/50 rounded-xl p-3 text-center">
+                  <p className="text-slate-400 text-xs mb-1">Alineación con Rol</p>
+                  <p className="text-2xl font-bold text-teal-400">{evaluation.avgAlignment.toFixed(1)}</p>
+                </div>
+              </div>
+            </div>
+
+            {evaluation.roleEffectiveness && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-4">
+                <h3 className="text-base font-bold text-emerald-400 mb-2 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  Efectividad del Rol
+                </h3>
+                <p className="text-slate-200 text-sm mb-3">{evaluation.roleEffectiveness.assessment}</p>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-emerald-300 text-xs font-medium mb-1">Fortalezas</p>
+                    <ul className="space-y-0.5">
+                      {evaluation.roleEffectiveness.strengths?.map((s, i) => (
+                        <li key={i} className="text-slate-300 text-xs flex items-start gap-1">
+                          <span className="text-emerald-400">✓</span> {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-amber-300 text-xs font-medium mb-1">Mejorar</p>
+                    <ul className="space-y-0.5">
+                      {evaluation.roleEffectiveness.improvements?.map((s, i) => (
+                        <li key={i} className="text-slate-300 text-xs flex items-start gap-1">
+                          <span className="text-amber-400">→</span> {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {evaluation.complementarity && (
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
+                <h3 className="text-base font-bold text-blue-400 mb-2 flex items-center gap-2">
+                  <Network className="w-4 h-4" />
+                  Complementariedad
+                </h3>
+                <p className="text-slate-200 text-sm mb-3">{evaluation.complementarity.assessment}</p>
+                
+                <div className="mb-2">
+                  <p className="text-blue-300 text-xs font-medium mb-1">Roles que te complementan:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {evaluation.complementarity.suggestedRoles?.map((role, i) => (
+                      <span key={i} className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                {evaluation.complementarity.gaps && (
+                  <p className="text-slate-400 text-xs italic">{evaluation.complementarity.gaps}</p>
+                )}
+              </div>
+            )}
+
+            {evaluation.adaptability && (
+              <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-4 mb-4">
+                <h3 className="text-base font-bold text-violet-400 mb-2 flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                  Adaptabilidad
+                </h3>
+                <p className="text-slate-200 text-sm mb-3">{evaluation.adaptability.assessment}</p>
+                
+                <p className="text-violet-300 text-xs font-medium mb-1">Consejos para mejorar:</p>
+                <ul className="space-y-0.5">
+                  {evaluation.adaptability.tips?.map((tip, i) => (
+                    <li key={i} className="text-slate-300 text-xs flex items-start gap-1">
+                      <span className="text-violet-400">💡</span> {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {evaluation.overallConclusion && (
+              <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-4 border border-amber-500/30">
+                <h3 className="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Conclusión
+                </h3>
+                <p className="text-slate-200 text-sm leading-relaxed italic">
+                  "{evaluation.overallConclusion}"
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto flex gap-3">
+            <button
+              onClick={resetExercise}
+              className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 text-sm"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Probar Otro Rol
+            </button>
+            <button
+              onClick={onBack}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+            >
+              <Home className="w-4 h-4" />
+              Volver al Menú
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const ComingSoonMode = ({ title, icon, onBack }) => (
   <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
     <FloatingParticles />
@@ -3257,7 +3968,7 @@ const TeamworkModule = ({ onBack }) => {
       case 'delegation':
         return <ComingSoonMode title="Delegación Efectiva" icon="📋" onBack={handleBack} />;
       case 'dynamics':
-        return <ComingSoonMode title="Dinámicas de Grupo" icon="🤝" onBack={handleBack} />;
+        return <GroupDynamicsMode onBack={handleBack} />;
       case 'meetings':
         return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
       case 'dysfunctions':
