@@ -83,42 +83,30 @@ const useTeamworkProfile = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      const loadFromLocalStorage = () => {
-        try {
-          const stored = localStorage.getItem('teamworkProfile');
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            return { ...defaultProfile, ...parsed };
-          }
-        } catch (e) {
-          console.error('Error parsing localStorage teamwork profile:', e);
-        }
-        localStorage.setItem('teamworkProfile', JSON.stringify(defaultProfile));
-        return defaultProfile;
-      };
-
       try {
         const user = auth.currentUser;
         if (user) {
-          try {
-            const docRef = doc(db, 'teamworkProfiles', user.uid);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-              setProfile({ ...defaultProfile, ...docSnap.data() });
-            } else {
-              await setDoc(docRef, defaultProfile);
-              setProfile(defaultProfile);
-            }
-          } catch (firebaseError) {
-            console.error('Firebase error, falling back to localStorage:', firebaseError);
-            setProfile(loadFromLocalStorage());
+          const docRef = doc(db, 'teamworkProfiles', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data());
+          } else {
+            await setDoc(docRef, defaultProfile);
+            setProfile(defaultProfile);
           }
         } else {
-          setProfile(loadFromLocalStorage());
+          const stored = localStorage.getItem('teamworkProfile');
+          if (stored) {
+            setProfile(JSON.parse(stored));
+          } else {
+            localStorage.setItem('teamworkProfile', JSON.stringify(defaultProfile));
+            setProfile(defaultProfile);
+          }
         }
       } catch (error) {
         console.error('Error loading teamwork profile:', error);
-        setProfile(defaultProfile);
+        const stored = localStorage.getItem('teamworkProfile');
+        setProfile(stored ? JSON.parse(stored) : defaultProfile);
       } finally {
         setLoading(false);
       }
@@ -329,31 +317,20 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   );
 };
 
-const PARTICLE_CONFIG = [...Array(20)].map((_, i) => ({
-  id: i,
-  width: (i * 3.7 % 6) + 2,
-  height: (i * 2.3 % 6) + 2,
-  left: (i * 17.3) % 100,
-  top: (i * 23.7) % 100,
-  color: ['#f59e0b', '#eab308', '#d97706', '#fbbf24'][i % 4],
-  duration: 8 + (i * 1.3) % 10,
-  delay: (i * 0.7) % 5
-}));
-
-const FloatingParticles = React.memo(() => (
+const FloatingParticles = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    {PARTICLE_CONFIG.map((p) => (
+    {[...Array(20)].map((_, i) => (
       <div
-        key={p.id}
+        key={i}
         className="absolute rounded-full opacity-30"
         style={{
-          width: p.width + 'px',
-          height: p.height + 'px',
-          left: p.left + '%',
-          top: p.top + '%',
-          background: `linear-gradient(135deg, ${p.color}, transparent)`,
-          animation: `float ${p.duration}s ease-in-out infinite`,
-          animationDelay: `${p.delay}s`
+          width: Math.random() * 6 + 2 + 'px',
+          height: Math.random() * 6 + 2 + 'px',
+          left: Math.random() * 100 + '%',
+          top: Math.random() * 100 + '%',
+          background: `linear-gradient(135deg, ${['#f59e0b', '#eab308', '#d97706', '#fbbf24'][Math.floor(Math.random() * 4)]}, transparent)`,
+          animation: `float ${8 + Math.random() * 10}s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 5}s`
         }}
       />
     ))}
@@ -364,9 +341,9 @@ const FloatingParticles = React.memo(() => (
       }
     `}</style>
   </div>
-));
+);
 
-const GlowingOrb = React.memo(({ color, size, left, top, delay }) => (
+const GlowingOrb = ({ color, size, left, top, delay }) => (
   <div
     className="absolute rounded-full blur-3xl opacity-20 animate-pulse"
     style={{
@@ -379,7 +356,7 @@ const GlowingOrb = React.memo(({ color, size, left, top, delay }) => (
       animationDuration: '4s'
     }}
   />
-));
+);
 
 const TEAMWORK_MODES = [
   {
@@ -2970,38 +2947,11 @@ Responde en español, de forma profesional y cercana.`
   );
 };
 
-const TeamworkModuleContent = React.memo(({ onBack }) => {
+const TeamworkModuleContent = ({ onBack }) => {
   const [selectedMode, setSelectedMode] = useState(null);
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedConflict, setSelectedConflict] = useState(null);
-  const { loading, profile } = useTeamworkProfileContext();
-
-  const handleSelectMode = useCallback((modeId) => {
-    setSelectedMode(modeId);
-  }, []);
-
-  if (loading) {
-    return (
-      <div 
-        className="fixed inset-0 z-50 flex items-center justify-center"
-        style={{
-          backgroundImage: `url(${leadershipBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" />
-        <div className="relative z-10 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30 animate-pulse">
-            <Users className="w-8 h-8 text-white" />
-          </div>
-          <p className="text-white font-bold">Cargando módulo...</p>
-          <Loader2 className="w-6 h-6 text-amber-400 animate-spin mx-auto mt-3" />
-        </div>
-      </div>
-    );
-  }
 
   const handleBack = () => {
     if (selectedScenario) {
@@ -3085,69 +3035,17 @@ const TeamworkModuleContent = React.memo(({ onBack }) => {
           </div>
         </div>
         
-        <ModeSelector onSelectMode={handleSelectMode} />
+        <ModeSelector onSelectMode={setSelectedMode} />
       </div>
     </div>
   );
-});
-
-class TeamworkErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('TeamworkModule Error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{
-            backgroundImage: `url(${leadershipBg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        >
-          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" />
-          <div className="relative z-10 text-center max-w-md mx-4">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-              <AlertTriangle className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-xl font-bold text-white mb-2">Error en el módulo</h2>
-            <p className="text-slate-300 mb-4">Ha ocurrido un error al cargar el módulo. Por favor, inténtalo de nuevo.</p>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                this.props.onBack();
-              }}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg"
-            >
-              Volver al Hub
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+};
 
 const TeamworkModule = ({ onBack }) => {
   return (
-    <TeamworkErrorBoundary onBack={onBack}>
-      <TeamworkProfileProvider>
-        <TeamworkModuleContent onBack={onBack} />
-      </TeamworkProfileProvider>
-    </TeamworkErrorBoundary>
+    <TeamworkProfileProvider>
+      <TeamworkModuleContent onBack={onBack} />
+    </TeamworkProfileProvider>
   );
 };
 
