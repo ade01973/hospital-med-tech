@@ -2964,7 +2964,18 @@ const TeamworkModuleContent = ({ onBack }) => {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedConflict, setSelectedConflict] = useState(null);
-  const { loading } = useTeamworkProfileContext();
+  const { loading, profile } = useTeamworkProfileContext();
+
+  console.log('TeamworkModuleContent render:', { selectedMode, loading, hasProfile: !!profile });
+
+  const handleSelectMode = (modeId) => {
+    console.log('Mode selected:', modeId);
+    try {
+      setSelectedMode(modeId);
+    } catch (err) {
+      console.error('Error selecting mode:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -3070,7 +3081,7 @@ const TeamworkModuleContent = ({ onBack }) => {
           </div>
         </div>
         
-        <ModeSelector onSelectMode={setSelectedMode} />
+        <ModeSelector onSelectMode={handleSelectMode} />
       </div>
     </div>
   );
