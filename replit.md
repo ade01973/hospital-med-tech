@@ -127,22 +127,30 @@ The application employs a modern web stack to deliver an interactive and gamifie
   - Stores leadership styles (9 types), dimensions (5 metrics), sessions history
   - Firestore integration with localStorage fallback
   - Methods: addSession, getDominantStyles, getTrends, getCriticalAreas
-  - LeadershipProfileContext for component access
+  - LeadershipProfileContext for component access (fallback returns loading: false)
 - **New Leadership Modules** (4 new modes with "NUEVO" badges):
-  - **RolePlayMode** (🎭): Immersive AI role-play with 4 characters
+  - **RolePlayMode** (🎭): Immersive AI role-play with 4 characters + AI generation
     - Carmen (resistant veteran), Pablo (overwhelmed novice), Dr. Martínez (interfering doctor), Marta (conflictive family member)
+    - **AI Character Generation**: Button to generate new unique characters with AI
+    - Generated characters displayed with "IA" badge, fuchsia/pink theme
     - 4 exchanges per conversation, dynamic personality reactions
     - Character prompts with body language and emotional responses
+    - Error handling with visual feedback
     - Violet/purple color theme
-  - **ChangeSimulator** (🏗️): 6-stage organizational change simulation
+  - **ChangeSimulator** (🏗️): 6-stage organizational change simulation + AI scenarios
+    - **Scenario Selector**: Choose between default or AI-generated change scenarios
+    - **AI Scenario Generation**: Button to generate new organizational change contexts
     - Stages: Diagnosis, Stakeholders, Communication, Implementation, Resistance Management, Evaluation
     - Visual stepper progress bar, per-stage scoring (X/10)
+    - Dynamic context injection into AI prompts
     - Accumulated total score (max 60), session persistence
+    - Error handling with visual feedback
     - Indigo/blue color theme
   - **LeaderAnalytics** (📈): Leadership analytics dashboard
     - Total sessions, average score, dominant styles visualization
     - Score trends chart (last 10 sessions), dimensions circular progress
     - Critical areas identification with improvement recommendations
+    - Fixed loading state (no longer stuck loading indefinitely)
     - Cyan/teal color theme
   - **MentorMode** (🎓): AI expert mentor with resource panel
     - Collapsible resources sidebar: Readings, Practices, Theoretical Models
@@ -153,4 +161,5 @@ The application employs a modern web stack to deliver an interactive and gamifie
   - ROLEPLAY_CHARACTERS: 4 characters with detailed prompts
   - CHANGE_STAGES: 6 stages with evaluation prompts
   - MENTOR_RESOURCES: readings, practices, models
+  - DEFAULT_CHANGE_SCENARIO: Default scenario for ChangeSimulator
 - **Integration**: All modes accessible from ModeSelector with "NUEVO" badge animation

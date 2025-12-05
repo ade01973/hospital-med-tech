@@ -224,10 +224,9 @@ export const LeadershipProfileProvider = ({ children }) => {
 export const useLeadershipProfileContext = () => {
   const context = useContext(LeadershipProfileContext);
   if (!context) {
-    // Return a fallback when not wrapped in provider
     return {
       profile: null,
-      loading: true,
+      loading: false,
       addSession: () => {},
       getDominantStyles: () => [],
       getTrends: () => [],
@@ -2727,8 +2726,72 @@ const RolePlayMode = ({ onBack }) => {
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState(null);
   const [exchangeCount, setExchangeCount] = useState(0);
+  const [generatedCharacters, setGeneratedCharacters] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState(null);
   const messagesEndRef = useRef(null);
   const { addSession } = useLeadershipProfileContext();
+
+  const generateNewCharacter = async () => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Genera un nuevo personaje',
+          history: [],
+          systemPrompt: `Genera UN personaje único para role-play de liderazgo en gestión enfermera.
+
+RESPONDE SOLO EN FORMATO JSON (sin markdown ni backticks):
+{
+  "name": "Nombre español (ej: Luis, Ana, Roberto)",
+  "role": "Rol profesional o relación (ej: Enfermero conflictivo, Auxiliar desmotivada)",
+  "description": "Descripción breve del personaje y su situación (1 frase)",
+  "icon": "Un emoji que represente al personaje",
+  "personality": "3-4 rasgos de personalidad separados por coma",
+  "challenge": "El desafío de liderazgo que representa (1 frase)",
+  "prompt": "Instrucciones detalladas de cómo actuar: personalidad, frases típicas, cómo reacciona según el trato del líder (3-4 líneas)"
+}
+
+IMPORTANTE:
+- El personaje debe ser diferente a: Carmen (veterana resistente), Pablo (novato), Dr. Martínez (médico), Marta (familiar)
+- Crea personajes como: supervisor cuestionador, compañero competitivo, directivo exigente, paciente difícil, nuevo talento inseguro, etc.
+- El prompt debe incluir reacciones dinámicas según el estilo de liderazgo usado`
+        })
+      });
+
+      const data = await response.json();
+      let parsed;
+      try {
+        const cleanJson = data.response.replace(/```json\n?|\n?```/g, '').trim();
+        parsed = JSON.parse(cleanJson);
+      } catch {
+        throw new Error('Error parsing character');
+      }
+
+      const newChar = {
+        id: `ai-${Date.now()}`,
+        name: parsed.name,
+        role: parsed.role,
+        description: parsed.description,
+        icon: parsed.icon || '👤',
+        color: 'from-fuchsia-500 to-pink-500',
+        personality: parsed.personality,
+        challenge: parsed.challenge,
+        prompt: `Eres ${parsed.name}, ${parsed.role}.\nPERSONALIDAD: ${parsed.personality}\n${parsed.prompt}`,
+        isGenerated: true
+      };
+
+      setGeneratedCharacters(prev => [newChar, ...prev.slice(0, 3)]);
+    } catch (error) {
+      console.error('Error generating character:', error);
+      setGenerationError('No se pudo generar el personaje. Intenta de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -2882,6 +2945,68 @@ Al final de tu respuesta, incluye una evaluación con este formato exacto:
             </p>
           </div>
 
+          <button
+            onClick={generateNewCharacter}
+            disabled={isGenerating}
+            className="w-full mb-4 bg-gradient-to-r from-fuchsia-500/20 to-pink-500/20 hover:from-fuchsia-500/30 hover:to-pink-500/30 border-2 border-dashed border-fuchsia-400/50 hover:border-fuchsia-400 rounded-2xl p-4 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 text-fuchsia-400 animate-spin" />
+                <span className="text-fuchsia-300 font-medium">Generando personaje...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-fuchsia-400" />
+                <span className="text-fuchsia-300 font-medium">Generar Personaje con IA</span>
+                <span className="text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full">NUEVO</span>
+              </>
+            )}
+          </button>
+
+          {generationError && (
+            <div className="mb-4 bg-red-500/20 border border-red-500/50 rounded-xl p-3 flex items-center gap-2 text-red-300">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm">{generationError}</span>
+            </div>
+          )}
+
+          {generatedCharacters.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-fuchsia-400 mb-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Personajes Generados por IA
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {generatedCharacters.map((char) => (
+                  <button
+                    key={char.id}
+                    onClick={() => startConversation(char)}
+                    className="bg-slate-800/90 backdrop-blur-xl border-2 border-fuchsia-500/50 hover:border-fuchsia-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-fuchsia-500/20 hover:scale-[1.02] relative"
+                  >
+                    <span className="absolute top-2 right-2 text-xs bg-fuchsia-500/30 text-fuchsia-300 px-2 py-0.5 rounded-full">IA</span>
+                    <div className="flex items-start gap-4">
+                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${char.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl`}>
+                        {char.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-white mb-1">{char.name}</h3>
+                        <p className="text-fuchsia-400 text-xs font-medium mb-2">{char.role}</p>
+                        <p className="text-slate-300 text-sm mb-3">{char.description}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs bg-slate-700/80 text-slate-300 px-2 py-1 rounded-lg">
+                            {char.personality.split(',')[0]}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <h3 className="text-sm font-medium text-violet-400 mb-3">Personajes Predefinidos</h3>
           <div className="grid md:grid-cols-2 gap-4">
             {ROLEPLAY_CHARACTERS.map((char) => (
               <button
@@ -2996,6 +3121,11 @@ Al final de tu respuesta, incluye una evaluación con este formato exacto:
 // ============================================
 // SIMULADOR DE CAMBIO ORGANIZACIONAL
 // ============================================
+const DEFAULT_CHANGE_SCENARIO = {
+  title: 'Digitalización de Registros',
+  context: 'La unidad de hospitalización debe implementar un nuevo sistema de registros electrónicos y reorganizar los turnos de trabajo. Hay 25 enfermeras/os con distintos niveles de experiencia y actitudes hacia el cambio.'
+};
+
 const ChangeSimulator = ({ onBack }) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [stageResponses, setStageResponses] = useState({});
@@ -3006,10 +3136,79 @@ const ChangeSimulator = ({ onBack }) => {
   const [stageScore, setStageScore] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [stageExchangeCount, setStageExchangeCount] = useState(0);
+  const [changeScenario, setChangeScenario] = useState(DEFAULT_CHANGE_SCENARIO);
+  const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
+  const [showScenarioSelector, setShowScenarioSelector] = useState(true);
+  const [generatedScenarios, setGeneratedScenarios] = useState([]);
+  const [scenarioError, setScenarioError] = useState(null);
   const messagesEndRef = useRef(null);
   const { addSession } = useLeadershipProfileContext();
 
   const stage = CHANGE_STAGES[currentStage];
+
+  const generateNewScenario = async () => {
+    setIsGeneratingScenario(true);
+    setScenarioError(null);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Genera un escenario de cambio organizacional',
+          history: [],
+          systemPrompt: `Genera UN escenario de cambio organizacional para un simulador de liderazgo en gestión enfermera.
+
+RESPONDE SOLO EN FORMATO JSON (sin markdown ni backticks):
+{
+  "title": "Título corto del cambio (3-5 palabras)",
+  "context": "Descripción del escenario de cambio (2-3 frases). Incluye: qué cambio se debe implementar, cuántas personas afecta, y qué desafíos principales presenta."
+}
+
+EJEMPLOS DE ESCENARIOS (no repetir estos):
+- Fusión de dos unidades hospitalarias
+- Implementación de nuevos protocolos de seguridad
+- Reducción de personal por recortes presupuestarios
+- Cambio de turno rotatorio a turno fijo
+- Implementación de telemedicina
+- Nuevas ratios enfermera-paciente
+- Reestructuración del equipo directivo
+
+IMPORTANTE:
+- Contexto español de sanidad
+- El escenario debe permitir trabajar las 6 etapas del cambio
+- Incluir elementos de resistencia potencial`
+        })
+      });
+
+      const data = await response.json();
+      let parsed;
+      try {
+        const cleanJson = data.response.replace(/```json\n?|\n?```/g, '').trim();
+        parsed = JSON.parse(cleanJson);
+      } catch {
+        throw new Error('Error parsing scenario');
+      }
+
+      const newScenario = {
+        id: `ai-${Date.now()}`,
+        title: parsed.title,
+        context: parsed.context,
+        isGenerated: true
+      };
+
+      setGeneratedScenarios(prev => [newScenario, ...prev.slice(0, 2)]);
+    } catch (error) {
+      console.error('Error generating scenario:', error);
+      setScenarioError('No se pudo generar el escenario. Intenta de nuevo.');
+    } finally {
+      setIsGeneratingScenario(false);
+    }
+  };
+
+  const startWithScenario = (scenario) => {
+    setChangeScenario(scenario);
+    setShowScenarioSelector(false);
+  };
 
   useEffect(() => {
     if (stage) {
@@ -3072,7 +3271,7 @@ DESCRIPCIÓN: ${stage.description}
 OBJETIVO DE EVALUACIÓN: ${stage.prompt}
 
 CONTEXTO DEL CAMBIO:
-La unidad de hospitalización debe implementar un nuevo sistema de registros electrónicos y reorganizar los turnos de trabajo. Hay 25 enfermeras/os con distintos niveles de experiencia y actitudes hacia el cambio.
+${changeScenario.context}
 
 INSTRUCCIONES:
 ${isStartMessage ? `
@@ -3160,6 +3359,124 @@ IMPORTANTE:
         leadershipStyle="Gestión del Cambio"
         onContinue={onBack}
       />
+    );
+  }
+
+  if (showScenarioSelector) {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative">
+        <FloatingParticles />
+        <GlowingOrb color="#6366f1" size="300px" left="5%" top="20%" delay="0s" />
+        <GlowingOrb color="#3b82f6" size="200px" left="80%" top="60%" delay="2s" />
+        
+        <div className="max-w-4xl mx-auto relative z-10">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="text-5xl mb-3">🏗️</div>
+            <h1 className="text-3xl font-black text-white mb-3">
+              Simulador de <span className="bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Cambio</span>
+            </h1>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Gestiona un proceso de cambio organizacional en 6 etapas
+            </p>
+          </div>
+
+          <button
+            onClick={generateNewScenario}
+            disabled={isGeneratingScenario}
+            className="w-full mb-4 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 hover:from-indigo-500/30 hover:to-blue-500/30 border-2 border-dashed border-indigo-400/50 hover:border-indigo-400 rounded-2xl p-4 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+          >
+            {isGeneratingScenario ? (
+              <>
+                <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
+                <span className="text-indigo-300 font-medium">Generando escenario...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-indigo-400" />
+                <span className="text-indigo-300 font-medium">Generar Escenario con IA</span>
+                <span className="text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-full">NUEVO</span>
+              </>
+            )}
+          </button>
+
+          {scenarioError && (
+            <div className="mb-4 bg-red-500/20 border border-red-500/50 rounded-xl p-3 flex items-center gap-2 text-red-300">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm">{scenarioError}</span>
+            </div>
+          )}
+
+          {generatedScenarios.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-indigo-400 mb-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Escenarios Generados por IA
+              </h3>
+              <div className="space-y-3">
+                {generatedScenarios.map((scenario) => (
+                  <button
+                    key={scenario.id}
+                    onClick={() => startWithScenario(scenario)}
+                    className="w-full bg-slate-800/90 backdrop-blur-xl border-2 border-indigo-500/50 hover:border-indigo-400 rounded-2xl p-5 text-left transition-all hover:shadow-indigo-500/20 hover:shadow-xl relative"
+                  >
+                    <span className="absolute top-3 right-3 text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-full">IA</span>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-2xl flex-shrink-0">
+                        🏗️
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-1">{scenario.title}</h3>
+                        <p className="text-slate-300 text-sm line-clamp-2">{scenario.context}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <h3 className="text-sm font-medium text-slate-400 mb-3">Escenario Predefinido</h3>
+          <button
+            onClick={() => startWithScenario(DEFAULT_CHANGE_SCENARIO)}
+            className="w-full bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-indigo-400 rounded-2xl p-5 text-left transition-all hover:shadow-indigo-500/20 hover:shadow-xl"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-2xl flex-shrink-0">
+                📋
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">{DEFAULT_CHANGE_SCENARIO.title}</h3>
+                <p className="text-slate-300 text-sm">{DEFAULT_CHANGE_SCENARIO.context}</p>
+              </div>
+            </div>
+          </button>
+
+          <div className="mt-8 bg-slate-800/70 rounded-2xl p-5 border border-slate-600">
+            <h3 className="text-white font-bold mb-3 flex items-center gap-2">
+              <Target className="w-5 h-5 text-indigo-400" />
+              Las 6 Etapas del Cambio
+            </h3>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {CHANGE_STAGES.map((s, idx) => (
+                <div key={s.id} className="text-center">
+                  <div className={`w-10 h-10 mx-auto rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-lg mb-1`}>
+                    {s.icon}
+                  </div>
+                  <p className="text-xs text-slate-400">{s.title.split(' ')[0]}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
