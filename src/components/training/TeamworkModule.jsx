@@ -313,6 +313,15 @@ const COLLABORATIVE_STYLES = [
 
 const TEAMWORK_MODES = [
   {
+    id: 'styleIdentification',
+    title: 'Identificar Mi Estilo',
+    description: 'Descubre tu estilo de participación en equipos de gestión',
+    icon: '🎭',
+    color: 'from-fuchsia-500 to-rose-500',
+    features: ['8 estilos', 'Análisis contextual', 'Feedback personalizado'],
+    isNew: true
+  },
+  {
     id: 'simulation',
     title: 'Simulación de Dinámicas',
     description: 'Simula situaciones reales de equipos clínicos con IA',
@@ -616,6 +625,632 @@ const getScoreCategory = (score, maxScore) => {
 };
 
 const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+const STYLE_IDENTIFICATION_SCENARIOS = [
+  {
+    id: 'resource_conflict',
+    title: 'Conflicto de Recursos',
+    description: 'El equipo discute sobre la distribución del material y personal',
+    icon: '⚖️',
+    color: 'from-rose-500 to-pink-500',
+    context: 'Eres la gestora enfermera de una unidad de hospitalización. Hay escasez de material y personal para cubrir el turno de noche.'
+  },
+  {
+    id: 'change_resistance',
+    title: 'Resistencia al Cambio',
+    description: 'Introducción de un nuevo protocolo con oposición del equipo',
+    icon: '🔄',
+    color: 'from-violet-500 to-purple-500',
+    context: 'Debes implementar un nuevo sistema de registros electrónicos. Varios miembros veteranos se resisten activamente.'
+  },
+  {
+    id: 'team_tension',
+    title: 'Tensiones Interpersonales',
+    description: 'Conflicto entre dos profesionales del equipo',
+    icon: '💥',
+    color: 'from-orange-500 to-red-500',
+    context: 'Dos enfermeras de tu unidad tienen un conflicto personal que está afectando al ambiente de trabajo y la calidad asistencial.'
+  },
+  {
+    id: 'delegation_challenge',
+    title: 'Desafío de Delegación',
+    description: 'Decidir cómo distribuir tareas críticas en situación de sobrecarga',
+    icon: '📋',
+    color: 'from-amber-500 to-yellow-500',
+    context: 'Es un turno de mañana con alta carga asistencial. Tienes que decidir cómo repartir las tareas entre personal con distintos niveles de experiencia.'
+  },
+  {
+    id: 'crisis_management',
+    title: 'Gestión de Crisis',
+    description: 'Coordinación del equipo ante una emergencia inesperada',
+    icon: '🚨',
+    color: 'from-red-500 to-rose-500',
+    context: 'Se produce una emergencia con múltiples pacientes que requiere movilizar a todo el equipo de forma inmediata.'
+  },
+  {
+    id: 'multidisciplinary_meeting',
+    title: 'Reunión Multidisciplinar',
+    description: 'Coordinar una sesión clínica con diferentes profesionales',
+    icon: '🏥',
+    color: 'from-emerald-500 to-teal-500',
+    context: 'Debes liderar una reunión multidisciplinar sobre un caso complejo donde hay opiniones enfrentadas entre medicina, enfermería y trabajo social.'
+  },
+  {
+    id: 'quality_improvement',
+    title: 'Mejora de Calidad',
+    description: 'Proponer cambios ante indicadores negativos de la unidad',
+    icon: '📈',
+    color: 'from-cyan-500 to-blue-500',
+    context: 'Los indicadores de calidad de la unidad han empeorado. Debes presentar un plan de mejora al equipo que implicará cambios en sus rutinas.'
+  },
+  {
+    id: 'new_member',
+    title: 'Integración de Personal',
+    description: 'Incorporar a un nuevo profesional al equipo establecido',
+    icon: '👋',
+    color: 'from-lime-500 to-green-500',
+    context: 'Se incorpora un enfermero nuevo con mucha experiencia pero carácter difícil. El equipo ya muestra reticencias.'
+  }
+];
+
+const STYLE_ANALYSIS_PROMPTS = {
+  colaborativo: {
+    positive: 'que puede ser ideal para esta situación ya que fomenta la participación y el consenso del equipo',
+    negative: 'aunque en este contexto podría ralentizar la toma de decisiones urgentes'
+  },
+  competitivo: {
+    positive: 'que puede ser útil para tomar decisiones rápidas y mostrar liderazgo fuerte',
+    negative: 'pero en este contexto disminuye la cohesión del equipo y genera resistencias'
+  },
+  evitativo: {
+    positive: 'que puede dar tiempo al equipo para reflexionar y reducir tensiones',
+    negative: 'pero en esta situación puede agravar el problema al no abordarlo directamente'
+  },
+  acomodativo: {
+    positive: 'que mantiene la armonía del equipo y reduce conflictos',
+    negative: 'aunque puede hacer que tus necesidades como gestora queden desatendidas'
+  },
+  compromiso: {
+    positive: 'que permite encontrar un punto medio satisfactorio para todas las partes',
+    negative: 'aunque puede resultar en soluciones que no satisfacen completamente a nadie'
+  },
+  coordinador: {
+    positive: 'que es muy adecuado para organizar al equipo y clarificar roles y responsabilidades',
+    negative: 'aunque puede percibirse como exceso de control si no se equilibra'
+  },
+  lider_facilitador: {
+    positive: 'que empodera al equipo y fomenta el desarrollo profesional de sus miembros',
+    negative: 'aunque puede requerir más tiempo del disponible en situaciones urgentes'
+  },
+  miembro_pasivo: {
+    positive: 'que puede ser apropiado en momentos donde otros deben asumir protagonismo',
+    negative: 'pero como gestora, esta situación requiere un rol más activo y directivo'
+  }
+};
+
+const ParticipationStyleIdentifier = ({ onBack }) => {
+  const [phase, setPhase] = useState('intro');
+  const [selectedScenario, setSelectedScenario] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [exchangeCount, setExchangeCount] = useState(0);
+  const messagesEndRef = useRef(null);
+  const { addSession } = useTeamworkProfileContext();
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const formatMessage = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br/>');
+  };
+
+  const startScenario = async (scenario) => {
+    setSelectedScenario(scenario);
+    setPhase('conversation');
+    setIsLoading(true);
+    setExchangeCount(0);
+    setMessages([]);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Presenta el escenario: ${scenario.title}`,
+          history: [],
+          systemPrompt: `Eres un experto en análisis de estilos de participación en equipos sanitarios.
+
+ESCENARIO: ${scenario.title}
+CONTEXTO: ${scenario.context}
+
+TU OBJETIVO: Presentar una situación realista de gestión de equipos de enfermería que permita identificar el estilo de participación del usuario.
+
+FORMATO DE PRESENTACIÓN:
+1. Describe el contexto con detalle (unidad, turno, situación)
+2. Presenta 2-3 personajes del equipo con nombres, roles y actitudes
+3. Plantea el conflicto o desafío específico
+4. Termina preguntando: "Como gestora enfermera, ¿cómo abordarías esta situación?"
+
+PERSONAJES TÍPICOS:
+- Elena (enfermera veterana, algo escéptica)
+- Carlos (TCAE, muy colaborador)
+- Dr. García (médico, exigente)
+- Marta (supervisora, apoyo institucional)
+- Luis (enfermero nuevo, motivado pero inseguro)
+
+ESTILO: Narrativo, inmersivo, con diálogos entre comillas. Crea una atmósfera realista de hospital español.
+
+NO evalúes aún. Solo presenta la situación y espera la respuesta del usuario.
+
+Siempre en español.`
+        })
+      });
+
+      const data = await response.json();
+      setMessages([{ role: 'assistant', content: data.response }]);
+    } catch (error) {
+      setMessages([{ 
+        role: 'assistant', 
+        content: '❌ Error al iniciar el escenario. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+
+    const newExchangeCount = exchangeCount + 1;
+    setExchangeCount(newExchangeCount);
+
+    const shouldAnalyze = newExchangeCount >= 2;
+
+    try {
+      const history = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const analysisPrompt = shouldAnalyze ? `
+
+ES MOMENTO DEL ANÁLISIS FINAL DEL ESTILO DE PARTICIPACIÓN.
+
+Analiza TODAS las respuestas del usuario en la conversación para identificar su estilo de participación.
+
+ESTILOS POSIBLES (elige UNO):
+- colaborativo: Busca consenso, integra opiniones, trabaja en equipo
+- competitivo: Quiere imponer su visión, busca ganar, es directivo
+- evitativo: Evita el conflicto, delega responsabilidad, no se posiciona
+- acomodativo: Cede ante otros, prioriza la armonía sobre sus propias necesidades
+- compromiso: Busca punto medio, hace concesiones mutuas
+- coordinador: Organiza, delega, clarifica roles y responsabilidades
+- lider_facilitador: Guía al equipo, fomenta participación, desarrolla a otros
+- miembro_pasivo: Mínima iniciativa, sigue instrucciones, no propone
+
+Tu respuesta DEBE contener este formato EXACTO al final:
+
+---ANÁLISIS DE ESTILO---
+
+[ESTILO:nombre_del_estilo]
+
+[ADECUADO:si/no]
+
+**Tu Estilo de Participación:**
+Has adoptado un estilo [nombre], que [análisis de si es adecuado o no para ESTA situación específica con explicación detallada].
+
+**Ejemplo de Feedback Contextual:**
+"Has adoptado un estilo competitivo, que puede ser útil para tomar decisiones rápidas, pero en este contexto disminuye la cohesión del equipo."
+
+**Comportamientos Observados:**
+- [comportamiento 1 que indica el estilo]
+- [comportamiento 2 que indica el estilo]
+- [comportamiento 3 que indica el estilo]
+
+**Impacto en el Equipo:**
+[Descripción de cómo este estilo afecta al equipo en esta situación]
+
+**Recomendaciones:**
+- [recomendación 1 específica]
+- [recomendación 2 específica]
+
+**Alternativa Sugerida:**
+Para esta situación, un estilo más [nombre estilo alternativo] podría ser más efectivo porque [razón].` : '';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          history,
+          systemPrompt: `Eres un experto en análisis de estilos de participación en equipos sanitarios.
+
+ESCENARIO ACTUAL: ${selectedScenario.title}
+CONTEXTO: ${selectedScenario.context}
+INTERCAMBIOS: ${newExchangeCount}
+
+${shouldAnalyze ? 'ES EL MOMENTO DE HACER EL ANÁLISIS FINAL.' : 'Continúa el escenario respondiendo a la acción del usuario.'}
+
+${shouldAnalyze ? '' : `INSTRUCCIONES:
+1. Los personajes reaccionan de forma realista
+2. Muestra las consecuencias de sus decisiones
+3. Desarrolla la situación con nuevos elementos
+4. Si es necesario, plantea un nuevo desafío
+5. Termina preguntando cómo continuaría`}
+
+${analysisPrompt}
+
+Siempre en español, vocabulario sanitario apropiado.`
+        })
+      });
+
+      const data = await response.json();
+      const responseText = data.response;
+
+      if (shouldAnalyze && responseText.includes('[ESTILO:')) {
+        const styleMatch = responseText.match(/\[ESTILO:(\w+)\]/);
+        const adequateMatch = responseText.match(/\[ADECUADO:(si|no)\]/i);
+        
+        if (styleMatch) {
+          const detectedStyle = styleMatch[1].toLowerCase();
+          const isAdequate = adequateMatch ? adequateMatch[1].toLowerCase() === 'si' : true;
+          
+          const cleanAnalysis = responseText
+            .replace(/\[ESTILO:\w+\]/, '')
+            .replace(/\[ADECUADO:(si|no)\]/i, '')
+            .replace(/---ANÁLISIS DE ESTILO---/g, '');
+          
+          setResult({
+            style: detectedStyle,
+            isAdequate: isAdequate,
+            analysis: cleanAnalysis.trim(),
+            scenario: selectedScenario
+          });
+          setPhase('result');
+          
+          addSession({
+            type: 'style_identification',
+            scenarioId: selectedScenario.id,
+            scenarioTitle: selectedScenario.title,
+            detectedStyle: detectedStyle,
+            isStyleAdequate: isAdequate,
+            score: isAdequate ? 8 : 5,
+            maxScore: 10,
+            teamSkills: {
+              colaboracion: isAdequate ? 8 : 5,
+              coordinacion: isAdequate ? 7 : 4,
+              cohesion: isAdequate ? 8 : 4
+            }
+          });
+        }
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: '❌ Error de conexión. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetIdentifier = () => {
+    setPhase('intro');
+    setSelectedScenario(null);
+    setMessages([]);
+    setResult(null);
+    setExchangeCount(0);
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        <GlowingOrb color="#ec4899" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#f43f5e" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-4xl mx-auto relative z-10 pb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-fuchsia-500/20 to-rose-500/20 px-6 py-3 rounded-2xl border border-fuchsia-500/30 mb-4">
+              <span className="text-3xl">🎭</span>
+              <h1 className="text-2xl font-black text-white">Identifica Tu Estilo de Participación</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Descubre cómo participas en equipos de gestión enfermera
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-fuchsia-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-fuchsia-400" />
+              Los 8 Estilos de Participación
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {COLLABORATIVE_STYLES.map(style => (
+                <div 
+                  key={style.id}
+                  className={`bg-gradient-to-br ${style.color} rounded-xl p-3 text-center transform hover:scale-105 transition-all`}
+                >
+                  <div className="text-2xl mb-1">{style.icon}</div>
+                  <p className="text-white text-sm font-bold">{style.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-fuchsia-400" />
+            Elige un Escenario de Gestión
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {STYLE_IDENTIFICATION_SCENARIOS.map((scenario, idx) => (
+              <button
+                key={scenario.id}
+                onClick={() => startScenario(scenario)}
+                className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-fuchsia-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-fuchsia-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
+                    {scenario.icon}
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-fuchsia-100">{scenario.title}</h3>
+                    <p className="text-slate-300 text-sm">{scenario.description}</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex items-center gap-2 text-fuchsia-400 text-sm font-medium group-hover:text-fuchsia-300">
+                  <Play className="w-4 h-4" />
+                  <span>Comenzar análisis</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-8 bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-fuchsia-400" />
+              ¿Cómo funciona?
+            </h3>
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-fuchsia-500/20 flex items-center justify-center text-fuchsia-400 font-bold flex-shrink-0">1</div>
+                <div>
+                  <p className="text-white font-medium">Situación</p>
+                  <p className="text-slate-400">La IA presenta un escenario de gestión real</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400 font-bold flex-shrink-0">2</div>
+                <div>
+                  <p className="text-white font-medium">Tu Respuesta</p>
+                  <p className="text-slate-400">Explica cómo actuarías como gestora</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 font-bold flex-shrink-0">3</div>
+                <div>
+                  <p className="text-white font-medium">Análisis</p>
+                  <p className="text-slate-400">La IA identifica tu estilo y da feedback contextual</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'result' && result) {
+    const styleData = COLLABORATIVE_STYLES.find(s => s.id === result.style) || COLLABORATIVE_STYLES[0];
+    
+    return (
+      <div className="h-screen flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto relative z-10 pb-8">
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-fuchsia-500/30 shadow-2xl">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-3 animate-pulse">{styleData.icon}</div>
+                <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">Tu Estilo de Participación</p>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-fuchsia-400 to-rose-400 bg-clip-text text-transparent">
+                  {styleData.name}
+                </h2>
+              </div>
+
+              <div className={`bg-gradient-to-br ${styleData.color} rounded-2xl p-5 mb-5 relative overflow-hidden`}>
+                <div className="absolute top-2 right-2">
+                  {result.isAdequate ? (
+                    <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 font-medium">
+                      <CheckCircle className="w-3 h-3" /> Adecuado para esta situación
+                    </span>
+                  ) : (
+                    <span className="bg-red-500/30 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 font-medium">
+                      <AlertTriangle className="w-3 h-3" /> Podría mejorarse
+                    </span>
+                  )}
+                </div>
+                <p className="text-white/90 text-lg mt-4">{styleData.description}</p>
+              </div>
+
+              <div className="bg-fuchsia-500/20 border border-fuchsia-500/40 rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${result.scenario?.color || 'from-fuchsia-500 to-rose-500'} rounded-xl flex items-center justify-center text-xl shadow-lg`}>
+                    {result.scenario?.icon || '🎭'}
+                  </div>
+                  <div>
+                    <p className="text-fuchsia-300 text-xs">Escenario analizado</p>
+                    <p className="text-white text-lg font-bold">{result.scenario?.title}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-700/50 rounded-xl p-4 mb-5">
+                <h4 className="text-fuchsia-400 font-bold mb-3 flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4" /> Análisis Detallado
+                </h4>
+                <div className="max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+                  <div 
+                    className="text-slate-200 text-sm leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{ __html: formatMessage(result.analysis) }}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-slate-700/30 rounded-xl p-4 mb-5">
+                <h4 className="text-amber-400 font-bold mb-3 flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4" /> Recuerda
+                </h4>
+                <p className="text-slate-300 text-sm">
+                  No hay estilos "buenos" o "malos". Cada estilo es útil en diferentes contextos. 
+                  Lo importante es reconocer tu estilo natural y saber adaptarlo según la situación del equipo.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 p-4 z-20">
+          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={resetIdentifier}
+              className="flex-1 bg-gradient-to-r from-fuchsia-500 to-rose-500 hover:from-fuchsia-400 hover:to-rose-400 text-white font-bold px-6 py-4 rounded-xl transition-all shadow-lg shadow-fuchsia-500/30 hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Probar Otro Escenario
+            </button>
+            <button
+              onClick={onBack}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              <Home className="w-5 h-5" />
+              Volver al Menú
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-screen flex flex-col relative">
+      <FloatingParticles />
+      
+      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-fuchsia-500/30 px-4 py-3 flex items-center gap-3 relative z-10">
+        <button onClick={resetIdentifier} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+          <ArrowLeft className="w-5 h-5 text-white" />
+        </button>
+        <div className={`w-10 h-10 bg-gradient-to-br ${selectedScenario?.color || 'from-fuchsia-500 to-rose-500'} rounded-xl flex items-center justify-center shadow-lg text-xl`}>
+          {selectedScenario?.icon || '🎭'}
+        </div>
+        <div className="flex-1">
+          <h1 className="text-lg font-black text-white">{selectedScenario?.title}</h1>
+          <p className="text-xs text-fuchsia-300">Análisis de estilo de participación</p>
+        </div>
+        <div className="bg-fuchsia-500/20 border border-fuchsia-500/40 px-3 py-1 rounded-full">
+          <span className="text-fuchsia-300 text-sm font-medium">{exchangeCount}/2</span>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 relative z-10">
+        <div className="max-w-2xl mx-auto space-y-4 pb-4">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] rounded-2xl p-4 ${
+                msg.role === 'user' 
+                  ? 'bg-gradient-to-br from-fuchsia-500 to-rose-500 text-white' 
+                  : 'bg-slate-700/80 backdrop-blur-xl text-white border border-slate-600'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  {msg.role === 'user' ? (
+                    <>
+                      <PlayerAvatarIcon size="xs" />
+                      <span className="text-sm font-medium">Tú</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-6 h-6 rounded-full bg-fuchsia-500/30 flex items-center justify-center">
+                        <Bot className="w-4 h-4 text-fuchsia-400" />
+                      </div>
+                      <span className="text-sm font-medium text-fuchsia-300">Análisis IA</span>
+                    </>
+                  )}
+                </div>
+                <div 
+                  className="text-sm leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
+                />
+              </div>
+            </div>
+          ))}
+          
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-slate-700/80 backdrop-blur-xl rounded-2xl p-4 border border-slate-600">
+                <div className="flex items-center gap-3">
+                  <Loader2 className="w-5 h-5 text-fuchsia-400 animate-spin" />
+                  <span className="text-slate-300">Analizando...</span>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 p-4 z-20">
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Explica cómo actuarías como gestora enfermera..."
+            disabled={isLoading}
+            className="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-fuchsia-500 disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || isLoading}
+            className="bg-gradient-to-r from-fuchsia-500 to-rose-500 hover:from-fuchsia-400 hover:to-rose-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-fuchsia-500/30"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const CollaborativeScenarioSimulator = ({ onBack }) => {
   const [phase, setPhase] = useState('select');
@@ -1604,6 +2239,8 @@ const TeamworkModule = ({ onBack }) => {
 
   const renderContent = () => {
     switch (currentMode) {
+      case 'styleIdentification':
+        return <ParticipationStyleIdentifier onBack={handleBack} />;
       case 'simulation':
         return <CollaborativeScenarioSimulator onBack={handleBack} />;
       case 'mentor':
