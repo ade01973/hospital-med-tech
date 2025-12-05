@@ -1,0 +1,29 @@
+Genera casos en el apartado:
+Comienzas poniendo un escenario relativo al tema con una serie de actores que son siempre gestoras enfermeras (directora de enfermeria o supervisora de unidad) y el equipo de enfermeria, auxiliares de enfermeria o enfermeras. Planteas el caso y los estudiantes tienen que resolver, cuando se resuelve el caso, se evalua de 0 a 10 en función de lo adecuado de sus decisiones y se le da un breve feedback. Los casos tienen que ser sobre
+gestion de recursos humanos
+
+Planificación de Planillas y Turnos: Decidir la distribución de turnos (mañana, tarde, noche), guardias y descansos, asegurando la cobertura legal y asistencial las 24 horas.
+Gestión de Incidencias y Absentismo: Decidir cómo cubrir una baja repentina (IT), un permiso o una ausencia imprevista. ¿Se mueve personal de otra unidad? ¿Se llama a alguien en su día libre? ¿Se dobla turno?
+Asignación de Cargas de Trabajo: Determinar qué enfermera o TCAE (Técnico en Cuidados Auxiliares de Enfermería) atiende a qué pacientes basándose en la complejidad del paciente y la competencia del profesional.
+Contratación y Selección (Nivel Dirección): En la privada o en puestos de dirección pública, decidir perfiles a contratar. En la pública, decidir sobre la solicitud de refuerzos a la bolsa de empleo.
+2. Gestión Asistencial y Calidad de Cuidados
+Decisiones que impactan directamente en la seguridad y recuperación del paciente.
+Implementación de Protocolos: Decidir qué guías de práctica clínica se actualizan o se implementan en la unidad (ej. protocolo de prevención de úlceras por presión, gestión de vías venosas).
+Gestión de Camas y Flujo de Pacientes: Decidir sobre ingresos y altas en la unidad. En urgencias o UCI, esto implica priorizar (triaje) quién necesita la cama con mayor urgencia clínica.
+Seguridad del Paciente: Tomar medidas inmediatas ante eventos adversos (errores de medicación, caídas) y decidir cambios en el procedimiento para evitar que se repitan.
+3. Gestión de Recursos Materiales y Económicos
+La gestora es responsable de la eficiencia y la sostenibilidad de su unidad.
+Control de Stock y Pedidos: Decidir cuándo y cuánto material (fungibles, medicación, lencería) se pide a farmacia o almacén para evitar roturas de stock sin acumular innecesariamente.
+Mantenimiento de Equipos: Decidir cuándo un equipo electromédico (respiradores, monitores) debe ser retirado para reparación o cuándo es necesario solicitar la compra de nueva tecnología.
+Adecuación al Presupuesto: Tomar decisiones de gasto para no desviarse del presupuesto anual asignado a la unidad.
+
+Resolución de Conflictos Internos: Mediar y tomar decisiones ante disputas entre compañeros 
+Atención a Reclamaciones: Decidir cómo gestionar y responder a las quejas de pacientes o familiares, actuando como la cara visible de la institución.
+Motivación y Desarrollo: Decidir a quién se asignan tareas de liderazgo, quién asiste a congresos o cursos de formación continuada, fomentando el crecimiento profesional del equipo.
+Gestión Estratégica y del Cambio
+Decisiones que miran al futuro de la unidad o sobre el hospital.
+Humanización de los Cuidados: Decidir cómo aplicar los planes de humanización (muy en boga en España actualmente), como flexibilizar horarios de visita en UCI o permitir acompañamiento en procesos difíciles.
+Digitalización: Liderar la transición hacia nuevas herramientas digitales (historia clínica electrónica, prescripción digital) y decidir cómo formar al equipo para su uso.
+
+Ademas de la toma de decisiones de este modo tienes que ofrecer casos en forma de arbol de decision donde una decision va llevando a otra, hasta llegar a la resolución en el que se ofrece la consecuencia final que ha producido. Se evalua de 0 a 10 cuando se termina y se le da un feedback
+Tambien ofrece sistema de priorizacion de toma de decisiones en el que tiene que ordenar una serie de tareas, en funcion de la adecuacion del orden se le evalua y se le da un pequeño feedback
