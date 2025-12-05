@@ -312,11 +312,11 @@ const TEAMWORK_MODES = [
   },
   {
     id: 'simulation',
-    title: 'Escenarios Colaborativos',
+    title: 'Simulación de Dinámicas',
     description: 'Simula situaciones reales de equipos clínicos con IA',
     icon: '🎮',
     color: 'from-orange-500 to-amber-500',
-    features: ['7 tipos de escenarios', 'Puntuación 0-10', 'Evaluación detallada'],
+    features: ['Escenarios infinitos', 'Puntuación 0-10', 'Feedback personalizado'],
     isNew: true
   },
   {
@@ -909,36 +909,49 @@ const SCENARIO_TYPES = [
   }
 ];
 
-const MOTIVATIONAL_PHRASES = [
-  "¡Cada escenario te hace más fuerte como profesional! 💪",
-  "El trabajo en equipo es la clave del éxito en sanidad 🌟",
-  "¡Sigue practicando, vas por buen camino! 🚀",
-  "Los grandes equipos se construyen con práctica y dedicación ✨",
-  "¡Tu capacidad de colaborar marca la diferencia! 🏆",
-  "Aprender de cada situación te convierte en mejor profesional 📈",
-  "¡La comunicación efectiva salva vidas! 💬",
-  "Cada desafío superado fortalece tu liderazgo 👑",
-  "¡El equipo que aprende junto, triunfa junto! 🤝",
-  "Tu compromiso con la mejora es admirable 🌈"
-];
-
-const getEmotionEmoji = (score) => {
-  if (score >= 9) return '🤩';
-  if (score >= 8) return '😄';
-  if (score >= 7) return '😊';
-  if (score >= 6) return '🙂';
-  if (score >= 5) return '😐';
-  if (score >= 4) return '😕';
-  if (score >= 3) return '😟';
-  return '😢';
+const EMOJIS_BY_SCORE = {
+  excellent: ['🎉', '🏆', '⭐', '🌟', '💫', '🚀', '👑', '💯'],
+  good: ['👏', '✨', '💪', '🎯', '👍', '😊', '🌈', '🔥'],
+  average: ['🤔', '📈', '💡', '🔄', '👀', '🌱', '📚', '⏳'],
+  poor: ['😕', '📉', '⚠️', '🔧', '💭', '🎓', '🔍', '📝']
 };
 
-const getScoreColor = (score) => {
-  if (score >= 8) return 'from-emerald-500 to-green-500';
-  if (score >= 6) return 'from-amber-500 to-yellow-500';
-  if (score >= 4) return 'from-orange-500 to-amber-500';
-  return 'from-rose-500 to-red-500';
+const PHRASES_BY_SCORE = {
+  excellent: [
+    '¡Excepcional! Tu trabajo en equipo es ejemplar',
+    '¡Brillante! Dominas la colaboración',
+    '¡Impresionante! Nivel experto en equipos',
+    '¡Sobresaliente! Tu equipo tiene suerte de tenerte'
+  ],
+  good: [
+    '¡Muy bien! Colaboras con eficacia',
+    '¡Buen trabajo! Tu coordinación es efectiva',
+    '¡Genial! Tienes buenas bases de equipo',
+    '¡Bien hecho! Sigue desarrollando tu potencial'
+  ],
+  average: [
+    'Hay potencial, pero puedes mejorar',
+    'En desarrollo, sigue practicando',
+    'Base correcta, pero puedes crecer más',
+    'Oportunidad de crecimiento detectada'
+  ],
+  poor: [
+    'Es momento de trabajar el trabajo en equipo',
+    'Necesitas práctica, no te rindas',
+    'Cada intento es una oportunidad de aprender',
+    'La mejora viene con la práctica constante'
+  ]
 };
+
+const getScoreCategory = (score, maxScore) => {
+  const percentage = (score / maxScore) * 100;
+  if (percentage >= 80) return 'excellent';
+  if (percentage >= 60) return 'good';
+  if (percentage >= 40) return 'average';
+  return 'poor';
+};
+
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const CollaborativeScenarioSimulator = ({ onBack }) => {
   const [phase, setPhase] = useState('select');
@@ -948,8 +961,91 @@ const CollaborativeScenarioSimulator = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [evaluation, setEvaluation] = useState(null);
   const [exchangeCount, setExchangeCount] = useState(0);
+  const [generatedScenarios, setGeneratedScenarios] = useState([]);
+  const [isGeneratingScenarios, setIsGeneratingScenarios] = useState(false);
   const messagesEndRef = useRef(null);
   const { addSession } = useTeamworkProfileContext();
+
+  const generateNewScenarios = async () => {
+    setIsGeneratingScenarios(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Genera 7 escenarios nuevos de trabajo en equipo',
+          history: [],
+          systemPrompt: `Genera EXACTAMENTE 7 escenarios de trabajo en equipo para enfermería.
+
+FORMATO OBLIGATORIO - Responde SOLO con este JSON, sin texto adicional:
+[
+  {"title": "Título corto", "description": "Descripción en 1 línea", "difficulty": "Media"},
+  {"title": "Título corto", "description": "Descripción en 1 línea", "difficulty": "Alta"},
+  ...
+]
+
+TIPOS DE ESCENARIOS (incluye variedad):
+1. Gestión de conflictos entre compañeros
+2. Coordinación en emergencias
+3. Delegación de tareas
+4. Comunicación con equipos multidisciplinares
+5. Integración de personal nuevo
+6. Gestión de cargas de trabajo desiguales
+7. Implementación de cambios/protocolos
+
+REGLAS:
+- Títulos máximo 4 palabras
+- Descripciones máximo 12 palabras
+- Dificultad: "Media" o "Alta"
+- Contexto español/sanitario
+- Situaciones realistas de hospital
+
+Responde SOLO con el JSON válido.`
+        })
+      });
+
+      const data = await response.json();
+      let scenarios = [];
+      
+      try {
+        const jsonMatch = data.response.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          scenarios = JSON.parse(jsonMatch[0]);
+        }
+      } catch (e) {
+        console.error('Error parsing scenarios:', e);
+      }
+
+      if (scenarios.length > 0) {
+        const icons = ['🔄', '⚡', '🎯', '💬', '🤝', '📋', '🏥'];
+        const colors = [
+          'from-violet-500 to-purple-500',
+          'from-rose-500 to-pink-500',
+          'from-cyan-500 to-blue-500',
+          'from-emerald-500 to-teal-500',
+          'from-amber-500 to-orange-500',
+          'from-indigo-500 to-violet-500',
+          'from-lime-500 to-green-500'
+        ];
+        
+        const formattedScenarios = scenarios.slice(0, 7).map((s, idx) => ({
+          id: `gen-${Date.now()}-${idx}`,
+          title: s.title,
+          description: s.description,
+          icon: icons[idx % icons.length],
+          color: colors[idx % colors.length],
+          difficulty: s.difficulty || 'Media',
+          isGenerated: true
+        }));
+        
+        setGeneratedScenarios(formattedScenarios);
+      }
+    } catch (error) {
+      console.error('Error generating scenarios:', error);
+    } finally {
+      setIsGeneratingScenarios(false);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -966,9 +1062,6 @@ const CollaborativeScenarioSimulator = ({ onBack }) => {
       .replace(/\n/g, '<br/>');
   };
 
-  const getRandomMotivationalPhrase = () => {
-    return MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
-  };
 
   const startScenario = async (scenario) => {
     setSelectedScenario(scenario);
@@ -1119,8 +1212,7 @@ Siempre en español.`
           const score = parseFloat(scoreMatch[1]);
           setEvaluation({
             score: Math.min(10, Math.max(0, score)),
-            feedback: responseText.replace(/\[PUNTUACION:\d+(?:\.\d+)?\]/, ''),
-            motivationalPhrase: getRandomMotivationalPhrase()
+            feedback: responseText.replace(/\[PUNTUACION:\d+(?:\.\d+)?\]/, '')
           });
           setPhase('results');
           
@@ -1159,6 +1251,8 @@ Siempre en español.`
   };
 
   if (phase === 'select') {
+    const scenariosToShow = generatedScenarios.length > 0 ? generatedScenarios : SCENARIO_TYPES;
+    
     return (
       <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
         <FloatingParticles />
@@ -1177,22 +1271,56 @@ Siempre en español.`
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500/20 to-amber-500/20 px-6 py-3 rounded-2xl border border-orange-500/30 mb-4">
               <span className="text-3xl">🎮</span>
-              <h1 className="text-2xl font-black text-white">Simulador de Escenarios Colaborativos</h1>
+              <h1 className="text-2xl font-black text-white">Simulación de Dinámicas de Equipo</h1>
             </div>
             <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
               Practica situaciones reales de trabajo en equipo clínico
             </p>
           </div>
 
+          <div className="mb-6 flex justify-center">
+            <button
+              onClick={generateNewScenarios}
+              disabled={isGeneratingScenarios}
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-purple-500/30 hover:scale-105 flex items-center gap-3"
+            >
+              {isGeneratingScenarios ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Generando 7 escenarios...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5" />
+                  <span>Generar 7 Escenarios Nuevos</span>
+                  <Zap className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </div>
+
+          {generatedScenarios.length > 0 && (
+            <div className="mb-4 text-center">
+              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm border border-purple-500/40">
+                ✨ Escenarios generados por IA
+              </span>
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 gap-4">
-            {SCENARIO_TYPES.map((scenario, idx) => (
+            {scenariosToShow.map((scenario, idx) => (
               <button
                 key={scenario.id}
                 onClick={() => startScenario(scenario)}
-                className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-orange-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-orange-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden"
+                className={`bg-slate-800/90 backdrop-blur-xl border-2 ${scenario.isGenerated ? 'border-purple-500/50' : 'border-slate-600'} hover:border-orange-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-orange-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden`}
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex gap-2">
+                  {scenario.isGenerated && (
+                    <span className="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                      IA
+                    </span>
+                  )}
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     scenario.difficulty === 'Alta' 
                       ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
@@ -1256,58 +1384,62 @@ Siempre en español.`
   }
 
   if (phase === 'results' && evaluation) {
+    const category = getScoreCategory(evaluation.score, 10);
+    const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
+    const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
+    const percentage = Math.round((evaluation.score / 10) * 100);
+    
     return (
-      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center p-4 relative">
         <FloatingParticles />
-        <GlowingOrb color={evaluation.score >= 7 ? "#22c55e" : "#f59e0b"} size="300px" left="10%" top="20%" delay="0s" />
-
-        <div className="max-w-2xl mx-auto relative z-10 pb-8">
-          <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-orange-500/30 shadow-2xl">
-            <div className="text-center mb-6">
-              <div className="text-6xl mb-3 animate-bounce">{getEmotionEmoji(evaluation.score)}</div>
-              <h2 className="text-2xl font-black text-white mb-2">Evaluación Final</h2>
-              <p className="text-slate-300">{selectedScenario.title}</p>
+        <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-8 max-w-lg w-full text-center border-2 border-orange-500/30 shadow-2xl">
+          <div className="text-8xl mb-4 animate-bounce">{emoji}</div>
+          <h2 className="text-2xl font-black text-white mb-2">{phrase}</h2>
+          
+          <div className="bg-slate-700/50 rounded-2xl p-6 my-6">
+            <div className="text-5xl font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
+              {evaluation.score.toFixed(1)}/10
             </div>
-
-            <div className={`bg-gradient-to-br ${getScoreColor(evaluation.score)} rounded-2xl p-6 mb-6 text-center`}>
-              <p className="text-white/80 text-sm mb-1">Tu Puntuación</p>
-              <div className="text-5xl font-black text-white mb-2">{evaluation.score.toFixed(1)}/10</div>
-              <div className="flex justify-center gap-1">
-                {[...Array(10)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-3 h-3 rounded-full ${i < evaluation.score ? 'bg-white' : 'bg-white/30'}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/30 rounded-xl p-4 mb-6 text-center">
-              <p className="text-orange-200 font-medium">{evaluation.motivationalPhrase}</p>
-            </div>
-
-            <div className="bg-slate-700/50 rounded-xl p-4 mb-6 max-h-64 overflow-y-auto">
+            <div className="w-full bg-slate-600 rounded-full h-3 mb-3">
               <div 
-                className="text-slate-200 text-sm leading-relaxed prose prose-invert prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: formatMessage(evaluation.feedback) }}
+                className={`h-3 rounded-full transition-all duration-1000 ${
+                  category === 'excellent' ? 'bg-gradient-to-r from-emerald-400 to-green-400' :
+                  category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
+                  category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
+                  'bg-gradient-to-r from-rose-400 to-red-400'
+                }`}
+                style={{ width: `${percentage}%` }}
               />
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={resetSimulator}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <RefreshCw className="w-5 h-5" />
-                Otro Escenario
-              </button>
-              <button
-                onClick={onBack}
-                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
-              >
-                Volver al Menú
-              </button>
-            </div>
+            <p className="text-slate-300 text-sm">{percentage}% de puntuación</p>
+          </div>
+          
+          <div className="bg-orange-500/20 border border-orange-500/40 rounded-xl p-4 mb-4">
+            <p className="text-orange-300 font-bold text-lg mb-1">Escenario completado:</p>
+            <p className="text-white text-xl font-black">{selectedScenario?.title}</p>
+          </div>
+          
+          <div className="bg-slate-700/50 rounded-xl p-4 mb-6 text-left max-h-48 overflow-y-auto">
+            <div 
+              className="text-slate-300 text-sm whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: formatMessage(evaluation.feedback) }}
+            />
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={resetSimulator}
+              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold px-6 py-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Otro Escenario
+            </button>
+            <button
+              onClick={onBack}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-4 rounded-xl transition-all"
+            >
+              Continuar
+            </button>
           </div>
         </div>
       </div>
