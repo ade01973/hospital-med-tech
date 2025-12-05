@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle } from 'lucide-react';
-import leadershipBg from '../../assets/decision-making-bg.png';
+import leadershipBg from '../../assets/leadership-bg.png';
 
 const usePlayerAvatar = () => {
   const [avatar, setAvatar] = useState(null);
@@ -197,7 +197,7 @@ const LEADERSHIP_SCENARIOS = [
   }
 ];
 
-const TRANSFORMATIONAL_QUESTIONS = [
+const ALL_TRANSFORMATIONAL_QUESTIONS = [
   {
     id: 1,
     dimension: 'Influencia Idealizada',
@@ -307,10 +307,230 @@ const TRANSFORMATIONAL_QUESTIONS = [
       { text: 'Organizo una pequeña celebración informal', score: 2, style: 'cercano' },
       { text: 'Paso a enfocarme en el siguiente objetivo', score: 1, style: 'orientado-a-tarea' }
     ]
+  },
+  {
+    id: 11,
+    dimension: 'Influencia Idealizada',
+    question: 'Recibes una crítica injusta de un superior delante de tu equipo. ¿Cómo reaccionas?',
+    options: [
+      { text: 'Mantengo la compostura, escucho y después hablo en privado con el superior', score: 4, style: 'transformador' },
+      { text: 'Me defiendo inmediatamente con argumentos', score: 2, style: 'reactivo' },
+      { text: 'Acepto la crítica sin cuestionarla', score: 1, style: 'pasivo' },
+      { text: 'Hago notar el error del superior delante de todos', score: 0, style: 'confrontacional' }
+    ]
+  },
+  {
+    id: 12,
+    dimension: 'Estimulación Intelectual',
+    question: '¿Cómo fomentas la innovación en tu unidad?',
+    options: [
+      { text: 'Creo espacios seguros para que el equipo proponga y experimente sin miedo al fracaso', score: 4, style: 'transformador' },
+      { text: 'Implemento las mejores prácticas de otras unidades', score: 2, style: 'transaccional' },
+      { text: 'Espero a que surjan ideas espontáneamente', score: 1, style: 'laissez-faire' },
+      { text: 'Propongo yo las mejoras y las implemento', score: 2, style: 'directivo' }
+    ]
+  },
+  {
+    id: 13,
+    dimension: 'Consideración Individualizada',
+    question: 'Una enfermera veterana parece estancada profesionalmente. ¿Qué haces?',
+    options: [
+      { text: 'Exploro sus intereses ocultos y busco oportunidades que la reten de nuevo', score: 4, style: 'transformador' },
+      { text: 'Le ofrezco la misma formación que a los demás', score: 2, style: 'equitativo' },
+      { text: 'Respeto su zona de confort si cumple con su trabajo', score: 1, style: 'laissez-faire' },
+      { text: 'Le asigno tareas más desafiantes para forzar su crecimiento', score: 2, style: 'directivo' }
+    ]
+  },
+  {
+    id: 14,
+    dimension: 'Motivación Inspiracional',
+    question: 'El equipo enfrenta un período de recortes y reestructuración. ¿Cómo mantienes la moral?',
+    options: [
+      { text: 'Soy honesta sobre la situación pero transmito esperanza y propósito colectivo', score: 4, style: 'transformador' },
+      { text: 'Me centro en los aspectos positivos y evito hablar de lo negativo', score: 2, style: 'evasivo' },
+      { text: 'Ofrezco incentivos a quienes mejor se adapten', score: 2, style: 'transaccional' },
+      { text: 'Dejo que cada uno gestione su propia preocupación', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 15,
+    dimension: 'Influencia Idealizada',
+    question: 'Te piden que implementes una política con la que no estás de acuerdo. ¿Qué haces?',
+    options: [
+      { text: 'Expreso mis dudas por los canales apropiados, pero si se mantiene, la implemento con integridad', score: 4, style: 'transformador' },
+      { text: 'La implemento sin cuestionarla', score: 1, style: 'pasivo' },
+      { text: 'Me niego abiertamente a implementarla', score: 1, style: 'confrontacional' },
+      { text: 'La implemento de forma laxa para minimizar su impacto', score: 2, style: 'evasivo' }
+    ]
+  },
+  {
+    id: 16,
+    dimension: 'Estimulación Intelectual',
+    question: 'Un miembro del equipo cuestiona la forma en que siempre se han hecho las cosas. ¿Cómo respondes?',
+    options: [
+      { text: 'Agradezco el cuestionamiento y exploramos juntos si hay una mejor manera', score: 4, style: 'transformador' },
+      { text: 'Le explico las razones históricas del método actual', score: 2, style: 'tradicional' },
+      { text: 'Le pido que primero domine el método actual antes de cuestionarlo', score: 2, style: 'directivo' },
+      { text: 'Ignoro el comentario para no generar conflicto', score: 1, style: 'evasivo' }
+    ]
+  },
+  {
+    id: 17,
+    dimension: 'Consideración Individualizada',
+    question: '¿Cómo identificas las necesidades de desarrollo de cada persona de tu equipo?',
+    options: [
+      { text: 'Mantengo conversaciones regulares individuales sobre sus aspiraciones y retos', score: 4, style: 'transformador' },
+      { text: 'Uso las evaluaciones de desempeño anuales', score: 2, style: 'formal' },
+      { text: 'Observo su trabajo y detecto yo las áreas de mejora', score: 2, style: 'directivo' },
+      { text: 'Espero a que me lo comuniquen ellos', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 18,
+    dimension: 'Motivación Inspiracional',
+    question: '¿Cómo transmites la importancia del trabajo de enfermería a tu equipo?',
+    options: [
+      { text: 'Comparto historias de impacto real en pacientes y conecto el trabajo diario con el propósito mayor', score: 4, style: 'transformador' },
+      { text: 'Muestro indicadores de calidad y eficiencia', score: 2, style: 'transaccional' },
+      { text: 'Doy por hecho que ya saben por qué es importante', score: 1, style: 'pasivo' },
+      { text: 'Recuerdo las consecuencias de no hacerlo bien', score: 1, style: 'coercitivo' }
+    ]
+  },
+  {
+    id: 19,
+    dimension: 'Influencia Idealizada',
+    question: 'Debes tomar una decisión impopular pero necesaria. ¿Cómo la comunicas?',
+    options: [
+      { text: 'Explico honestamente las razones, asumo la responsabilidad y ofrezco apoyo en la transición', score: 4, style: 'transformador' },
+      { text: 'La comunico como una orden de arriba para evitar ser el blanco', score: 1, style: 'evasivo' },
+      { text: 'La implemento sin dar explicaciones', score: 1, style: 'autocrático' },
+      { text: 'Busco suavizarla con compensaciones', score: 2, style: 'transaccional' }
+    ]
+  },
+  {
+    id: 20,
+    dimension: 'Estimulación Intelectual',
+    question: 'Tu unidad necesita mejorar un indicador de calidad. ¿Cuál es tu enfoque?',
+    options: [
+      { text: 'Involucro al equipo en analizar las causas raíz y diseñar soluciones creativas', score: 4, style: 'transformador' },
+      { text: 'Implemento las recomendaciones de la literatura científica', score: 2, style: 'experto' },
+      { text: 'Establezco controles más estrictos del proceso', score: 2, style: 'transaccional' },
+      { text: 'Identifico a los responsables del bajo rendimiento', score: 1, style: 'coercitivo' }
+    ]
+  },
+  {
+    id: 21,
+    dimension: 'Consideración Individualizada',
+    question: 'Una enfermera muy competente quiere reducir su jornada por motivos familiares. ¿Qué haces?',
+    options: [
+      { text: 'Busco fórmulas flexibles que le permitan conciliar sin perder su talento', score: 4, style: 'transformador' },
+      { text: 'Le explico que las normas son iguales para todos', score: 1, style: 'rígido' },
+      { text: 'Se lo permito si no afecta al servicio', score: 2, style: 'práctico' },
+      { text: 'Le sugiero que busque otro puesto más compatible', score: 1, style: 'insensible' }
+    ]
+  },
+  {
+    id: 22,
+    dimension: 'Motivación Inspiracional',
+    question: 'El equipo está agotado tras una temporada muy dura. ¿Cómo los remotivas?',
+    options: [
+      { text: 'Reconozco su sacrificio, comparto una visión de mejora y trabajo codo a codo con ellos', score: 4, style: 'transformador' },
+      { text: 'Les doy tiempo libre extra como compensación', score: 2, style: 'transaccional' },
+      { text: 'Les recuerdo que es su obligación profesional', score: 1, style: 'coercitivo' },
+      { text: 'Espero a que se recuperen solos con el tiempo', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 23,
+    dimension: 'Influencia Idealizada',
+    question: '¿Cómo gestionas tus propios errores como líder?',
+    options: [
+      { text: 'Los reconozco abiertamente, aprendo de ellos y los uso como ejemplo de humildad', score: 4, style: 'transformador' },
+      { text: 'Los corrijo discretamente sin hacer ruido', score: 2, style: 'discreto' },
+      { text: 'Busco explicaciones externas que los justifiquen', score: 1, style: 'defensivo' },
+      { text: 'Los minimizo para mantener mi autoridad', score: 1, style: 'inseguro' }
+    ]
+  },
+  {
+    id: 24,
+    dimension: 'Estimulación Intelectual',
+    question: 'Una enfermera novel propone algo que parece inviable pero tiene potencial. ¿Qué haces?',
+    options: [
+      { text: 'La animo a desarrollar la idea y le ofrezco mentorización para hacerla viable', score: 4, style: 'transformador' },
+      { text: 'Le explico por qué no funcionará en la práctica', score: 2, style: 'realista' },
+      { text: 'Le digo que lo comente cuando tenga más experiencia', score: 1, style: 'condescendiente' },
+      { text: 'La ignoro amablemente para no desmotivarla', score: 1, style: 'evasivo' }
+    ]
+  },
+  {
+    id: 25,
+    dimension: 'Consideración Individualizada',
+    question: 'Detectas que una enfermera tiene talento para la investigación. ¿Qué haces?',
+    options: [
+      { text: 'La conecto con oportunidades de investigación y adapto su rol para que pueda desarrollarse', score: 4, style: 'transformador' },
+      { text: 'Le informo de las convocatorias disponibles', score: 2, style: 'informativo' },
+      { text: 'Le digo que primero se centre en su trabajo asistencial', score: 1, style: 'limitante' },
+      { text: 'Dejo que ella misma busque su camino si le interesa', score: 1, style: 'laissez-faire' }
+    ]
+  },
+  {
+    id: 26,
+    dimension: 'Motivación Inspiracional',
+    question: '¿Cómo compartes la visión estratégica del hospital con tu equipo?',
+    options: [
+      { text: 'Traduzco la estrategia a impacto concreto en pacientes y les muestro cómo contribuyen', score: 4, style: 'transformador' },
+      { text: 'Les paso la documentación oficial para que la lean', score: 1, style: 'burocrático' },
+      { text: 'Les explico los objetivos y metas que nos afectan', score: 2, style: 'transaccional' },
+      { text: 'No les cargo con información estratégica que no les compete', score: 1, style: 'paternalista' }
+    ]
+  },
+  {
+    id: 27,
+    dimension: 'Influencia Idealizada',
+    question: 'Un familiar de paciente se queja de tu equipo injustamente. ¿Cómo actúas?',
+    options: [
+      { text: 'Defiendo a mi equipo con empatía hacia el familiar, investigando los hechos', score: 4, style: 'transformador' },
+      { text: 'Pido disculpas al familiar para evitar conflictos', score: 2, style: 'complaciente' },
+      { text: 'Derivo la queja a atención al paciente sin intervenir', score: 1, style: 'evasivo' },
+      { text: 'Critico a mi equipo delante del familiar para calmar la situación', score: 0, style: 'desleal' }
+    ]
+  },
+  {
+    id: 28,
+    dimension: 'Estimulación Intelectual',
+    question: '¿Cómo promueves el aprendizaje continuo en tu equipo?',
+    options: [
+      { text: 'Creo una cultura donde el error se ve como oportunidad y el aprendizaje es diario', score: 4, style: 'transformador' },
+      { text: 'Facilito el acceso a cursos y formaciones regladas', score: 2, style: 'formal' },
+      { text: 'Exijo que cada uno se forme por su cuenta', score: 1, style: 'delegativo' },
+      { text: 'Organizo sesiones formativas obligatorias', score: 2, style: 'directivo' }
+    ]
+  },
+  {
+    id: 29,
+    dimension: 'Consideración Individualizada',
+    question: 'Un TCAE veterano se siente infravalorado. ¿Cómo lo abordas?',
+    options: [
+      { text: 'Reconozco su valor único, exploro sus necesidades y busco formas de potenciar su rol', score: 4, style: 'transformador' },
+      { text: 'Le recuerdo la importancia de su trabajo para el equipo', score: 2, style: 'informativo' },
+      { text: 'Le sugiero que si no está contento puede buscar otras opciones', score: 0, style: 'insensible' },
+      { text: 'Le digo que todos nos sentimos así a veces', score: 1, style: 'minimizador' }
+    ]
+  },
+  {
+    id: 30,
+    dimension: 'Motivación Inspiracional',
+    question: 'Tienes que pedir un esfuerzo extra al equipo durante las vacaciones. ¿Cómo lo planteas?',
+    options: [
+      { text: 'Explico la necesidad, apelo a nuestro compromiso con los pacientes y me ofrezco a hacer mi parte', score: 4, style: 'transformador' },
+      { text: 'Lo presento como una obligación profesional', score: 2, style: 'directivo' },
+      { text: 'Ofrezco compensación económica o días libres', score: 2, style: 'transaccional' },
+      { text: 'Impongo el cuadrante sin explicaciones', score: 1, style: 'autocrático' }
+    ]
   }
 ];
 
-const SITUATIONAL_SCENARIOS = [
+const ALL_SITUATIONAL_SCENARIOS = [
   {
     id: 1,
     scenario: 'Una enfermera recién incorporada (3 meses) te pide ayuda con un procedimiento complejo que nunca ha realizado.',
@@ -405,6 +625,174 @@ const SITUATIONAL_SCENARIOS = [
       { text: 'Doy instrucciones claras y establezco un calendario de implementación', style: 'Directivo', score: 2 },
       { text: 'Creo un grupo de trabajo para decidir cómo implementarlo', style: 'Participativo', score: 2 },
       { text: 'Dejo que cada uno encuentre su forma de adaptarse', style: 'Delegativo', score: 0 }
+    ]
+  },
+  {
+    id: 9,
+    scenario: 'Un enfermero novel muy motivado comete errores repetidos en la administración de medicación.',
+    context: 'Baja competencia, alta motivación pero ansiedad',
+    bestStyle: 'Directivo',
+    options: [
+      { text: 'Reviso con él cada paso del proceso y superviso hasta que lo domine', style: 'Directivo', score: 4 },
+      { text: 'Le explico la importancia de hacerlo bien y confío en que mejorará', style: 'Persuasivo', score: 2 },
+      { text: 'Le pregunto qué cree que está fallando y cómo lo solucionaría', style: 'Participativo', score: 1 },
+      { text: 'Le asigno tareas menos críticas hasta que gane confianza', style: 'Delegativo', score: 1 }
+    ]
+  },
+  {
+    id: 10,
+    scenario: 'Una enfermera experta y autónoma te pide consejo sobre cómo abordar un conflicto con un médico.',
+    context: 'Alta competencia y alta motivación, busca apoyo puntual',
+    bestStyle: 'Participativo',
+    options: [
+      { text: 'Exploramos juntas opciones y le dejo decidir el enfoque', style: 'Participativo', score: 4 },
+      { text: 'Le doy instrucciones claras de cómo manejar la situación', style: 'Directivo', score: 1 },
+      { text: 'Le sugiero que lo resuelva ella misma como siempre hace', style: 'Delegativo', score: 2 },
+      { text: 'Le explico diferentes estrategias de comunicación', style: 'Persuasivo', score: 3 }
+    ]
+  },
+  {
+    id: 11,
+    scenario: 'Una TCAE experimentada ha perdido interés tras ser rechazada para un ascenso.',
+    context: 'Alta competencia, motivación muy baja',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Hablo con ella sobre su decepción y exploro nuevas metas motivadoras', style: 'Persuasivo', score: 4 },
+      { text: 'Le doy más autonomía para que recupere el interés', style: 'Delegativo', score: 2 },
+      { text: 'La involucro en proyectos especiales para reactivarla', style: 'Participativo', score: 3 },
+      { text: 'Le recuerdo sus responsabilidades profesionales', style: 'Directivo', score: 1 }
+    ]
+  },
+  {
+    id: 12,
+    scenario: 'Una enfermera junior muy entusiasta quiere liderar un proyecto de mejora de calidad.',
+    context: 'Motivación muy alta, competencia en desarrollo',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Le asigno el proyecto con mentorización y checkpoints regulares', style: 'Persuasivo', score: 4 },
+      { text: 'Le doy el proyecto y total libertad para desarrollarlo', style: 'Delegativo', score: 1 },
+      { text: 'Le explico paso a paso cómo debe hacerlo', style: 'Directivo', score: 2 },
+      { text: 'Diseñamos juntas el plan de trabajo', style: 'Participativo', score: 3 }
+    ]
+  },
+  {
+    id: 13,
+    scenario: 'Tu equipo de enfermeras veteranas debe adaptarse a un nuevo modelo de cuidados centrado en el paciente.',
+    context: 'Alta competencia técnica, resistencia al cambio',
+    bestStyle: 'Participativo',
+    options: [
+      { text: 'Las involucro en diseñar cómo implementar el nuevo modelo', style: 'Participativo', score: 4 },
+      { text: 'Les explico los beneficios del cambio y les doy tiempo', style: 'Persuasivo', score: 3 },
+      { text: 'Establezco los nuevos procedimientos y superviso el cumplimiento', style: 'Directivo', score: 1 },
+      { text: 'Confío en que se adaptarán con el tiempo', style: 'Delegativo', score: 1 }
+    ]
+  },
+  {
+    id: 14,
+    scenario: 'Una enfermera recién graduada con excelente formación teórica pero sin experiencia práctica.',
+    context: 'Baja competencia práctica, motivación alta',
+    bestStyle: 'Directivo',
+    options: [
+      { text: 'Le proporciono formación práctica estructurada con supervisión directa', style: 'Directivo', score: 4 },
+      { text: 'Le explico la teoría aplicada y confío en que la traslade a la práctica', style: 'Persuasivo', score: 2 },
+      { text: 'La emparejo con una enfermera veterana', style: 'Delegativo', score: 2 },
+      { text: 'Discutimos juntas los casos para que aprenda', style: 'Participativo', score: 1 }
+    ]
+  },
+  {
+    id: 15,
+    scenario: 'Un TCAE con 20 años de experiencia cuestiona constantemente los nuevos protocolos.',
+    context: 'Alta competencia tradicional, motivación selectiva',
+    bestStyle: 'Participativo',
+    options: [
+      { text: 'Le pido que analice los nuevos protocolos y proponga mejoras', style: 'Participativo', score: 4 },
+      { text: 'Le explico las razones científicas de los cambios', style: 'Persuasivo', score: 3 },
+      { text: 'Le recuerdo que debe cumplir los protocolos vigentes', style: 'Directivo', score: 1 },
+      { text: 'Confío en que con el tiempo los aceptará', style: 'Delegativo', score: 1 }
+    ]
+  },
+  {
+    id: 16,
+    scenario: 'Una enfermera competente y motivada te pide permiso para asistir a un congreso en horario laboral.',
+    context: 'Alta competencia, alta motivación, necesita desarrollo',
+    bestStyle: 'Delegativo',
+    options: [
+      { text: 'Le doy el permiso y le pido que comparta lo aprendido con el equipo', style: 'Delegativo', score: 4 },
+      { text: 'Evaluamos juntas si es relevante para su desarrollo y la unidad', style: 'Participativo', score: 3 },
+      { text: 'Le explico los criterios para aprobar estas peticiones', style: 'Persuasivo', score: 2 },
+      { text: 'Le digo que primero debe justificar por escrito la petición', style: 'Directivo', score: 1 }
+    ]
+  },
+  {
+    id: 17,
+    scenario: 'Un grupo mixto (noveles y veteranas) debe trabajar en un nuevo proyecto de humanización.',
+    context: 'Competencias mixtas, motivación variable',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Explico la visión del proyecto y asigno roles según competencias', style: 'Persuasivo', score: 4 },
+      { text: 'Dejo que el grupo se auto-organice', style: 'Delegativo', score: 1 },
+      { text: 'Estructuro el proyecto paso a paso para todos', style: 'Directivo', score: 2 },
+      { text: 'Facilito que el grupo decida cómo organizarse', style: 'Participativo', score: 3 }
+    ]
+  },
+  {
+    id: 18,
+    scenario: 'Una enfermera muy competente muestra signos de burnout pero se niega a reducir su carga.',
+    context: 'Alta competencia, motivación comprometida por agotamiento',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Hablo con ella sobre la importancia del autocuidado y negocio adaptaciones', style: 'Persuasivo', score: 4 },
+      { text: 'Respeto su decisión de mantener su carga', style: 'Delegativo', score: 1 },
+      { text: 'Le impongo una reducción de carga por su bien', style: 'Directivo', score: 2 },
+      { text: 'Exploramos juntas formas de hacer más sostenible su trabajo', style: 'Participativo', score: 3 }
+    ]
+  },
+  {
+    id: 19,
+    scenario: 'Una enfermera novel acaba de completar con éxito su período de formación inicial.',
+    context: 'Competencia demostrada en lo básico, motivación alta',
+    bestStyle: 'Persuasivo',
+    options: [
+      { text: 'Le doy más autonomía gradualmente con supervisión periódica', style: 'Persuasivo', score: 4 },
+      { text: 'Le asigno trabajo independiente como al resto del equipo', style: 'Delegativo', score: 2 },
+      { text: 'Mantengo la supervisión directa por seguridad', style: 'Directivo', score: 2 },
+      { text: 'Discutimos qué áreas siente que domina y cuáles no', style: 'Participativo', score: 3 }
+    ]
+  },
+  {
+    id: 20,
+    scenario: 'Una enfermera referente muy capaz gestiona habitualmente su área sin incidencias.',
+    context: 'Alta competencia y alta motivación consolidadas',
+    bestStyle: 'Delegativo',
+    options: [
+      { text: 'Le doy autonomía total y solo intervengo si me lo pide', style: 'Delegativo', score: 4 },
+      { text: 'Mantengo reuniones regulares para alinear objetivos', style: 'Participativo', score: 2 },
+      { text: 'Le doy feedback regular sobre su desempeño', style: 'Persuasivo', score: 2 },
+      { text: 'Superviso sus decisiones para asegurar la calidad', style: 'Directivo', score: 0 }
+    ]
+  },
+  {
+    id: 21,
+    scenario: 'Un estudiante de enfermería en prácticas está muy nervioso en su primer día.',
+    context: 'Sin competencia, motivación condicionada por miedo',
+    bestStyle: 'Directivo',
+    options: [
+      { text: 'Le guío paso a paso, dándole seguridad y estructura clara', style: 'Directivo', score: 4 },
+      { text: 'Le explico que es normal el nerviosismo y confío en que se adaptará', style: 'Persuasivo', score: 2 },
+      { text: 'Le pregunto qué necesita para sentirse más cómodo', style: 'Participativo', score: 1 },
+      { text: 'Le dejo explorar la unidad a su ritmo', style: 'Delegativo', score: 0 }
+    ]
+  },
+  {
+    id: 22,
+    scenario: 'Una enfermera senior quiere mentorizar a las nuevas incorporaciones.',
+    context: 'Alta competencia, alta motivación para contribuir',
+    bestStyle: 'Delegativo',
+    options: [
+      { text: 'Le doy la responsabilidad de diseñar el programa de mentorización', style: 'Delegativo', score: 4 },
+      { text: 'Diseñamos juntas el programa de mentorización', style: 'Participativo', score: 3 },
+      { text: 'Le explico cómo debe ser el programa ideal', style: 'Persuasivo', score: 1 },
+      { text: 'Le doy instrucciones específicas de cómo hacerlo', style: 'Directivo', score: 0 }
     ]
   }
 ];
