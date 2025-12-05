@@ -428,9 +428,20 @@ const ScoreDisplay = ({ score, feedback, onContinue }) => {
     return 'Necesita trabajo';
   };
 
+  const handleContinue = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onContinue) {
+      onContinue();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 rounded-3xl p-8 max-w-lg w-full border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/20">
+    <div 
+      className="fixed inset-0 bg-slate-900 flex items-center justify-center p-4"
+      style={{ zIndex: 9999 }}
+    >
+      <div className="bg-slate-800 rounded-3xl p-8 max-w-lg w-full border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/20 relative">
         <div className="text-center mb-6">
           <div className={`w-24 h-24 mx-auto rounded-full bg-gradient-to-br ${getScoreColor(score)} flex items-center justify-center mb-4 shadow-xl`}>
             <span className="text-4xl font-black text-white">{score}</span>
@@ -439,7 +450,7 @@ const ScoreDisplay = ({ score, feedback, onContinue }) => {
           <p className="text-cyan-300 text-sm">Puntuación: {score}/10</p>
         </div>
         
-        <div className="bg-slate-700/80 rounded-2xl p-5 mb-6 border border-slate-600">
+        <div className="bg-slate-700/80 rounded-2xl p-5 mb-6 border border-slate-600 max-h-60 overflow-y-auto">
           <h3 className="text-cyan-400 font-bold mb-3 flex items-center gap-2">
             <Brain className="w-5 h-5" />
             Feedback
@@ -448,8 +459,9 @@ const ScoreDisplay = ({ score, feedback, onContinue }) => {
         </div>
         
         <button
-          onClick={onContinue}
-          className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/30"
+          type="button"
+          onClick={handleContinue}
+          className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/30 cursor-pointer relative z-10"
         >
           Continuar
         </button>
