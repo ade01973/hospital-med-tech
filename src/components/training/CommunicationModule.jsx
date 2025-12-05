@@ -345,10 +345,10 @@ const COMMUNICATION_MODES = [
   {
     id: 'commtest',
     title: 'Test de Comunicación',
-    description: 'Evalúa tus 10 dimensiones comunicativas',
+    description: 'Evalúa tus 10 dimensiones comunicativas con 20 preguntas',
     icon: '📊',
     color: 'from-purple-500 to-pink-500',
-    features: ['10 dimensiones', 'Gráfica radar', 'Áreas de mejora']
+    features: ['20 preguntas', '10 dimensiones', 'Gráfica radar', 'Preguntas nuevas cada vez']
   },
   {
     id: 'assertive',
@@ -553,7 +553,7 @@ COMPORTAMIENTO:
   }
 ];
 
-const COMMUNICATION_TEST_QUESTIONS = [
+const COMMUNICATION_TEST_QUESTIONS_BANK = [
   {
     id: 1,
     dimension: 'Asertividad',
@@ -567,6 +567,17 @@ const COMMUNICATION_TEST_QUESTIONS = [
   },
   {
     id: 2,
+    dimension: 'Asertividad',
+    question: 'En una reunión de equipo, tu supervisora desestima tu propuesta sin escucharla completamente. ¿Qué haces?',
+    options: [
+      { text: 'Pido amablemente que me permita terminar de exponer los puntos clave antes de la decisión', score: 4, style: 'asertiva' },
+      { text: 'Me callo y acepto la decisión sin discutir', score: 1, style: 'pasiva' },
+      { text: 'Insisto con tono elevado que mi propuesta es mejor', score: 2, style: 'agresiva' },
+      { text: 'Asiento pero después comento con otros lo injusto que fue', score: 1, style: 'pasivoAgresiva' }
+    ]
+  },
+  {
+    id: 3,
     dimension: 'Claridad',
     question: 'Debes explicar un procedimiento complejo a un paciente con bajo nivel educativo. ¿Qué haces?',
     options: [
@@ -577,7 +588,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 3,
+    id: 4,
+    dimension: 'Claridad',
+    question: 'Tienes que transmitir instrucciones urgentes al equipo de noche por teléfono. ¿Cómo lo haces?',
+    options: [
+      { text: 'Estructuro el mensaje en puntos clave, pido que me confirmen cada uno y dejo registro escrito', score: 4, style: 'clara' },
+      { text: 'Les cuento todo rápidamente para no perder tiempo', score: 2, style: 'apresurada' },
+      { text: 'Les envío un mensaje largo por WhatsApp con todos los detalles', score: 1, style: 'confusa' },
+      { text: 'Asumo que lo entenderán y sigo con mis tareas', score: 1, style: 'negligente' }
+    ]
+  },
+  {
+    id: 5,
     dimension: 'Empatía',
     question: 'Una madre está llorando porque su hijo tiene que ser operado. ¿Cómo actúas?',
     options: [
@@ -588,7 +610,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 4,
+    id: 6,
+    dimension: 'Empatía',
+    question: 'Un paciente anciano se queja constantemente y pide atención continua. Tu equipo está agotado. ¿Cómo actúas?',
+    options: [
+      { text: 'Dedico un momento a escucharle y busco la causa real de su malestar (soledad, miedo)', score: 4, style: 'empatica' },
+      { text: 'Le explico que hay otros pacientes y no podemos estar siempre con él', score: 2, style: 'limitadora' },
+      { text: 'Pido al auxiliar que le atienda para descargarme', score: 1, style: 'derivadora' },
+      { text: 'Le pido que intente descansar y dejarnos trabajar', score: 1, style: 'minimizadora' }
+    ]
+  },
+  {
+    id: 7,
     dimension: 'Escucha Activa',
     question: 'Un paciente te cuenta sus preocupaciones sobre el tratamiento. Mientras habla, ¿qué haces?',
     options: [
@@ -599,7 +632,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 5,
+    id: 8,
+    dimension: 'Escucha Activa',
+    question: 'Una compañera viene a contarte un problema personal que afecta a su trabajo. ¿Cómo reaccionas?',
+    options: [
+      { text: 'Le presto atención plena, reflejo lo que dice y pregunto cómo puedo ayudarla', score: 4, style: 'escuchaActiva' },
+      { text: 'La escucho mientras miro el móvil y respondo con "ya"', score: 1, style: 'distraida' },
+      { text: 'Le doy consejos inmediatos basados en mi experiencia', score: 2, style: 'directiva' },
+      { text: 'Le digo que ahora no puedo y que hablamos luego', score: 2, style: 'evasiva' }
+    ]
+  },
+  {
+    id: 9,
     dimension: 'Regulación Emocional',
     question: 'Un familiar te grita injustamente delante de otros pacientes. ¿Cómo reaccionas?',
     options: [
@@ -610,7 +654,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 6,
+    id: 10,
+    dimension: 'Regulación Emocional',
+    question: 'Tras un turno muy duro con un fallecimiento, una compañera hace un comentario insensible. ¿Cómo respondes?',
+    options: [
+      { text: 'Respiro, reconozco mi malestar y le explico con calma cómo me ha afectado', score: 4, style: 'regulada' },
+      { text: 'Le contesto bruscamente que no tiene ni idea', score: 2, style: 'reactiva' },
+      { text: 'Me callo pero me voy llorando al baño', score: 1, style: 'reprimida' },
+      { text: 'Ignoro el comentario pero me niego a hablarle el resto del día', score: 1, style: 'pasivoAgresiva' }
+    ]
+  },
+  {
+    id: 11,
     dimension: 'Comunicación de Malas Noticias',
     question: 'Debes informar a una familia de que el paciente ha empeorado significativamente. ¿Cómo lo haces?',
     options: [
@@ -621,7 +676,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 7,
+    id: 12,
+    dimension: 'Comunicación de Malas Noticias',
+    question: 'Un paciente te pregunta si tiene cáncer. Aún no hay diagnóstico oficial. ¿Qué le dices?',
+    options: [
+      { text: 'Le explico que estamos pendientes de resultados, valido su preocupación y me comprometo a informarle', score: 4, style: 'honesta' },
+      { text: 'Le digo que no se preocupe, que probablemente no sea nada', score: 1, style: 'falsaEsperanza' },
+      { text: 'Le digo que eso tiene que preguntárselo al médico', score: 2, style: 'derivadora' },
+      { text: 'Le doy información técnica sobre los posibles resultados', score: 2, style: 'tecnica' }
+    ]
+  },
+  {
+    id: 13,
     dimension: 'Negociación',
     question: 'Un compañero quiere el mismo día de vacaciones que tú. ¿Cómo lo gestionas?',
     options: [
@@ -632,7 +698,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 8,
+    id: 14,
+    dimension: 'Negociación',
+    question: 'La dirección quiere implementar un cambio que tu equipo rechaza. ¿Cómo medias?',
+    options: [
+      { text: 'Recojo las preocupaciones del equipo, las presento a dirección y busco un punto intermedio', score: 4, style: 'mediadora' },
+      { text: 'Acepto lo que diga la dirección porque mandan ellos', score: 1, style: 'sumisa' },
+      { text: 'Me pongo del lado del equipo y presiono a dirección', score: 2, style: 'confrontativa' },
+      { text: 'Dejo que se resuelva solo entre ellos', score: 1, style: 'evasiva' }
+    ]
+  },
+  {
+    id: 15,
     dimension: 'Influencia',
     question: 'Quieres implementar un cambio en el protocolo de trabajo. ¿Cómo convences al equipo?',
     options: [
@@ -643,7 +720,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 9,
+    id: 16,
+    dimension: 'Influencia',
+    question: 'Necesitas que un médico muy ocupado preste atención a un paciente que crees prioritario. ¿Cómo actúas?',
+    options: [
+      { text: 'Expongo datos objetivos del paciente y las consecuencias de no atenderlo, respetando su tiempo', score: 4, style: 'persuasiva' },
+      { text: 'Espero a que tenga tiempo aunque tarde', score: 1, style: 'pasiva' },
+      { text: 'Le exijo que venga porque es urgente', score: 2, style: 'exigente' },
+      { text: 'Busco a otro médico que esté disponible', score: 2, style: 'evasiva' }
+    ]
+  },
+  {
+    id: 17,
     dimension: 'Conversaciones Difíciles',
     question: 'Debes hablar con un compañero sobre su olor corporal que afecta al trabajo. ¿Cómo lo abordas?',
     options: [
@@ -654,7 +742,18 @@ const COMMUNICATION_TEST_QUESTIONS = [
     ]
   },
   {
-    id: 10,
+    id: 18,
+    dimension: 'Conversaciones Difíciles',
+    question: 'Sospechas que una compañera tiene problemas con el alcohol que afectan a su trabajo. ¿Qué haces?',
+    options: [
+      { text: 'Hablo con ella en privado, expresando preocupación genuina y ofreciendo apoyo, no juicio', score: 4, style: 'empatica' },
+      { text: 'Informo directamente a supervisión sin hablar con ella', score: 2, style: 'delatora' },
+      { text: 'No digo nada porque no quiero problemas', score: 1, style: 'evasiva' },
+      { text: 'Comento con otros compañeros a ver si lo han notado', score: 1, style: 'chismosa' }
+    ]
+  },
+  {
+    id: 19,
     dimension: 'Feedback Constructivo',
     question: 'Una enfermera novel ha cometido un error por inexperiencia. ¿Cómo le das feedback?',
     options: [
@@ -663,8 +762,38 @@ const COMMUNICATION_TEST_QUESTIONS = [
       { text: 'No digo nada para no desmotivarla', score: 1, style: 'evitativo' },
       { text: 'Le explico cómo debería haberlo hecho', score: 2, style: 'instructivo' }
     ]
+  },
+  {
+    id: 20,
+    dimension: 'Feedback Constructivo',
+    question: 'Quieres reconocer públicamente el buen trabajo de una enfermera pero ella es muy tímida. ¿Qué haces?',
+    options: [
+      { text: 'Le pregunto primero cómo prefiere recibir el reconocimiento y me adapto', score: 4, style: 'adaptado' },
+      { text: 'La elogio en la reunión de equipo igualmente porque lo merece', score: 2, style: 'impositivo' },
+      { text: 'No digo nada para no incomodarla', score: 1, style: 'evitativo' },
+      { text: 'Le doy el feedback solo por escrito', score: 2, style: 'impersonal' }
+    ]
   }
 ];
+
+const getShuffledTestQuestions = () => {
+  const dimensionGroups = {};
+  COMMUNICATION_TEST_QUESTIONS_BANK.forEach(q => {
+    if (!dimensionGroups[q.dimension]) {
+      dimensionGroups[q.dimension] = [];
+    }
+    dimensionGroups[q.dimension].push(q);
+  });
+
+  const selectedQuestions = [];
+  Object.keys(dimensionGroups).forEach(dimension => {
+    const questions = dimensionGroups[dimension];
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    selectedQuestions.push(...shuffled.slice(0, 2));
+  });
+
+  return shuffleQuestionOptions(selectedQuestions.sort(() => Math.random() - 0.5));
+};
 
 const ASSERTIVE_EXERCISES = [
   {
@@ -1386,11 +1515,12 @@ const CommunicationTest = ({ onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [testVersion, setTestVersion] = useState(0);
   const { addSession } = useCommunicationProfileContext();
   
   const questions = useMemo(() => {
-    return shuffleQuestionOptions([...COMMUNICATION_TEST_QUESTIONS]);
-  }, []);
+    return getShuffledTestQuestions();
+  }, [testVersion]);
   
   const handleAnswer = (optionIndex) => {
     const option = questions[currentQuestion].options[optionIndex];
@@ -1406,6 +1536,13 @@ const CommunicationTest = ({ onBack }) => {
     } else {
       setShowResult(true);
     }
+  };
+
+  const handleRetakeTest = () => {
+    setCurrentQuestion(0);
+    setAnswers([]);
+    setShowResult(false);
+    setTestVersion(v => v + 1);
   };
   
   if (showResult) {
@@ -1458,11 +1595,15 @@ const CommunicationTest = ({ onBack }) => {
     const additionalInfo = areasToImprove.length > 0 
       ? `Áreas de mejora prioritarias:\n• ${areasToImprove.join('\n• ')}\n\nRecomendaciones:\n• Practica la escucha activa con parafraseo\n• Usa la técnica DESC para ser más asertivo/a\n• Trabaja la validación emocional antes de dar soluciones`
       : 'Mantienes un equilibrio excelente en las dimensiones comunicativas. ¡Sigue así!';
+
+    const category = getScoreCategory(totalScore, maxScore);
+    const emoji = getRandomElement(EMOJIS_BY_SCORE[category]);
+    const phrase = getRandomElement(PHRASES_BY_SCORE[category]);
     
     return (
-      <div className="min-h-screen p-4 relative overflow-y-auto">
+      <div className="min-h-screen p-4 pb-24 relative overflow-y-auto">
         <FloatingParticles />
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto relative z-10">
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
@@ -1477,15 +1618,51 @@ const CommunicationTest = ({ onBack }) => {
             title="Tu Perfil Comunicativo"
           />
           
-          <div className="mt-6">
-            <ScoreDisplay
-              score={totalScore}
-              maxScore={maxScore}
-              feedback={feedback}
-              communicationStyle="Comunicador/a"
-              onContinue={onBack}
-              additionalInfo={additionalInfo}
-            />
+          <div className="mt-6 bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 text-center border-2 border-purple-500/30 shadow-2xl">
+            <div className="text-6xl mb-3">{emoji}</div>
+            <h2 className="text-xl md:text-2xl font-black text-white mb-2">{phrase}</h2>
+            
+            <div className="bg-slate-700/50 rounded-2xl p-4 my-4">
+              <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                {totalScore}/{maxScore}
+              </div>
+              <div className="w-full bg-slate-600 rounded-full h-3 mb-2">
+                <div 
+                  className={`h-3 rounded-full transition-all duration-1000 ${
+                    category === 'excellent' ? 'bg-gradient-to-r from-purple-400 to-pink-400' :
+                    category === 'good' ? 'bg-gradient-to-r from-teal-400 to-cyan-400' :
+                    category === 'average' ? 'bg-gradient-to-r from-amber-400 to-yellow-400' :
+                    'bg-gradient-to-r from-rose-400 to-red-400'
+                  }`}
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+              <p className="text-slate-300 text-sm">{Math.round(percentage)}% de puntuación</p>
+            </div>
+            
+            <p className="text-slate-200 text-sm mb-4 leading-relaxed">{feedback}</p>
+            
+            {additionalInfo && (
+              <div className="bg-slate-700/50 rounded-xl p-4 mb-4 text-left max-h-40 overflow-y-auto">
+                <p className="text-slate-300 text-sm whitespace-pre-line">{additionalInfo}</p>
+              </div>
+            )}
+            
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
+              <button
+                onClick={handleRetakeTest}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-purple-500/30 hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Repetir Test
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
+              >
+                Volver al Menú
+              </button>
+            </div>
           </div>
         </div>
       </div>
