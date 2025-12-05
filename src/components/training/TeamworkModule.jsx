@@ -398,6 +398,15 @@ const TEAMWORK_MODES = [
     color: 'from-red-500 to-rose-500',
     features: ['5 tipos de conflicto', 'Escenarios IA', 'Evaluación 4 dimensiones'],
     isNew: true
+  },
+  {
+    id: 'cohesion',
+    title: 'Cohesión y Apoyo Mutuo',
+    description: 'Evalúa tu capacidad de fomentar unión y apoyo en el equipo',
+    icon: '💎',
+    color: 'from-cyan-500 to-blue-500',
+    features: ['6 dimensiones', 'Escenarios IA', 'Recomendaciones personalizadas'],
+    isNew: true
   }
 ];
 
@@ -4003,6 +4012,746 @@ Solo responde con el JSON, sin texto adicional.`,
   return null;
 };
 
+const COHESION_DIMENSIONS = [
+  { id: 'positiveClimate', name: 'Clima Positivo', icon: '☀️', color: 'from-amber-500 to-yellow-500', description: 'Favoreces un ambiente de trabajo agradable y motivador' },
+  { id: 'valueContributions', name: 'Valoración de Aportaciones', icon: '💬', color: 'from-emerald-500 to-green-500', description: 'Reconoces y valoras las ideas y sugerencias de otros' },
+  { id: 'collectiveAchievements', name: 'Logros Colectivos', icon: '🏆', color: 'from-violet-500 to-purple-500', description: 'Celebras y refuerzas los éxitos del equipo' },
+  { id: 'effortRecognition', name: 'Reconocimiento de Esfuerzos', icon: '⭐', color: 'from-pink-500 to-rose-500', description: 'Aprecias el trabajo y dedicación del personal' },
+  { id: 'positiveInterdependence', name: 'Interdependencia Positiva', icon: '🔗', color: 'from-cyan-500 to-blue-500', description: 'Promueves la colaboración y dependencia saludable' },
+  { id: 'avoidIsolation', name: 'Prevención del Aislamiento', icon: '🤝', color: 'from-orange-500 to-red-500', description: 'Evitas que compañeros se sientan excluidos' }
+];
+
+const COHESION_CONTEXTS = [
+  'Reunión de equipo de enfermería tras turno difícil',
+  'Cambio de turno con traspaso de pacientes críticos',
+  'Sesión clínica multidisciplinar',
+  'Presentación de nuevo protocolo de trabajo',
+  'Momento de estrés por alta carga asistencial',
+  'Celebración tras superar objetivo de calidad',
+  'Incorporación de personal nuevo al equipo',
+  'Resolución de incidencia con paciente complejo',
+  'Planificación de vacaciones y turnos',
+  'Evaluación trimestral del funcionamiento del equipo'
+];
+
+const COHESION_SITUATIONS = [
+  'Una compañera ha cometido un error menor que nadie más ha notado',
+  'El equipo acaba de conseguir un objetivo importante',
+  'Un miembro del equipo parece desmotivado últimamente',
+  'Hay tensión entre dos compañeras por diferencias de criterio',
+  'Una auxiliar nueva se siente insegura con sus tareas',
+  'El supervisor ha felicitado solo a una persona del equipo',
+  'Un compañero ha cubierto varios turnos extra esta semana',
+  'Se ha resuelto una situación crítica gracias al trabajo en equipo',
+  'Alguien propone una idea innovadora en la reunión',
+  'Un miembro veterano critica la forma de trabajar de los nuevos'
+];
+
+const COHESION_EMOJIS = {
+  excellent: ['🌟', '💎', '🏆', '👑', '✨', '🎯', '💪', '🚀', '🌈', '💫', '🔥', '🎉', '⭐', '🙌', '💯'],
+  good: ['👏', '💚', '🌻', '🎖️', '✅', '👍', '🌿', '💐', '🌸', '☀️', '🎊', '🤩', '💙', '🌺', '🍀'],
+  average: ['📈', '🔄', '💡', '🧭', '🌱', '🔑', '📚', '🎓', '🌤️', '🛠️', '💭', '🧩', '📊', '⚡', '🌅'],
+  poor: ['😕', '📉', '🔧', '⚠️', '🎯', '💪', '🌅', '🔄', '📖', '🛤️', '🌱', '💭', '🧠', '📝', '🔍']
+};
+
+const COHESION_PHRASES = {
+  excellent: [
+    '¡Excepcional! Eres un pilar de cohesión en tu equipo',
+    '¡Brillante! Tu capacidad de unir al equipo es extraordinaria',
+    '¡Sobresaliente! Fomentas un ambiente de apoyo ejemplar',
+    '¡Impresionante! Tu liderazgo cohesivo inspira a otros',
+    '¡Fantástico! Eres un/a auténtico/a constructor/a de equipos'
+  ],
+  good: [
+    '¡Muy bien! Contribuyes positivamente a la unión del equipo',
+    '¡Buen trabajo! Tu apoyo mutuo fortalece al grupo',
+    '¡Genial! Sabes crear vínculos profesionales saludables',
+    '¡Estupendo! Tu actitud cohesiva marca la diferencia',
+    '¡Notable! Fomentas un clima de colaboración efectivo'
+  ],
+  average: [
+    'Hay base, pero puedes potenciar más la cohesión grupal',
+    'Vas por buen camino, sigue reforzando los vínculos del equipo',
+    'Tienes potencial para ser más influyente en la unión del grupo',
+    'Con pequeños ajustes, tu impacto en la cohesión será mayor',
+    'Estás en el camino correcto, pero hay margen de mejora'
+  ],
+  poor: [
+    'Es importante trabajar más en fortalecer los lazos del equipo',
+    'La cohesión grupal es clave - enfócate en mejorar esta área',
+    'El apoyo mutuo necesita más atención en tu práctica diaria',
+    'Reflexiona sobre cómo puedes contribuir más a la unión del equipo',
+    'Hay oportunidades claras para mejorar tu rol cohesivo'
+  ]
+};
+
+const CohesionEvaluatorMode = ({ onBack }) => {
+  const { addSession } = useTeamworkProfileContext();
+  const [phase, setPhase] = useState('intro');
+  const [scenario, setScenario] = useState(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [responses, setResponses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [error, setError] = useState(null);
+  const [usedCombinations, setUsedCombinations] = useState(new Set());
+  const [scenariosCompleted, setScenariosCompleted] = useState(0);
+
+  const getUnusedCombination = () => {
+    let attempts = 0;
+    let context, situation;
+    do {
+      context = COHESION_CONTEXTS[Math.floor(Math.random() * COHESION_CONTEXTS.length)];
+      situation = COHESION_SITUATIONS[Math.floor(Math.random() * COHESION_SITUATIONS.length)];
+      attempts++;
+    } while (usedCombinations.has(`${context}-${situation}`) && attempts < 50);
+    return { context, situation };
+  };
+
+  const getScoreCategory = (score, max) => {
+    const pct = (score / max) * 100;
+    if (pct >= 80) return 'excellent';
+    if (pct >= 60) return 'good';
+    if (pct >= 40) return 'average';
+    return 'poor';
+  };
+
+  const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+  const generateCohesionScenario = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const { context, situation } = getUnusedCombination();
+    const uniqueId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
+    setUsedCombinations(prev => new Set([...prev, `${context}-${situation}`]));
+
+    const professionalNames = ['Carmen', 'Lucía', 'María', 'Ana', 'Rosa', 'Elena', 'Laura', 'Marta', 'Paula', 'Sofía', 'Carlos', 'Javier', 'Miguel', 'Pedro', 'Luis', 'David', 'Pablo', 'Sergio', 'Andrés', 'Manuel'];
+    const shuffledNames = [...professionalNames].sort(() => Math.random() - 0.5).slice(0, 4);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera un escenario ÚNICO para evaluar la COHESIÓN Y APOYO MUTUO en un equipo sanitario.
+
+ID ÚNICO: ${uniqueId}
+¡IMPORTANTE! Cada escenario debe ser DIFERENTE y CREATIVO. Nunca repitas situaciones.
+
+CONTEXTO: ${context}
+SITUACIÓN CLAVE: ${situation}
+PERSONAJES: ${shuffledNames.join(', ')}
+
+Las 6 DIMENSIONES a evaluar son:
+1. CLIMA POSITIVO - ¿Favorece un ambiente agradable y motivador?
+2. VALORACIÓN DE APORTACIONES - ¿Reconoce las ideas y sugerencias de otros?
+3. LOGROS COLECTIVOS - ¿Celebra y refuerza los éxitos del equipo?
+4. RECONOCIMIENTO DE ESFUERZOS - ¿Aprecia el trabajo y dedicación del personal?
+5. INTERDEPENDENCIA POSITIVA - ¿Promueve la colaboración saludable?
+6. PREVENCIÓN DEL AISLAMIENTO - ¿Evita que compañeros se sientan excluidos?
+
+Genera un JSON con este formato EXACTO:
+{
+  "title": "Título breve del escenario (6-10 palabras)",
+  "context": "Descripción del contexto en ${context}, ambiente y estado del equipo (3-4 frases)",
+  "situation": "Descripción de ${situation} con nombres de ${shuffledNames.slice(0, 2).join(' y ')} (3-4 frases con diálogos)",
+  "yourRole": "Tu papel como profesional de enfermería que debe actuar",
+  "steps": [
+    {
+      "id": 1,
+      "dimension": "positiveClimate",
+      "dimensionName": "Clima Positivo",
+      "situation": "Primera situación relacionada con crear buen ambiente (incluir diálogo)",
+      "options": [
+        {"id": "a", "text": "Respuesta que fomenta clima positivo", "score": 9, "feedback": "Por qué es buena opción"},
+        {"id": "b", "text": "Respuesta neutral", "score": 5, "feedback": "Por qué es neutral"},
+        {"id": "c", "text": "Respuesta que perjudica el clima", "score": 2, "feedback": "Por qué es negativa"}
+      ]
+    },
+    {
+      "id": 2,
+      "dimension": "valueContributions",
+      "dimensionName": "Valoración de Aportaciones",
+      "situation": "Situación donde alguien aporta una idea o sugerencia",
+      "options": [
+        {"id": "a", "text": "Opción A", "score": (1-10), "feedback": "Explicación"},
+        {"id": "b", "text": "Opción B", "score": (1-10), "feedback": "Explicación"},
+        {"id": "c", "text": "Opción C", "score": (1-10), "feedback": "Explicación"}
+      ]
+    },
+    {
+      "id": 3,
+      "dimension": "collectiveAchievements",
+      "dimensionName": "Logros Colectivos",
+      "situation": "Momento para celebrar o reconocer un logro grupal",
+      "options": [
+        {"id": "a", "text": "Opción A", "score": (1-10), "feedback": "Explicación"},
+        {"id": "b", "text": "Opción B", "score": (1-10), "feedback": "Explicación"},
+        {"id": "c", "text": "Opción C", "score": (1-10), "feedback": "Explicación"}
+      ]
+    },
+    {
+      "id": 4,
+      "dimension": "effortRecognition",
+      "dimensionName": "Reconocimiento de Esfuerzos",
+      "situation": "Oportunidad de reconocer el esfuerzo de un compañero/a",
+      "options": [
+        {"id": "a", "text": "Opción A", "score": (1-10), "feedback": "Explicación"},
+        {"id": "b", "text": "Opción B", "score": (1-10), "feedback": "Explicación"},
+        {"id": "c", "text": "Opción C", "score": (1-10), "feedback": "Explicación"}
+      ]
+    },
+    {
+      "id": 5,
+      "dimension": "positiveInterdependence",
+      "dimensionName": "Interdependencia Positiva",
+      "situation": "Momento que requiere colaboración y dependencia mutua",
+      "options": [
+        {"id": "a", "text": "Opción A", "score": (1-10), "feedback": "Explicación"},
+        {"id": "b", "text": "Opción B", "score": (1-10), "feedback": "Explicación"},
+        {"id": "c", "text": "Opción C", "score": (1-10), "feedback": "Explicación"}
+      ]
+    },
+    {
+      "id": 6,
+      "dimension": "avoidIsolation",
+      "dimensionName": "Prevención del Aislamiento",
+      "situation": "Situación donde alguien podría sentirse excluido",
+      "options": [
+        {"id": "a", "text": "Opción A", "score": (1-10), "feedback": "Explicación"},
+        {"id": "b", "text": "Opción B", "score": (1-10), "feedback": "Explicación"},
+        {"id": "c", "text": "Opción C", "score": (1-10), "feedback": "Explicación"}
+      ]
+    }
+  ]
+}
+
+REGLAS OBLIGATORIAS:
+- NUNCA repitas escenarios - cada generación debe ser ÚNICA
+- Las opciones deben ser REALISTAS en el contexto sanitario español
+- Varía las puntuaciones - a veces A es mejor, a veces B o C
+- Incluye DIÁLOGOS concretos entre profesionales
+- Cada paso debe evaluar claramente UNA dimensión de cohesión
+- El feedback debe explicar el impacto en la cohesión del equipo
+- Solo responde con el JSON, sin texto adicional`,
+          systemPrompt: 'Eres un experto en psicología de equipos sanitarios y cohesión grupal. Creas escenarios realistas para evaluar cómo los profesionales de enfermería fomentan el apoyo mutuo, el reconocimiento y la unión del equipo en hospitales españoles.'
+        })
+      });
+
+      if (!response.ok) throw new Error('Error generando escenario');
+
+      const data = await response.json();
+      let scenarioData;
+
+      try {
+        const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          scenarioData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No JSON found');
+        }
+      } catch (e) {
+        throw new Error('Error parseando respuesta');
+      }
+
+      if (!scenarioData.steps || scenarioData.steps.length < 6) {
+        throw new Error('Escenario incompleto');
+      }
+
+      setScenario(scenarioData);
+      setPhase('scenario');
+      setCurrentStep(0);
+      setResponses([]);
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Error generando el escenario. Inténtalo de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectOption = (option) => {
+    const currentDimension = scenario.steps[currentStep].dimension;
+    const newResponses = [...responses, {
+      step: currentStep,
+      dimension: currentDimension,
+      dimensionName: scenario.steps[currentStep].dimensionName,
+      option: option,
+      score: option.score,
+      feedback: option.feedback
+    }];
+    setResponses(newResponses);
+
+    if (currentStep < scenario.steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      generateEvaluation(newResponses);
+    }
+  };
+
+  const generateEvaluation = async (allResponses) => {
+    setPhase('evaluating');
+    setIsLoading(true);
+
+    const dimensionScores = {};
+    COHESION_DIMENSIONS.forEach(dim => {
+      const resp = allResponses.find(r => r.dimension === dim.id);
+      dimensionScores[dim.id] = resp ? resp.score : 5;
+    });
+
+    const totalScore = Object.values(dimensionScores).reduce((a, b) => a + b, 0);
+    const avgScore = totalScore / 6;
+    const maxScore = 10;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera una evaluación profesional de COHESIÓN Y APOYO MUTUO para un/a enfermero/a.
+
+ESCENARIO: ${scenario.title}
+CONTEXTO: ${scenario.context}
+
+RESULTADOS EN LAS 6 DIMENSIONES:
+- Clima Positivo: ${dimensionScores.positiveClimate}/10
+- Valoración de Aportaciones: ${dimensionScores.valueContributions}/10
+- Logros Colectivos: ${dimensionScores.collectiveAchievements}/10
+- Reconocimiento de Esfuerzos: ${dimensionScores.effortRecognition}/10
+- Interdependencia Positiva: ${dimensionScores.positiveInterdependence}/10
+- Prevención del Aislamiento: ${dimensionScores.avoidIsolation}/10
+- PUNTUACIÓN MEDIA: ${avgScore.toFixed(1)}/10
+
+RESPUESTAS DEL USUARIO:
+${allResponses.map((r, i) => `${r.dimensionName}: "${r.option.text}" (${r.score}/10) - ${r.feedback}`).join('\n')}
+
+Genera un JSON con este formato EXACTO:
+{
+  "dimensionAnalysis": {
+    "positiveClimate": {"score": ${dimensionScores.positiveClimate}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"},
+    "valueContributions": {"score": ${dimensionScores.valueContributions}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"},
+    "collectiveAchievements": {"score": ${dimensionScores.collectiveAchievements}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"},
+    "effortRecognition": {"score": ${dimensionScores.effortRecognition}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"},
+    "positiveInterdependence": {"score": ${dimensionScores.positiveInterdependence}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"},
+    "avoidIsolation": {"score": ${dimensionScores.avoidIsolation}, "assessment": "Evaluación 2-3 frases", "tip": "Un consejo específico"}
+  },
+  "cohesionStyle": "Nombre del estilo de cohesión predominante (ej: Constructor de Equipos, Animador, Cohesionador Natural, Colaborador, Observador Pasivo, etc.)",
+  "strengths": ["Fortaleza 1", "Fortaleza 2"],
+  "areasToImprove": ["Área de mejora 1", "Área de mejora 2"],
+  "personalizedRecommendation": "Párrafo personalizado de 4-5 frases con recomendación específica basada en los resultados. Debe seguir el formato: 'Tu estilo favorece [aspecto positivo], pero puedes reforzar la cohesión [recomendación específica].' Incluir consejos prácticos para el día a día en enfermería."
+}
+
+Solo responde con el JSON, sin texto adicional.`,
+          systemPrompt: 'Eres un experto en desarrollo de equipos sanitarios. Proporcionas feedback constructivo y personalizado sobre cohesión grupal y apoyo mutuo en enfermería.'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        let evalData;
+
+        try {
+          const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            evalData = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('Error parsing evaluation:', e);
+        }
+
+        setEvaluation({
+          ...evalData,
+          avgScore,
+          dimensionScores,
+          responses: allResponses
+        });
+
+        addSession({
+          type: 'cohesion_evaluation',
+          score: avgScore,
+          maxScore: 10,
+          dimensionScores,
+          cohesionStyle: evalData?.cohesionStyle || 'No determinado',
+          teamSkills: {
+            cohesion: Math.round(avgScore),
+            colaboracion: Math.round((dimensionScores.positiveInterdependence + dimensionScores.valueContributions) / 2)
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Error generating evaluation:', err);
+      setEvaluation({
+        avgScore,
+        dimensionScores,
+        responses: allResponses
+      });
+    } finally {
+      setIsLoading(false);
+      setPhase('results');
+    }
+  };
+
+  const generateNewScenario = () => {
+    setScenario(null);
+    setCurrentStep(0);
+    setResponses([]);
+    setEvaluation(null);
+    setError(null);
+    setScenariosCompleted(prev => prev + 1);
+    generateCohesionScenario();
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="h-full overflow-y-auto p-4 md:p-8 relative">
+        <FloatingParticles />
+        <GlowingOrb color="#06b6d4" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#3b82f6" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-4xl mx-auto relative z-10 pb-24">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 px-6 py-3 rounded-2xl border border-cyan-500/30 mb-4">
+              <span className="text-3xl">💎</span>
+              <h1 className="text-2xl font-black text-white">Evaluación de Cohesión y Apoyo Mutuo</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Descubre cómo fomentas la unión y el apoyo en tu equipo sanitario
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-cyan-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-cyan-400" />
+              Las 6 Dimensiones de Cohesión
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {COHESION_DIMENSIONS.map((dim) => (
+                <div key={dim.id} className={`bg-gradient-to-br ${dim.color} bg-opacity-20 border border-white/20 rounded-xl p-3 text-center`}>
+                  <div className="text-2xl mb-1">{dim.icon}</div>
+                  <p className="text-white text-xs font-medium">{dim.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-5 border border-slate-600 mb-6">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-amber-400" />
+              ¿Cómo funciona?
+            </h3>
+            <ul className="space-y-2 text-slate-300 text-sm">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>La IA genera un escenario único de trabajo en equipo sanitario</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Responderás a 6 situaciones, una por cada dimensión de cohesión</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Recibirás un análisis detallado con recomendaciones personalizadas</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span>Cada escenario es diferente - practica todas las veces que quieras</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            onClick={generateCohesionScenario}
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-3 text-lg disabled:opacity-50"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-6 h-6 animate-spin" />
+                Generando escenario...
+              </>
+            ) : (
+              <>
+                <Play className="w-6 h-6" />
+                Comenzar Evaluación
+              </>
+            )}
+          </button>
+
+          {error && (
+            <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl p-4 text-center">
+              <p className="text-red-300">{error}</p>
+              <button onClick={() => setError(null)} className="mt-2 text-red-400 hover:text-red-300 text-sm underline">
+                Cerrar
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'scenario' && scenario) {
+    const currentStepData = scenario.steps[currentStep];
+    const progress = ((currentStep + 1) / scenario.steps.length) * 100;
+    const currentDimension = COHESION_DIMENSIONS.find(d => d.id === currentStepData.dimension) || COHESION_DIMENSIONS[0];
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <div className="bg-slate-800/90 backdrop-blur-xl border-b border-cyan-500/30 px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+                <ArrowLeft className="w-5 h-5 text-white" />
+              </button>
+              <div className={`w-10 h-10 bg-gradient-to-br ${currentDimension.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                <span className="text-xl">{currentDimension.icon}</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white">{currentDimension.name}</h1>
+                <p className="text-xs text-cyan-300">Paso {currentStep + 1} de {scenario.steps.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-slate-700 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto">
+            {currentStep === 0 && (
+              <div className="bg-slate-800/90 backdrop-blur-xl rounded-xl p-4 mb-4 border border-cyan-500/30">
+                <h3 className="text-sm font-bold text-cyan-400 mb-2">📍 Contexto</h3>
+                <p className="text-slate-200 text-sm mb-3">{scenario.context}</p>
+                <h3 className="text-sm font-bold text-amber-400 mb-2">💬 Situación</h3>
+                <p className="text-slate-200 text-sm mb-3">{scenario.situation}</p>
+                <h3 className="text-sm font-bold text-emerald-400 mb-2">👤 Tu Rol</h3>
+                <p className="text-slate-200 text-sm">{scenario.yourRole}</p>
+              </div>
+            )}
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-slate-600 shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${currentDimension.color} flex items-center justify-center`}>
+                  <span className="text-xl">{currentDimension.icon}</span>
+                </div>
+                <div>
+                  <p className="text-cyan-300 text-xs">{currentDimension.name}</p>
+                  <p className="text-white font-medium">¿Cómo actuarías?</p>
+                </div>
+              </div>
+
+              <p className="text-slate-200 mb-5 leading-relaxed bg-slate-700/50 rounded-xl p-4 border-l-4 border-cyan-500">
+                {currentStepData.situation}
+              </p>
+
+              <div className="space-y-3">
+                {currentStepData.options.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelectOption(option)}
+                    className="w-full text-left bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400 rounded-xl p-4 transition-all group"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm font-bold text-white group-hover:bg-cyan-500 transition-colors">
+                        {option.id.toUpperCase()}
+                      </div>
+                      <p className="flex-1 text-slate-200 text-sm leading-relaxed">{option.text}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'evaluating') {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full animate-ping opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Analizando tu perfil de cohesión</h2>
+          <p className="text-slate-300">Evaluando las 6 dimensiones de apoyo mutuo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && evaluation) {
+    const scoreColor = evaluation.avgScore >= 8 ? 'from-emerald-500 to-green-500' : 
+                       evaluation.avgScore >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       evaluation.avgScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+    const category = getScoreCategory(evaluation.avgScore, 10);
+    const resultEmoji = getRandomElement(COHESION_EMOJIS[category]);
+    const resultPhrase = getRandomElement(COHESION_PHRASES[category]);
+
+    return (
+      <div className="h-full flex flex-col relative">
+        <FloatingParticles />
+        
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-3xl mx-auto relative z-10 pb-24">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 px-5 py-2.5 rounded-2xl border border-cyan-500/30">
+                <Trophy className="w-6 h-6 text-amber-400" />
+                <h1 className="text-xl font-black text-white">Tu Perfil de Cohesión</h1>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-cyan-500/30 shadow-2xl mb-4">
+              <div className="text-center mb-4">
+                <div className="text-6xl mb-2 animate-bounce">{resultEmoji}</div>
+                <p className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                  {resultPhrase}
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-slate-400 text-xs">Puntuación Global</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                      {evaluation.avgScore.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400 text-lg">/10</span>
+                  </div>
+                </div>
+                {evaluation.cohesionStyle && (
+                  <div className="text-right">
+                    <p className="text-slate-400 text-xs">Tu Estilo</p>
+                    <p className="text-cyan-400 font-bold">{evaluation.cohesionStyle}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {COHESION_DIMENSIONS.map((dim) => (
+                  <div key={dim.id} className={`bg-gradient-to-br ${dim.color} bg-opacity-20 border border-white/10 rounded-xl p-2 text-center`}>
+                    <div className="text-lg mb-0.5">{dim.icon}</div>
+                    <p className="text-white text-2xl font-bold">{evaluation.dimensionScores[dim.id]}</p>
+                    <p className="text-white/70 text-[10px]">{dim.name}</p>
+                  </div>
+                ))}
+              </div>
+
+              {evaluation.strengths && evaluation.strengths.length > 0 && (
+                <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3 mb-3">
+                  <h4 className="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                    <Star className="w-4 h-4" /> Tus Fortalezas
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {evaluation.strengths.map((s, i) => (
+                      <span key={i} className="text-xs bg-emerald-500/30 text-emerald-200 px-2 py-1 rounded-lg">✓ {s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {evaluation.areasToImprove && evaluation.areasToImprove.length > 0 && (
+                <div className="bg-amber-500/20 border border-amber-500/30 rounded-xl p-3 mb-3">
+                  <h4 className="text-amber-400 font-bold text-sm mb-2 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" /> Áreas de Mejora
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {evaluation.areasToImprove.map((a, i) => (
+                      <span key={i} className="text-xs bg-amber-500/30 text-amber-200 px-2 py-1 rounded-lg">→ {a}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {evaluation.dimensionAnalysis && (
+              <div className="space-y-3 mb-4">
+                {COHESION_DIMENSIONS.map((dim) => {
+                  const analysis = evaluation.dimensionAnalysis[dim.id];
+                  if (!analysis) return null;
+                  return (
+                    <div key={dim.id} className={`bg-gradient-to-r ${dim.color} bg-opacity-10 border border-white/20 rounded-xl p-4`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">{dim.icon}</span>
+                        <h4 className="text-white font-bold text-sm">{dim.name}</h4>
+                        <span className="ml-auto text-lg font-bold text-white">{analysis.score}/10</span>
+                      </div>
+                      <p className="text-slate-200 text-sm mb-2">{analysis.assessment}</p>
+                      {analysis.tip && (
+                        <p className="text-xs bg-white/10 text-white/80 px-3 py-1.5 rounded-lg">💡 {analysis.tip}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {evaluation.personalizedRecommendation && (
+              <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl p-4 border border-amber-500/30">
+                <h3 className="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Recomendación Personalizada
+                </h3>
+                <p className="text-slate-200 text-sm leading-relaxed italic">
+                  "{evaluation.personalizedRecommendation}"
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
+          <div className="max-w-3xl mx-auto">
+            {scenariosCompleted > 0 && (
+              <div className="text-center mb-3">
+                <span className="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full">
+                  💎 {scenariosCompleted + 1} evaluaciones completadas
+                </span>
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={generateNewScenario}
+                disabled={isLoading}
+                className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Nuevo Escenario
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+              >
+                <Home className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const CONFLICT_TYPES = [
   {
     id: 'nurse_doctor',
@@ -4846,6 +5595,8 @@ const TeamworkModule = ({ onBack }) => {
         return <GroupDynamicsMode onBack={handleBack} />;
       case 'conflicts':
         return <ConflictSimulatorMode onBack={handleBack} />;
+      case 'cohesion':
+        return <CohesionEvaluatorMode onBack={handleBack} />;
       case 'meetings':
         return <ComingSoonMode title="Reuniones Eficaces" icon="📅" onBack={handleBack} />;
       case 'dysfunctions':
