@@ -13,8 +13,8 @@ const TRAINING_MODULES = [
     title: 'Gestión de Casos',
     subtitle: 'Analiza casos clínicos y de gestión',
     icon: Briefcase,
-    emoji: '📋',
-    color: 'from-rose-500 via-red-500 to-orange-500',
+    emoji: '📋',color: 'from-cyan-500/70 to-blue-500/70',    color: 'frofrom-cyan-500/70 to-blue-500/70'},
+m-
     shadowColor: 'shadow-rose-500/40',
     borderColor: 'border-rose-400/50',
     bgGlow: 'from-rose-500/30',
