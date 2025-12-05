@@ -102,4 +102,22 @@ The application employs a modern web stack to deliver an interactive and gamifie
 - **Gemini API Server**: Express.js server on port 3001 (`server/gemini-api.js`)
   - POST `/api/chat` - General chat with custom system prompts
   - POST `/api/generate-quiz` - Generate quiz questions from topics
+  - POST `/api/generate-scenario` - Generate decision-making scenarios with AI
+  - POST `/api/generate-decision-tree` - Generate interactive decision trees with AI
+  - POST `/api/generate-priority-exercise` - Generate task prioritization exercises with AI
   - Vite proxies `/api/*` requests to the Gemini server
+
+## Decision Making Module Enhancements (Dec 2025)
+- **Player Avatar Integration**: Custom PlayerAvatarIcon component with hook usePlayerAvatar
+  - Multiple sizes (xs, sm, md, lg, xl)
+  - Robust fallback to User icon for missing/failed images
+  - Uses `new URL()` for Vite-compatible asset resolution
+  - Integrated in ScenarioChat, DecisionTreeGame, PriorityGame
+- **Visual Effects**: FloatingParticles (20 animated particles), GlowingOrb (blur effect orbs)
+- **AI Content Generation**: Three endpoints for dynamic content with:
+  - Server-side ID generation (no ID in AI prompts)
+  - JSON validation with try/catch
+  - Required field validation
+  - 503 overload error handling with retry support
+- **Generate with AI Buttons**: Purple/pink button in ScenarioSelector, TreeSelector, PrioritySelector
+- **Badge Indicator**: "IA" badge on dynamically generated items
