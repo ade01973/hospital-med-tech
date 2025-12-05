@@ -2415,6 +2415,792 @@ const TeamworkAnalytics = ({ onBack }) => {
   );
 };
 
+const TEAMWORK_DIMENSIONS = [
+  { id: 'cohesion', name: 'Cohesión', icon: '🤝', color: 'from-emerald-500 to-teal-500' },
+  { id: 'comunicacion', name: 'Comunicación Interna', icon: '💬', color: 'from-blue-500 to-cyan-500' },
+  { id: 'coordinacion', name: 'Coordinación', icon: '⚙️', color: 'from-violet-500 to-purple-500' },
+  { id: 'responsabilidad', name: 'Responsabilidad', icon: '✅', color: 'from-amber-500 to-orange-500' },
+  { id: 'confianza', name: 'Confianza', icon: '🛡️', color: 'from-indigo-500 to-blue-500' },
+  { id: 'resolucion', name: 'Resolución Conjunta', icon: '🧩', color: 'from-rose-500 to-pink-500' }
+];
+
+const RadarChart = ({ data, size = 280 }) => {
+  const dimensions = TEAMWORK_DIMENSIONS;
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const maxRadius = size * 0.38;
+  const levels = 5;
+
+  const getPoint = (index, value) => {
+    const angle = (Math.PI * 2 * index) / dimensions.length - Math.PI / 2;
+    const radius = (value / 10) * maxRadius;
+    return {
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    };
+  };
+
+  const gridPoints = (level) => {
+    return dimensions.map((_, i) => {
+      const point = getPoint(i, (level / levels) * 10);
+      return `${point.x},${point.y}`;
+    }).join(' ');
+  };
+
+  const dataPoints = dimensions.map((dim, i) => {
+    const point = getPoint(i, data[dim.id] || 0);
+    return `${point.x},${point.y}`;
+  }).join(' ');
+
+  return (
+    <div className="relative">
+      <svg width={size} height={size} className="mx-auto">
+        {[...Array(levels)].map((_, i) => (
+          <polygon
+            key={i}
+            points={gridPoints(i + 1)}
+            fill="none"
+            stroke="rgba(148, 163, 184, 0.2)"
+            strokeWidth="1"
+          />
+        ))}
+        
+        {dimensions.map((dim, i) => {
+          const point = getPoint(i, 10);
+          return (
+            <line
+              key={dim.id}
+              x1={centerX}
+              y1={centerY}
+              x2={point.x}
+              y2={point.y}
+              stroke="rgba(148, 163, 184, 0.15)"
+              strokeWidth="1"
+            />
+          );
+        })}
+
+        <defs>
+          <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(99, 102, 241, 0.6)" />
+            <stop offset="100%" stopColor="rgba(139, 92, 246, 0.6)" />
+          </linearGradient>
+        </defs>
+
+        <polygon
+          points={dataPoints}
+          fill="url(#radarGradient)"
+          stroke="rgba(139, 92, 246, 0.8)"
+          strokeWidth="2"
+          className="drop-shadow-lg"
+        />
+
+        {dimensions.map((dim, i) => {
+          const point = getPoint(i, data[dim.id] || 0);
+          return (
+            <circle
+              key={`point-${dim.id}`}
+              cx={point.x}
+              cy={point.y}
+              r="5"
+              fill="white"
+              stroke="rgba(139, 92, 246, 1)"
+              strokeWidth="2"
+              className="drop-shadow-md"
+            />
+          );
+        })}
+
+        {dimensions.map((dim, i) => {
+          const labelPoint = getPoint(i, 12.5);
+          return (
+            <text
+              key={`label-${dim.id}`}
+              x={labelPoint.x}
+              y={labelPoint.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-slate-300 text-[10px] font-medium"
+            >
+              {dim.icon} {dim.name.split(' ')[0]}
+            </text>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
+
+const TeamworkTestMode = ({ onBack }) => {
+  const { addSession } = useTeamworkProfileContext();
+  const [phase, setPhase] = useState('intro');
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [results, setResults] = useState(null);
+  const [isGeneratingConclusion, setIsGeneratingConclusion] = useState(false);
+
+  const generateQuestions = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera exactamente 20 preguntas NUEVAS y ÚNICAS para evaluar competencias de trabajo en equipo en contexto de enfermería hospitalaria.
+
+DIMENSIONES A EVALUAR (2 preguntas por dimensión, intercaladas):
+1. Cooperación - Disposición a ayudar y trabajar junto a otros
+2. Cohesión - Sentido de pertenencia y unidad del grupo
+3. Responsabilidad compartida - Asumir compromisos colectivos
+4. Comunicación interna - Intercambio efectivo de información
+5. Resolución conjunta de problemas - Solucionar dificultades en equipo
+6. Apoyo mutuo - Respaldo entre compañeros
+7. Confianza en el equipo - Fe en las capacidades del grupo
+8. Coordinación - Sincronización de acciones y tareas
+9. Rol flexible - Adaptación a diferentes funciones
+10. Clima unitario - Ambiente positivo de trabajo
+
+FORMATO DE RESPUESTA (JSON estricto):
+{
+  "questions": [
+    {
+      "id": 1,
+      "text": "Pregunta contextualizada en enfermería",
+      "dimension": "cooperacion|cohesion|responsabilidad|comunicacion|resolucion|apoyo|confianza|coordinacion|rol_flexible|clima",
+      "radarDimension": "cohesion|comunicacion|coordinacion|responsabilidad|confianza|resolucion"
+    }
+  ]
+}
+
+REGLAS:
+- Cada pregunta debe ser situacional y específica de enfermería hospitalaria
+- Las preguntas serán respondidas con escala Likert (1-5)
+- Mezcla situaciones de urgencias, hospitalización, atención primaria, etc.
+- Varía los escenarios: turnos, guardias, cambios, supervisión, etc.
+- NUNCA repitas estructuras o situaciones similares
+- Las preguntas deben reflejar situaciones reales del día a día enfermero
+- Mapea cada dimensión a una de las 6 dimensiones del radar: cohesion, comunicacion, coordinacion, responsabilidad, confianza, resolucion
+
+Solo responde con el JSON, sin texto adicional.`,
+          systemPrompt: 'Eres un experto en evaluación de competencias de trabajo en equipo sanitario. Genera preguntas originales y profesionales para evaluar enfermeros/as.'
+        })
+      });
+
+      if (!response.ok) throw new Error('Error generando preguntas');
+
+      const data = await response.json();
+      let questionsData;
+
+      try {
+        const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          questionsData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No JSON found');
+        }
+      } catch (e) {
+        throw new Error('Error parseando respuesta');
+      }
+
+      if (!questionsData.questions || questionsData.questions.length < 20) {
+        throw new Error('Preguntas incompletas');
+      }
+
+      setQuestions(questionsData.questions.slice(0, 20));
+      setPhase('test');
+      setCurrentQuestion(0);
+      setAnswers({});
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Error generando las preguntas. Inténtalo de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAnswer = (value) => {
+    const q = questions[currentQuestion];
+    setAnswers(prev => ({
+      ...prev,
+      [q.id]: { value, dimension: q.dimension, radarDimension: q.radarDimension }
+    }));
+
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      calculateResults();
+    }
+  };
+
+  const calculateResults = async () => {
+    setPhase('calculating');
+    
+    const radarScores = {
+      cohesion: { total: 0, count: 0 },
+      comunicacion: { total: 0, count: 0 },
+      coordinacion: { total: 0, count: 0 },
+      responsabilidad: { total: 0, count: 0 },
+      confianza: { total: 0, count: 0 },
+      resolucion: { total: 0, count: 0 }
+    };
+
+    const dimensionScores = {};
+
+    Object.values(answers).forEach(answer => {
+      const radar = answer.radarDimension;
+      if (radarScores[radar]) {
+        radarScores[radar].total += answer.value;
+        radarScores[radar].count += 1;
+      }
+
+      if (!dimensionScores[answer.dimension]) {
+        dimensionScores[answer.dimension] = { total: 0, count: 0 };
+      }
+      dimensionScores[answer.dimension].total += answer.value;
+      dimensionScores[answer.dimension].count += 1;
+    });
+
+    const radarData = {};
+    Object.entries(radarScores).forEach(([key, data]) => {
+      radarData[key] = data.count > 0 ? (data.total / data.count) * 2 : 5;
+    });
+
+    const overallScore = Object.values(radarData).reduce((a, b) => a + b, 0) / 6;
+
+    const sortedDimensions = Object.entries(radarData)
+      .sort((a, b) => a[1] - b[1]);
+
+    const weakAreas = sortedDimensions.slice(0, 2).map(([key]) => 
+      TEAMWORK_DIMENSIONS.find(d => d.id === key)
+    );
+
+    const strongAreas = sortedDimensions.slice(-2).reverse().map(([key]) => 
+      TEAMWORK_DIMENSIONS.find(d => d.id === key)
+    );
+
+    setResults({
+      radarData,
+      overallScore,
+      weakAreas,
+      strongAreas,
+      dimensionScores
+    });
+
+    setIsGeneratingConclusion(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Genera una conclusión profesional para un/a enfermero/a que ha completado un test de trabajo en equipo.
+
+RESULTADOS DEL RADAR:
+- Cohesión: ${radarData.cohesion.toFixed(1)}/10
+- Comunicación Interna: ${radarData.comunicacion.toFixed(1)}/10
+- Coordinación: ${radarData.coordinacion.toFixed(1)}/10
+- Responsabilidad: ${radarData.responsabilidad.toFixed(1)}/10
+- Confianza: ${radarData.confianza.toFixed(1)}/10
+- Resolución Conjunta: ${radarData.resolucion.toFixed(1)}/10
+
+PUNTUACIÓN GLOBAL: ${overallScore.toFixed(1)}/10
+
+ÁREAS MÁS DÉBILES: ${weakAreas.map(a => a?.name).join(', ')}
+ÁREAS MÁS FUERTES: ${strongAreas.map(a => a?.name).join(', ')}
+
+Genera una respuesta con este formato EXACTO:
+
+[TITULO:Un título motivador de 3-5 palabras]
+
+[RESUMEN:2-3 frases describiendo el perfil general del profesional en trabajo en equipo]
+
+[FORTALEZAS:
+- Fortaleza 1 específica de enfermería
+- Fortaleza 2 específica de enfermería
+]
+
+[MEJORAS:
+- Área de mejora 1 con consejo práctico para enfermería
+- Área de mejora 2 con consejo práctico para enfermería
+- Área de mejora 3 con consejo práctico para enfermería
+]
+
+[CONCLUSION:Párrafo final motivador y profesional adaptado al contexto enfermero, mencionando cómo estas competencias impactan en la calidad asistencial]`,
+          systemPrompt: 'Eres un experto en desarrollo profesional de enfermería y competencias de trabajo en equipo sanitario. Tus conclusiones son profesionales, específicas y motivadoras.'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.response;
+
+        const titleMatch = text.match(/\[TITULO:([^\]]+)\]/);
+        const summaryMatch = text.match(/\[RESUMEN:([^\]]+)\]/);
+        const strengthsMatch = text.match(/\[FORTALEZAS:([\s\S]*?)\]/);
+        const improvementsMatch = text.match(/\[MEJORAS:([\s\S]*?)\]/);
+        const conclusionMatch = text.match(/\[CONCLUSION:([^\]]+)\]/);
+
+        setResults(prev => ({
+          ...prev,
+          aiConclusion: {
+            title: titleMatch ? titleMatch[1].trim() : 'Tu Perfil de Equipo',
+            summary: summaryMatch ? summaryMatch[1].trim() : '',
+            strengths: strengthsMatch ? strengthsMatch[1].trim().split('\n').filter(s => s.trim().startsWith('-')).map(s => s.replace('-', '').trim()) : [],
+            improvements: improvementsMatch ? improvementsMatch[1].trim().split('\n').filter(s => s.trim().startsWith('-')).map(s => s.replace('-', '').trim()) : [],
+            conclusion: conclusionMatch ? conclusionMatch[1].trim() : ''
+          }
+        }));
+      }
+    } catch (err) {
+      console.error('Error generating conclusion:', err);
+    } finally {
+      setIsGeneratingConclusion(false);
+      setPhase('results');
+    }
+
+    addSession({
+      type: 'teamwork_test',
+      score: overallScore,
+      maxScore: 10,
+      radarData,
+      teamSkills: {
+        colaboracion: radarData.cohesion,
+        coordinacion: radarData.coordinacion,
+        cohesion: radarData.cohesion,
+        comunicacionEquipo: radarData.comunicacion,
+        resolucionProblemas: radarData.resolucion
+      }
+    });
+  };
+
+  const goToPreviousQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(prev => prev - 1);
+    }
+  };
+
+  const resetTest = () => {
+    setPhase('intro');
+    setQuestions([]);
+    setCurrentQuestion(0);
+    setAnswers({});
+    setResults(null);
+    setError(null);
+  };
+
+  if (phase === 'intro') {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        <GlowingOrb color="#6366f1" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#8b5cf6" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-3xl mx-auto relative z-10 pb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/20 to-violet-500/20 px-6 py-3 rounded-2xl border border-indigo-500/30 mb-4">
+              <span className="text-3xl">📋</span>
+              <h1 className="text-2xl font-black text-white">Test de Evaluación del Trabajo en Equipo</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              20 preguntas generadas por IA para evaluar tus competencias
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-indigo-500/30 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-indigo-400" />
+              Dimensiones a Evaluar
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {['Cooperación', 'Cohesión', 'Responsabilidad', 'Comunicación', 'Resolución', 'Apoyo mutuo', 'Confianza', 'Coordinación', 'Rol flexible', 'Clima'].map((dim, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-slate-700/50 rounded-xl p-3 text-center border border-slate-600/50"
+                >
+                  <p className="text-slate-200 text-sm font-medium">{dim}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-violet-400" />
+              ¿Qué obtendrás?
+            </h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">📊</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">Gráfica Radar</p>
+                  <p className="text-slate-400 text-sm">Visualización de tus 6 dimensiones clave</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">🎯</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">Áreas de Mejora</p>
+                  <p className="text-slate-400 text-sm">Recomendaciones personalizadas</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">🏥</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">Conclusión Enfermera</p>
+                  <p className="text-slate-400 text-sm">Análisis adaptado a tu contexto</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-2xl p-5 mb-6">
+            <div className="flex items-start gap-3">
+              <Sparkles className="w-6 h-6 text-indigo-400 flex-shrink-0 mt-1" />
+              <div>
+                <p className="text-indigo-200 font-medium mb-1">Preguntas Generadas por IA</p>
+                <p className="text-slate-300 text-sm">
+                  Cada vez que entres al test, se generarán 20 preguntas completamente nuevas y 
+                  contextualizadas en situaciones reales de enfermería. Nunca repetirás las mismas preguntas.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/40 rounded-xl p-4 mb-6 text-center">
+              <p className="text-red-300">{error}</p>
+            </div>
+          )}
+
+          <button
+            onClick={generateQuestions}
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/30 hover:scale-[1.02] flex items-center justify-center gap-3"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Generando preguntas personalizadas...
+              </>
+            ) : (
+              <>
+                <Play className="w-5 h-5" />
+                Comenzar Test
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'test') {
+    const q = questions[currentQuestion];
+    const progress = ((currentQuestion + 1) / questions.length) * 100;
+    const currentAnswer = answers[q?.id]?.value;
+
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        
+        <div className="max-w-2xl mx-auto relative z-10">
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-xl p-3 border border-slate-700 mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-slate-300 text-sm">Pregunta {currentQuestion + 1} de {questions.length}</span>
+              <span className="text-indigo-400 text-sm font-medium">{Math.round(progress)}%</span>
+            </div>
+            <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-indigo-500/30 shadow-2xl mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1 rounded-full border border-indigo-500/30">
+                {q?.dimension?.replace('_', ' ').toUpperCase()}
+              </span>
+            </div>
+
+            <h2 className="text-xl font-bold text-white mb-8 leading-relaxed">
+              {q?.text}
+            </h2>
+
+            <div className="space-y-3">
+              {[
+                { value: 1, label: 'Totalmente en desacuerdo', emoji: '😕' },
+                { value: 2, label: 'En desacuerdo', emoji: '🤔' },
+                { value: 3, label: 'Neutral', emoji: '😐' },
+                { value: 4, label: 'De acuerdo', emoji: '🙂' },
+                { value: 5, label: 'Totalmente de acuerdo', emoji: '😊' }
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleAnswer(option.value)}
+                  className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
+                    currentAnswer === option.value
+                      ? 'bg-indigo-500/20 border-indigo-400 text-white'
+                      : 'bg-slate-700/50 border-slate-600 text-slate-200 hover:border-indigo-400/50 hover:bg-slate-700'
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${
+                    currentAnswer === option.value
+                      ? 'bg-indigo-500'
+                      : 'bg-slate-600'
+                  }`}>
+                    {option.emoji}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">{option.label}</span>
+                  </div>
+                  <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                    currentAnswer === option.value
+                      ? 'border-indigo-400 bg-indigo-500'
+                      : 'border-slate-500'
+                  }`}>
+                    {currentAnswer === option.value && <CheckCircle className="w-5 h-5 text-white" />}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={goToPreviousQuestion}
+              disabled={currentQuestion === 0}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Anterior
+            </button>
+            <button
+              onClick={resetTest}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-4 rounded-xl transition-all"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'calculating') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full animate-ping opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Analizando tus respuestas</h2>
+          <p className="text-slate-300">Generando tu perfil de trabajo en equipo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && results) {
+    const scoreColor = results.overallScore >= 8 ? 'from-emerald-500 to-green-500' : 
+                       results.overallScore >= 6 ? 'from-amber-500 to-yellow-500' : 
+                       results.overallScore >= 4 ? 'from-orange-500 to-amber-500' : 'from-red-500 to-rose-500';
+
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        
+        <div className="max-w-3xl mx-auto relative z-10 pb-8">
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/20 to-violet-500/20 px-6 py-3 rounded-2xl border border-indigo-500/30 mb-4">
+              <Trophy className="w-8 h-8 text-amber-400" />
+              <h1 className="text-2xl font-black text-white">Resultados del Test</h1>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-indigo-500/30 shadow-2xl mb-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-slate-400 text-sm">Puntuación Global</p>
+                <div className="flex items-baseline gap-2">
+                  <span className={`text-5xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                    {results.overallScore.toFixed(1)}
+                  </span>
+                  <span className="text-slate-400 text-xl">/10</span>
+                </div>
+              </div>
+              <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${scoreColor} flex items-center justify-center shadow-lg`}>
+                <span className="text-4xl">
+                  {results.overallScore >= 8 ? '🏆' : results.overallScore >= 6 ? '⭐' : results.overallScore >= 4 ? '📈' : '💪'}
+                </span>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-violet-400" />
+              Tu Perfil Radar
+            </h3>
+            
+            <div className="bg-slate-900/50 rounded-xl p-4 mb-4">
+              <RadarChart data={results.radarData} />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {TEAMWORK_DIMENSIONS.map(dim => (
+                <div key={dim.id} className={`bg-gradient-to-br ${dim.color} rounded-xl p-3 text-center`}>
+                  <span className="text-2xl">{dim.icon}</span>
+                  <p className="text-white text-xs font-medium mt-1">{dim.name}</p>
+                  <p className="text-white/90 text-lg font-bold">{results.radarData[dim.id]?.toFixed(1) || '0'}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5">
+              <h3 className="text-lg font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                <Star className="w-5 h-5" />
+                Tus Fortalezas
+              </h3>
+              <div className="space-y-2">
+                {results.strongAreas.map((area, idx) => area && (
+                  <div key={idx} className="flex items-center gap-3 bg-emerald-500/10 rounded-xl p-3">
+                    <span className="text-xl">{area.icon}</span>
+                    <span className="text-emerald-100 font-medium">{area.name}</span>
+                    <span className="ml-auto text-emerald-400 font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5">
+              <h3 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                <Target className="w-5 h-5" />
+                Áreas de Mejora
+              </h3>
+              <div className="space-y-2">
+                {results.weakAreas.map((area, idx) => area && (
+                  <div key={idx} className="flex items-center gap-3 bg-amber-500/10 rounded-xl p-3">
+                    <span className="text-xl">{area.icon}</span>
+                    <span className="text-amber-100 font-medium">{area.name}</span>
+                    <span className="ml-auto text-amber-400 font-bold">{results.radarData[area.id]?.toFixed(1)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {results.aiConclusion && (
+            <div className="bg-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-violet-500/30 shadow-2xl mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">{results.aiConclusion.title}</h3>
+                  <p className="text-violet-300 text-sm">Conclusión Profesional</p>
+                </div>
+              </div>
+
+              {results.aiConclusion.summary && (
+                <p className="text-slate-200 mb-4 leading-relaxed">
+                  {results.aiConclusion.summary}
+                </p>
+              )}
+
+              {results.aiConclusion.strengths?.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-emerald-400 font-bold mb-2 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" /> Aspectos Destacados
+                  </h4>
+                  <ul className="space-y-1">
+                    {results.aiConclusion.strengths.map((s, i) => (
+                      <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
+                        <span className="text-emerald-400 mt-1">•</span> {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {results.aiConclusion.improvements?.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-amber-400 font-bold mb-2 flex items-center gap-2">
+                    <Lightbulb className="w-4 h-4" /> Recomendaciones
+                  </h4>
+                  <ul className="space-y-1">
+                    {results.aiConclusion.improvements.map((s, i) => (
+                      <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
+                        <span className="text-amber-400 mt-1">•</span> {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {results.aiConclusion.conclusion && (
+                <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-4 mt-4">
+                  <p className="text-violet-100 text-sm leading-relaxed italic">
+                    "{results.aiConclusion.conclusion}"
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {isGeneratingConclusion && (
+            <div className="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 mb-6 text-center">
+              <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
+              <p className="text-slate-300">Generando conclusión profesional...</p>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={resetTest}
+              className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Repetir con Nuevas Preguntas
+            </button>
+            <button
+              onClick={onBack}
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              <Home className="w-5 h-5" />
+              Volver al Menú
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const ComingSoonMode = ({ title, icon, onBack }) => (
   <div className="min-h-screen p-4 md:p-8 relative flex items-center justify-center">
     <FloatingParticles />
@@ -2454,6 +3240,8 @@ const TeamworkModule = ({ onBack }) => {
 
   const renderContent = () => {
     switch (currentMode) {
+      case 'teamworkTest':
+        return <TeamworkTestMode onBack={handleBack} />;
       case 'styleIdentification':
         return <ParticipationStyleIdentifier onBack={handleBack} />;
       case 'simulation':
