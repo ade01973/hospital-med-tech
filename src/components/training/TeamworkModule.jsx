@@ -313,6 +313,15 @@ const COLLABORATIVE_STYLES = [
 
 const TEAMWORK_MODES = [
   {
+    id: 'teamworkTest',
+    title: 'Test de Evaluación',
+    description: 'Evalúa tus competencias de trabajo en equipo con 20 preguntas',
+    icon: '📋',
+    color: 'from-indigo-500 to-violet-500',
+    features: ['20 preguntas IA', 'Gráfica radar', 'Conclusión profesional'],
+    isNew: true
+  },
+  {
     id: 'styleIdentification',
     title: 'Identificar Mi Estilo',
     description: 'Descubre tu estilo de participación en equipos de gestión',
