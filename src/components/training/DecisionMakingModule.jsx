@@ -1,15 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Bot, User, Target, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Sparkles, Brain, GitBranch, ListOrdered, ArrowUp, ArrowDown, RotateCcw, Check, X } from 'lucide-react';
-
-const FloatingOrbs = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-20 left-[10%] w-80 h-80 bg-blue-500/20 rounded-full blur-[100px] animate-pulse" />
-      <div className="absolute bottom-20 right-[10%] w-96 h-96 bg-indigo-500/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-cyan-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
-    </div>
-  );
-};
+import decisionBg from '../../assets/decision-making-bg.png';
 
 const DECISION_SCENARIOS = [
   {
@@ -438,8 +429,8 @@ const ScoreDisplay = ({ score, feedback, onContinue }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 max-w-lg w-full border border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
+    <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-800 rounded-3xl p-8 max-w-lg w-full border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/20">
         <div className="text-center mb-6">
           <div className={`w-24 h-24 mx-auto rounded-full bg-gradient-to-br ${getScoreColor(score)} flex items-center justify-center mb-4 shadow-xl`}>
             <span className="text-4xl font-black text-white">{score}</span>
@@ -448,12 +439,12 @@ const ScoreDisplay = ({ score, feedback, onContinue }) => {
           <p className="text-cyan-300 text-sm">Puntuación: {score}/10</p>
         </div>
         
-        <div className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700">
+        <div className="bg-slate-700/80 rounded-2xl p-5 mb-6 border border-slate-600">
           <h3 className="text-cyan-400 font-bold mb-3 flex items-center gap-2">
             <Brain className="w-5 h-5" />
             Feedback
           </h3>
-          <p className="text-slate-300 text-sm leading-relaxed">{feedback}</p>
+          <p className="text-slate-200 text-sm leading-relaxed">{feedback}</p>
         </div>
         
         <button
@@ -499,14 +490,14 @@ const ModeSelector = ({ onSelectMode }) => {
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-3 bg-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-full border border-blue-400/40 mb-6">
-            <Target className="w-6 h-6 text-blue-400" />
-            <span className="text-blue-300 font-bold">Módulo de Toma de Decisiones</span>
+          <div className="inline-flex items-center gap-3 bg-slate-800/90 backdrop-blur-sm px-6 py-3 rounded-full border-2 border-cyan-400/50 mb-6 shadow-lg">
+            <Target className="w-6 h-6 text-cyan-400" />
+            <span className="text-cyan-300 font-bold text-lg">Módulo de Toma de Decisiones</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-4 drop-shadow-lg">
             Elige tu <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Modalidad</span>
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="text-slate-200 max-w-2xl mx-auto text-lg bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
             Entrena tu capacidad de tomar decisiones en diferentes formatos adaptados a la gestión enfermera
           </p>
         </div>
@@ -518,17 +509,17 @@ const ModeSelector = ({ onSelectMode }) => {
               <button
                 key={mode.id}
                 onClick={() => onSelectMode(mode.id)}
-                className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 hover:border-cyan-400/50 rounded-2xl p-6 text-left transition-all duration-300 group hover:scale-[1.02] hover:-translate-y-1"
+                className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-cyan-400 rounded-2xl p-6 text-left transition-all duration-300 group hover:scale-[1.02] hover:-translate-y-1 shadow-xl hover:shadow-cyan-500/20"
               >
                 <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${mode.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                   <Icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-100">{mode.title}</h3>
-                <p className="text-slate-400 text-sm mb-4">{mode.description}</p>
+                <p className="text-slate-300 text-sm mb-4">{mode.description}</p>
                 <ul className="space-y-2">
                   {mode.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-xs text-slate-300">
-                      <CheckCircle className="w-4 h-4 text-cyan-400" />
+                    <li key={idx} className="flex items-center gap-2 text-sm text-slate-200">
+                      <CheckCircle className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                       {feature}
                     </li>
                   ))}
@@ -548,17 +539,17 @@ const ScenarioSelector = ({ onSelectScenario, onBack }) => {
       <div className="max-w-5xl mx-auto">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-white mb-3">
+          <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Escenarios de <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Decisión</span>
           </h1>
-          <p className="text-slate-400">Selecciona un caso para resolver</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Selecciona un caso para resolver</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
@@ -566,22 +557,22 @@ const ScenarioSelector = ({ onSelectScenario, onBack }) => {
             <button
               key={scenario.id}
               onClick={() => onSelectScenario(scenario)}
-              className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 hover:border-cyan-400/50 rounded-xl p-5 text-left transition-all group"
+              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-cyan-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-cyan-500/20"
             >
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0`}>
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
                   {scenario.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-100">{scenario.title}</h3>
                   <p className="text-cyan-400 text-xs font-medium mb-2">{scenario.category}</p>
-                  <p className="text-slate-400 text-sm mb-3">{scenario.description}</p>
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
+                  <p className="text-slate-300 text-sm mb-3">{scenario.description}</p>
+                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <span className="flex items-center gap-1 bg-slate-700/80 px-2 py-1 rounded-lg">
                       <Clock className="w-3 h-3" />
                       {scenario.duration}
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 bg-slate-700/80 px-2 py-1 rounded-lg">
                       <Zap className="w-3 h-3" />
                       {scenario.difficulty}
                     </span>
@@ -737,22 +728,22 @@ IMPORTANTE:
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-blue-500/30 px-4 py-3 flex items-center justify-between">
+      <div className="bg-slate-800 border-b-2 border-cyan-500/50 px-4 py-3 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-xl`}>
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-xl shadow-lg`}>
             {scenario.icon}
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">{scenario.title}</h1>
-            <p className="text-xs text-blue-300">{scenario.category}</p>
+            <p className="text-xs text-cyan-300">{scenario.category}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
@@ -760,15 +751,15 @@ IMPORTANTE:
                 <Bot className="w-4 h-4 text-white" />
               </div>
             )}
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+            <div className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-lg ${
               msg.role === 'user'
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                : 'bg-slate-800/80 border border-slate-700 text-slate-100'
+                : 'bg-slate-800 border-2 border-slate-600 text-slate-100'
             }`}>
               <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
             </div>
             {msg.role === 'user' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
                 <User className="w-4 h-4 text-white" />
               </div>
             )}
@@ -779,8 +770,8 @@ IMPORTANTE:
             <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${scenario.color} flex items-center justify-center flex-shrink-0`}>
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2 text-blue-300">
+            <div className="bg-slate-800 border-2 border-slate-600 rounded-2xl px-4 py-3 shadow-lg">
+              <div className="flex items-center gap-2 text-cyan-300">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Analizando situación...</span>
               </div>
@@ -790,14 +781,14 @@ IMPORTANTE:
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-blue-500/30 p-4">
+      <div className="bg-slate-800 border-t-2 border-cyan-500/50 p-4 shadow-lg">
         <form onSubmit={handleSubmit} className="flex gap-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Escribe tu decisión..."
-            className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+            className="flex-1 bg-slate-700 border-2 border-slate-500 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
             disabled={isLoading}
           />
           <button
@@ -819,17 +810,17 @@ const TreeSelector = ({ onSelectTree, onBack }) => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-white mb-3">
+          <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Árbol de <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Decisiones</span>
           </h1>
-          <p className="text-slate-400">Cada decisión tiene consecuencias. Elige sabiamente.</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Cada decisión tiene consecuencias. Elige sabiamente.</p>
         </div>
 
         <div className="grid gap-4">
@@ -837,18 +828,18 @@ const TreeSelector = ({ onSelectTree, onBack }) => {
             <button
               key={tree.id}
               onClick={() => onSelectTree(tree)}
-              className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 hover:border-indigo-400/50 rounded-xl p-5 text-left transition-all group"
+              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-indigo-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-indigo-500/20"
             >
               <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-2xl flex-shrink-0`}>
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
                   {tree.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-1 group-hover:text-indigo-100">{tree.title}</h3>
                   <p className="text-indigo-400 text-xs font-medium mb-2">{tree.category}</p>
-                  <p className="text-slate-400 text-sm">{tree.description}</p>
+                  <p className="text-slate-300 text-sm">{tree.description}</p>
                 </div>
-                <ChevronRight className="w-6 h-6 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-indigo-400 transition-colors" />
               </div>
             </button>
           ))}
@@ -899,23 +890,23 @@ const DecisionTreeGame = ({ tree, onBack, onComplete }) => {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Salir</span>
           </button>
           <button
             onClick={handleRestart}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
           >
             <RotateCcw className="w-5 h-5" />
             <span>Reiniciar</span>
           </button>
         </div>
 
-        <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6 mb-6">
+        <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 rounded-2xl p-6 mb-6 shadow-xl">
           <div className="flex items-center gap-3 mb-4">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-xl`}>
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tree.color} flex items-center justify-center text-xl shadow-lg`}>
               {tree.icon}
             </div>
             <div>
@@ -924,44 +915,31 @@ const DecisionTreeGame = ({ tree, onBack, onComplete }) => {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 text-xs text-slate-400 mb-4">
+          <div className="flex items-center gap-2 text-xs text-slate-300 mb-4 bg-slate-700/50 px-3 py-2 rounded-lg inline-flex">
             <GitBranch className="w-4 h-4" />
             <span>Decisión {history.length + 1}</span>
           </div>
 
-          <p className="text-slate-200 leading-relaxed">{node.text}</p>
+          <p className="text-slate-100 leading-relaxed text-base">{node.text}</p>
         </div>
 
-        {!node.isEnd && (
+        {node.options && (
           <div className="space-y-3">
-            <p className="text-cyan-400 font-medium text-sm mb-4">¿Qué decides hacer?</p>
             {node.options.map((option, idx) => (
               <button
                 key={idx}
                 onClick={() => handleChoice(option)}
-                className="w-full bg-slate-800/30 hover:bg-slate-700/50 border border-slate-600 hover:border-cyan-400/50 rounded-xl p-4 text-left transition-all group"
+                className="w-full bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-indigo-400 rounded-xl p-4 text-left transition-all group shadow-lg hover:shadow-indigo-500/20"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold group-hover:bg-cyan-500/30">
-                    {String.fromCharCode(65 + idx)}
+                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    {idx + 1}
                   </div>
-                  <span className="text-slate-200 group-hover:text-white">{option.text}</span>
+                  <p className="text-slate-100 group-hover:text-white text-sm flex-1">{option.text}</p>
+                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                 </div>
               </button>
             ))}
-          </div>
-        )}
-
-        {history.length > 0 && (
-          <div className="mt-8">
-            <p className="text-xs text-slate-500 mb-3">Tu camino:</p>
-            <div className="flex flex-wrap gap-2">
-              {history.map((h, idx) => (
-                <div key={idx} className="bg-slate-800/50 rounded-lg px-3 py-1 text-xs text-slate-400 border border-slate-700">
-                  {idx + 1}. {h.choice.substring(0, 40)}...
-                </div>
-              ))}
-            </div>
           </div>
         )}
       </div>
@@ -975,17 +953,17 @@ const PrioritySelector = ({ onSelectExercise, onBack }) => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+          className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Volver a modalidades</span>
         </button>
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-white mb-3">
+          <h1 className="text-3xl font-black text-white mb-3 drop-shadow-lg">
             Priorización de <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Tareas</span>
           </h1>
-          <p className="text-slate-400">Ordena las tareas según su urgencia e importancia</p>
+          <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">Ordena las tareas según su urgencia e importancia</p>
         </div>
 
         <div className="grid gap-4">
@@ -993,18 +971,18 @@ const PrioritySelector = ({ onSelectExercise, onBack }) => {
             <button
               key={exercise.id}
               onClick={() => onSelectExercise(exercise)}
-              className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 hover:border-cyan-400/50 rounded-xl p-5 text-left transition-all group"
+              className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 hover:border-cyan-400 rounded-xl p-5 text-left transition-all group shadow-lg hover:shadow-cyan-500/20"
             >
               <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-2xl flex-shrink-0`}>
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>
                   {exercise.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white mb-1 group-hover:text-cyan-100">{exercise.title}</h3>
-                  <p className="text-slate-400 text-sm">{exercise.description}</p>
-                  <p className="text-cyan-400 text-xs mt-2">{exercise.tasks.length} tareas para ordenar</p>
+                  <p className="text-slate-300 text-sm">{exercise.description}</p>
+                  <p className="text-cyan-400 text-xs mt-2 bg-slate-700/50 px-2 py-1 rounded-lg inline-block">{exercise.tasks.length} tareas para ordenar</p>
                 </div>
-                <ChevronRight className="w-6 h-6 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+                <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-cyan-400 transition-colors" />
               </div>
             </button>
           ))}
@@ -1077,26 +1055,26 @@ const PriorityGame = ({ exercise, onBack }) => {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-600"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Salir</span>
           </button>
         </div>
 
-        <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6 mb-6">
+        <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-slate-600 rounded-2xl p-6 mb-6 shadow-xl">
           <div className="flex items-center gap-3 mb-4">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-xl`}>
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exercise.color} flex items-center justify-center text-xl shadow-lg`}>
               {exercise.icon}
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">{exercise.title}</h2>
             </div>
           </div>
-          <p className="text-slate-300">{exercise.description}</p>
+          <p className="text-slate-200">{exercise.description}</p>
         </div>
 
-        <p className="text-cyan-400 font-medium text-sm mb-4">
+        <p className="text-cyan-400 font-medium text-sm mb-4 bg-slate-800/80 px-4 py-2 rounded-xl inline-block">
           {submitted ? 'Resultado de tu priorización:' : 'Usa las flechas para ordenar de mayor a menor prioridad:'}
         </p>
 
@@ -1108,45 +1086,45 @@ const PriorityGame = ({ exercise, onBack }) => {
             return (
               <div
                 key={task.id}
-                className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
+                className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all shadow-lg ${
                   submitted
                     ? isCorrect
-                      ? 'bg-emerald-500/10 border-emerald-500/50'
+                      ? 'bg-emerald-900/80 border-emerald-500'
                       : isClose
-                        ? 'bg-amber-500/10 border-amber-500/50'
-                        : 'bg-red-500/10 border-red-500/50'
-                    : 'bg-slate-800/50 border-slate-700 hover:border-slate-600'
+                        ? 'bg-amber-900/80 border-amber-500'
+                        : 'bg-red-900/80 border-red-500'
+                    : 'bg-slate-800/95 border-slate-600 hover:border-slate-500'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shadow-lg ${
                   submitted
                     ? isCorrect
                       ? 'bg-emerald-500 text-white'
                       : isClose
                         ? 'bg-amber-500 text-white'
                         : 'bg-red-500 text-white'
-                    : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                    : 'bg-cyan-500/30 text-cyan-400 border-2 border-cyan-500/50'
                 }`}>
                   {index + 1}
                 </div>
                 
-                <p className="flex-1 text-slate-200 text-sm">{task.text}</p>
+                <p className="flex-1 text-slate-100 text-sm">{task.text}</p>
                 
                 {!submitted && (
                   <div className="flex flex-col gap-1">
                     <button
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
-                      className="p-1 hover:bg-slate-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-1 bg-slate-700 hover:bg-slate-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                      <ArrowUp className="w-4 h-4 text-slate-400" />
+                      <ArrowUp className="w-4 h-4 text-slate-300" />
                     </button>
                     <button
                       onClick={() => moveDown(index)}
                       disabled={index === userOrder.length - 1}
-                      className="p-1 hover:bg-slate-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-1 bg-slate-700 hover:bg-slate-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                      <ArrowDown className="w-4 h-4 text-slate-400" />
+                      <ArrowDown className="w-4 h-4 text-slate-300" />
                     </button>
                   </div>
                 )}
@@ -1156,7 +1134,7 @@ const PriorityGame = ({ exercise, onBack }) => {
                     {isCorrect ? (
                       <Check className="w-5 h-5 text-emerald-400" />
                     ) : (
-                      <span className="text-xs text-slate-400">Correcto: {task.priority}º</span>
+                      <span className="text-xs text-slate-300 bg-slate-700/80 px-2 py-1 rounded">Correcto: {task.priority}º</span>
                     )}
                   </div>
                 )}
@@ -1166,7 +1144,7 @@ const PriorityGame = ({ exercise, onBack }) => {
         </div>
 
         {submitted && (
-          <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 mb-6">
+          <div className="bg-slate-800/95 border-2 border-slate-600 rounded-xl p-5 mb-6 shadow-xl">
             <h3 className="text-cyan-400 font-bold mb-3">Explicación del orden correcto:</h3>
             <div className="space-y-3">
               {[...exercise.tasks]
@@ -1174,7 +1152,7 @@ const PriorityGame = ({ exercise, onBack }) => {
                 .map((task) => (
                   <div key={task.id} className="text-sm">
                     <p className="text-white font-medium">{task.priority}. {task.text}</p>
-                    <p className="text-slate-400 text-xs mt-1 pl-4">{task.explanation}</p>
+                    <p className="text-slate-300 text-xs mt-1 pl-4">{task.explanation}</p>
                   </div>
                 ))}
             </div>
@@ -1281,14 +1259,19 @@ const DecisionMakingModule = ({ onBack }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 z-50 flex flex-col overflow-hidden">
-      <FloatingOrbs />
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden">
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${decisionBg})` }}
+      />
+      
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-teal-900/70 to-slate-900/85" />
       
       {currentView === 'mode-select' && (
         <div className="absolute top-4 left-4 z-20">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 bg-slate-800/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-slate-700 hover:border-cyan-400/50 text-slate-300 hover:text-white transition-all"
+            className="flex items-center gap-2 bg-slate-800/95 backdrop-blur-xl px-4 py-2 rounded-xl border-2 border-cyan-500/50 text-slate-200 hover:text-white hover:border-cyan-400 transition-all shadow-lg"
           >
             <Home className="w-5 h-5" />
             <span>Volver al Hub</span>
