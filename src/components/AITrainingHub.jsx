@@ -13,12 +13,12 @@ const TRAINING_MODULES = [
     title: 'Gestión de Casos',
     subtitle: 'Analiza casos clínicos y de gestión',
     icon: Briefcase,
-    emoji: '📋',color: 'from-cyan-500/70 to-blue-500/70',    color: 'frofrom-cyan-500/70 to-blue-500/70'},
-m-
-    shadowColor: 'shadow-rose-500/40',
-    borderColor: 'border-rose-400/50',
-    bgGlow: 'from-rose-500/30',
-    glowColor: 'rgba(244, 63, 94, 0.4)',
+    emoji: '📋',
+    color: 'from-cyan-500 via-blue-500 to-indigo-500',
+    shadowColor: 'shadow-cyan-500/40',
+    borderColor: 'border-cyan-400/40',
+    bgGlow: 'from-cyan-500/30',
+    glowColor: 'rgba(6, 182, 212, 0.4)',
     description: 'Trabaja con casos reales de gestión sanitaria. Comparte tus casos y recibe análisis detallado.'
   },
   {
@@ -27,11 +27,11 @@ m-
     subtitle: 'Entrena tu capacidad de decisión',
     icon: Target,
     emoji: '🎯',
-    color: 'from-violet-500 via-purple-500 to-indigo-500',
-    shadowColor: 'shadow-violet-500/40',
-    borderColor: 'border-violet-400/50',
-    bgGlow: 'from-violet-500/30',
-    glowColor: 'rgba(139, 92, 246, 0.4)',
+    color: 'from-blue-500 via-indigo-500 to-cyan-500',
+    shadowColor: 'shadow-blue-500/40',
+    borderColor: 'border-blue-400/40',
+    bgGlow: 'from-blue-500/30',
+    glowColor: 'rgba(59, 130, 246, 0.4)',
     description: 'Practica la toma de decisiones en escenarios complejos con feedback inmediato.'
   },
   {
@@ -40,11 +40,11 @@ m-
     subtitle: 'Desarrolla habilidades de líder',
     icon: Brain,
     emoji: '🧠',
-    color: 'from-emerald-500 via-green-500 to-teal-500',
-    shadowColor: 'shadow-emerald-500/40',
-    borderColor: 'border-emerald-400/50',
-    bgGlow: 'from-emerald-500/30',
-    glowColor: 'rgba(16, 185, 129, 0.4)',
+    color: 'from-indigo-500 via-cyan-500 to-blue-500',
+    shadowColor: 'shadow-indigo-500/40',
+    borderColor: 'border-indigo-400/40',
+    bgGlow: 'from-indigo-500/30',
+    glowColor: 'rgba(99, 102, 241, 0.4)',
     description: 'Aprende y practica diferentes estilos de liderazgo aplicados a la gestión enfermera.'
   },
   {
@@ -53,11 +53,11 @@ m-
     subtitle: 'Mejora tu comunicación efectiva',
     icon: MessageSquare,
     emoji: '💬',
-    color: 'from-cyan-500 via-sky-500 to-blue-500',
-    shadowColor: 'shadow-cyan-500/40',
-    borderColor: 'border-cyan-400/50',
-    bgGlow: 'from-cyan-500/30',
-    glowColor: 'rgba(6, 182, 212, 0.4)',
+    color: 'from-sky-500 via-cyan-500 to-blue-500',
+    shadowColor: 'shadow-sky-500/40',
+    borderColor: 'border-sky-400/40',
+    bgGlow: 'from-sky-500/30',
+    glowColor: 'rgba(14, 165, 233, 0.4)',
     description: 'Practica técnicas de comunicación asertiva, feedback constructivo y gestión de conflictos.'
   },
   {
@@ -66,11 +66,11 @@ m-
     subtitle: 'Potencia la colaboración',
     icon: Users,
     emoji: '👥',
-    color: 'from-amber-500 via-orange-500 to-yellow-500',
-    shadowColor: 'shadow-amber-500/40',
-    borderColor: 'border-amber-400/50',
-    bgGlow: 'from-amber-500/30',
-    glowColor: 'rgba(245, 158, 11, 0.4)',
+    color: 'from-teal-500 via-cyan-500 to-blue-500',
+    shadowColor: 'shadow-teal-500/40',
+    borderColor: 'border-teal-400/40',
+    bgGlow: 'from-teal-500/30',
+    glowColor: 'rgba(20, 184, 166, 0.4)',
     description: 'Desarrolla habilidades para coordinar equipos, delegar tareas y fomentar la cohesión grupal.'
   }
 ];
@@ -365,40 +365,44 @@ const AITrainingHub = ({ onBack }) => {
                       onClick={() => setActiveModule(module.id)}
                       onMouseEnter={() => setHoveredModule(module.id)}
                       onMouseLeave={() => setHoveredModule(null)}
-                      className={`relative bg-slate-800/50 backdrop-blur-xl border-2 ${module.borderColor} rounded-3xl p-6 text-left transition-all duration-400 group overflow-hidden icon-hover`}
+                      className={`relative bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-xl border ${module.borderColor} rounded-2xl p-6 text-left transition-all duration-500 group overflow-hidden icon-hover hover:border-cyan-400/60`}
                       style={{
-                        transform: hoveredModule === module.id ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
-                        boxShadow: hoveredModule === module.id ? `0 25px 50px -12px ${module.glowColor}` : 'none',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        transform: hoveredModule === module.id ? 'translateY(-6px) scale(1.01)' : 'translateY(0) scale(1)',
+                        boxShadow: hoveredModule === module.id 
+                          ? `0 20px 40px -15px ${module.glowColor}, 0 0 30px -10px ${module.glowColor}, inset 0 1px 0 rgba(255,255,255,0.1)` 
+                          : '0 4px 20px -5px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+                        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                         animationDelay: `${index * 0.1}s`
                       }}
                     >
-                      <div className={`absolute top-0 right-0 w-40 h-40 bg-gradient-to-br ${module.bgGlow} to-transparent opacity-30 rounded-full blur-3xl transition-opacity duration-300 ${hoveredModule === module.id ? 'opacity-60' : ''}`} />
+                      <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${module.bgGlow} to-transparent opacity-20 rounded-full blur-3xl transition-all duration-500 ${hoveredModule === module.id ? 'opacity-40 scale-110' : ''}`} />
                       
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                      
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       
                       <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-4">
-                          <div className={`w-14 h-14 bg-gradient-to-br ${module.color} rounded-2xl flex items-center justify-center shadow-xl ${module.shadowColor} transform group-hover:rotate-6 transition-all duration-300`}>
-                            <IconComponent className="w-7 h-7 text-white icon-inner" />
+                          <div className={`w-14 h-14 bg-gradient-to-br ${module.color} rounded-xl flex items-center justify-center shadow-lg ${module.shadowColor} transform group-hover:rotate-3 group-hover:scale-105 transition-all duration-400`}>
+                            <IconComponent className="w-7 h-7 text-white icon-inner drop-shadow-md" />
                           </div>
-                          <div>
-                            <h3 className="text-lg font-black text-white group-hover:text-cyan-100 transition-colors">{module.title}</h3>
-                            <p className="text-sm text-slate-400">{module.subtitle}</p>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-bold text-white group-hover:text-cyan-100 transition-colors duration-300">{module.title}</h3>
+                            <p className="text-sm text-cyan-300/60">{module.subtitle}</p>
                           </div>
                           <div className="ml-auto">
-                            <span className="text-3xl transform group-hover:scale-125 transition-transform duration-300 block">{module.emoji}</span>
+                            <span className="text-3xl transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-400 block drop-shadow-lg">{module.emoji}</span>
                           </div>
                         </div>
 
-                        <p className="text-sm text-slate-300 leading-relaxed mb-4">{module.description}</p>
+                        <p className="text-sm text-slate-300/80 leading-relaxed mb-5">{module.description}</p>
 
-                        <div className={`flex items-center justify-between`}>
-                          <div className={`flex items-center gap-2 text-sm font-black bg-gradient-to-r ${module.color} bg-clip-text text-transparent`}>
-                            <Star className="w-4 h-4 text-amber-400" />
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
+                          <div className="flex items-center gap-2 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors duration-300">
+                            <Star className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300" />
                             <span>Comenzar entrenamiento</span>
                           </div>
-                          <span className="text-xl transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                          <span className="text-cyan-400 text-lg transform group-hover:translate-x-1 transition-transform duration-300">→</span>
                         </div>
                       </div>
                     </button>
