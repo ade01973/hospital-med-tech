@@ -4082,14 +4082,29 @@ const ConflictSimulatorMode = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [evaluation, setEvaluation] = useState(null);
   const [error, setError] = useState(null);
+  const [usedCombinations, setUsedCombinations] = useState(new Set());
+  const [conflictsCompleted, setConflictsCompleted] = useState(0);
+
+  const getUnusedCombination = () => {
+    let attempts = 0;
+    let context, trigger;
+    do {
+      context = CONFLICT_CONTEXTS[Math.floor(Math.random() * CONFLICT_CONTEXTS.length)];
+      trigger = CONFLICT_TRIGGERS[Math.floor(Math.random() * CONFLICT_TRIGGERS.length)];
+      attempts++;
+    } while (usedCombinations.has(`${context}-${trigger}`) && attempts < 50);
+    
+    return { context, trigger };
+  };
 
   const generateConflictScenario = async (conflict) => {
     setIsLoading(true);
     setError(null);
 
-    const randomContext = CONFLICT_CONTEXTS[Math.floor(Math.random() * CONFLICT_CONTEXTS.length)];
-    const randomTrigger = CONFLICT_TRIGGERS[Math.floor(Math.random() * CONFLICT_TRIGGERS.length)];
+    const { context: randomContext, trigger: randomTrigger } = getUnusedCombination();
     const uniqueId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
+    setUsedCombinations(prev => new Set([...prev, `${randomContext}-${randomTrigger}`]));
     
     const professionalNames = ['Carmen', 'Lucía', 'María', 'Ana', 'Rosa', 'Elena', 'Laura', 'Marta', 'Paula', 'Sofía', 'Carlos', 'Javier', 'Miguel', 'Pedro', 'Luis', 'David', 'Pablo', 'Sergio', 'Andrés', 'Manuel'];
     const name1 = professionalNames[Math.floor(Math.random() * professionalNames.length)];
@@ -4350,6 +4365,31 @@ Solo responde con el JSON, sin texto adicional.`,
     setResponses([]);
     setEvaluation(null);
     setError(null);
+  };
+
+  const generateNewConflictSameType = () => {
+    if (selectedConflict) {
+      setScenario(null);
+      setCurrentStep(0);
+      setResponses([]);
+      setEvaluation(null);
+      setError(null);
+      setConflictsCompleted(prev => prev + 1);
+      generateConflictScenario(selectedConflict);
+    }
+  };
+
+  const generateNewConflictDifferentType = () => {
+    const otherConflicts = CONFLICT_TYPES.filter(c => c.id !== selectedConflict?.id);
+    const randomConflict = otherConflicts[Math.floor(Math.random() * otherConflicts.length)];
+    setSelectedConflict(randomConflict);
+    setScenario(null);
+    setCurrentStep(0);
+    setResponses([]);
+    setEvaluation(null);
+    setError(null);
+    setConflictsCompleted(prev => prev + 1);
+    generateConflictScenario(randomConflict);
   };
 
   if (phase === 'intro') {
@@ -4710,21 +4750,38 @@ Solo responde con el JSON, sin texto adicional.`,
         </div>
 
         <div className="relative z-10 bg-slate-900/95 backdrop-blur-xl border-t border-slate-700 p-4">
-          <div className="max-w-3xl mx-auto flex gap-3">
-            <button
-              onClick={resetExercise}
-              className="flex-1 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2 text-sm"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Otro Conflicto
-            </button>
-            <button
-              onClick={onBack}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
-            >
-              <Home className="w-4 h-4" />
-              Volver al Menú
-            </button>
+          <div className="max-w-3xl mx-auto">
+            {conflictsCompleted > 0 && (
+              <div className="text-center mb-3">
+                <span className="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">
+                  🔥 {conflictsCompleted + 1} conflictos resueltos en esta sesión
+                </span>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <button
+                onClick={generateNewConflictSameType}
+                disabled={isLoading}
+                className="flex-1 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white font-bold py-3 px-3 rounded-xl transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2 text-xs disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Mismo Tipo
+              </button>
+              <button
+                onClick={generateNewConflictDifferentType}
+                disabled={isLoading}
+                className="flex-1 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-bold py-3 px-3 rounded-xl transition-all shadow-lg shadow-violet-500/30 flex items-center justify-center gap-2 text-xs disabled:opacity-50"
+              >
+                <Zap className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Tipo Diferente
+              </button>
+              <button
+                onClick={onBack}
+                className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-xs"
+              >
+                <Home className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
