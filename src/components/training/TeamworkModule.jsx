@@ -110,6 +110,8 @@ const useTeamworkProfile = () => {
 
     if (sessionData.belbinRole) {
       const roleKey = sessionData.belbinRole.toLowerCase();
+      if (!updatedProfile.belbinRoles) updatedProfile.belbinRoles = { ...defaultProfile.belbinRoles };
+      if (!updatedProfile.belbinCounts) updatedProfile.belbinCounts = { ...defaultProfile.belbinCounts };
       if (updatedProfile.belbinRoles[roleKey] !== undefined) {
         updatedProfile.belbinCounts[roleKey] = (updatedProfile.belbinCounts[roleKey] || 0) + 1;
         const count = updatedProfile.belbinCounts[roleKey];
@@ -119,6 +121,8 @@ const useTeamworkProfile = () => {
     }
 
     if (sessionData.teamSkills) {
+      if (!updatedProfile.teamSkills) updatedProfile.teamSkills = { ...defaultProfile.teamSkills };
+      if (!updatedProfile.teamSkillsCounts) updatedProfile.teamSkillsCounts = { ...defaultProfile.teamSkillsCounts };
       Object.entries(sessionData.teamSkills).forEach(([skill, value]) => {
         if (updatedProfile.teamSkills[skill] !== undefined) {
           updatedProfile.teamSkillsCounts[skill] = (updatedProfile.teamSkillsCounts[skill] || 0) + 1;
@@ -308,11 +312,12 @@ const TEAMWORK_MODES = [
   },
   {
     id: 'simulation',
-    title: 'Simulador de Equipo',
-    description: 'Practica situaciones reales de trabajo en equipo',
+    title: 'Escenarios Colaborativos',
+    description: 'Simula situaciones reales de equipos clínicos con IA',
     icon: '🎮',
     color: 'from-orange-500 to-amber-500',
-    features: ['Escenarios interactivos', 'Toma de decisiones', 'Feedback IA']
+    features: ['7 tipos de escenarios', 'Puntuación 0-10', 'Evaluación detallada'],
+    isNew: true
   },
   {
     id: 'delegation',
@@ -845,16 +850,106 @@ const BelbinTest = ({ onBack }) => {
   );
 };
 
-const TeamSimulation = ({ onBack }) => {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: '¡Bienvenido al Simulador de Equipos! 🎮\n\nAquí practicarás situaciones reales de trabajo en equipo en entornos sanitarios.\n\n**Escenarios disponibles:**\n\n🏥 **Equipo de turno** - Gestiona un equipo durante un turno complicado\n⚠️ **Crisis en la unidad** - Coordina al equipo en una emergencia\n🆕 **Integración de nuevo miembro** - Facilita la adaptación de un compañero\n🔄 **Cambio de protocolo** - Lidera la implementación de un nuevo procedimiento\n\n¿Qué escenario quieres practicar?'
-    }
-  ]);
+const SCENARIO_TYPES = [
+  {
+    id: 'workload',
+    title: 'Reparto de Cargas',
+    description: 'Reparto desigual de tareas durante el turno',
+    icon: '⚖️',
+    color: 'from-orange-500 to-amber-500',
+    difficulty: 'Media'
+  },
+  {
+    id: 'experience',
+    title: 'Niveles de Experiencia',
+    description: 'Coordinación entre profesionales con diferente experiencia',
+    icon: '📊',
+    color: 'from-blue-500 to-cyan-500',
+    difficulty: 'Media'
+  },
+  {
+    id: 'priorities',
+    title: 'Conflicto de Prioridades',
+    description: 'Desacuerdo entre profesionales por prioridades asistenciales',
+    icon: '⚡',
+    color: 'from-rose-500 to-pink-500',
+    difficulty: 'Alta'
+  },
+  {
+    id: 'critical',
+    title: 'Incidente Crítico',
+    description: 'Trabajo en equipo ante un evento adverso',
+    icon: '🚨',
+    color: 'from-red-500 to-orange-500',
+    difficulty: 'Alta'
+  },
+  {
+    id: 'multidisciplinary',
+    title: 'Equipo Multidisciplinar',
+    description: 'Comunicación con médicos, fisios, celadores...',
+    icon: '🏥',
+    color: 'from-emerald-500 to-teal-500',
+    difficulty: 'Media'
+  },
+  {
+    id: 'emergency',
+    title: 'Respuesta a Emergencias',
+    description: 'Coordinación del equipo en situación de emergencia',
+    icon: '🆘',
+    color: 'from-purple-500 to-violet-500',
+    difficulty: 'Alta'
+  },
+  {
+    id: 'protocol',
+    title: 'Nuevo Protocolo',
+    description: 'Introducción de un nuevo procedimiento en la unidad',
+    icon: '📋',
+    color: 'from-yellow-500 to-lime-500',
+    difficulty: 'Media'
+  }
+];
+
+const MOTIVATIONAL_PHRASES = [
+  "¡Cada escenario te hace más fuerte como profesional! 💪",
+  "El trabajo en equipo es la clave del éxito en sanidad 🌟",
+  "¡Sigue practicando, vas por buen camino! 🚀",
+  "Los grandes equipos se construyen con práctica y dedicación ✨",
+  "¡Tu capacidad de colaborar marca la diferencia! 🏆",
+  "Aprender de cada situación te convierte en mejor profesional 📈",
+  "¡La comunicación efectiva salva vidas! 💬",
+  "Cada desafío superado fortalece tu liderazgo 👑",
+  "¡El equipo que aprende junto, triunfa junto! 🤝",
+  "Tu compromiso con la mejora es admirable 🌈"
+];
+
+const getEmotionEmoji = (score) => {
+  if (score >= 9) return '🤩';
+  if (score >= 8) return '😄';
+  if (score >= 7) return '😊';
+  if (score >= 6) return '🙂';
+  if (score >= 5) return '😐';
+  if (score >= 4) return '😕';
+  if (score >= 3) return '😟';
+  return '😢';
+};
+
+const getScoreColor = (score) => {
+  if (score >= 8) return 'from-emerald-500 to-green-500';
+  if (score >= 6) return 'from-amber-500 to-yellow-500';
+  if (score >= 4) return 'from-orange-500 to-amber-500';
+  return 'from-rose-500 to-red-500';
+};
+
+const CollaborativeScenarioSimulator = ({ onBack }) => {
+  const [phase, setPhase] = useState('select');
+  const [selectedScenario, setSelectedScenario] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [evaluation, setEvaluation] = useState(null);
+  const [exchangeCount, setExchangeCount] = useState(0);
   const messagesEndRef = useRef(null);
+  const { addSession } = useTeamworkProfileContext();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -871,6 +966,65 @@ const TeamSimulation = ({ onBack }) => {
       .replace(/\n/g, '<br/>');
   };
 
+  const getRandomMotivationalPhrase = () => {
+    return MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
+  };
+
+  const startScenario = async (scenario) => {
+    setSelectedScenario(scenario);
+    setPhase('simulation');
+    setIsLoading(true);
+    setExchangeCount(0);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Inicia el escenario: ${scenario.title} - ${scenario.description}`,
+          history: [],
+          systemPrompt: `Eres un simulador de escenarios de trabajo en equipo en entornos sanitarios.
+
+ESCENARIO SELECCIONADO: ${scenario.title}
+DESCRIPCIÓN: ${scenario.description}
+DIFICULTAD: ${scenario.difficulty}
+
+TU ROL: Crear una situación inmersiva y realista donde el usuario (enfermero/a) debe demostrar habilidades de trabajo en equipo.
+
+INSTRUCCIONES PARA ESTE ESCENARIO:
+1. Presenta la situación con contexto detallado (unidad, momento del turno, carga de trabajo)
+2. Introduce 2-4 personajes con nombres españoles, roles y personalidades definidas
+3. Plantea el conflicto o situación que requiere colaboración
+4. Describe las tensiones o desafíos presentes
+5. Termina preguntando al usuario cómo actuaría
+
+PERSONAJES EJEMPLO:
+- María (supervisora, exigente pero justa)
+- Carlos (enfermero veterano, algo resistente al cambio)
+- Lucía (enfermera nueva, insegura pero motivada)
+- Dr. Martínez (médico, a veces impaciente)
+- Pedro (celador, muy colaborador)
+
+ESTILO: Narrativo, inmersivo, con diálogos realistas entre comillas. Haz que el usuario se sienta dentro de la situación.
+
+IMPORTANTE: No evalúes todavía. Solo presenta el escenario y pregunta qué haría el usuario.
+
+Siempre en español, vocabulario sanitario apropiado.`
+        })
+      });
+
+      const data = await response.json();
+      setMessages([{ role: 'assistant', content: data.response }]);
+    } catch (error) {
+      setMessages([{ 
+        role: 'assistant', 
+        content: '❌ Error al iniciar el escenario. Por favor, intenta de nuevo.' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -880,11 +1034,46 @@ const TeamSimulation = ({ onBack }) => {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
+    const newExchangeCount = exchangeCount + 1;
+    setExchangeCount(newExchangeCount);
+
+    const shouldEvaluate = newExchangeCount >= 3;
+
     try {
-      const history = messages.slice(1).map(msg => ({
+      const history = messages.map(msg => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }]
       }));
+
+      const evaluationPrompt = shouldEvaluate ? `
+
+IMPORTANTE - ES MOMENTO DE LA EVALUACIÓN FINAL:
+Después de responder brevemente a la acción del usuario, DEBES proporcionar una evaluación completa.
+
+Tu respuesta DEBE terminar con este formato EXACTO (respeta los corchetes y la estructura):
+
+---EVALUACIÓN FINAL---
+
+[PUNTUACION:X] (donde X es un número del 0 al 10)
+
+**Análisis de Competencias de Trabajo en Equipo:**
+
+📊 **Comunicación:** X/10 - [breve análisis]
+🤝 **Colaboración:** X/10 - [breve análisis]  
+👥 **Coordinación:** X/10 - [breve análisis]
+🎯 **Resolución de problemas:** X/10 - [breve análisis]
+💪 **Liderazgo situacional:** X/10 - [breve análisis]
+
+**Puntos Fuertes:**
+- [punto 1]
+- [punto 2]
+
+**Áreas de Mejora:**
+- [área 1]
+- [área 2]
+
+**Recomendación Final:**
+[Consejo personalizado para mejorar el trabajo en equipo]` : '';
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -892,35 +1081,65 @@ const TeamSimulation = ({ onBack }) => {
         body: JSON.stringify({
           message: userMessage,
           history,
-          systemPrompt: `Eres un simulador de situaciones de trabajo en equipo en entornos sanitarios.
+          systemPrompt: `Eres un simulador de escenarios de trabajo en equipo en entornos sanitarios.
 
-TU ROL: Creas escenarios interactivos donde el usuario debe tomar decisiones como líder o miembro de un equipo de enfermería.
+ESCENARIO ACTUAL: ${selectedScenario.title}
+INTERCAMBIOS REALIZADOS: ${newExchangeCount}
 
-MECÁNICA:
-1. Presenta una situación con personajes definidos (nombres, roles, personalidades)
-2. Describe el contexto y el problema a resolver
-3. Ofrece 3-4 opciones de acción al usuario
-4. Según su elección, desarrolla las consecuencias
-5. Al final, evalúa sus decisiones y da feedback
+TU ROL: Continuar el escenario de forma inmersiva, reaccionando a las decisiones del usuario.
 
-ESCENARIOS TIPO:
-- Conflictos entre compañeros
-- Sobrecarga de trabajo y priorización
-- Comunicación en emergencias
-- Integración de nuevos miembros
-- Resistencia al cambio
-- Delegación de tareas
+INSTRUCCIONES:
+1. Los personajes reaccionan de forma realista a la decisión del usuario
+2. Muestra las consecuencias de sus acciones
+3. Desarrolla la situación con nuevos diálogos
+4. Si la respuesta del usuario es vaga, pide más detalles
+5. Mantén la tensión dramática del escenario
 
-ESTILO: Narrativo, inmersivo, con diálogos de los personajes. Usa nombres españoles.
+EVALÚA internamente:
+- ¿Demuestra comunicación efectiva?
+- ¿Colabora con el equipo?
+- ¿Considera las perspectivas de otros?
+- ¿Propone soluciones constructivas?
+- ¿Maneja el conflicto apropiadamente?
 
-FEEDBACK: Valora trabajo en equipo, comunicación, liderazgo, resolución de problemas.
+${evaluationPrompt}
 
-Siempre en español, contextualizado al ámbito sanitario.`
+ESTILO: Narrativo, con diálogos de los personajes, consecuencias claras de las acciones.
+
+Siempre en español.`
         })
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      const responseText = data.response;
+
+      if (shouldEvaluate && responseText.includes('[PUNTUACION:')) {
+        const scoreMatch = responseText.match(/\[PUNTUACION:(\d+(?:\.\d+)?)\]/);
+        if (scoreMatch) {
+          const score = parseFloat(scoreMatch[1]);
+          setEvaluation({
+            score: Math.min(10, Math.max(0, score)),
+            feedback: responseText.replace(/\[PUNTUACION:\d+(?:\.\d+)?\]/, ''),
+            motivationalPhrase: getRandomMotivationalPhrase()
+          });
+          setPhase('results');
+          
+          addSession({
+            type: 'collaborative_scenario',
+            scenarioId: selectedScenario.id,
+            scenarioTitle: selectedScenario.title,
+            score: score,
+            maxScore: 10,
+            teamSkills: {
+              colaboracion: score * 0.9,
+              coordinacion: score * 0.85,
+              comunicacionEquipo: score * 0.95
+            }
+          });
+        }
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -931,44 +1150,204 @@ Siempre en español, contextualizado al ámbito sanitario.`
     }
   };
 
-  const clearChat = () => {
-    setMessages([{
-      role: 'assistant',
-      content: '¡Nueva simulación! 🎮 ¿Qué escenario de equipo quieres practicar?'
-    }]);
+  const resetSimulator = () => {
+    setPhase('select');
+    setSelectedScenario(null);
+    setMessages([]);
+    setEvaluation(null);
+    setExchangeCount(0);
   };
+
+  if (phase === 'select') {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        <GlowingOrb color="#f97316" size="280px" left="5%" top="15%" delay="0s" />
+        <GlowingOrb color="#eab308" size="200px" left="80%" top="55%" delay="2s" />
+
+        <div className="max-w-4xl mx-auto relative z-10 pb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-slate-200 hover:text-white mb-6 transition-all bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-600"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Volver</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500/20 to-amber-500/20 px-6 py-3 rounded-2xl border border-orange-500/30 mb-4">
+              <span className="text-3xl">🎮</span>
+              <h1 className="text-2xl font-black text-white">Simulador de Escenarios Colaborativos</h1>
+            </div>
+            <p className="text-slate-200 bg-slate-800/70 px-4 py-2 rounded-xl inline-block">
+              Practica situaciones reales de trabajo en equipo clínico
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {SCENARIO_TYPES.map((scenario, idx) => (
+              <button
+                key={scenario.id}
+                onClick={() => startScenario(scenario)}
+                className="bg-slate-800/90 backdrop-blur-xl border-2 border-slate-600 hover:border-orange-400 rounded-2xl p-5 text-left transition-all group shadow-xl hover:shadow-orange-500/20 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <div className="absolute top-2 right-2">
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    scenario.difficulty === 'Alta' 
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  }`}>
+                    {scenario.difficulty}
+                  </span>
+                </div>
+                
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${scenario.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-xl ring-2 ring-white/20 group-hover:scale-110 transition-transform`}>
+                    {scenario.icon}
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-orange-100">{scenario.title}</h3>
+                    <p className="text-slate-300 text-sm">{scenario.description}</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex items-center gap-2 text-orange-400 text-sm font-medium group-hover:text-orange-300">
+                  <Play className="w-4 h-4" />
+                  <span>Iniciar escenario</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-8 bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-amber-400" />
+              ¿Cómo funciona?
+            </h3>
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold flex-shrink-0">1</div>
+                <div>
+                  <p className="text-white font-medium">Escenario</p>
+                  <p className="text-slate-400">La IA genera una situación clínica realista</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold flex-shrink-0">2</div>
+                <div>
+                  <p className="text-white font-medium">Tu Respuesta</p>
+                  <p className="text-slate-400">Explica cómo actuarías con el equipo</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 font-bold flex-shrink-0">3</div>
+                <div>
+                  <p className="text-white font-medium">Evaluación</p>
+                  <p className="text-slate-400">Puntuación y feedback personalizado</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && evaluation) {
+    return (
+      <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+        <FloatingParticles />
+        <GlowingOrb color={evaluation.score >= 7 ? "#22c55e" : "#f59e0b"} size="300px" left="10%" top="20%" delay="0s" />
+
+        <div className="max-w-2xl mx-auto relative z-10 pb-8">
+          <div className="bg-slate-800/95 backdrop-blur-xl rounded-3xl p-6 border-2 border-orange-500/30 shadow-2xl">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-3 animate-bounce">{getEmotionEmoji(evaluation.score)}</div>
+              <h2 className="text-2xl font-black text-white mb-2">Evaluación Final</h2>
+              <p className="text-slate-300">{selectedScenario.title}</p>
+            </div>
+
+            <div className={`bg-gradient-to-br ${getScoreColor(evaluation.score)} rounded-2xl p-6 mb-6 text-center`}>
+              <p className="text-white/80 text-sm mb-1">Tu Puntuación</p>
+              <div className="text-5xl font-black text-white mb-2">{evaluation.score.toFixed(1)}/10</div>
+              <div className="flex justify-center gap-1">
+                {[...Array(10)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-3 h-3 rounded-full ${i < evaluation.score ? 'bg-white' : 'bg-white/30'}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/30 rounded-xl p-4 mb-6 text-center">
+              <p className="text-orange-200 font-medium">{evaluation.motivationalPhrase}</p>
+            </div>
+
+            <div className="bg-slate-700/50 rounded-xl p-4 mb-6 max-h-64 overflow-y-auto">
+              <div 
+                className="text-slate-200 text-sm leading-relaxed prose prose-invert prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: formatMessage(evaluation.feedback) }}
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={resetSimulator}
+                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-orange-500/30 hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Otro Escenario
+              </button>
+              <button
+                onClick={onBack}
+                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl transition-all"
+              >
+                Volver al Menú
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col relative">
-      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-amber-500/30 px-4 py-3 flex items-center justify-between">
+      <div className="bg-slate-800/80 backdrop-blur-xl border-b border-orange-500/30 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
+          <button onClick={resetSimulator} className="p-2 hover:bg-slate-700 rounded-xl transition-colors">
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
-            <span className="text-xl">🎮</span>
+          <div className={`w-10 h-10 bg-gradient-to-br ${selectedScenario?.color || 'from-orange-500 to-amber-500'} rounded-xl flex items-center justify-center shadow-lg`}>
+            <span className="text-xl">{selectedScenario?.icon || '🎮'}</span>
           </div>
           <div>
-            <h1 className="text-lg font-black text-white">Simulador de Equipo</h1>
-            <p className="text-xs text-amber-300">Escenarios interactivos</p>
+            <h1 className="text-lg font-black text-white">{selectedScenario?.title || 'Simulador'}</h1>
+            <p className="text-xs text-orange-300">Intercambio {exchangeCount}/3 • Responde para continuar</p>
           </div>
         </div>
-        <button onClick={clearChat} className="p-2 hover:bg-slate-700 rounded-xl transition-colors text-slate-400 hover:text-white">
-          <Trash2 className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="bg-slate-700/80 px-3 py-1.5 rounded-lg">
+            <span className="text-xs text-slate-300">Progreso: </span>
+            <span className="text-orange-400 font-bold">{Math.min(100, Math.round((exchangeCount / 3) * 100))}%</span>
+          </div>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
+              <div className={`w-8 h-8 bg-gradient-to-br ${selectedScenario?.color || 'from-orange-500 to-amber-500'} rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg`}>
                 <Bot className="w-4 h-4 text-white" />
               </div>
             )}
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
               msg.role === 'user'
-                ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
                 : 'bg-slate-800/80 border border-slate-700 text-slate-100'
             }`}>
               <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
@@ -978,13 +1357,13 @@ Siempre en español, contextualizado al ámbito sanitario.`
         ))}
         {isLoading && (
           <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
+            <div className={`w-8 h-8 bg-gradient-to-br ${selectedScenario?.color || 'from-orange-500 to-amber-500'} rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg`}>
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div className="bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2 text-amber-300">
+              <div className="flex items-center gap-2 text-orange-300">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Preparando escenario...</span>
+                <span className="text-sm">{exchangeCount >= 2 ? 'Preparando evaluación...' : 'Procesando respuesta...'}</span>
               </div>
             </div>
           </div>
@@ -992,24 +1371,31 @@ Siempre en español, contextualizado al ámbito sanitario.`
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-amber-500/30 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Tu decisión o respuesta..."
-            className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-amber-500"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-amber-500/30"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </form>
+      <div className="bg-slate-800/80 backdrop-blur-xl border-t border-orange-500/30 p-4">
+        {exchangeCount >= 3 && !evaluation ? (
+          <div className="text-center text-orange-300 py-2">
+            <Loader2 className="w-5 h-5 animate-spin inline mr-2" />
+            Generando evaluación final...
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="¿Cómo actuarías en esta situación?"
+              className="flex-1 bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 disabled:opacity-50 text-white p-3 rounded-xl transition-all shadow-lg shadow-orange-500/30"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
@@ -1368,7 +1754,7 @@ const TeamworkModule = ({ onBack }) => {
       case 'belbin':
         return <BelbinTest onBack={handleBack} />;
       case 'simulation':
-        return <TeamSimulation onBack={handleBack} />;
+        return <CollaborativeScenarioSimulator onBack={handleBack} />;
       case 'mentor':
         return <MentorMode onBack={handleBack} />;
       case 'analytics':
