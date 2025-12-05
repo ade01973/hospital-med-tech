@@ -487,12 +487,12 @@ const BELBIN_ROLES = [
 
 const ModeSelector = ({ onSelectMode }) => {
   return (
-    <div className="min-h-screen p-4 md:p-8 relative overflow-y-auto">
+    <div className="h-full overflow-y-auto p-4 md:p-8 relative">
       <FloatingParticles />
       <GlowingOrb color="#f59e0b" size="300px" left="5%" top="20%" delay="0s" />
       <GlowingOrb color="#eab308" size="200px" left="85%" top="60%" delay="2s" />
       
-      <div className="max-w-5xl mx-auto relative z-10 pb-8">
+      <div className="max-w-5xl mx-auto relative z-10 pb-24">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 px-6 py-3 rounded-2xl border border-amber-500/30 mb-6">
             <Users className="w-8 h-8 text-amber-400" />
@@ -4825,7 +4825,7 @@ const TeamworkModule = ({ onBack }) => {
           </div>
         )}
         
-        <div className="relative z-10 flex-1 overflow-hidden">
+        <div className="relative z-10 flex-1 overflow-auto">
           {renderContent()}
         </div>
       </div>
