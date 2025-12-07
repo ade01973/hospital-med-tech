@@ -3,9 +3,9 @@ import { getFemaleCharacterImage, getMaleCharacterImage } from "../lib/character
 
 export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const sizeClasses = {
-    small: "w-12 h-12",
-    medium: "w-32 h-32",
-    large: "w-48 h-48",
+    small: "w-16 h-24",
+    medium: "w-32 h-48",
+    large: "w-48 h-64",
   };
 
   const gender = avatar?.gender || "female";
@@ -24,7 +24,7 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
         <img
           src={avatarImage}
           alt="Avatar"
-          className="w-full h-full object-cover transition-all duration-500 ease-out opacity-0 animate-fadeInUp"
+          className="w-full h-full object-contain object-top transition-all duration-500 ease-out opacity-0 animate-fadeInUp"
           key={gender}
         />
       )}
