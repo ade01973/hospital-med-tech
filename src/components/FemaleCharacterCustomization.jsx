@@ -138,12 +138,12 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                 <h3 className="text-cyan-400 font-black text-sm uppercase tracking-wider mb-3 px-2">
                   {category}
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
                   {characters.map((char) => (
                     <button
                       key={char.id}
                       onClick={() => handleSelectCharacter(char.id)}
-                      className={`p-2 rounded-xl transition-all duration-300 border-2 flex flex-col items-center gap-1 ${
+                      className={`p-2 rounded-xl transition-all duration-300 border-2 flex flex-col items-center gap-1 w-full max-w-[150px] ${
                         selectedCharacter === char.id
                           ? "border-cyan-400 bg-cyan-500/20 shadow-[0_0_15px_rgba(0,200,255,0.4)]"
                           : "border-slate-700 bg-slate-800/40 hover:border-cyan-300"
