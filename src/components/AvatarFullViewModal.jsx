@@ -1,6 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import avatarModalBg from '../assets/avatar-modal-bg.png';
+import { getCharacterImage, getPlaceholderAvatar } from '../lib/avatarImages';
 
 const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
   if (!isOpen || !playerAvatar) return null;
@@ -37,19 +38,32 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
             
             {/* Avatar Image */}
             <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
-              {playerAvatar.characterPreset ? (
-                <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
-                  alt="Avatar"
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
-                  <span className="text-slate-300 text-center font-semibold">
-                    {playerAvatar.gender === 'male' ? 'Gestor Enfermero' : 'Gestora Enfermera'}
-                  </span>
-                </div>
-              )}
+              {(() => {
+                const avatarImage = getCharacterImage(
+                  playerAvatar.gender === 'male' ? 'male' : 'female',
+                  playerAvatar.characterPreset
+                );
+
+                if (avatarImage) {
+                  return (
+                    <img
+                      src={avatarImage}
+                      alt="Avatar"
+                      className="w-full h-full object-contain"
+                    />
+                  );
+                }
+
+                return (
+                  <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
+                    <img
+                      src={getPlaceholderAvatar(playerAvatar.gender)}
+                      alt="Avatar"
+                      className="w-32 h-32 object-contain"
+                    />
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
