@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles, Flame, Crown, Gift, TrendingUp, Brain, Heart, Rocket, Medal, GraduationCap } from 'lucide-react';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
+import { getAvatarSprite } from '../../lib/avatarAssets';
 
 const FloatingOrbs = () => {
   return (
@@ -312,7 +313,7 @@ const AVAILABLE_CASES = [
   }
 ];
 
-const directoraImage = '/src/assets/female-characters/female-character-8.png';
+const directoraImage = getAvatarSprite('female', '8');
 
 const CaseManagementModule = ({ onBack }) => {
   const [selectedCase, setSelectedCase] = useState(null);
@@ -332,10 +333,9 @@ const CaseManagementModule = ({ onBack }) => {
   
   const getPlayerAvatarImage = () => {
     if (playerAvatar.characterPreset) {
-      const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
-      return `/src/assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+      return getAvatarSprite(playerAvatar.gender, playerAvatar.characterPreset);
     }
-    return '/src/assets/female-characters/female-character-1.png';
+    return getAvatarSprite('female', '1');
   };
 
   const formatText = (text) => {
