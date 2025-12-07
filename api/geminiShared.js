@@ -28,7 +28,17 @@ Responde siempre en español de forma clara, profesional y educativa.
 Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || '' });
+const GEMINI_API_KEY =
+  process.env.GOOGLE_API_KEY_1 ||
+  process.env.GOOGLE_API_KEY ||
+  process.env.API_KEY ||
+  '';
+
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
+export function hasGeminiApiKey() {
+  return Boolean(GEMINI_API_KEY);
+}
 
 export async function callGeminiWithRetry(contents, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -92,7 +102,10 @@ export function methodNotAllowed(res, allowed = ['POST']) {
 }
 
 export function missingApiKey(res) {
-  jsonResponse(res, 500, { error: 'No se encontró la API Key de Gemini en las variables de entorno.' });
+  jsonResponse(res, 500, {
+    error:
+      'No se encontró la API Key de Gemini en las variables de entorno (GOOGLE_API_KEY_1, GOOGLE_API_KEY o API_KEY).'
+  });
 }
 
 export function handleGeminiError(res, error) {

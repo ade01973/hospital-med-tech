@@ -1,6 +1,7 @@
 import {
   TERMINOLOGY_RULES,
   callGeminiWithRetry,
+  hasGeminiApiKey,
   handleGeminiError,
   jsonResponse,
   methodNotAllowed,
@@ -9,7 +10,7 @@ import {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return methodNotAllowed(res);
-  if (!process.env.GOOGLE_API_KEY_1) return missingApiKey(res);
+  if (!hasGeminiApiKey()) return missingApiKey(res);
 
   try {
     const contexts = [
