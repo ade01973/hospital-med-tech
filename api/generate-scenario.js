@@ -45,8 +45,7 @@ IMPORTANTE:
 - Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || '';
+    const { text } = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {

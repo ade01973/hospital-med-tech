@@ -52,6 +52,35 @@ function buildRequest(input, model = 'gemini-2.5-flash') {
   return { model, contents: input };
 }
 
+function extractText(response) {
+  if (!response) return '';
+
+  // New @google/genai SDK exposes a response object with a text() helper
+  if (typeof response.response?.text === 'function') {
+    return response.response.text();
+  }
+
+  if (typeof response.response?.text === 'string') {
+    return response.response.text;
+  }
+
+  const candidateParts = response.response?.candidates?.[0]?.content?.parts;
+  if (Array.isArray(candidateParts)) {
+    const combined = candidateParts
+      .map((part) => part?.text)
+      .filter(Boolean)
+      .join('\n');
+
+    if (combined) return combined;
+  }
+
+  if (typeof response.text === 'string') {
+    return response.text;
+  }
+
+  return '';
+}
+
 async function callGeminiWithRetry(input, maxRetries = 3) {
   if (!ai) {
     throw new Error('Falta la clave de API de Gemini (GOOGLE_API_KEY_1 o GOOGLE_API_KEY)');
@@ -62,7 +91,8 @@ async function callGeminiWithRetry(input, maxRetries = 3) {
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await ai.models.generateContent(request);
+      const result = await ai.models.generateContent(request);
+      return { raw: result, text: extractText(result) };
     } catch (error) {
       lastError = error;
       console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
@@ -83,4 +113,4 @@ async function callGeminiWithRetry(input, maxRetries = 3) {
   throw lastError || new Error('Error desconocido al llamar a Gemini');
 }
 
-export { TERMINOLOGY_RULES, DEFAULT_SYSTEM_PROMPT, callGeminiWithRetry };
+export { TERMINOLOGY_RULES, DEFAULT_SYSTEM_PROMPT, callGeminiWithRetry, extractText };

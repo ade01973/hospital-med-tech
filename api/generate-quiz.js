@@ -25,8 +25,7 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || '';
+    const { text } = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
 
     if (jsonMatch) {

@@ -32,8 +32,13 @@ export default async function handler(req, res) {
       { role: 'user', parts: [{ text: message }] },
     ];
 
-    const response = await callGeminiWithRetry(contents);
-    res.status(200).json({ response: response.text || 'Lo siento, no pude generar una respuesta.' });
+    const { text } = await callGeminiWithRetry(contents);
+
+    if (!text) {
+      throw new Error('La IA no devolvió contenido de texto');
+    }
+
+    res.status(200).json({ response: text });
   } catch (error) {
     console.error('Error calling Gemini:', error);
 

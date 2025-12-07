@@ -21,8 +21,13 @@ app.post('/api/chat', async (req, res) => {
       { role: "user", parts: [{ text: message }] }
     ];
 
-    const response = await callGeminiWithRetry(contents);
-    res.json({ response: response.text || "Lo siento, no pude generar una respuesta." });
+    const { text } = await callGeminiWithRetry(contents);
+
+    if (!text) {
+      throw new Error('La IA no devolvió contenido de texto');
+    }
+
+    res.json({ response: text });
   } catch (error) {
     console.error("Error calling Gemini:", error);
     
@@ -53,8 +58,7 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const { text } = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (jsonMatch) {
@@ -117,8 +121,7 @@ IMPORTANTE:
 - Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const { text } = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
