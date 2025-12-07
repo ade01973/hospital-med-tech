@@ -1,67 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenAI } from '@google/genai';
+import { callGeminiWithRetry, DEFAULT_SYSTEM_PROMPT, TERMINOLOGY_RULES } from '../api/_utils/gemini.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
-
-const TERMINOLOGY_RULES = `
-REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
-- Usa EXCLUSIVAMENTE los términos "gestor enfermero" o "gestora enfermera" para referirse a profesionales de gestión enfermera.
-- NUNCA uses los términos "médico", "doctor", "doctora" ni "facultativo".
-- Usa siempre "profesional sanitario/a", "enfermero/a" o "gestor/a enfermero/a" según corresponda.
-- El contexto siempre es gestión enfermera, NO gestión médica.
-- Habla de "equipos de enfermería", "unidades de enfermería", "supervisores/as de enfermería".
-`;
-
-const DEFAULT_SYSTEM_PROMPT = `Eres un asistente experto en gestión sanitaria para gestores y gestoras enfermeras. 
-Tu nombre es "Asistente NurseManager".
-Ayudas a estudiantes y profesionales de enfermería a aprender sobre:
-- Gestión de equipos de enfermería
-- Liderazgo enfermero
-- Administración sanitaria desde la perspectiva enfermera
-- Calidad asistencial
-- Seguridad del paciente
-- Marketing sanitario
-- Innovación en enfermería
-
-${TERMINOLOGY_RULES}
-
-Responde siempre en español de forma clara, profesional y educativa.
-Usa ejemplos prácticos cuando sea posible.
-Si no sabes algo, admítelo honestamente.`;
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function callGeminiWithRetry(contents, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: contents,
-      });
-      return response;
-    } catch (error) {
-      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
-      
-      if (error.status === 503 || error.message?.includes('overloaded')) {
-        if (attempt < maxRetries) {
-          const delay = Math.pow(2, attempt) * 1000;
-          console.log(`Waiting ${delay}ms before retry...`);
-          await sleep(delay);
-          continue;
-        }
-      }
-      
-      if (attempt === maxRetries) {
-        throw error;
-      }
-    }
-  }
-}
 
 app.post('/api/chat', async (req, res) => {
   try {
