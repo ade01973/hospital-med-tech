@@ -26,6 +26,8 @@ Responde siempre en español de forma clara, profesional y educativa.
 Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-1.5-flash-latest";
+
 let aiClient = null;
 let generativeModel = null;
 
@@ -56,7 +58,7 @@ function getModel() {
   if (!generativeModel) {
     const ai = getAiClient();
     generativeModel = ai.getGenerativeModel({
-      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      model: MODEL_NAME,
     });
   }
   return generativeModel;
@@ -64,36 +66,70 @@ function getModel() {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function callGeminiWithRetry(contents, maxRetries = 3) {
+async function callGeminiViaClient(contents) {
   const model = getModel();
+  const response = await model.generateContent(contents);
+  const text = response?.response?.text?.();
 
+  if (!text) {
+    throw new Error("La IA no devolvió contenido");
+  }
+
+  return text;
+}
+
+async function callGeminiViaRest(contents) {
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${getApiKey()}`;
+  const restResponse = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents }),
+  });
+
+  if (!restResponse.ok) {
+    const message = restResponse.status === 503
+      ? 'El servicio de IA está temporalmente sobrecargado'
+      : 'La IA no pudo procesar la solicitud';
+    throw new Error(message);
+  }
+
+  const data = await restResponse.json();
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const text = parts
+    .map((part) => part?.text || '')
+    .filter(Boolean)
+    .join('')
+    .trim();
+
+  if (!text) {
+    throw new Error('La IA no devolvió contenido');
+  }
+
+  return text;
+}
+
+async function callGeminiWithRetry(contents, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await model.generateContent(contents);
-      const text = response?.response?.text();
+      return await callGeminiViaClient(contents);
+    } catch (clientError) {
+      console.error(`Attempt ${attempt}/${maxRetries} failed via SDK:`, clientError.message);
 
-      if (!text) {
-        throw new Error("La IA no devolvió contenido");
+      try {
+        return await callGeminiViaRest(contents);
+      } catch (restError) {
+        console.error(`REST fallback failed on attempt ${attempt}:`, restError.message);
       }
 
-      return text;
-    } catch (error) {
-      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
-
-      if (error.status === 503 || error.message?.includes('overloaded')) {
-        if (attempt < maxRetries) {
-          const delay = Math.pow(2, attempt) * 1000;
-          console.log(`Waiting ${delay}ms before retry...`);
-          await sleep(delay);
-          continue;
-        }
-      }
-
-      if (attempt === maxRetries) {
-        throw error;
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000;
+        console.log(`Waiting ${delay}ms before retry...`);
+        await sleep(delay);
       }
     }
   }
+
+  throw new Error('No se pudo obtener respuesta de la IA tras varios intentos');
 }
 
 export function respondGeminiError(res, error) {
