@@ -29,9 +29,16 @@ Si no sabes algo, admítelo honestamente.`;
 let aiClient = null;
 
 function getApiKey() {
-  const apiKey = process.env.GOOGLE_API_KEY_1 || process.env.GOOGLE_API_KEY || "";
+  const apiKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_API_KEY_1 ||
+    process.env.GOOGLE_API_KEY ||
+    process.env.VERCEL_GEMINI_API_KEY ||
+    "";
   if (!apiKey) {
-    throw new Error("Falta la clave de la API de Gemini (GOOGLE_API_KEY_1)");
+    throw new Error(
+      "Falta la clave de la API de Gemini (usa GEMINI_API_KEY o GOOGLE_API_KEY_1)"
+    );
   }
   return apiKey;
 }

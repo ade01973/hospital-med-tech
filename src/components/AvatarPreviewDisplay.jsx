@@ -1,4 +1,6 @@
 import React from "react";
+import femaleAvatarFullBody from "../assets/avatar/female_avatar_full_body.png";
+import maleAvatarFullBody from "../assets/avatar/male_avatar_full_body.png";
 
 export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const sizeClasses = {
@@ -11,8 +13,8 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   
   // Placeholder avatars by gender
   const avatarImages = {
-    female: "/src/assets/avatar/female_avatar_full_body.png",
-    male: "/src/assets/avatar/male_avatar_full_body.png",
+    female: femaleAvatarFullBody,
+    male: maleAvatarFullBody,
   };
 
   const avatarImage = avatarImages[gender];
