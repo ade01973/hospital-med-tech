@@ -1,4 +1,5 @@
 import React from "react";
+import { getFemaleCharacterImage, getMaleCharacterImage } from "../lib/characterImages";
 
 export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const sizeClasses = {
@@ -9,10 +10,10 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
 
   const gender = avatar?.gender || "female";
   
-  // Placeholder avatars by gender
+  // Placeholder avatars by gender using bundled assets to avoid 404s
   const avatarImages = {
-    female: "/src/assets/avatar/female_avatar_full_body.png",
-    male: "/src/assets/avatar/male_avatar_full_body.png",
+    female: getFemaleCharacterImage(1),
+    male: getMaleCharacterImage(1),
   };
 
   const avatarImage = avatarImages[gender];
