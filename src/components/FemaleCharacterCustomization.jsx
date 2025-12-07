@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
+import { getCharacterImage } from "../utils/characterAssets";
 
 const FEMALE_CHARACTERS = [
   { id: 1, name: "Gestora Joven Rubia", type: "cabello", variant: "blonde-short" },
@@ -122,7 +123,7 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-                src={`/src/assets/female-characters/female-character-${selectedCharacter}.png`}
+                src={getCharacterImage('female', selectedCharacter)}
                 alt={selectedChar?.name}
                 className="w-full h-auto rounded-2xl transition-all duration-300"
               />
@@ -149,7 +150,7 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                       }`}
                     >
                       <img
-                        src={`/src/assets/female-characters/female-character-${char.id}.png`}
+                        src={getCharacterImage('female', char.id)}
                         alt={char.name}
                         className="w-12 h-12 rounded-lg object-cover"
                       />

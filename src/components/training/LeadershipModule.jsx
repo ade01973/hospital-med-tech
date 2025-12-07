@@ -3,6 +3,7 @@ import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCir
 import leadershipBg from '../../assets/leadership-bg.png';
 import { db, auth } from '../../firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getCharacterImage, avatarPlaceholders } from '../../utils/characterAssets';
 
 // ============================================
 // HOOK: useLeadershipProfile - Perfil Dinámico de Liderazgo
@@ -271,12 +272,21 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   );
   
   if (!avatar || !avatar.characterPreset || imgError) {
-    return <FallbackAvatar />;
+    const placeholder = avatarPlaceholders[avatar?.gender || 'female'];
+    return placeholder ? (
+      <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-emerald-400/50 ${className}`}>
+        <img
+          src={placeholder}
+          alt="Avatar predeterminado"
+          className="w-full h-full object-cover object-top"
+        />
+      </div>
+    ) : (
+      <FallbackAvatar />
+    );
   }
-  
-  const gender = avatar.gender || 'female';
-  const preset = avatar.characterPreset;
-  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+
+  const imgPath = getCharacterImage(avatar.gender, avatar.characterPreset);
   
   return (
     <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-emerald-400/50 ${className}`}>

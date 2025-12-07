@@ -6,6 +6,7 @@ import LeadershipModule from './training/LeadershipModule';
 import CommunicationModule from './training/CommunicationModule';
 import TeamworkModule from './training/TeamworkModule';
 import aiTrainingBg from '../assets/ai-training-bg.png';
+import { getCharacterImage } from '../utils/characterAssets';
 
 const TRAINING_MODULES = [
   {
@@ -284,8 +285,8 @@ const AITrainingHub = ({ onBack }) => {
           <div className="flex items-center gap-3 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 backdrop-blur-xl px-4 py-2 rounded-2xl border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20 glow-button" style={{ '--glow-color': 'rgba(6, 182, 212, 0.3)' }}>
             <div className="w-16 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30 flex items-end justify-center">
               {playerAvatar.characterPreset ? (
-                <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                <img
+                  src={getCharacterImage(playerAvatar.gender, playerAvatar.characterPreset)}
                   alt="Tu Avatar"
                   className="w-full h-full object-cover object-top scale-110"
                 />
