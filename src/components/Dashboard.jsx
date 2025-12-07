@@ -8,6 +8,7 @@ import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
 import AvatarPreviewDisplay from './AvatarPreviewDisplay';
 import AvatarFullViewModal from './AvatarFullViewModal';
+import { getFemaleCharacterImage, getMaleCharacterImage } from '../lib/characterImages';
 import CurrencyDisplay from './CurrencyDisplay';
 import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
 import DailyChallenge from './DailyChallenge';
@@ -303,8 +304,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               >
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
                   {playerAvatar.characterPreset ? (
-                    <img 
-                      src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                    <img
+                      src={
+                        playerAvatar.gender === 'male'
+                          ? getMaleCharacterImage(playerAvatar.characterPreset)
+                          : getFemaleCharacterImage(playerAvatar.characterPreset)
+                      }
                       alt="Avatar"
                       className="w-full h-full object-cover"
                       style={{ objectPosition: 'center top' }}

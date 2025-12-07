@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png';
+import { getFemaleCharacterImage, getMaleCharacterImage } from '../lib/characterImages';
 
 /**
  * AvatarEntrance - Animación de entrada del avatar al hospital
@@ -41,7 +42,11 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           {/* Avatar figure */}
           {avatar && avatar.characterPreset && (
             <img
-              src={`/src/assets/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
+              src={
+                avatar.gender === 'male'
+                  ? getMaleCharacterImage(avatar.characterPreset)
+                  : getFemaleCharacterImage(avatar.characterPreset)
+              }
               alt={avatar.name || 'Avatar'}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             />
