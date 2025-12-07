@@ -28,26 +28,40 @@ Responde siempre en español de forma clara, profesional y educativa.
 Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
-const GEMINI_API_KEY =
-  process.env.GOOGLE_API_KEY_1 ||
-  process.env.GOOGLE_API_KEY ||
-  process.env.API_KEY ||
-  '';
+function resolveGeminiApiKey() {
+  const key =
+    process.env.GOOGLE_API_KEY_1 ||
+    process.env.GOOGLE_API_KEY ||
+    process.env.API_KEY ||
+    '';
 
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  return key.trim();
+}
+
+function getGeminiClient() {
+  const apiKey = resolveGeminiApiKey();
+
+  if (!apiKey) {
+    throw new Error('Falta la API Key de Gemini');
+  }
+
+  return new GoogleGenAI({ apiKey });
+}
 
 export function hasGeminiApiKey() {
-  return Boolean(GEMINI_API_KEY);
+  return Boolean(resolveGeminiApiKey());
 }
 
 export async function callGeminiWithRetry(contents, maxRetries = 3) {
+  const ai = getGeminiClient();
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-flash',
         contents,
         signal: controller.signal
       });
