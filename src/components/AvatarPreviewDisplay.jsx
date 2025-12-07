@@ -1,18 +1,20 @@
 import React from "react";
+import femaleAvatarFullBody from "../assets/avatar/female_avatar_full_body.png";
+import maleAvatarFullBody from "../assets/avatar/male_avatar_full_body.png";
 
 export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
   const sizeClasses = {
-    small: "w-12 h-12",
-    medium: "w-32 h-32",
-    large: "w-48 h-48",
+    small: "w-14 h-20",
+    medium: "w-28 h-40",
+    large: "w-40 h-60",
   };
 
   const gender = avatar?.gender || "female";
   
   // Placeholder avatars by gender
   const avatarImages = {
-    female: "/src/assets/avatar/female_avatar_full_body.png",
-    male: "/src/assets/avatar/male_avatar_full_body.png",
+    female: femaleAvatarFullBody,
+    male: maleAvatarFullBody,
   };
 
   const avatarImage = avatarImages[gender];
@@ -23,7 +25,7 @@ export default function AvatarPreviewDisplay({ avatar = {}, size = "large" }) {
         <img
           src={avatarImage}
           alt="Avatar"
-          className="w-full h-full object-cover transition-all duration-500 ease-out opacity-0 animate-fadeInUp"
+          className="w-full h-full object-contain transition-all duration-500 ease-out opacity-0 animate-fadeInUp"
           key={gender}
         />
       )}

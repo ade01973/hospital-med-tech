@@ -175,17 +175,17 @@ const QuizAvatar = ({ playerAvatar }) => {
             {/* Avatar Image */}
             <div className="w-24 h-24 rounded-full overflow-hidden bg-slate-800/50 border-2 border-cyan-500/40 relative z-10 group-hover:scale-105 transition-transform duration-300">
               {playerAvatar.characterPreset ? (
-                <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                <img
+                  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
                   alt="Avatar"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   style={{ objectPosition: 'center top' }}
                 />
               ) : (
                 <img
                   src={playerAvatar.image}
                   alt="Avatar"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   style={{ objectPosition: 'center top' }}
                 />
               )}
