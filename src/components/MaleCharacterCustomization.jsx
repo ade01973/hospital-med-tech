@@ -155,7 +155,7 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
                       <img
                         src={`/avatar/male-characters/male-character-${char.id}.png`}
                         alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-12 h-12 rounded-lg object-contain bg-slate-900"
                       />
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
