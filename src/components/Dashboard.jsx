@@ -307,8 +307,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                     <img
                       src={getAvatarSprite(playerAvatar.gender, playerAvatar.characterPreset)}
                       alt="Avatar"
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: 'center top' }}
+                      className="w-full h-full object-contain object-bottom"
                     />
                   ) : (
                     <AvatarPreviewDisplay avatar={playerAvatar} size="small" />

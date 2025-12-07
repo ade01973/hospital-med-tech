@@ -288,7 +288,7 @@ const AITrainingHub = ({ onBack }) => {
                 <img
                   src={getAvatarSprite(playerAvatar.gender, playerAvatar.characterPreset)}
                   alt="Tu Avatar"
-                  className="w-full h-full object-cover object-top scale-110"
+                  className="w-full h-full object-contain object-bottom"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

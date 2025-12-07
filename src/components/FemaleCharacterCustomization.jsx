@@ -149,10 +149,10 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                           : "border-slate-700 bg-slate-800/40 hover:border-cyan-300"
                       }`}
                   >
-                    <img
+                      <img
                         src={getAvatarSprite("female", char.id)}
                         alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-12 h-12 rounded-lg object-contain object-bottom"
                       />
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
