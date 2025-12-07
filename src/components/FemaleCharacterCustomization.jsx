@@ -152,7 +152,7 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                       <img
                         src={getCharacterImage('female', char.id)}
                         alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-12 h-12 rounded-lg object-contain object-top"
                       />
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
