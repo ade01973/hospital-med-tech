@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ArrowLeft, Send, Bot, User, Target, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Sparkles, Brain, GitBranch, ListOrdered, ArrowUp, ArrowDown, RotateCcw, Check, X, Flame, TrendingUp } from 'lucide-react';
 import decisionBg from '../../assets/decision-making-bg.png';
+import { getCharacterImage, avatarPlaceholders } from '../../utils/characterAssets';
 
 const usePlayerAvatar = () => {
   const [avatar, setAvatar] = useState(null);
@@ -37,12 +38,21 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   );
   
   if (!avatar || !avatar.characterPreset || imgError) {
-    return <FallbackAvatar />;
+    const placeholder = avatarPlaceholders[avatar?.gender || 'female'];
+    return placeholder ? (
+      <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-cyan-400/50 ${className}`}>
+        <img
+          src={placeholder}
+          alt="Avatar predeterminado"
+          className="w-full h-full object-cover object-top"
+        />
+      </div>
+    ) : (
+      <FallbackAvatar />
+    );
   }
-  
-  const gender = avatar.gender || 'female';
-  const preset = avatar.characterPreset;
-  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+
+  const imgPath = getCharacterImage(avatar.gender, avatar.characterPreset);
   
   return (
     <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-cyan-400/50 ${className}`}>
