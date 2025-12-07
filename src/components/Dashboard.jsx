@@ -7,6 +7,7 @@ import Leagues from './Leagues.jsx';
 import LoginCalendar from './LoginCalendar.jsx';
 import ShareModal from './ShareModal';
 import AvatarPreviewDisplay from './AvatarPreviewDisplay';
+import { getCharacterImage } from '../lib/avatarImages';
 import AvatarFullViewModal from './AvatarFullViewModal';
 import CurrencyDisplay from './CurrencyDisplay';
 import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
@@ -302,16 +303,27 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 hover:border-cyan-400 hover:from-cyan-500/30 hover:to-blue-600/30 transition-all cursor-pointer transform hover:scale-105"
               >
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
-                  {playerAvatar.characterPreset ? (
-                    <img 
-                      src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: 'center top' }}
-                    />
-                  ) : (
-                    <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
-                  )}
+                  {(() => {
+                    const avatarImage = getCharacterImage(
+                      playerAvatar.gender === 'male' ? 'male' : 'female',
+                      playerAvatar.characterPreset
+                    );
+
+                    if (avatarImage) {
+                      return (
+                        <img
+                          src={avatarImage}
+                          alt="Avatar"
+                          className="w-full h-full object-cover"
+                          style={{ objectPosition: 'center top' }}
+                        />
+                      );
+                    }
+
+                    return (
+                      <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
+                    );
+                  })()}
                 </div>
                 <div>
                   <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
