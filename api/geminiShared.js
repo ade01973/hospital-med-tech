@@ -1,6 +1,7 @@
-import { GoogleGenAI } from '@google/genai';
-
 const REQUEST_TIMEOUT_MS = 60000;
+const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_URL =
+  'https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:generateContent';
 
 export const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
@@ -38,36 +39,50 @@ function resolveGeminiApiKey() {
   return key.trim();
 }
 
-function getGeminiClient() {
+export function hasGeminiApiKey() {
+  return Boolean(resolveGeminiApiKey());
+}
+
+export async function callGeminiWithRetry(contents, maxRetries = 3) {
   const apiKey = resolveGeminiApiKey();
 
   if (!apiKey) {
     throw new Error('Falta la API Key de Gemini');
   }
 
-  return new GoogleGenAI({ apiKey });
-}
-
-export function hasGeminiApiKey() {
-  return Boolean(resolveGeminiApiKey());
-}
-
-export async function callGeminiWithRetry(contents, maxRetries = 3) {
-  const ai = getGeminiClient();
-
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents,
-        signal: controller.signal
-      });
+      const response = await fetch(
+        GEMINI_URL.replace('${MODEL_ID}', GEMINI_MODEL) + `?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ contents }),
+          signal: controller.signal
+        }
+      );
 
       clearTimeout(timeoutId);
-      return response;
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        const error = new Error(errorBody.error?.message || 'Error en la respuesta de Gemini');
+        error.status = response.status;
+        throw error;
+      }
+
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text || '')
+        .join(' ')
+        .trim();
+
+      return { text: text || '', raw: data };
     } catch (error) {
       if (error.name === 'AbortError') {
         throw new Error('La solicitud tardó demasiado. Por favor, intenta de nuevo.');
