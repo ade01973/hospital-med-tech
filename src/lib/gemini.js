@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 const REQUEST_TIMEOUT = 60000; // 60 segundos
 
 export async function chatWithGemini(message, conversationHistory = [], systemPrompt = null) {
