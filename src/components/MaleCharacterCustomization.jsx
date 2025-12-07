@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
+import { getAvatarSprite } from "../lib/avatarAssets";
 
 const MALE_CHARACTERS = [
   { id: 1, name: "Gestor Joven", type: "hair", variant: "brown-short" },
@@ -126,7 +127,7 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-                src={`/src/assets/male-characters/male-character-${selectedCharacter}.png`}
+                src={getAvatarSprite("male", selectedCharacter)}
                 alt={selectedChar?.name}
                 className="w-full h-auto rounded-2xl transition-all duration-300"
               />
@@ -146,14 +147,14 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
                     <button
                       key={char.id}
                       onClick={() => handleSelectCharacter(char.id)}
-                      className={`p-2 rounded-xl transition-all duration-300 border-2 flex flex-col items-center gap-1 ${
+                    className={`p-2 rounded-xl transition-all duration-300 border-2 flex flex-col items-center gap-1 ${
                         selectedCharacter === char.id
                           ? "border-cyan-400 bg-cyan-500/20 shadow-[0_0_15px_rgba(0,200,255,0.4)]"
                           : "border-slate-700 bg-slate-800/40 hover:border-cyan-300"
                       }`}
-                    >
-                      <img
-                        src={`/src/assets/male-characters/male-character-${char.id}.png`}
+                  >
+                    <img
+                        src={getAvatarSprite("male", char.id)}
                         alt={char.name}
                         className="w-12 h-12 rounded-lg object-cover"
                       />

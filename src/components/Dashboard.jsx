@@ -21,6 +21,7 @@ import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
 import AITrainingHub from './AITrainingHub';
+import { getAvatarSprite } from '../lib/avatarAssets';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -303,8 +304,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               >
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
                   {playerAvatar.characterPreset ? (
-                    <img 
-                      src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                    <img
+                      src={getAvatarSprite(playerAvatar.gender, playerAvatar.characterPreset)}
                       alt="Avatar"
                       className="w-full h-full object-cover"
                       style={{ objectPosition: 'center top' }}

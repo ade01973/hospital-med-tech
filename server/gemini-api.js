@@ -6,7 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
+const apiKey = process.env.GOOGLE_API_KEY_1 || "";
+const ai = new GoogleGenAI({ apiKey });
 
 const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
@@ -35,6 +36,16 @@ Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+function ensureApiKey(res) {
+  if (!apiKey) {
+    res.status(500).json({
+      error: 'La API de Gemini no está configurada. Define GOOGLE_API_KEY_1 en las variables de entorno.'
+    });
+    return false;
+  }
+  return true;
+}
 
 async function callGeminiWithRetry(contents, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -65,6 +76,7 @@ async function callGeminiWithRetry(contents, maxRetries = 3) {
 
 app.post('/api/chat', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const { message, history = [], systemPrompt: customPrompt } = req.body;
 
     const systemPrompt = customPrompt 
@@ -96,6 +108,7 @@ app.post('/api/chat', async (req, res) => {
 
 app.post('/api/generate-quiz', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const { topic } = req.body;
 
     const prompt = `Genera una pregunta de quiz sobre "${topic}" para estudiantes de enfermería en gestión sanitaria.
@@ -135,6 +148,7 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
 app.post('/api/generate-scenario', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const { category } = req.body;
     
     const categories = [
@@ -211,6 +225,7 @@ IMPORTANTE:
 
 app.post('/api/generate-decision-tree', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const categories = [
       'Recursos Humanos',
       'Atención a Reclamaciones',
@@ -328,6 +343,7 @@ IMPORTANTE:
 
 app.post('/api/generate-priority-exercise', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const contexts = [
       'Inicio de turno de mañana',
       'Turno de noche con imprevistos',
@@ -441,6 +457,7 @@ IMPORTANTE:
 
 app.post('/api/generate-leadership-scenario', async (req, res) => {
   try {
+    if (!ensureApiKey(res)) return;
     const categories = [
       'Gestión del Cambio',
       'Resolución de Conflictos',
