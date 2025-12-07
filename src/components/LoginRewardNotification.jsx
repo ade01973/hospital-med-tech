@@ -83,9 +83,9 @@ const CelebrationLayer = ({ type }) => {
   if (type === 'aurora') {
     return (
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-10 -top-12 h-44 w-44 rounded-full bg-cyan-400/40 blur-3xl animate-pulse" />
-        <div className="absolute -right-6 top-10 h-52 w-52 rounded-full bg-emerald-300/35 blur-3xl animate-pulse" />
-        <div className="absolute left-10 bottom-8 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl animate-pulse" />
+        <div className="absolute -left-10 -top-12 h-44 w-44 rounded-full bg-cyan-400/40 blur-3xl" />
+        <div className="absolute -right-6 top-10 h-52 w-52 rounded-full bg-emerald-300/35 blur-3xl" />
+        <div className="absolute left-10 bottom-8 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl" />
       </div>
     );
   }
@@ -138,8 +138,8 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
   const isStreakReset = message.includes('reinició');
 
   return (
-    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md reward-overlay">
+      <div className="relative w-full max-w-md rounded-3xl shadow-2xl overflow-hidden reward-card">
         <div
           className={`${
             isStreakReset

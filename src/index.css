@@ -358,9 +358,23 @@
     }
   }
 
-  .animate-pop {
-    animation: pop-in 1.4s ease-out infinite;
-  }
+.animate-pop {
+  animation: pop-in 1.4s ease-out infinite;
+}
+}
+
+.reward-overlay {
+  animation: fade-in 0.2s ease-out forwards;
+}
+
+.reward-card {
+  animation: none;
+  transform: none;
+  transition: none;
+}
+
+.reward-card * {
+  animation-play-state: running;
 }
 
 
