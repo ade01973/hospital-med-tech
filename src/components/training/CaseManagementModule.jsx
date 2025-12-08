@@ -327,7 +327,13 @@ const CaseManagementModule = ({ onBack }) => {
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
   const contentRef = useRef(null);
-
+// Función para formatear texto (negritas y saltos de línea)
+  const formatText = (text) => {
+    if (!text) return '';
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-400 font-bold">$1</strong>') // Convierte **texto** en negrita azul
+      .replace(/\n/g, '<br />'); // Convierte saltos de línea
+  };
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
   
   const getPlayerAvatarImage = () => {
