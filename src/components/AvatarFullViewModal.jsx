@@ -1,6 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import avatarModalBg from '../assets/avatar-modal-bg.png';
+import { getCharacterImage } from '../lib/avatarAssets';
 
 const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
   if (!isOpen || !playerAvatar) return null;
@@ -38,10 +39,10 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
             {/* Avatar Image */}
             <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
               {playerAvatar.characterPreset ? (
-                <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                <img
+                  src={getCharacterImage(playerAvatar.gender, playerAvatar.characterPreset)}
                   alt="Avatar"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain object-top"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">

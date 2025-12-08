@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Send, Briefcase, Loader2, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Zap, Target, Sparkles, Flame, Crown, Gift, TrendingUp, Brain, Heart, Rocket, Medal, GraduationCap } from 'lucide-react';
+import { apiFetch } from '../../lib/apiClient';
 import aiTrainingBg from '../../assets/ai-training-bg.png';
 
 const FloatingOrbs = () => {
@@ -355,7 +356,7 @@ const CaseManagementModule = ({ onBack }) => {
         `Pregunta ${i + 1}: ${a.question}\nRespuesta del estudiante: ${a.answer}`
       ).join('\n\n');
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -482,7 +483,7 @@ Responde SOLO con la pregunta, sin numeración ni explicaciones adicionales. La 
         `**Pregunta ${i + 1}:** ${a.question}\n**Respuesta:** ${a.answer}`
       ).join('\n\n---\n\n');
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

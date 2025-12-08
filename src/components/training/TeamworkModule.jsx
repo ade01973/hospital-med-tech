@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback, createContext, useContext } from 'react';
 import { ArrowLeft, Send, Bot, User, Users, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle, Theater, LineChart, BookOpen, Layers, UserCircle, MessageCircle, Settings, Lightbulb, GraduationCap, Heart, Shield, Brain, Puzzle, Network, Handshake } from 'lucide-react';
+import { apiFetch } from '../../lib/apiClient';
 import leadershipBg from '../../assets/leadership-bg.png';
 import { db, auth } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -828,7 +829,7 @@ const ParticipationStyleIdentifier = ({ onBack }) => {
     setGeneratedScenario(null);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -922,7 +923,7 @@ Solo responde con el JSON, sin texto adicional.`
     setMessages([]);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1038,7 +1039,7 @@ EJEMPLO DE RESPUESTA:
 [EMOJI:😄]
 [FRASE:¡Muy bien! Has promovido la cooperación entre turnos. Para avanzar más, considera reforzar la delegación compartida y el reconocimiento del equipo.]` : '';
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1548,7 +1549,7 @@ const CollaborativeScenarioSimulator = ({ onBack }) => {
   const generateNewScenarios = async () => {
     setIsGeneratingScenarios(true);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1649,7 +1650,7 @@ Responde SOLO con el JSON válido.`
     setExchangeCount(0);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1750,7 +1751,7 @@ Has adoptado un estilo [nombre del estilo], que [análisis contextual de si es a
 **Frase Motivadora:**
 [Una frase motivadora o correctiva personalizada según el desempeño]` : '';
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2265,7 +2266,7 @@ const MentorMode = ({ onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2853,7 +2854,7 @@ const TeamworkTestMode = ({ onBack }) => {
     setError(null);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2999,7 +3000,7 @@ Solo responde con el JSON, sin texto adicional.`,
 
     setIsGeneratingConclusion(true);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3623,7 +3624,7 @@ const GroupDynamicsMode = ({ onBack }) => {
     const uniqueId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3756,7 +3757,7 @@ REGLAS OBLIGATORIAS:
     const overallScore = ((avgEffectiveness + avgAlignment) / 2);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -4380,7 +4381,7 @@ const CohesionEvaluatorMode = ({ onBack }) => {
     const shuffledNames = [...professionalNames].sort(() => Math.random() - 0.5).slice(0, 4);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -4555,7 +4556,7 @@ REGLAS OBLIGATORIAS:
     const maxScore = 10;
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -5096,7 +5097,7 @@ const RolePlayTeamMode = ({ onBack }) => {
     setContext(randomContext);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -5140,7 +5141,7 @@ Inicia una conversación breve (2-3 frases) mostrando tu personalidad. Actúa co
     ).join('\n');
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -5180,7 +5181,7 @@ Responde como tu personaje (2-4 frases). Reacciona de forma coherente con tu per
     ).join('\n');
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -5904,7 +5905,7 @@ const ConflictSimulatorMode = ({ onBack }) => {
     while (name2 === name1) name2 = professionalNames[Math.floor(Math.random() * professionalNames.length)];
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -6041,7 +6042,7 @@ REGLAS OBLIGATORIAS:
     const overallScore = (avgCooperation + avgFriction + avgClimate + avgSolution) / 4;
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -6730,7 +6731,7 @@ const DelegationMode = ({ onBack }) => {
   const generateAIScenario = async () => {
     setAiLoading(true);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -7446,7 +7447,7 @@ const MeetingsMode = ({ onBack }) => {
     setAiLoading(true);
     try {
       const typeInfo = MEETING_TYPES.find(t => t.id === meetingType);
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

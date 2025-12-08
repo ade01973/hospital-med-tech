@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import avatarCreationBg from "../assets/avatar-creation-bg.png";
 import useBackgroundMusic from "../hooks/useBackgroundMusic";
+import { getCharacterImage } from "../lib/avatarAssets";
 
 const MALE_CHARACTERS = [
   { id: 1, name: "Gestor Joven", type: "hair", variant: "brown-short" },
@@ -126,9 +127,9 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-                src={`/src/assets/male-characters/male-character-${selectedCharacter}.png`}
+                src={getCharacterImage('male', selectedCharacter)}
                 alt={selectedChar?.name}
-                className="w-full h-auto rounded-2xl transition-all duration-300"
+                className="w-full h-auto rounded-2xl transition-all duration-300 object-cover object-top"
               />
             </div>
             <p className="text-white font-black text-lg mt-4">{selectedChar?.name}</p>
@@ -153,9 +154,9 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
                       }`}
                     >
                       <img
-                        src={`/src/assets/male-characters/male-character-${char.id}.png`}
+                        src={getCharacterImage('male', char.id)}
                         alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-12 h-12 rounded-lg object-cover object-top"
                       />
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
