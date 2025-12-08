@@ -1,3 +1,5 @@
+import { apiFetch } from './apiClient';
+
 const API_BASE = '/api';
 const REQUEST_TIMEOUT = 60000; // 60 segundos
 
@@ -6,7 +8,7 @@ export async function chatWithGemini(message, conversationHistory = [], systemPr
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
   try {
-    const response = await fetch(`${API_BASE}/chat`, {
+    const response = await apiFetch(`${API_BASE}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +42,7 @@ export async function chatWithGemini(message, conversationHistory = [], systemPr
 
 export async function generateQuizQuestion(topic) {
   try {
-    const response = await fetch(`${API_BASE}/generate-quiz`, {
+    const response = await apiFetch(`${API_BASE}/generate-quiz`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

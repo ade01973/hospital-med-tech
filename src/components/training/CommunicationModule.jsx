@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback, createContext, useContext } from 'react';
 import { ArrowLeft, Send, Bot, User, MessageSquare, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle, Theater, LineChart, BookOpen, Layers, UserCircle, MessageCircle, Settings, Lightbulb, GraduationCap, Heart, Shield, Volume2, Brain } from 'lucide-react';
+import { apiFetch } from '../../lib/apiClient';
 import leadershipBg from '../../assets/leadership-bg.png';
 import { db, auth } from '../../firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
@@ -1166,7 +1167,7 @@ const ScenarioChat = ({ scenario, onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1343,7 +1344,7 @@ const ScenarioSelector = ({ onSelectScenario, onBack, onGenerateScenario }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1736,7 +1737,7 @@ const AssertiveMode = ({ onBack }) => {
   const generateNewExercise = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1786,7 +1787,7 @@ IMPORTANTE: Contexto de gestión enfermera en España`
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2073,7 +2074,7 @@ const EmpathyMode = ({ onBack }) => {
 
       const isLastExchange = newExchangeCount >= 3;
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2261,7 +2262,7 @@ const ConflictMode = ({ onBack }) => {
   const generateNewScenario = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2342,7 +2343,7 @@ IMPORTANTE: Contexto sanitario español, realista y desafiante.`
 
       const isLastExchange = newExchangeCount >= 4;
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2597,7 +2598,7 @@ const RolePlayMode = ({ onBack }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2709,7 +2710,7 @@ IMPORTANTE:
 
       const isLastExchange = newExchangeCount >= 4;
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3162,7 +3163,7 @@ const MentorMode = ({ onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

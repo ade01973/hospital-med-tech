@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback, createContext, useContext } from 'react';
 import { ArrowLeft, Send, Bot, User, Brain, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, Target, Home, Trophy, Sparkles, Crown, TrendingUp, BarChart3, Flame, RefreshCw, ChevronDown, AlertTriangle, Theater, LineChart, BookOpen, Layers, UserCircle, MessageCircle, Settings, Lightbulb, GraduationCap, Heart, Shield, Volume2 } from 'lucide-react';
+import { apiFetch } from '../../lib/apiClient';
 import leadershipBg from '../../assets/leadership-bg.png';
 import { db, auth } from '../../firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
@@ -1786,7 +1787,7 @@ const ScenarioChat = ({ scenario, onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2466,7 +2467,7 @@ const MicroChallenges = ({ onBack }) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2736,7 +2737,7 @@ const RolePlayMode = ({ onBack }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2848,7 +2849,7 @@ IMPORTANTE:
 
       const isLastExchange = newExchangeCount >= 4;
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3150,7 +3151,7 @@ const ChangeSimulator = ({ onBack }) => {
     setIsGeneratingScenario(true);
     setScenarioError(null);
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3258,7 +3259,7 @@ IMPORTANTE:
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3858,7 +3859,7 @@ const MentorMode = ({ onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -4059,7 +4060,7 @@ const ScenarioSelector = ({ onSelectScenario, onBack }) => {
     setError(null);
     
     try {
-      const response = await fetch('/api/generate-leadership-scenario', {
+      const response = await apiFetch('/api/generate-leadership-scenario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });

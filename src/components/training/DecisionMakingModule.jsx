@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ArrowLeft, Send, Bot, User, Target, Loader2, Trash2, Zap, Play, CheckCircle, Star, Award, ChevronRight, Clock, Users, AlertTriangle, Home, BookOpen, Trophy, Sparkles, Brain, GitBranch, ListOrdered, ArrowUp, ArrowDown, RotateCcw, Check, X, Flame, TrendingUp } from 'lucide-react';
+import { apiFetch } from '../../lib/apiClient';
 import decisionBg from '../../assets/decision-making-bg.png';
 
 const usePlayerAvatar = () => {
@@ -650,7 +651,7 @@ const ScenarioSelector = ({ onSelectScenario, onBack }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/generate-scenario', {
+      const response = await apiFetch('/api/generate-scenario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
@@ -823,7 +824,7 @@ const ScenarioChat = ({ scenario, onBack }) => {
         parts: [{ text: msg.content }]
       }));
 
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1008,7 +1009,7 @@ const TreeSelector = ({ onSelectTree, onBack }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/generate-decision-tree', {
+      const response = await apiFetch('/api/generate-decision-tree', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
@@ -1274,7 +1275,7 @@ const PrioritySelector = ({ onSelectExercise, onBack }) => {
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      const response = await fetch('/api/generate-priority-exercise', {
+      const response = await apiFetch('/api/generate-priority-exercise', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
