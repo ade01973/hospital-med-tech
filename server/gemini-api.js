@@ -1,13 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const apiKey = process.env.GOOGLE_API_KEY_1 || "";
-const ai = new GoogleGenAI({ apiKey });
+const apiKey = process.env.GOOGLE_API_KEY_1 || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "";
+const ai = new GoogleGenerativeAI(apiKey);
 const MODEL_NAME = "gemini-2.5-flash";
 
 const TERMINOLOGY_RULES = `
@@ -38,19 +38,34 @@ Si no sabes algo, admítelo honestamente.`;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function callGeminiWithRetry(contents, maxRetries = 3) {
+function toGeminiHistory(history = []) {
+  return history.map((entry) => {
+    if (entry?.parts) return entry;
+
+    return {
+      role: entry?.role || "user",
+      parts: [{ text: entry?.text || "" }]
+    };
+  }).filter(item => item?.parts?.[0]?.text);
+}
+
+async function callGeminiWithRetry({ contents, prompt, systemPrompt }, maxRetries = 3) {
   if (!apiKey) {
-    throw new Error("Falta la API Key de Gemini (GOOGLE_API_KEY_1)");
+    throw new Error("Falta la API Key de Gemini (usa GOOGLE_API_KEY_1, GOOGLE_API_KEY o GEMINI_API_KEY)");
   }
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await ai.models.generateContent({
+      const model = ai.getGenerativeModel({
         model: MODEL_NAME,
-        contents: contents,
+        ...(systemPrompt ? { systemInstruction: systemPrompt } : {})
       });
 
-      const text = response?.text || "";
+      const response = await model.generateContent(
+        contents ? { contents } : { contents: [{ role: "user", parts: [{ text: prompt }] }] }
+      );
+
+      const text = response?.response?.text?.() || response?.text || "";
       if (!text) {
         throw new Error("La IA devolvió una respuesta vacía");
       }
@@ -79,18 +94,16 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { message, history = [], systemPrompt: customPrompt } = req.body;
 
-    const systemPrompt = customPrompt 
+    const systemPrompt = customPrompt
       ? `${customPrompt}\n\n${TERMINOLOGY_RULES}`
       : DEFAULT_SYSTEM_PROMPT;
 
     const contents = [
-      { role: "user", parts: [{ text: systemPrompt }] },
-      { role: "model", parts: [{ text: "Entendido. Soy el Asistente NurseManager, especializado en gestión enfermera. Estoy aquí para ayudarte con tus dudas sobre liderazgo, administración, calidad y todos los temas relacionados con la gestión enfermera. ¿En qué puedo ayudarte?" }] },
-      ...history,
+      ...toGeminiHistory(history),
       { role: "user", parts: [{ text: message }] }
     ];
 
-    const responseText = await callGeminiWithRetry(contents);
+    const responseText = await callGeminiWithRetry({ contents, systemPrompt });
     res.json({ response: responseText || "Lo siento, no pude generar una respuesta." });
   } catch (error) {
     console.error("Error calling Gemini:", error);
@@ -122,7 +135,7 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const text = await callGeminiWithRetry(prompt);
+    const text = await callGeminiWithRetry({ prompt, systemPrompt: DEFAULT_SYSTEM_PROMPT });
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (jsonMatch) {
@@ -185,7 +198,7 @@ IMPORTANTE:
 - Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const text = await callGeminiWithRetry(prompt);
+    const text = await callGeminiWithRetry({ prompt, systemPrompt: DEFAULT_SYSTEM_PROMPT });
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
@@ -301,7 +314,7 @@ IMPORTANTE:
 - Situaciones realistas de gestión enfermera en España
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const text = await callGeminiWithRetry(prompt);
+    const text = await callGeminiWithRetry({ prompt, systemPrompt: DEFAULT_SYSTEM_PROMPT });
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
@@ -413,7 +426,7 @@ IMPORTANTE:
 - Situaciones realistas de enfermería en España
 - NO incluyas "id" en el JSON principal, se generará automáticamente`;
 
-    const text = await callGeminiWithRetry(prompt);
+    const text = await callGeminiWithRetry({ prompt, systemPrompt: DEFAULT_SYSTEM_PROMPT });
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
