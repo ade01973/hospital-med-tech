@@ -126,8 +126,7 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-                src={`/src/assets/male-characters/male-character-${selectedCharacter}.png`}
-                alt={selectedChar?.name}
+                src={`/avatar/male-characters/male-character-${selectedCharacter}.png`}
                 className="w-full h-auto rounded-2xl transition-all duration-300"
               />
             </div>
