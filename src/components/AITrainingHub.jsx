@@ -285,7 +285,7 @@ const AITrainingHub = ({ onBack }) => {
             <div className="w-16 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30 flex items-end justify-center">
               {playerAvatar.characterPreset ? (
                 <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  src={avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
                   alt="Tu Avatar"
                   className="w-full h-full object-cover object-top scale-110"
                 />
