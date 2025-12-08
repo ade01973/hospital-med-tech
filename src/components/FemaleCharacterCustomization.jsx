@@ -149,11 +149,13 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
                           : "border-slate-700 bg-slate-800/40 hover:border-cyan-300"
                       }`}
                     >
-                      <img
-              src={`/avatar/female-characters/female-character-${char.id}.png`}
-                        alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
+                     <img
+  // Ruta corregida a /avatar/
+  src={`/avatar/female-characters/female-character-${char.id}.png`}
+  alt={char.name}
+  // Añadimos object-top para que se vea la cara
+  className="w-12 h-12 rounded-lg object-cover object-top"
+/>
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
                       </span>
