@@ -122,10 +122,10 @@ export default function FemaleCharacterCustomization({ onComplete, onBack }) {
           <div className="flex flex-col items-center justify-center lg:col-span-1">
             <div className="border-4 border-cyan-500/50 rounded-3xl p-6 bg-slate-800/50 w-full max-w-xs">
               <img
-  src={`/avatar/male-characters/male-character-${char.id}.png`}
-  alt={char.name}
-  // AQUI ESTÁ EL CAMBIO: Añadimos "object-top" al final
-  className="w-12 h-12 rounded-lg object-cover object-top"
+  // Ruta corregida a /avatar/
+  src={`/avatar/female-characters/female-character-${selectedCharacter}.png`}
+  // Añadimos object-top por si acaso, aunque aquí suele verse bien
+  className="w-full h-auto rounded-2xl transition-all duration-300 object-top"
 />
             </div>
             <p className="text-white font-black text-lg mt-4">{selectedChar?.name}</p>
