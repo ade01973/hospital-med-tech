@@ -276,7 +276,9 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   
   const gender = avatar.gender || 'female';
   const preset = avatar.characterPreset;
-  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+  
+  // ESTA ES LA LÍNEA CORREGIDA: Apunta directo a la carpeta 'public/avatar'
+  const imgPath = `/avatar/${gender}-characters/${gender}-character-${preset}.png`;
   
   return (
     <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-emerald-400/50 ${className}`}>
