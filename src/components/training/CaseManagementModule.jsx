@@ -312,7 +312,7 @@ const AVAILABLE_CASES = [
   }
 ];
 
-const directoraImage = '/src/assets/female-characters/female-character-8.png';
+const directoraImage = '/avatar/female-characters/female-character-8.png';
 
 const CaseManagementModule = ({ onBack }) => {
   const [selectedCase, setSelectedCase] = useState(null);
@@ -331,19 +331,14 @@ const CaseManagementModule = ({ onBack }) => {
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
   
   const getPlayerAvatarImage = () => {
-    if (playerAvatar.characterPreset) {
-      const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
-      return `/src/assets/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
-    }
-    return '/src/assets/female-characters/female-character-1.png';
-  };
-
-  const formatText = (text) => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-300">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br/>');
-  };
+  if (playerAvatar.characterPreset) {
+    const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
+    // CAMBIO AQUÍ: ruta corregida a /avatar/
+    return `/avatar/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+  }
+  // CAMBIO AQUÍ: ruta corregida a /avatar/
+  return '/avatar/female-characters/female-character-1.png';
+};
 
   const generateNextQuestion = async (previousAnswers, questionNumber) => {
     setIsGeneratingQuestion(true);
