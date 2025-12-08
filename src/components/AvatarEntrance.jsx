@@ -41,7 +41,7 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           {/* Avatar figure */}
           {avatar && avatar.characterPreset && (
             <img
-              src={`/src/assets/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
+              src={`/avatar/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
               alt={avatar.name || 'Avatar'}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             />
