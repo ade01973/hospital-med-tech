@@ -285,10 +285,12 @@ const AITrainingHub = ({ onBack }) => {
             <div className="w-16 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30 flex items-end justify-center">
               {playerAvatar.characterPreset ? (
                 <img 
-                  src={avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
                   alt="Tu Avatar"
-                  className="w-full h-full object-cover object-top scale-110"
-                />
+                  // w-24 h-24 (96px) para que destaque bien en el Hub
+    className="relative w-24 h-24 rounded-full object-cover object-top border-4 border-white shadow-xl z-10"
+  />
+</div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-3xl">👤</span>
