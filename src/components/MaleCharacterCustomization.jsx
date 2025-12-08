@@ -152,7 +152,7 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
                       }`}
                     >
                       <img
-                        src={`/src/assets/male-characters/male-character-${char.id}.png`}
+                        src={`/avatar/male-characters/male-character-${char.id}.png`}
                         alt={char.name}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
