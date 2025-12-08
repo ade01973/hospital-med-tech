@@ -269,35 +269,31 @@ const AITrainingHub = ({ onBack }) => {
             <span className="text-white font-bold">Volver al Dashboard</span>
           </button>
 
-          <div className="flex items-center gap-4 bg-gradient-to-br from-indigo-600/30 to-purple-600/30 backdrop-blur-xl rounded-3xl px-8 py-4 border-2 border-indigo-400/40 shadow-2xl shadow-indigo-500/20">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/40 animate-pulse">
-              <Sparkles className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent">
-                <ShimmerText>HUB IA Gest-Tech</ShimmerText>
-              </h1>
-              <p className="text-sm text-indigo-300/80 leading-relaxed">Desarrolla tus competencias con inteligencia artificial</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 backdrop-blur-xl px-4 py-2 rounded-2xl border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20 glow-button" style={{ '--glow-color': 'rgba(6, 182, 212, 0.3)' }}>
-            <div className="w-16 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30 flex items-end justify-center">
-              {playerAvatar.characterPreset ? (
+          {/* BLOQUE AVATAR CORREGIDO Y PREMIUM */}
+          <div className="flex items-center gap-4 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 backdrop-blur-xl px-6 py-3 rounded-2xl border-2 border-cyan-400/40 shadow-xl shadow-cyan-500/20 glow-button" style={{ '--glow-color': 'rgba(6, 182, 212, 0.3)' }}>
+            
+            {/* Lógica del Avatar */}
+            {playerAvatar.characterPreset ? (
+              <div className="relative group shrink-0">
+                {/* Halo de luz trasero */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur opacity-60 animate-pulse"></div>
+                {/* Imagen Circular Grande */}
                 <img 
-                  src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+                  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
                   alt="Tu Avatar"
-                  className="w-full h-full object-cover object-top scale-110"
+                  className="relative w-20 h-20 rounded-full object-cover object-top border-4 border-white shadow-2xl z-10"
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-3xl">👤</span>
-                </div>
-              )}
-            </div>
-            <div>
-              <span className="text-cyan-300 font-black text-sm block">{playerAvatar.name || 'Gestor/a'}</span>
-              <span className="text-white/70 font-medium text-xs">En entrenamiento</span>
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center border-2 border-slate-500 relative z-10">
+                <span className="text-3xl">👤</span>
+              </div>
+            )}
+
+            {/* Texto del nombre */}
+            <div className="flex flex-col">
+              <span className="text-cyan-200 font-black text-lg leading-tight">{playerAvatar.name || 'Gestor/a'}</span>
+              <span className="text-white/60 font-medium text-xs tracking-wider uppercase mt-1">En entrenamiento</span>
             </div>
           </div>
         </div>
