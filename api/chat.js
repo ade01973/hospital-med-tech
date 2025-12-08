@@ -1,9 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// OJO AQUÍ: Asegúrate de que pone GOOGLE_API_KEY_1
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY_1);
 
 export default async function handler(req, res) {
-  // Configuración de seguridad (CORS) para que Vercel acepte la petición
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -12,7 +12,6 @@ export default async function handler(req, res) {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Si el navegador pregunta "¿puedo pasar?", le decimos que sí
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
@@ -25,18 +24,16 @@ export default async function handler(req, res) {
   try {
     const { message, history, systemPrompt } = req.body;
 
-    // Verificamos que la clave existe en Vercel
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ error: "Falta la API Key de Gemini. Configúrala en Vercel." });
+    // OJO AQUÍ TAMBIÉN: Tiene que poner GOOGLE_API_KEY_1
+    if (!process.env.GOOGLE_API_KEY_1) {
+      return res.status(500).json({ error: "Falta la API Key de Gemini (GOOGLE_API_KEY_1). Configúrala en Vercel." });
     }
 
-    // Usamos el modelo Flash porque es rápido y fiable
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       systemInstruction: systemPrompt 
     });
 
-    // Preparamos la conversación
     const chat = model.startChat({
       history: history ? history.map(h => ({
         role: h.role === 'assistant' ? 'model' : 'user',
@@ -44,7 +41,6 @@ export default async function handler(req, res) {
       })) : [],
     });
 
-    // Enviamos el mensaje a Google
     const result = await chat.sendMessage(message);
     const response = await result.response;
     const text = response.text();
