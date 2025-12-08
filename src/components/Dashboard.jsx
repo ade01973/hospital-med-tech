@@ -304,11 +304,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
                   {playerAvatar.characterPreset ? (
                     <img 
-                      src={`/src/assets/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: 'center top' }}
-                    />
+  // CORREGIDO: Cambiado /src/assets/ por /avatar/
+  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+  alt="Avatar"
+  // CORREGIDO: Añadido object-top para que se vea la cara
+  className="w-full h-full object-cover object-top"
+/>
                   ) : (
                     <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
                   )}
