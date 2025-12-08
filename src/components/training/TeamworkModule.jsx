@@ -234,7 +234,7 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   };
   
   const FallbackAvatar = () => (
-    <div className={`${sizeClasses[size]} rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg ${className}`}>
+    <div className={`${sizeClasses[size]} rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg ${className}`}>
       <User className="w-1/2 h-1/2 text-white" />
     </div>
   );
@@ -245,10 +245,12 @@ const PlayerAvatarIcon = ({ size = 'sm', className = '' }) => {
   
   const gender = avatar.gender || 'female';
   const preset = avatar.characterPreset;
-  const imgPath = new URL(`../../assets/${gender}-characters/${gender}-character-${preset}.png`, import.meta.url).href;
+  
+  // ESTA ES LA LÍNEA CORREGIDA: Apunta directo a la carpeta 'public/avatar'
+  const imgPath = `/avatar/${gender}-characters/${gender}-character-${preset}.png`;
   
   return (
-    <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-amber-400/50 ${className}`}>
+    <div className={`${sizeClasses[size]} rounded-xl overflow-hidden flex-shrink-0 shadow-lg ring-2 ring-emerald-400/50 ${className}`}>
       <img 
         src={imgPath}
         alt="Tu avatar"
