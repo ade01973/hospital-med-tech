@@ -38,12 +38,11 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
             {/* Avatar Image */}
             <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
               {playerAvatar.characterPreset ? (
-                <img
-  // CORREGIDO: Ruta apunta a /avatar/
+               <img
   src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
   alt="Avatar Completo"
-  // CORREGIDO: object-contain para que se vea ENTERO
-  className="h-full w-auto object-contain drop-shadow-2xl rounded-2xl"
+  // AQUI EL CAMBIO: Añadido "mx-auto" al final
+  className="h-full w-auto object-contain drop-shadow-2xl rounded-2xl mx-auto"
 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
