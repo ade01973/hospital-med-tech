@@ -273,7 +273,6 @@ const AITrainingHub = ({ onBack }) => {
             <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/40 animate-pulse">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
-            <div>
               <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent">
                 <ShimmerText>HUB IA Gest-Tech</ShimmerText>
               </h1>
