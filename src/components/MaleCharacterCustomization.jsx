@@ -152,10 +152,11 @@ export default function MaleCharacterCustomization({ onComplete, onBack }) {
                       }`}
                     >
                       <img
-                        src={`/avatar/male-characters/male-character-${char.id}.png`}
-                        alt={char.name}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
+  src={`/avatar/male-characters/male-character-${char.id}.png`}
+  alt={char.name}
+  // AQUI ESTÁ EL CAMBIO: Añadimos "object-top" al final
+  className="w-12 h-12 rounded-lg object-cover object-top"
+/>
                       <span className="text-xs text-white font-bold text-center line-clamp-1">
                         {char.name}
                       </span>
