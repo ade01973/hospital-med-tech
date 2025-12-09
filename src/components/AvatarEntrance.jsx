@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
 // --- IMPORTS DE IMÁGENES ---
-// Asegúrate de que estos nombres coinciden EXACTAMENTE con tus archivos
 import female1 from '../assets/female-characters/female-character-1.png';
 import female2 from '../assets/female-characters/female-character-2.png';
 import female3 from '../assets/female-characters/female-character-3.png';
@@ -27,25 +26,35 @@ const characterImages = {
 const AvatarEntrance = ({ avatar, onComplete }) => {
   const [showEntrance, setShowEntrance] = useState(true);
 
-  // --- LÓGICA DE DEPURACIÓN Y SELECCIÓN DE IMAGEN ---
+  // --- LÓGICA DEPURADA Y BLINDADA ---
   
-  // 1. Normalizamos el género a minúsculas para evitar errores (ej: "Female" -> "female")
-  // Si no hay género, asumimos 'female' por defecto para que no falle.
-  const genderKey = avatar?.gender ? avatar.gender.toLowerCase() : 'female';
+  // 1. Obtener el valor crudo del género y limpiarlo
+  const rawGender = avatar?.gender ? String(avatar.gender).toLowerCase().trim() : '';
   
-  // 2. Obtenemos el preset o usamos '1' por defecto
+  // 2. Traducir cualquier variante a 'male' o 'female'
+  let genderKey = 'female'; // Default por seguridad
+  
+  if (['male', 'hombre', 'masculino', 'man', 'chico'].includes(rawGender)) {
+    genderKey = 'male';
+  } else if (['female', 'mujer', 'femenino', 'woman', 'chica'].includes(rawGender)) {
+    genderKey = 'female';
+  }
+
+  // 3. Normalizar el preset (asegurar que es '1', '2' o '3')
+  // A veces llega como número (1), a veces como string ("1")
   const presetKey = avatar?.characterPreset ? String(avatar.characterPreset) : '1';
 
-  // 3. Seleccionamos la imagen final
-  const selectedImage = characterImages[genderKey]?.[presetKey] || characterImages['female']['1'];
+  // 4. Seleccionar imagen con fallback inteligente
+  // Si falla la combinación exacta, intenta cargar el preset 1 de ese género
+  const selectedImage = characterImages[genderKey]?.[presetKey] || characterImages[genderKey]?.['1'] || characterImages['female']['1'];
 
-  // 4. CHIVATO EN CONSOLA: Esto nos dirá qué está intentando cargar
-  console.log("--- DEBUG AVATAR ---");
-  console.log("Datos del avatar:", avatar);
-  console.log("Género detectado:", genderKey);
-  console.log("Preset detectado:", presetKey);
-  console.log("Imagen final:", selectedImage);
-  // --------------------------------------------------
+  // --- DEBUG EN CONSOLA (IMPORTANTE: Mira esto con F12 si falla) ---
+  console.log("%c DEBUG AVATAR ", "background: #222; color: #bada55");
+  console.log("1. Género que llega de BD:", avatar?.gender);
+  console.log("2. Género traducido:", genderKey);
+  console.log("3. Preset:", presetKey);
+  console.log("4. Imagen final:", selectedImage);
+  // -------------------------------------------------------------
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -76,16 +85,16 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           {selectedImage ? (
             <img
               src={selectedImage}
-              alt="Avatar Seleccionado"
+              alt={`Avatar ${genderKey}`}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
               onError={(e) => {
-                console.error("Error cargando la imagen:", e.target.src);
-                e.target.style.display = 'none'; // Ocultar si falla
+                console.error("Error cargando imagen:", e.target.src);
+                e.target.style.display = 'none';
               }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white bg-red-500/20 rounded-2xl">
-              Avatar no encontrado
+            <div className="w-full h-full flex items-center justify-center bg-red-500/50 text-white font-bold rounded-2xl">
+              Error de imagen
             </div>
           )}
 
