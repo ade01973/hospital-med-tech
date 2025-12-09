@@ -9,13 +9,15 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
 
   const avatarSrc = useMemo(() => {
     const storedAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
-    const currentAvatar =
-      avatar?.gender && avatar?.characterPreset ? avatar : storedAvatar;
+    const currentAvatar = { ...storedAvatar, ...avatar };
 
-    if (!currentAvatar?.gender || !currentAvatar?.characterPreset) return null;
+    const genderValue = currentAvatar?.gender?.toLowerCase();
+    const presetValue = currentAvatar?.characterPreset;
 
-    const gender = currentAvatar.gender === 'male' ? 'male' : 'female';
-    const preset = String(currentAvatar.characterPreset).trim();
+    if (!genderValue || presetValue === undefined || presetValue === null) return null;
+
+    const gender = genderValue === 'male' ? 'male' : 'female';
+    const preset = String(presetValue).trim();
 
     if (!preset) return null;
 
