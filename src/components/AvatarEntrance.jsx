@@ -1,32 +1,30 @@
 import React, { useEffect, useState } from 'react';
-// La imagen de fondo si está en assets se importa, si está en public se pone la ruta como abajo.
-// Asumo que el fondo sigue en assets, si no, cámbialo a string también.
+// Asegúrate de que este fondo existe o cambia la ruta
 import hospitalEntranceBg from '../assets/hospital-entrance.png'; 
 
+// 1. CONFIGURA AQUÍ TUS RUTAS EXACTAS
+// Si tus archivos están en "public/avatar/male-character-1.png", usa esta estructura:
 const characterImages = {
   female: {
-    // NOTA: Ajusta estas rutas si tus carpetas dentro de 'public/avatar' son diferentes.
-    // La ruta '/' equivale a la carpeta 'public'.
-    '1': '/avatar/female-characters/female-character-1.png',
-    '2': '/avatar/female-characters/female-character-2.png',
-    '3': '/avatar/female-characters/female-character-3.png',
+    '1': '/avatar/female-character-1.png',
+    '2': '/avatar/female-character-2.png',
+    '3': '/avatar/female-character-3.png',
   },
   male: {
-    '1': '/avatar/male-characters/male-character-1.png',
-    '2': '/avatar/male-characters/male-character-2.png',
-    '3': '/avatar/male-characters/male-character-3.png',
+    '1': '/avatar/male-character-1.png',
+    '2': '/avatar/male-character-2.png',
+    '3': '/avatar/male-character-3.png',
   }
 };
 
 const AvatarEntrance = ({ avatar, onComplete }) => {
   const [showEntrance, setShowEntrance] = useState(true);
 
-  // --- LÓGICA DEPURADA (Mantenemos la lógica que arreglamos antes) ---
+  // --- LÓGICA DE SELECCIÓN ---
   
   // 1. Limpieza de género
   const rawGender = avatar?.gender ? String(avatar.gender).toLowerCase().trim() : '';
-  
-  let genderKey = 'female'; 
+  let genderKey = 'female'; // Default
   
   if (['male', 'hombre', 'masculino', 'man', 'chico'].includes(rawGender)) {
     genderKey = 'male';
@@ -34,16 +32,30 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
     genderKey = 'female';
   }
 
-  // 2. Limpieza de preset
+  // 2. Limpieza de preset (El número del personaje)
+  // Convertimos a string para asegurar que coincida con las claves '1', '2', '3'
   const presetKey = avatar?.characterPreset ? String(avatar.characterPreset) : '1';
 
-  // 3. Selección de imagen
-  const selectedImage = characterImages[genderKey]?.[presetKey] || characterImages[genderKey]?.['1'] || characterImages['female']['1'];
+  // 3. Intentamos obtener la imagen exacta
+  let selectedImage = characterImages[genderKey]?.[presetKey];
+  let isFallback = false;
 
-  // --- DEBUG ---
-  console.log("--- DEBUG PUBLIC FOLDER ---");
-  console.log("Buscando imagen en:", selectedImage);
-  // -------------
+  // 4. Si no existe la exacta, usamos la 1 del género correspondiente (Fallback)
+  if (!selectedImage) {
+    selectedImage = characterImages[genderKey]?.['1'];
+    isFallback = true;
+  }
+
+  // --- DEBUG CRÍTICO: MIRA LA CONSOLA DEL NAVEGADOR (F12) ---
+  console.log("--- DEBUG AVATAR ---");
+  console.log(`Género detectado: ${genderKey} (Original: ${rawGender})`);
+  console.log(`Preset elegido: ${presetKey} (Original: ${avatar?.characterPreset})`);
+  console.log(`Ruta generada: ${selectedImage}`);
+  if (isFallback) {
+    console.warn("⚠️ NO SE ENCONTRÓ EL PRESET SELECCIONADO. Se está mostrando la imagen nº 1 por defecto.");
+    console.warn("Verifica que el número que llega de la BD (Preset elegido) coincida con las claves '1', '2', '3' del código.");
+  }
+  // ----------------------------------------------------------
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,33 +80,28 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
 
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
         <div className="relative mb-20 animate-avatar-entrance w-80 h-80">
-          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
           {/* IMAGEN DEL AVATAR */}
           <img
             src={selectedImage}
-            alt={`Avatar ${genderKey}`}
+            alt="Avatar personaje"
             className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             onError={(e) => {
-              console.error("No se encuentra la imagen en public:", e.target.src);
-              // Opcional: poner una imagen de error visual
+              console.error("❌ ERROR CARGANDO IMAGEN:", e.target.src);
+              console.error("Verifica que el archivo exista realmente en la carpeta public/avatar/");
+              e.target.style.display = 'none'; // Ocultar si falla
             }}
           />
 
-          <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" />
+          {/* Decoración */}
+          <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse -z-10" />
         </div>
 
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
-          <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
-            Bienvenido al Hospital Gest-Tech
+          <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp">
+            Bienvenido
           </h1>
-          <p className="text-xl text-cyan-300 font-bold animate-fadeInUp" style={{ animationDelay: '0.8s' }}>
-            Tu aventura comienza ahora...
-          </p>
         </div>
-        
-        {/* Efectos decorativos... */}
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg animate-pulse" />
       </div>
     </div>
   );
