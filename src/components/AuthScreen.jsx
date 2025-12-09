@@ -20,19 +20,27 @@ const AuthScreen = ({ onLogin }) => {
     try {
       await setPersistence(auth, browserLocalPersistence);
 
-      try {
-        await signInAnonymously(auth);
-      } catch (anonError) {
-        console.warn("Fallo en login anónimo, intentando custom token si existe...", anonError);
-        if (typeof window !== 'undefined' && window.__initial_auth_token) {
-           await signInWithCustomToken(auth, window.__initial_auth_token);
-        } else {
-           throw anonError;
+      let user = auth.currentUser;
+
+      if (!user) {
+        try {
+          await signInAnonymously(auth);
+        } catch (anonError) {
+          console.warn("Fallo en login anónimo, intentando custom token si existe...", anonError);
+          if (typeof window !== 'undefined' && window.__initial_auth_token) {
+             await signInWithCustomToken(auth, window.__initial_auth_token);
+          } else {
+             throw anonError;
+          }
         }
+
+        user = auth.currentUser;
+      } else {
+        await user.reload();
       }
 
-      if (auth.currentUser) {
-        const uid = auth.currentUser.uid;
+      if (user) {
+        const uid = user.uid;
         setCurrentUid(uid);
         localStorage.setItem('studentId', uid);
 
