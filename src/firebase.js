@@ -15,4 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const appId = 'gestion-enfermeria-v1';
+
+// CORRECCIÓN IMPORTANTE: Usamos el projectId real como identificador
+export const appId = firebaseConfig.projectId;
