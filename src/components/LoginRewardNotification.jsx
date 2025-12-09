@@ -20,6 +20,18 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
   // Estado para los mensajes flotantes
   const [floatingMessages, setFloatingMessages] = useState([]);
   const messageIdCounter = useRef(0);
+  
+  // Referencia para controlar el audio
+  const audioRef = useRef(null);
+
+  // Manejar el cierre y parar el audio
+  const handleClaimAndClose = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    onClose();
+  };
 
   // Detectar tamaño y reproducir efectos
   useEffect(() => {
@@ -34,38 +46,42 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
       if (!isStreakReset) {
         setShowConfetti(true);
         
-        // 🔊 Audio
+        // 🔊 Audio en BUCLE
         try {
-          const audio = new Audio('/audio/aplausos.mp3');
-          audio.volume = 0.5;
-          audio.play().catch(e => console.warn("Audio bloqueado:", e));
+          audioRef.current = new Audio('/audio/aplausos.mp3');
+          audioRef.current.loop = true; // <--- SE REPITE INFINITAMENTE
+          audioRef.current.volume = 0.5;
+          audioRef.current.play().catch(e => console.warn("Audio bloqueado:", e));
         } catch (error) { console.error(error); }
 
-        // 💬 Iniciar generador de mensajes flotantes (cada 600ms sale uno nuevo)
+        // 💬 Iniciar generador de mensajes flotantes
         const interval = setInterval(() => {
           const id = messageIdCounter.current++;
           const randomMsg = PRAISE_MESSAGES[Math.floor(Math.random() * PRAISE_MESSAGES.length)];
-          const randomLeft = Math.random() * 80 + 10; // Posición horizontal aleatoria entre 10% y 90%
+          const randomLeft = Math.random() * 80 + 10; 
           
           const newMessage = {
             id,
             ...randomMsg,
             left: `${randomLeft}%`,
-            animationDuration: Math.random() * 2 + 3 + 's' // Entre 3 y 5 segundos
+            animationDuration: Math.random() * 2 + 3 + 's' 
           };
 
           setFloatingMessages(prev => [...prev, newMessage]);
 
-          // Limpiar mensaje después de que termine la animación para no saturar memoria
           setTimeout(() => {
             setFloatingMessages(prev => prev.filter(msg => msg.id !== id));
           }, 4000); 
 
-        }, 600); // Frecuencia de aparición
+        }, 600); 
 
         return () => {
             clearInterval(interval);
             window.removeEventListener('resize', detectSize);
+            // Parar audio si se desmonta el componente
+            if (audioRef.current) {
+              audioRef.current.pause();
+            }
         };
       }
     }
@@ -79,13 +95,27 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center overflow-hidden font-sans">
       
-      {/* Estilos para la animación de flotación */}
+      {/* Estilos CSS Dinámicos para animaciones avanzadas */}
       <style>{`
         @keyframes floatUpFade {
           0% { opacity: 0; transform: translateY(50px) scale(0.5); }
           10% { opacity: 1; transform: translateY(0px) scale(1); }
           80% { opacity: 1; transform: translateY(-100px); }
           100% { opacity: 0; transform: translateY(-150px) scale(1.2); }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-150%) skewX(-15deg); }
+          50% { transform: translateX(150%) skewX(-15deg); }
+          100% { transform: translateX(150%) skewX(-15deg); }
+        }
+        @keyframes borderGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(255, 223, 0, 0.5), 0 0 40px rgba(255, 223, 0, 0.2); }
+          50% { box-shadow: 0 0 40px rgba(255, 223, 0, 0.8), 0 0 80px rgba(255, 223, 0, 0.4); }
+        }
+        @keyframes bgShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
       `}</style>
 
@@ -96,7 +126,7 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
       />
       <div className="absolute inset-0 bg-black/75 backdrop-blur-sm z-0 animate-fade-in" />
 
-      {/* 💬 MENSAJES FLOTANTES (Detrás de la tarjeta, pero delante del fondo) */}
+      {/* 💬 MENSAJES FLOTANTES */}
       <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
         {floatingMessages.map((msg) => (
           <div
@@ -118,27 +148,49 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
           <Confetti
             width={windowDimension.width}
             height={windowDimension.height}
-            recycle={false} 
-            numberOfPieces={600}
-            gravity={0.25}
+            recycle={true} // Ahora recicla confeti mientras dure la pantalla
+            numberOfPieces={400}
+            gravity={0.20}
           />
         </div>
       )}
 
       {/* 🃏 TARJETA PRINCIPAL */}
-      <div className={`
-        relative z-20 w-full max-w-md mx-4 rounded-3xl shadow-2xl overflow-hidden
-        transform transition-all duration-500 scale-100 
-        border-4 ${isStreakReset ? 'border-red-500' : 'border-yellow-400'}
-        ${isStreakReset 
-          ? 'bg-gradient-to-br from-red-900 to-orange-900' 
-          : 'bg-gradient-to-br from-green-600 to-emerald-600'
-        }
-      `}>
+      <div 
+        className={`
+          relative z-20 w-full max-w-md mx-4 rounded-3xl overflow-hidden
+          transform transition-all duration-500 scale-100 
+          border-[3px] 
+          ${isStreakReset 
+            ? 'border-red-500 bg-gradient-to-br from-red-900 via-red-800 to-orange-900' 
+            : 'border-yellow-300 bg-gradient-to-br from-green-600 via-emerald-500 to-teal-600'
+          }
+        `}
+        style={{
+          // Animación de resplandor en el borde si es premio positivo
+          animation: !isStreakReset ? 'borderGlow 2s infinite ease-in-out' : 'none',
+          backgroundSize: '200% 200%',
+          // Movimiento sutil del gradiente de fondo
+          animationName: 'bgShift',
+          animationDuration: '5s',
+          animationIterationCount: 'infinite',
+          animationTimingFunction: 'ease'
+        }}
+      >
         
+        {/* ✨ DESTELLO HOLOGRÁFICO (SHIMMER) */}
+        {!isStreakReset && (
+          <div 
+            className="absolute top-0 left-0 w-full h-full pointer-events-none bg-gradient-to-r from-transparent via-white/30 to-transparent z-30"
+            style={{
+              animation: 'shimmer 3s infinite', // Pasa el destello cada 3 segundos
+            }}
+          />
+        )}
+
         {/* Header */}
-        <div className="px-8 py-8 text-center border-b border-white/20">
-          <div className="text-7xl mb-4 animate-pulse filter drop-shadow-lg transform hover:scale-110 transition-transform cursor-default">
+        <div className="relative z-40 px-8 py-8 text-center border-b border-white/20">
+          <div className="text-7xl mb-4 animate-pulse filter drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] transform hover:scale-110 transition-transform cursor-default">
             {isStreakReset ? '💔' : '🎉'}
           </div>
           <h2 className="text-3xl font-black text-white mb-2 drop-shadow-md tracking-wide uppercase">
@@ -148,30 +200,30 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
         </div>
 
         {/* Rewards Display */}
-        <div className="px-8 py-6 space-y-4">
+        <div className="relative z-40 px-8 py-6 space-y-4">
           {/* XP */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-white/10 hover:bg-white/20 transition-colors group">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-white/20 shadow-inner hover:bg-white/20 transition-colors group">
             <div className="flex items-center gap-3">
-              <Heart className="w-8 h-8 text-yellow-300 fill-yellow-300 group-hover:scale-110 transition-transform" />
+              <Heart className="w-8 h-8 text-yellow-300 fill-yellow-300 group-hover:scale-110 transition-transform drop-shadow" />
               <span className="font-bold text-white text-lg">Experiencia</span>
             </div>
-            <span className="text-3xl font-black text-yellow-300 drop-shadow-sm">+{reward.xp} XP</span>
+            <span className="text-3xl font-black text-yellow-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">+{reward.xp} XP</span>
           </div>
 
           {/* Power-ups */}
           {reward.powerUps > 0 && (
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-white/10 hover:bg-white/20 transition-colors group">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-white/20 shadow-inner hover:bg-white/20 transition-colors group">
               <div className="flex items-center gap-3">
-                <Zap className="w-8 h-8 text-blue-300 fill-blue-300 group-hover:scale-110 transition-transform" />
+                <Zap className="w-8 h-8 text-blue-300 fill-blue-300 group-hover:scale-110 transition-transform drop-shadow" />
                 <span className="font-bold text-white text-lg">Power-ups</span>
               </div>
-              <span className="text-3xl font-black text-blue-300 drop-shadow-sm">+{reward.powerUps}</span>
+              <span className="text-3xl font-black text-blue-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">+{reward.powerUps}</span>
             </div>
           )}
 
           {/* Badge */}
           {reward.badge && (
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-purple-400/30 bg-purple-500/20">
+            <div className="bg-purple-900/40 backdrop-blur-md rounded-xl p-4 flex items-center justify-between border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
               <div className="flex items-center gap-3">
                 <Trophy className="w-8 h-8 text-purple-300 animate-bounce-slow" />
                 <div className="flex flex-col text-left">
@@ -184,8 +236,8 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
           )}
         </div>
 
-        {/* Mensaje fijo motivacional */}
-        <div className="bg-black/20 px-8 py-4 text-center mx-4 rounded-xl">
+        {/* Mensaje motivacional */}
+        <div className="relative z-40 bg-black/30 px-8 py-4 text-center mx-4 rounded-xl border border-white/5">
           <p className="text-white text-sm font-bold italic">
             {isStreakReset 
               ? '"El éxito no es definitivo, el fracaso no es fatal: lo que cuenta es el valor para continuar." 💪' 
@@ -197,19 +249,27 @@ const LoginRewardNotification = ({ isOpen, onClose, rewardData }) => {
         </div>
 
         {/* Button */}
-        <div className="px-8 py-6">
+        <div className="relative z-40 px-6 py-6">
           <button
-            onClick={onClose}
+            onClick={handleClaimAndClose}
             className={`
-              w-full font-black py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg
+              w-full font-black py-4 px-2 rounded-xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl
               ${isStreakReset
                 ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 shadow-orange-900/50'
-                : 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-black shadow-orange-500/50'
+                : 'bg-gradient-to-r from-yellow-400 via-yellow-300 to-orange-500 hover:from-yellow-200 hover:to-orange-400 text-black shadow-orange-500/50'
               }
-              text-xl tracking-wide flex items-center justify-center gap-2
+              text-lg uppercase tracking-tight flex items-center justify-center gap-2 border-b-4 
+              ${isStreakReset ? 'border-red-800' : 'border-orange-600'}
             `}
           >
-            {isStreakReset ? 'VOLVER A INTENTARLO 😤' : '¡RECLAMAR PREMIOS! 🎁'}
+            {isStreakReset 
+              ? 'VOLVER A INTENTARLO 😤' 
+              : (
+                <span className="drop-shadow-sm text-center leading-tight">
+                  RECLAMAR PREMIOS Y ENTRAR<br/>AL HOSPITAL GEST-TECH 🏥
+                </span>
+              )
+            }
           </button>
         </div>
       </div>
