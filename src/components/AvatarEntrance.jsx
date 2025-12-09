@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
-// --- INICIO DE LO QUE FALTABA ---
-// 1. Importamos las imágenes de los personajes una por una
-// (Ajusta los nombres de archivo si son diferentes, ej: si es .jpg o .png)
+// --- IMPORTS DE IMÁGENES ---
+// Asegúrate de que estos nombres coinciden EXACTAMENTE con tus archivos
 import female1 from '../assets/female-characters/female-character-1.png';
 import female2 from '../assets/female-characters/female-character-2.png';
 import female3 from '../assets/female-characters/female-character-3.png';
@@ -12,7 +11,6 @@ import male1 from '../assets/male-characters/male-character-1.png';
 import male2 from '../assets/male-characters/male-character-2.png';
 import male3 from '../assets/male-characters/male-character-3.png';
 
-// 2. Definimos el mapa (diccionario) que usa el componente abajo
 const characterImages = {
   female: {
     '1': female1,
@@ -25,13 +23,29 @@ const characterImages = {
     '3': male3,
   }
 };
-// --- FIN DE LO QUE FALTABA ---
 
-/**
- * AvatarEntrance - Animación de entrada del avatar al hospital
- */
 const AvatarEntrance = ({ avatar, onComplete }) => {
   const [showEntrance, setShowEntrance] = useState(true);
+
+  // --- LÓGICA DE DEPURACIÓN Y SELECCIÓN DE IMAGEN ---
+  
+  // 1. Normalizamos el género a minúsculas para evitar errores (ej: "Female" -> "female")
+  // Si no hay género, asumimos 'female' por defecto para que no falle.
+  const genderKey = avatar?.gender ? avatar.gender.toLowerCase() : 'female';
+  
+  // 2. Obtenemos el preset o usamos '1' por defecto
+  const presetKey = avatar?.characterPreset ? String(avatar.characterPreset) : '1';
+
+  // 3. Seleccionamos la imagen final
+  const selectedImage = characterImages[genderKey]?.[presetKey] || characterImages['female']['1'];
+
+  // 4. CHIVATO EN CONSOLA: Esto nos dirá qué está intentando cargar
+  console.log("--- DEBUG AVATAR ---");
+  console.log("Datos del avatar:", avatar);
+  console.log("Género detectado:", genderKey);
+  console.log("Preset detectado:", presetKey);
+  console.log("Imagen final:", selectedImage);
+  // --------------------------------------------------
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -52,31 +66,32 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
         backgroundAttachment: 'fixed'
       }}
     >
-      {/* Overlay para mejorar legibilidad */}
       <div className="absolute inset-0 bg-black/40" />
 
-      {/* Avatar entrance animation */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
-        {/* Avatar container */}
         <div className="relative mb-20 animate-avatar-entrance w-80 h-80">
-          {/* Shadow */}
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
-          {/* Avatar figure */}
-          {avatar && avatar.characterPreset && (
+          {/* IMAGEN DEL AVATAR */}
+          {selectedImage ? (
             <img
-              // Ahora esto funcionará porque characterImages ya existe arriba
-              src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
-              alt={avatar.name || 'Avatar'}
+              src={selectedImage}
+              alt="Avatar Seleccionado"
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
+              onError={(e) => {
+                console.error("Error cargando la imagen:", e.target.src);
+                e.target.style.display = 'none'; // Ocultar si falla
+              }}
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-white bg-red-500/20 rounded-2xl">
+              Avatar no encontrado
+            </div>
           )}
 
-          {/* Aura effect */}
           <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" />
         </div>
 
-        {/* Welcome text */}
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
           <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
             Bienvenido al Hospital Gest-Tech
@@ -102,21 +117,16 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           ))}
         </div>
 
-        {/* Floor shine effect */}
         <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg animate-pulse" />
       </div>
 
-      {/* Hospital entrance door frame */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 pointer-events-none">
         <div className="relative w-40 h-64 border-4 border-cyan-500/30 rounded-t-3xl bg-gradient-to-r from-cyan-900/20 to-blue-900/20 backdrop-blur-sm">
-          {/* Door shine */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          {/* Cross symbol on door */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl text-red-500/50">+</div>
         </div>
       </div>
 
-      {/* Progress indicator */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
         <div className="flex gap-2 items-center justify-center">
           <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
