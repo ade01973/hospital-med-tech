@@ -2,89 +2,70 @@ import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png'; 
 
 const AvatarEntrance = ({ avatar, onComplete }) => {
-  const [showEntrance, setShowEntrance] = useState(true);
-  const [imgSrc, setImgSrc] = useState('');
+  const [debugInfo, setDebugInfo] = useState({});
 
   useEffect(() => {
-    // Si no hay avatar todavía, no hacemos nada (o ponemos uno por defecto)
-    if (!avatar) return;
-
-    // --- 1. LÓGICA DE GÉNERO ROBUSTA ---
-    // Convertimos lo que venga de la base de datos a minúsculas y quitamos espacios
-    const genderInput = avatar.gender ? String(avatar.gender).toLowerCase().trim() : 'male';
-    
-    // Por defecto asumimos que es hombre ('male')
-    let genderFile = 'male';
-
-    // Si detectamos cualquier variante de mujer, cambiamos a 'female'
-    if (['female', 'mujer', 'femenino', 'woman', 'chica'].includes(genderInput)) {
-      genderFile = 'female';
-    }
-
-    // --- 2. LÓGICA DE NÚMERO ---
-    // Usamos el preset que venga, si no hay, usamos el '1'
-    const presetFile = avatar.characterPreset ? avatar.characterPreset : '1';
-
-    // --- 3. CREAR LA RUTA ---
-    // Resultado: /avatar/male-character-1.png
-    const finalPath = `/avatar/${genderFile}-character-${presetFile}.png`;
-    
-    console.log("Avatar calculado:", finalPath); // Mira la consola si falla
-    setImgSrc(finalPath);
-
+    setDebugInfo({
+      receivedAvatar: avatar,
+      rawGender: avatar?.gender,
+      rawPreset: avatar?.characterPreset,
+    });
   }, [avatar]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowEntrance(false);
-      if (onComplete) onComplete();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [onComplete]);
-
-  if (!showEntrance) return null;
+  // TEST DIRECTO: Esto salta toda la lógica y apunta directo al archivo
+  // Si esto no se ve, el problema es la carpeta, no el código.
+  const testImageMale = "/avatar/male-character-1.png";
+  const testImageFemale = "/avatar/female-character-1.png";
 
   return (
     <div 
-      className="fixed inset-0 z-[999] overflow-hidden bg-cover bg-center"
-      style={{
-        backgroundImage: `url(${hospitalEntranceBg})`,
-        backgroundAttachment: 'fixed'
-      }}
+      className="fixed inset-0 z-[999] bg-slate-800 flex flex-col items-center justify-center text-white overflow-auto p-10"
+      style={{ backgroundImage: `url(${hospitalEntranceBg})`, backgroundSize: 'cover' }}
     >
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="bg-black/80 p-6 rounded-xl border-2 border-red-500 max-w-2xl w-full">
+        <h2 className="text-2xl font-bold text-red-400 mb-4">🔧 MODO DIAGNÓSTICO</h2>
+        
+        {/* 1. VER LOS DATOS */}
+        <div className="mb-6">
+          <h3 className="font-bold text-yellow-300">1. Datos Recibidos (prop 'avatar'):</h3>
+          <pre className="bg-gray-900 p-2 rounded text-xs overflow-x-auto border border-gray-700">
+            {avatar ? JSON.stringify(avatar, null, 2) : "❌ AVATAR ES NULL / UNDEFINED"}
+          </pre>
+        </div>
 
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
-        <div className="relative mb-20 animate-avatar-entrance w-80 h-80 flex justify-center">
+        {/* 2. PRUEBA DE IMAGEN DIRECTA */}
+        <div className="mb-6">
+          <h3 className="font-bold text-yellow-300 mb-2">2. Prueba de archivos (Rutas directas):</h3>
+          <p className="text-sm mb-2">Si no ves las imágenes de abajo, la carpeta <code>public/avatar</code> está mal ubicada o nombrada.</p>
           
-          {/* Renderizado Condicional: Solo mostramos la etiqueta img si tenemos una ruta */}
-          {imgSrc && (
-            <img
-              src={imgSrc}
-              alt="Personaje"
-              className="h-full object-contain drop-shadow-2xl rounded-2xl"
-              onError={(e) => {
-                console.error("Falló la imagen:", e.target.src);
-                // RETROCESO DE SEGURIDAD:
-                // Si falla la imagen específica (ej. 59), intenta cargar la número 1
-                // para que no se quede vacío el hueco.
-                if (!e.target.src.includes('-1.png')) {
-                   const currentGender = imgSrc.includes('female') ? 'female' : 'male';
-                   e.target.src = `/avatar/${currentGender}-character-1.png`;
-                }
-              }}
-            />
-          )}
-
-          <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse -z-10" />
+          <div className="flex gap-4 justify-center bg-white/10 p-4 rounded">
+            <div className="text-center">
+              <p className="text-xs mb-1">male-character-1.png</p>
+              <img 
+                src={testImageMale} 
+                alt="Test Male" 
+                className="w-20 h-20 object-contain bg-white rounded"
+                onError={(e) => e.target.style.border = "4px solid red"} 
+              />
+            </div>
+            <div className="text-center">
+              <p className="text-xs mb-1">female-character-1.png</p>
+              <img 
+                src={testImageFemale} 
+                alt="Test Female" 
+                className="w-20 h-20 object-contain bg-white rounded"
+                onError={(e) => e.target.style.border = "4px solid red"}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
-          <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp">
-            Bienvenido
-          </h1>
-        </div>
+        <button 
+          onClick={onComplete}
+          className="mt-4 bg-blue-600 px-6 py-2 rounded hover:bg-blue-500 w-full"
+        >
+          Cerrar Diagnóstico
+        </button>
       </div>
     </div>
   );
