@@ -41,15 +41,10 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           {/* Avatar figure */}
 {avatar && avatar.characterPreset && (
   <img
-    // NOTA EL CAMBIO AQUÍ: Quitamos "/src/assets" y ponemos la ruta pública
-    src={`/characters/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
+    // Buscamos: Diccionario -> Género -> Preset
+    src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
     alt={avatar.name || 'Avatar'}
     className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
-    onError={(e) => {
-       // Esto ayuda a ver si falla: pone una imagen por defecto si no encuentra la específica
-       console.error("No se encontró la imagen del preset:", e.target.src);
-       e.target.src = "/avatar/female_avatar_full_body.png"; // Tu fallback de emergencia
-    }}
   />
 )}
           {/* Aura effect */}
