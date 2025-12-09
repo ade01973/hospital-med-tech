@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import hospitalEntranceBg from '../assets/hospital-entrance.png'; // Fondo desde assets
+import hospitalEntranceBg from '../assets/hospital-entrance.png'; 
 
 const AvatarEntrance = ({ avatar, onComplete }) => {
   const [showEntrance, setShowEntrance] = useState(true);
   const [imgSrc, setImgSrc] = useState('');
 
   useEffect(() => {
-    // --- 1. Determinar Género ---
-    const rawGender = avatar?.gender ? String(avatar.gender).toLowerCase().trim() : 'female';
-    let genderPrefix = 'female'; // Por defecto
+    // Si no hay avatar todavía, no hacemos nada (o ponemos uno por defecto)
+    if (!avatar) return;
+
+    // --- 1. LÓGICA DE GÉNERO ROBUSTA ---
+    // Convertimos lo que venga de la base de datos a minúsculas y quitamos espacios
+    const genderInput = avatar.gender ? String(avatar.gender).toLowerCase().trim() : 'male';
     
-    if (['male', 'hombre', 'masculino', 'man', 'chico'].includes(rawGender)) {
-      genderPrefix = 'male';
+    // Por defecto asumimos que es hombre ('male')
+    let genderFile = 'male';
+
+    // Si detectamos cualquier variante de mujer, cambiamos a 'female'
+    if (['female', 'mujer', 'femenino', 'woman', 'chica'].includes(genderInput)) {
+      genderFile = 'female';
     }
 
-    // --- 2. Determinar Número (Preset) ---
-    // Si no hay preset, usamos el '1'.
-    const presetNumber = avatar?.characterPreset ? String(avatar.characterPreset) : '1';
+    // --- 2. LÓGICA DE NÚMERO ---
+    // Usamos el preset que venga, si no hay, usamos el '1'
+    const presetFile = avatar.characterPreset ? avatar.characterPreset : '1';
 
-    // --- 3. CONSTRUCCIÓN DINÁMICA DE LA RUTA ---
-    // Aquí es donde sucede la magia. En lugar de una lista, creamos el texto de la ruta.
-    // Estructura: /avatar/male-character-59.png
+    // --- 3. CREAR LA RUTA ---
+    // Resultado: /avatar/male-character-1.png
+    const finalPath = `/avatar/${genderFile}-character-${presetFile}.png`;
     
-    // IMPORTANTE: Verifica si tus archivos se llaman "male-character-X.png" o solo "male-X.png"
-    // Ajusta la línea de abajo según tus nombres reales de archivo:
-    const dynamicPath = `/avatar/${genderPrefix}-character-${presetNumber}.png`;
-
-    console.log("Cargando avatar:", dynamicPath); // Para ver en consola qué intenta cargar
-    setImgSrc(dynamicPath);
+    console.log("Avatar calculado:", finalPath); // Mira la consola si falla
+    setImgSrc(finalPath);
 
   }, [avatar]);
 
@@ -53,23 +56,26 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
-        <div className="relative mb-20 animate-avatar-entrance w-80 h-80">
+        <div className="relative mb-20 animate-avatar-entrance w-80 h-80 flex justify-center">
           
-          {/* IMAGEN GENERADA DINÁMICAMENTE */}
-          <img
-            src={imgSrc}
-            alt="Tu Avatar"
-            className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
-            onError={(e) => {
-              // Si la imagen 59 no existe o falla, cargamos la 1 como seguridad
-              console.warn(`No se encontró la imagen ${imgSrc}, cargando fallback.`);
-              if (!e.target.src.includes('-1.png')) {
-                 // Intentamos cargar la número 1 del mismo género
-                 const currentGender = imgSrc.includes('male') ? 'male' : 'female';
-                 e.target.src = `/avatar/${currentGender}-character-1.png`;
-              }
-            }}
-          />
+          {/* Renderizado Condicional: Solo mostramos la etiqueta img si tenemos una ruta */}
+          {imgSrc && (
+            <img
+              src={imgSrc}
+              alt="Personaje"
+              className="h-full object-contain drop-shadow-2xl rounded-2xl"
+              onError={(e) => {
+                console.error("Falló la imagen:", e.target.src);
+                // RETROCESO DE SEGURIDAD:
+                // Si falla la imagen específica (ej. 59), intenta cargar la número 1
+                // para que no se quede vacío el hueco.
+                if (!e.target.src.includes('-1.png')) {
+                   const currentGender = imgSrc.includes('female') ? 'female' : 'male';
+                   e.target.src = `/avatar/${currentGender}-character-1.png`;
+                }
+              }}
+            />
+          )}
 
           <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse -z-10" />
         </div>
