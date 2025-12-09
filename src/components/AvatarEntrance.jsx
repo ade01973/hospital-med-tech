@@ -1,71 +1,128 @@
 import React, { useEffect, useState } from 'react';
-import hospitalEntranceBg from '../assets/hospital-entrance.png'; 
+import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
+// --- INICIO DE LO QUE FALTABA ---
+// 1. Importamos las imágenes de los personajes una por una
+// (Ajusta los nombres de archivo si son diferentes, ej: si es .jpg o .png)
+import female1 from '../assets/female-characters/female-character-1.png';
+import female2 from '../assets/female-characters/female-character-2.png';
+import female3 from '../assets/female-characters/female-character-3.png';
+
+import male1 from '../assets/male-characters/male-character-1.png';
+import male2 from '../assets/male-characters/male-character-2.png';
+import male3 from '../assets/male-characters/male-character-3.png';
+
+// 2. Definimos el mapa (diccionario) que usa el componente abajo
+const characterImages = {
+  female: {
+    '1': female1,
+    '2': female2,
+    '3': female3,
+  },
+  male: {
+    '1': male1,
+    '2': male2,
+    '3': male3,
+  }
+};
+// --- FIN DE LO QUE FALTABA ---
+
+/**
+ * AvatarEntrance - Animación de entrada del avatar al hospital
+ */
 const AvatarEntrance = ({ avatar, onComplete }) => {
-  const [debugInfo, setDebugInfo] = useState({});
+  const [showEntrance, setShowEntrance] = useState(true);
 
   useEffect(() => {
-    setDebugInfo({
-      receivedAvatar: avatar,
-      rawGender: avatar?.gender,
-      rawPreset: avatar?.characterPreset,
-    });
-  }, [avatar]);
+    const timer = setTimeout(() => {
+      setShowEntrance(false);
+      if (onComplete) onComplete();
+    }, 5000);
 
-  // TEST DIRECTO: Esto salta toda la lógica y apunta directo al archivo
-  // Si esto no se ve, el problema es la carpeta, no el código.
-  const testImageMale = "/avatar/male-character-1.png";
-  const testImageFemale = "/avatar/female-character-1.png";
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  if (!showEntrance) return null;
 
   return (
     <div 
-      className="fixed inset-0 z-[999] bg-slate-800 flex flex-col items-center justify-center text-white overflow-auto p-10"
-      style={{ backgroundImage: `url(${hospitalEntranceBg})`, backgroundSize: 'cover' }}
+      className="fixed inset-0 z-[999] overflow-hidden bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${hospitalEntranceBg})`,
+        backgroundAttachment: 'fixed'
+      }}
     >
-      <div className="bg-black/80 p-6 rounded-xl border-2 border-red-500 max-w-2xl w-full">
-        <h2 className="text-2xl font-bold text-red-400 mb-4">🔧 MODO DIAGNÓSTICO</h2>
-        
-        {/* 1. VER LOS DATOS */}
-        <div className="mb-6">
-          <h3 className="font-bold text-yellow-300">1. Datos Recibidos (prop 'avatar'):</h3>
-          <pre className="bg-gray-900 p-2 rounded text-xs overflow-x-auto border border-gray-700">
-            {avatar ? JSON.stringify(avatar, null, 2) : "❌ AVATAR ES NULL / UNDEFINED"}
-          </pre>
-        </div>
+      {/* Overlay para mejorar legibilidad */}
+      <div className="absolute inset-0 bg-black/40" />
 
-        {/* 2. PRUEBA DE IMAGEN DIRECTA */}
-        <div className="mb-6">
-          <h3 className="font-bold text-yellow-300 mb-2">2. Prueba de archivos (Rutas directas):</h3>
-          <p className="text-sm mb-2">Si no ves las imágenes de abajo, la carpeta <code>public/avatar</code> está mal ubicada o nombrada.</p>
+      {/* Avatar entrance animation */}
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-10">
+        {/* Avatar container */}
+        <div className="relative mb-20 animate-avatar-entrance w-80 h-80">
+          {/* Shadow */}
+          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
-          <div className="flex gap-4 justify-center bg-white/10 p-4 rounded">
-            <div className="text-center">
-              <p className="text-xs mb-1">male-character-1.png</p>
-              <img 
-                src={testImageMale} 
-                alt="Test Male" 
-                className="w-20 h-20 object-contain bg-white rounded"
-                onError={(e) => e.target.style.border = "4px solid red"} 
-              />
-            </div>
-            <div className="text-center">
-              <p className="text-xs mb-1">female-character-1.png</p>
-              <img 
-                src={testImageFemale} 
-                alt="Test Female" 
-                className="w-20 h-20 object-contain bg-white rounded"
-                onError={(e) => e.target.style.border = "4px solid red"}
-              />
-            </div>
-          </div>
+          {/* Avatar figure */}
+          {avatar && avatar.characterPreset && (
+            <img
+              // Ahora esto funcionará porque characterImages ya existe arriba
+              src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
+              alt={avatar.name || 'Avatar'}
+              className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
+            />
+          )}
+
+          {/* Aura effect */}
+          <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" />
         </div>
 
-        <button 
-          onClick={onComplete}
-          className="mt-4 bg-blue-600 px-6 py-2 rounded hover:bg-blue-500 w-full"
-        >
-          Cerrar Diagnóstico
-        </button>
+        {/* Welcome text */}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
+          <h1 className="text-5xl font-black text-white mb-2 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+            Bienvenido al Hospital Gest-Tech
+          </h1>
+          <p className="text-xl text-cyan-300 font-bold animate-fadeInUp" style={{ animationDelay: '0.8s' }}>
+            Tu aventura comienza ahora...
+          </p>
+        </div>
+
+        {/* Particle effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float-particle"
+              style={{
+                left: `${20 + i * 10}%`,
+                top: '60%',
+                animationDelay: `${i * 0.1}s`,
+                '--duration': `${2 + i * 0.3}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Floor shine effect */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-lg animate-pulse" />
+      </div>
+
+      {/* Hospital entrance door frame */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 pointer-events-none">
+        <div className="relative w-40 h-64 border-4 border-cyan-500/30 rounded-t-3xl bg-gradient-to-r from-cyan-900/20 to-blue-900/20 backdrop-blur-sm">
+          {/* Door shine */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          {/* Cross symbol on door */}
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl text-red-500/50">+</div>
+        </div>
+      </div>
+
+      {/* Progress indicator */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        <div className="flex gap-2 items-center justify-center">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+          <p className="text-xs text-slate-400 font-bold">Entrando al sistema...</p>
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+        </div>
       </div>
     </div>
   );
