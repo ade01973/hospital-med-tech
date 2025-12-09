@@ -39,14 +39,13 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
           {/* Avatar figure */}
-          {avatar && avatar.characterPreset && (
-            <img
-              src={`/src/assets/${avatar.gender}-characters/${avatar.gender}-character-${avatar.characterPreset}.png`}
-              alt={avatar.name || 'Avatar'}
-              className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
-            />
-          )}
-
+{avatar && (
+  <img
+    src={avatar.gender === 'female' ? "/avatar/female_avatar_full_body.png" : "/avatar/male_avatar_full_body.png"}
+    alt={avatar.name || 'Avatar'}
+    className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
+  />
+)}
           {/* Aura effect */}
           <div className="absolute inset-0 -m-8 bg-gradient-to-t from-cyan-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" />
         </div>
