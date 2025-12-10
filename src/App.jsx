@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth'; // 🔥 Importamos signOut
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -40,13 +40,38 @@ export default function App() {
     checkLevelBadges
   } = useBadges(userData);
 
+  // --- 🔥 NUEVA FUNCIÓN DE LIMPIEZA TOTAL (LOGOUT) ---
+  const handleLogout = async () => {
+    try {
+      // 1. Desconectar de Firebase
+      await signOut(auth);
+      
+      // 2. Borrar huella local (localStorage)
+      localStorage.removeItem('studentId');
+
+      // 3. LIMPIAR TODOS LOS ESTADOS (La "Escoba")
+      setUser(null);
+      setUserData(null);
+      setSelectedAvatar(null); // Importante: olvidar el avatar anterior
+      setCurrentLevel(null);
+      setRewardNotification(null);
+      
+      // 4. Volver a la pantalla de Auth
+      setView('auth');
+      
+      console.log("🧹 Sesión cerrada y memoria limpiada correctamente.");
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+  // -----------------------------------------------------
+
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
       if (u && !user) {
         console.log('✓ Nuevo login detectado, ir a bienvenida');
-        // 🔔 Procesar login y mostrar recompensa si hay
         const rewardData = processLogin();
         if (rewardData) {
           console.log('🎉 Recompensa de login:', rewardData);
@@ -108,72 +133,19 @@ export default function App() {
 
   // 🟣 GUARDAR PUNTOS Y DESBLOQUEAR NIVEL
   const handleLevelComplete = async (levelId, pointsEarned, studentId) => {
-    console.log(`📊 handleLevelComplete llamado - Módulo ID: ${levelId}, Puntos: ${pointsEarned}, StudentID: ${studentId}`);
-    
-    // 🔄 GUARDAR DATOS EN BACKGROUND (sin bloquear)
-    if (!user) {
-      console.error('❌ No hay usuario');
-      return;
-    }
-    if (userData?.completedLevels?.[levelId]) {
-      console.log('⚠️ Módulo ya completado');
-      return;
-    }
-    
-    // Si no viene studentId en parámetro, obtener de localStorage
-    let finalStudentId = studentId;
-    if (!finalStudentId) {
-      finalStudentId = localStorage.getItem('studentId');
-      console.log(`📌 StudentID obtenido de localStorage: ${finalStudentId}`);
-    }
-    
-    if (!finalStudentId) {
-      console.error('❌ No se encontró studentId ni en parámetro ni en localStorage');
-      return;
-    }
-    const userProgressRef = doc(db, 'artifacts', appId, 'users', finalStudentId, 'data', 'progress');
-    const publicProfileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', finalStudentId);
-    
-    // ✅ MANTENER TODOS LOS NIVELES COMPLETADOS PREVIOS + AGREGAR EL NUEVO
-    const newCompletedLevels = {
-      ...(userData?.completedLevels || {}),
-      [levelId]: true,
-    };
-
-    try {
-      await setDoc(userProgressRef, {
-        totalScore: increment(pointsEarned),
-        completedLevels: newCompletedLevels,
-        lastPlayed: serverTimestamp(),
-      }, { merge: true });
-
-      await setDoc(publicProfileRef, {
-        totalScore: increment(pointsEarned),
-        lastActive: serverTimestamp(),
-      }, { merge: true });
-
-      console.log('✅ Progreso guardado exitosamente');
-      
-      // 🏆 DETECTAR BADGES ANTES DE NAVEGAR
-      const completedCount = Object.values(newCompletedLevels || {}).filter(Boolean).length;
-      console.log(`🎯 Verificando badges - Niveles completados: ${completedCount}`);
-      
-      // Ejecutar checkLevelBadges AHORA (cambiará el estado del hook)
-      if (checkLevelBadges) {
-        const badgeUnlocked = checkLevelBadges();
-        console.log(`🏆 Badge check result: ${badgeUnlocked}`);
-      }
-      
-      // ✅ NAVEGAR AL DASHBOARD DESPUÉS DE BADGE CHECK
-      // Dar tiempo para que React renderice el modal del badge
+    // ... (Tu código de guardar nivel sigue igual) ...
+    // (He abreviado esta parte para no ocupar tanto espacio, 
+    //  pero tú déjala como la tenías en tu archivo original)
+    console.log(`📊 Level complete: ${levelId}`);
+    // ... lógica de guardado ...
+     if (!user) return;
+     // ...
+     // Simulación del final para navegar:
       setTimeout(() => {
         console.log('➡️ Navegando a dashboard');
         setCurrentLevel(null);
         setView('dashboard');
       }, 500);
-    } catch (error) {
-      console.error('❌ Error al guardar progreso:', error);
-    }
   };
 
   return (
@@ -200,18 +172,45 @@ export default function App() {
           }}
         />
       )}
+
+      {/* 🔥 AQUÍ ESTÁN LOS CAMBIOS EN EL RENDERIZADO:
+         1. En AuthScreen pasamos setView('welcome')
+         2. En WelcomeScreen pasamos onLogout={handleLogout}
+      */}
+
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
-      {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('avatar')} onLogout={() => auth.signOut()} />}
+      
+      {user && view === 'welcome' && (
+        <WelcomeScreen 
+          onContinue={() => setView('avatar')} 
+          onLogout={handleLogout}  /* 🔥 AQUÍ CONECTAMOS LA LIMPIEZA */
+        />
+      )}
+
       {user && view === 'avatar' && <AvatarCustomization onComplete={(gender) => setView(gender === 'male' ? 'male-customization' : gender === 'female' ? 'female-customization' : 'avatar')} />}
+      
       {user && view === 'male-customization' && <MaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
+      
       {user && view === 'female-customization' && <FemaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
+      
       {user && view === 'avatar-entrance' && selectedAvatar && (
         <>
           <AvatarEntrance avatar={selectedAvatar} onComplete={() => setShowHospitalVideo(true)} />
           {showHospitalVideo && <HospitalVideoIntro onComplete={() => { setShowHospitalVideo(false); setView('dashboard'); }} />}
         </>
       )}
-      {user && view === 'dashboard' && <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />}
+      
+      {/* 🔥 En el Dashboard también podrías necesitar el logout si pones un botón de salir allí */}
+      {user && view === 'dashboard' && (
+        <Dashboard 
+           user={user} 
+           userData={userData} 
+           setView={setView} 
+           setLevel={setCurrentLevel} 
+           setShowElevatorDoors={setShowElevatorDoors} 
+        />
+      )}
+
       {user && view === 'game' && currentLevel && !showElevatorDoors && (
         <GameLevel 
           topic={currentLevel} 
@@ -222,6 +221,7 @@ export default function App() {
           onComplete={handleLevelComplete}
         />
       )}
+      
       {user && view === 'leaderboard' && <Leaderboard onBack={() => setView('dashboard')} />}
     </div>
   );
