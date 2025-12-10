@@ -7,7 +7,7 @@ import {
   browserLocalPersistence
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { ChevronRight, HeartPulse, UserPlus, LogIn, KeyRound } from 'lucide-react';
+import { HeartPulse, UserPlus, LogIn, KeyRound } from 'lucide-react';
 import hospitalBg from '../assets/hospital-background.png';
 import { auth, db, appId } from '../firebase.js';
 
@@ -35,7 +35,7 @@ const AuthScreen = ({ onLogin }) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         user = userCredential.user;
 
-        // Crear ficha vacía (El nombre/avatar se pondrá después)
+        // Crear ficha vacía
         const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', user.uid);
         await setDoc(userRef, {
           uid: user.uid,
@@ -103,10 +103,13 @@ const AuthScreen = ({ onLogin }) => {
           </div>
         </div>
 
-        <h1 className="text-3xl font-black text-white mb-2 tracking-tight">NURSE MANAGER</h1>
+        {/* --- AQUÍ ESTÁ EL CAMBIO DE NOMBRE --- */}
+        <h1 className="text-3xl font-black text-white mb-2 tracking-tight uppercase">
+          Hospital Gest-Tech
+        </h1>
         
         {/* PESTAÑAS SUPERIORES PARA CAMBIAR MODO */}
-        <div className="flex p-1 bg-black/40 rounded-xl mb-6">
+        <div className="flex p-1 bg-black/40 rounded-xl mb-6 mt-6">
           <button
             onClick={() => setIsRegistering(false)}
             className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isRegistering ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
