@@ -93,11 +93,17 @@ export default function App() {
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
     if (!user) return;
-    
-    const studentId = localStorage.getItem('studentId');
+
+    // 🔄 Recuperar el ID del estudiante desde localStorage o, como respaldo, desde el usuario autenticado
+    let studentId = localStorage.getItem('studentId') || user?.uid;
     if (!studentId) {
-      console.warn('No studentId en localStorage');
+      console.warn('No studentId disponible tras login');
       return;
+    }
+
+    // ⚙️ Aseguramos que quede guardado para futuros renders
+    if (!localStorage.getItem('studentId')) {
+      localStorage.setItem('studentId', studentId);
     }
 
     const userProgressRef = doc(db, 'artifacts', appId, 'users', studentId, 'data', 'progress');
@@ -105,10 +111,11 @@ export default function App() {
     const unsubscribe = onSnapshot(userProgressRef, (docSnap) => {
       if (docSnap.exists()) {
         console.log('✓ Datos de progreso cargados:', docSnap.data());
-        setUserData(docSnap.data());
+        setUserData({ studentId, ...docSnap.data() });
       } else {
         console.log('📝 Creando documento de progreso nuevo');
         setDoc(userProgressRef, {
+          studentId,
           totalScore: 0,
           completedLevels: {}
         });
@@ -147,10 +154,9 @@ export default function App() {
     }
     
     // Si no viene studentId en parámetro, obtener de localStorage
-    let finalStudentId = studentId;
-    if (!finalStudentId) {
-      finalStudentId = localStorage.getItem('studentId');
-      console.log(`📌 StudentID obtenido de localStorage: ${finalStudentId}`);
+    let finalStudentId = studentId || localStorage.getItem('studentId') || user?.uid;
+    if (!studentId) {
+      console.log(`📌 StudentID obtenido de respaldo: ${finalStudentId}`);
     }
     
     if (!finalStudentId) {
