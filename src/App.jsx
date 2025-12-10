@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth'; // 🔥 AÑADIDO signOut
+import { onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -39,32 +39,6 @@ export default function App() {
     setShowBadgeNotification,
     checkLevelBadges
   } = useBadges(userData);
-
-  // --- 🔥 FUNCIÓN DE LIMPIEZA NUEVA (LOGOUT) ---
-  const handleLogout = async () => {
-    try {
-      // 1. Cerrar sesión en Firebase
-      await signOut(auth);
-      
-      // 2. Borrar huella local
-      localStorage.removeItem('studentId');
-
-      // 3. LIMPIAR TODOS LOS ESTADOS (La "Escoba")
-      setUser(null);
-      setUserData(null);
-      setSelectedAvatar(null);
-      setCurrentLevel(null);
-      setRewardNotification(null);
-      
-      // 4. Volver a la pantalla de Auth
-      setView('auth');
-      
-      console.log("🧹 Sesión cerrada y memoria limpiada correctamente.");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
-  // -----------------------------------------------------
 
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
@@ -226,16 +200,8 @@ export default function App() {
           }}
         />
       )}
-
       {!user && <AuthScreen onLogin={() => setView('welcome')} />}
-      
-      {user && view === 'welcome' && (
-        <WelcomeScreen 
-          onContinue={() => setView('avatar')} 
-          onLogout={handleLogout} /* 🔥 AQUÍ USAMOS LA FUNCIÓN NUEVA */
-        />
-      )}
-
+      {user && view === 'welcome' && <WelcomeScreen onContinue={() => setView('avatar')} onLogout={() => auth.signOut()} />}
       {user && view === 'avatar' && <AvatarCustomization onComplete={(gender) => setView(gender === 'male' ? 'male-customization' : gender === 'female' ? 'female-customization' : 'avatar')} />}
       {user && view === 'male-customization' && <MaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
       {user && view === 'female-customization' && <FemaleCharacterCustomization onComplete={(avatar) => { setSelectedAvatar(avatar); setView('avatar-entrance'); }} onBack={() => setView('avatar')} />}
