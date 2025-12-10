@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
-// --- INICIO DE LO QUE FALTABA ---
-// 1. Importamos las imágenes de los personajes una por una
-// (Ajusta los nombres de archivo si son diferentes, ej: si es .jpg o .png)
-import female1 from '../assets/female-characters/female-character-1.png';
-import female2 from '../assets/female-characters/female-character-2.png';
-import female3 from '../assets/female-characters/female-character-3.png';
+// Importar todas las variantes disponibles para mostrar el avatar correcto
+const femaleImages = import.meta.glob('../assets/female-characters/female-character-*.png', {
+  import: 'default',
+  eager: true,
+});
 
-import male1 from '../assets/male-characters/male-character-1.png';
-import male2 from '../assets/male-characters/male-character-2.png';
-import male3 from '../assets/male-characters/male-character-3.png';
+const maleImages = import.meta.glob('../assets/male-characters/male-character-*.png', {
+  import: 'default',
+  eager: true,
+});
 
-// 2. Definimos el mapa (diccionario) que usa el componente abajo
-const characterImages = {
-  female: {
-    '1': female1,
-    '2': female2,
-    '3': female3,
-  },
-  male: {
-    '1': male1,
-    '2': male2,
-    '3': male3,
-  }
+const getAvatarImage = (avatar) => {
+  if (!avatar) return null;
+
+  const preset = String(avatar.characterPreset || '1');
+  const gender = avatar.gender === 'male' ? 'male' : 'female';
+  const images = gender === 'male' ? maleImages : femaleImages;
+  const key = `../assets/${gender}-characters/${gender}-character-${preset}.png`;
+
+  return images[key] || images[`../assets/${gender}-characters/${gender}-character-1.png`] || null;
 };
-// --- FIN DE LO QUE FALTABA ---
 
 /**
  * AvatarEntrance - Animación de entrada del avatar al hospital
@@ -65,8 +61,7 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           {/* Avatar figure */}
           {avatar && avatar.characterPreset && (
             <img
-              // Ahora esto funcionará porque characterImages ya existe arriba
-              src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
+              src={getAvatarImage(avatar)}
               alt={avatar.name || 'Avatar'}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             />

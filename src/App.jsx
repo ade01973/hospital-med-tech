@@ -93,10 +93,17 @@ export default function App() {
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
     if (!user) return;
-    
-    const studentId = localStorage.getItem('studentId');
+
+    let studentId = localStorage.getItem('studentId');
+
+    // 🛟 Fallback cuando el localStorage se borra pero el usuario sigue logueado
+    if (!studentId && user?.uid) {
+      studentId = user.uid;
+      localStorage.setItem('studentId', studentId);
+    }
+
     if (!studentId) {
-      console.warn('No studentId en localStorage');
+      console.warn('No studentId en localStorage ni en sesión');
       return;
     }
 
