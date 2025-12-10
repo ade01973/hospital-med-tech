@@ -1,176 +1,155 @@
 import React, { useState } from 'react';
-import { signInAnonymously, signInWithCustomToken, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import { doc, setDoc, getDoc, getDocs, collection, query, where, serverTimestamp, writeBatch } from 'firebase/firestore';
-import { ChevronRight, HeartPulse, RefreshCw } from 'lucide-react';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence
+} from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { ChevronRight, HeartPulse, UserPlus, LogIn } from 'lucide-react';
 import hospitalBg from '../assets/hospital-background.png';
 import { auth, db, appId } from '../firebase.js';
 
 const AuthScreen = ({ onLogin }) => {
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [statusMsg, setStatusMsg] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    setError('');
     setLoading(true);
-    setStatusMsg('Conectando con el servidor...');
 
     try {
       await setPersistence(auth, browserLocalPersistence);
       
-      // 1. Autenticación (Genera un UID, nuevo o existente)
-      let userCredential;
-      try {
-        userCredential = await signInAnonymously(auth);
-      } catch (anonError) {
-        if (typeof window !== 'undefined' && window.__initial_auth_token) {
-           userCredential = await signInWithCustomToken(auth, window.__initial_auth_token);
-        } else {
-           throw anonError;
-        }
-      }
+      let user;
 
-      if (auth.currentUser) {
-        const currentUid = auth.currentUser.uid;
-        const profilesRef = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
-        const userDocRef = doc(profilesRef, currentUid);
-
-        // 2. Buscar si ya existe este UID (por si es una reconexión sin haber cerrado sesión del todo)
-        const currentDocSnap = await getDoc(userDocRef);
-
-        if (currentDocSnap.exists()) {
-           // El usuario ya existe en este UID, solo actualizamos última conexión
-           setStatusMsg('Perfil encontrado. Accediendo...');
-           await setDoc(userDocRef, { lastActive: serverTimestamp() }, { merge: true });
-        } else {
-          // 3. CASO CRÍTICO: UID nuevo (Logout previo). Buscamos por NOMBRE (ID de Agente) para recuperar datos
-          setStatusMsg('Buscando historial de agente...');
-          
-          // Buscamos cualquier perfil que tenga el mismo nombre que se acaba de introducir
-          const q = query(profilesRef, where("displayName", "==", name.trim()));
-          const querySnapshot = await getDocs(q);
-
-          if (!querySnapshot.empty) {
-            // ¡ENCONTRADO! Recuperamos los datos antiguos
-            setStatusMsg('¡Agente reconocido! Recuperando datos...');
-            const oldDoc = querySnapshot.docs[0]; // Tomamos el primero que coincida
-            const oldData = oldDoc.data();
-
-            // 4. MIGRACIÓN: Copiamos los datos antiguos al NUEVO UID
-            // Importante: NO ponemos totalScore: 0 aquí para no borrar el progreso
-            await setDoc(userDocRef, {
-              ...oldData, // Copiamos todo (niveles, dinero, experiencia...)
-              uid: currentUid, // Actualizamos al nuevo UID técnico
-              lastActive: serverTimestamp(),
-              isRecovered: true // Marca para saber que fue recuperado
-            });
-
-            // Opcional: Borrar el doc antiguo para no dejar basura, 
-            // pero mejor dejarlo por seguridad o marcarlo como 'migrated'
-            // await deleteDoc(oldDoc.ref); 
-
-          } else {
-            // 5. USUARIO TOTALMENTE NUEVO
-            setStatusMsg('Creando nuevo perfil de agente...');
-            await setDoc(userDocRef, {
-              displayName: name.trim(),
-              uid: currentUid,
-              lastActive: serverTimestamp(),
-              totalScore: 0, // Solo aquí ponemos 0
-              money: 0,
-              completedLevels: {} 
-            });
-          }
-        }
+      if (isRegistering) {
+        // --- MODO REGISTRO (NUEVO USUARIO) ---
+        if (!name.trim()) throw new Error("Por favor, introduce tu Nombre de Agente.");
         
-        localStorage.setItem('studentId', currentUid);
-      }
-      
-      setStatusMsg('¡Acceso concedido!');
-      setTimeout(() => onLogin(), 500); // Pequeña pausa para leer el mensaje
+        // Crea el usuario en Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        user = userCredential.user;
 
-    } catch (error) {
-      console.error("Error auth completo:", error);
-      handleErrors(error);
+        // Crea su ficha en la base de datos (Firestore)
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', user.uid);
+        await setDoc(userRef, {
+          displayName: name,
+          uid: user.uid,
+          email: email,
+          createdAt: serverTimestamp(),
+          lastActive: serverTimestamp(),
+          totalScore: 0,
+          money: 0,
+          completedLevels: {}
+        });
+
+      } else {
+        // --- MODO LOGIN (USUARIO EXISTENTE) ---
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        user = userCredential.user;
+        
+        // Actualizamos su última conexión
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', user.uid);
+        await setDoc(userRef, { lastActive: serverTimestamp() }, { merge: true });
+      }
+
+      // Guardamos el ID en el navegador y entramos
+      localStorage.setItem('studentId', user.uid);
+      onLogin();
+
+    } catch (err) {
+      console.error(err);
+      // Traducimos los errores de Firebase a español
+      if (err.code === 'auth/email-already-in-use') setError('Este correo ya está registrado.');
+      else if (err.code === 'auth/wrong-password') setError('Contraseña incorrecta.');
+      else if (err.code === 'auth/user-not-found') setError('No existe cuenta con este correo.');
+      else if (err.code === 'auth/weak-password') setError('La contraseña debe tener al menos 6 caracteres.');
+      else if (err.code === 'auth/invalid-email') setError('El correo no es válido.');
+      else setError("Error: " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleErrors = (error) => {
-    if (error.code === 'auth/operation-not-allowed') {
-      alert("⚠️ ERROR: Habilita 'Anonymous Auth' en Firebase Console.");
-    } else {
-      alert("Error de conexión: " + error.message);
-    }
-  };
-
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans"
-      style={{
-        backgroundImage: `url(${hospitalBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
+      className="min-h-screen flex items-center justify-center p-4 relative font-sans"
+      style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover' }}
     >
-      <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
+      <div className="absolute inset-0 bg-black/60" />
       
-      {/* Elementos decorativos de fondo */}
-      <div className="absolute top-10 right-10 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-10 left-10 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl"></div>
+      <div className="bg-slate-900/95 p-8 rounded-3xl max-w-md w-full text-center relative z-10 border border-slate-700 shadow-2xl animate-fade-in">
+        <HeartPulse className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
+        <h1 className="text-3xl font-black text-white mb-2">NURSE MANAGER</h1>
+        <p className="text-slate-400 text-sm mb-6 font-bold uppercase tracking-widest">
+          {isRegistering ? 'CREAR NUEVA CUENTA' : 'ACCESO DE PERSONAL'}
+        </p>
+        
+        {error && (
+          <div className="bg-red-500/20 text-red-200 p-3 rounded-lg mb-4 text-sm font-bold border border-red-500/50">
+            ⚠️ {error}
+          </div>
+        )}
 
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-3xl shadow-2xl p-8 max-w-md w-full text-center relative z-10 animate-fade-in">
-        
-        <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 transform hover:rotate-12 transition-all duration-500">
-          <HeartPulse className="w-10 h-10 text-white animate-pulse" />
-        </div>
-        
-        <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-lg">
-          NURSE<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">MANAGER</span>
-        </h1>
-        <p className="text-slate-400 mb-8 text-xs uppercase tracking-[0.2em] font-bold">Simulador de Gestión Sanitaria</p>
-        
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+        <form onSubmit={handleAuth} className="space-y-4">
+          
+          {/* Campo de nombre (solo visible si te registras) */}
+          {isRegistering && (
             <input
               type="text"
-              required
+              placeholder="Tu Nombre de Agente"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="INTRODUCE TU ID DE AGENTE"
-              className="relative w-full px-5 py-4 bg-slate-950/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-center font-bold tracking-widest uppercase transition-all"
+              className="w-full p-4 bg-black/40 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:border-cyan-500 outline-none transition-colors"
+              required
             />
-          </div>
+          )}
+
+          <input
+            type="email"
+            placeholder="Correo Electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-4 bg-black/40 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:border-cyan-500 outline-none transition-colors"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-4 bg-black/40 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:border-cyan-500 outline-none transition-colors"
+            required
+          />
 
           <button 
             type="submit" 
-            disabled={loading}
-            className="w-full bg-white hover:bg-cyan-50 text-slate-900 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 uppercase tracking-widest text-sm"
+            disabled={loading} 
+            className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold p-4 rounded-xl flex justify-center items-center gap-2 transition-all transform hover:-translate-y-1"
           >
-            {loading ? (
-              <>
-                <RefreshCw className="w-5 h-5 animate-spin" />
-                {statusMsg || 'Conectando...'}
-              </>
-            ) : (
-              <>
-                Entrar al Sistema <ChevronRight className="w-5 h-5" />
-              </>
-            )}
+            {loading ? 'Conectando...' : (isRegistering ? 'REGISTRARME Y ENTRAR' : 'INICIAR SESIÓN')}
           </button>
         </form>
 
-        {/* Nota informativa */}
-        <div className="mt-6 pt-6 border-t border-white/10">
-          <p className="text-slate-500 text-xs">
-            ⚠️ <span className="font-bold text-slate-400">IMPORTANTE:</span> Usa siempre el mismo <span className="text-cyan-400">ID DE AGENTE</span> para recuperar tu progreso si cierras sesión.
-          </p>
+        <div className="mt-6 pt-6 border-t border-slate-700">
+          <button 
+            onClick={() => { setIsRegistering(!isRegistering); setError(''); }}
+            className="text-cyan-400 hover:text-cyan-300 text-sm font-bold flex items-center justify-center gap-2 w-full transition-colors"
+          >
+            {isRegistering ? (
+              <>¿Ya tienes cuenta? Inicia Sesión <LogIn className="w-4 h-4" /></>
+            ) : (
+              <>¿Eres nuevo? Crea tu cuenta aquí <UserPlus className="w-4 h-4" /></>
+            )}
+          </button>
         </div>
-
       </div>
     </div>
   );
