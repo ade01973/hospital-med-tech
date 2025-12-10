@@ -42,6 +42,13 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
     return () => clearTimeout(timer);
   }, [onComplete]);
 
+  const genderKey = avatar?.gender?.toLowerCase();
+  const presetKey = avatar?.characterPreset != null
+    ? String(avatar.characterPreset)
+    : '1';
+  const selectedImage = characterImages[genderKey]?.[presetKey]
+    || characterImages[genderKey]?.['1'];
+
   if (!showEntrance) return null;
 
   return (
@@ -63,10 +70,10 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
           {/* Avatar figure */}
-          {avatar && avatar.characterPreset && (
+          {avatar && (
             <img
               // Ahora esto funcionará porque characterImages ya existe arriba
-              src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
+              src={selectedImage}
               alt={avatar.name || 'Avatar'}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             />
