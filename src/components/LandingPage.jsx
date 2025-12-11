@@ -1,6 +1,8 @@
 import React from 'react';
-import { ChevronRight, Star, Shield, Users, Trophy, BrainCircuit, Activity } from 'lucide-react';
-import hospitalBg from '../assets/hospital-background.png';
+import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity } from 'lucide-react';
+
+// 🔥 IMPORTAMOS TU NUEVA IMAGEN DE FONDO
+import landingBg from '../assets/landing-bg.jpg'; 
 
 const LandingPage = ({ onStart }) => {
   return (
@@ -24,26 +26,34 @@ const LandingPage = ({ onStart }) => {
         </div>
       </nav>
 
-      {/* --- HERO SECTION (Above the fold) --- */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        {/* Fondo con imagen y overlay */}
+      {/* --- HERO SECTION (FONDO NUEVO) --- */}
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        
+        {/* FONDO CON TU IMAGEN Y FILTRO OSCURO */}
         <div className="absolute inset-0 z-0">
-          <img src={hospitalBg} alt="Hospital Futuro" className="w-full h-full object-cover opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950" />
+          <img 
+            src={landingBg} 
+            alt="Hospital Universitario Futuro" 
+            className="w-full h-full object-cover" 
+          />
+          {/* Este degradado es crucial para que el texto blanco se lea bien sobre la foto */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-8 animate-fade-in backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Simulación Clínica Avanzada v2.0
           </div>
           
-          <h1 className="text-5xl lg:text-7xl font-black mb-6 tracking-tight leading-tight">
+          <h1 className="text-5xl lg:text-7xl font-black mb-6 tracking-tight leading-tight drop-shadow-2xl">
             Domina el Liderazgo <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Enfermero del Futuro</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 filter drop-shadow-lg">
+              Enfermero del Futuro
+            </span>
           </h1>
           
-          <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-medium">
             La primera plataforma de simulación gamificada que une gestión sanitaria, toma de decisiones clínicas e Inteligencia Artificial.
           </p>
 
@@ -54,24 +64,23 @@ const LandingPage = ({ onStart }) => {
             >
               EMPEZAR AHORA <ChevronRight className="w-5 h-5" />
             </button>
-            <button className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-lg transition-all border border-slate-700">
+            <button className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold rounded-xl text-lg transition-all border border-slate-600 backdrop-blur-md">
               Ver Demo (Video)
             </button>
           </div>
 
           {/* Social Proof Mini */}
-          <div className="mt-12 pt-8 border-t border-slate-800/50 flex flex-col items-center gap-4">
-            <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">Confianza académica</p>
-            <div className="flex gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
-              {/* Aquí irían logos de universidades, pongo placeholders */}
-              <div className="h-8 font-bold text-slate-400 flex items-center gap-2"><Shield className="w-5 h-5" /> UNIVERSIDAD</div>
-              <div className="h-8 font-bold text-slate-400 flex items-center gap-2"><Activity className="w-5 h-5" /> HOSPITAL DOCENTE</div>
+          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
+            <p className="text-xs text-slate-300 uppercase tracking-widest font-bold drop-shadow-sm">Confianza académica</p>
+            <div className="flex gap-8 opacity-70 grayscale hover:grayscale-0 transition-all">
+              <div className="h-8 font-bold text-white flex items-center gap-2 drop-shadow-md"><Shield className="w-5 h-5" /> UNIVERSIDAD</div>
+              <div className="h-8 font-bold text-white flex items-center gap-2 drop-shadow-md"><Activity className="w-5 h-5" /> HOSPITAL DOCENTE</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- CARACTERÍSTICAS (Estilo Bento Grid - Inspiración Padlet/Apple) --- */}
+      {/* --- CARACTERÍSTICAS (Estilo Bento Grid) --- */}
       <section className="py-24 bg-slate-950 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -149,12 +158,14 @@ const LandingPage = ({ onStart }) => {
                  </div>
                </div>
              </div>
-             <div className="relative">
-               {/* Aquí podrías poner una captura de tu dashboard flotando */}
-               <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full" />
+             
+             {/* Caja decorativa donde iría una captura del dashboard */}
+             <div className="relative group">
+               <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-700" />
                <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
-                  <div className="w-full h-64 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600">
-                    (Aquí irá una captura de tu Dashboard)
+                  <div className="w-full h-64 bg-slate-800 rounded-lg flex flex-col items-center justify-center text-slate-500 border border-slate-700/50">
+                    <Activity className="w-12 h-12 mb-2 opacity-50" />
+                    <span className="text-xs font-bold tracking-widest uppercase">Dashboard de Simulación</span>
                   </div>
                </div>
              </div>
@@ -162,7 +173,7 @@ const LandingPage = ({ onStart }) => {
         </div>
       </section>
 
-      {/* --- CTA FINAL Y ENCUESTA --- */}
+      {/* --- CTA FINAL --- */}
       <section className="py-20 bg-gradient-to-t from-cyan-900/20 to-slate-950 text-center">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl font-black mb-6">¿Listo para el reto?</h2>
