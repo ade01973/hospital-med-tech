@@ -7,9 +7,13 @@ import {
   browserLocalPersistence
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import logoImg from '../assets/logo-hospital.png';
+// Hemos quitado HeartPulse que ya no se usa
+import { UserPlus, LogIn, KeyRound } from 'lucide-react'; 
 import hospitalBg from '../assets/hospital-background.png';
 import { auth, db, appId } from '../firebase.js';
+
+// Import del Logo
+import logoImg from '../assets/logo-hospital.png'; 
 
 const AuthScreen = ({ onLogin }) => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -31,7 +35,7 @@ const AuthScreen = ({ onLogin }) => {
       let user;
 
       if (isRegistering) {
-        // --- REGISTRO (Solo Email + Pass) ---
+        // --- REGISTRO ---
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         user = userCredential.user;
 
@@ -98,20 +102,19 @@ const AuthScreen = ({ onLogin }) => {
       <div className="bg-slate-900/90 p-8 rounded-3xl max-w-md w-full text-center relative z-10 border border-slate-700 shadow-2xl animate-fade-in">
         
         {/* LOGO NUEVO */}
-<div className="flex justify-center mb-6">
-  <img 
-    src={logoImg} 
-    alt="Logo Gest-Tech" 
-    className="w-24 h-auto object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]" 
-  />
-</div>
+        <div className="flex justify-center mb-6">
+          <img 
+            src={logoImg} 
+            alt="Logo Gest-Tech" 
+            className="w-24 h-auto object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]" 
+          />
+        </div>
 
-        {/* --- AQUÍ ESTÁ EL CAMBIO DE NOMBRE --- */}
         <h1 className="text-3xl font-black text-white mb-2 tracking-tight uppercase">
           Hospital Gest-Tech
         </h1>
         
-        {/* PESTAÑAS SUPERIORES PARA CAMBIAR MODO */}
+        {/* PESTAÑAS */}
         <div className="flex p-1 bg-black/40 rounded-xl mb-6 mt-6">
           <button
             onClick={() => setIsRegistering(false)}
