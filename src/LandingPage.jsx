@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity, X, Play } from 'lucide-react';
 
-// 🔥 IMPORTAMOS TODAS LAS IMÁGENES NECESARIAS
+// 🔥 IMPORTAMOS TODAS LAS IMÁGENES
+// Asegúrate de que los nombres de archivo coinciden con lo que tienes en assets
 import landingBg from '../assets/landing-bg.jpg';
 import logoImg from '../assets/logo-hospital.png';
-import dashboardPreview from '../assets/dashboard-preview.jpg'; // <--- LA NUEVA IMAGEN
+import dashboardPreview from '../assets/dashboard.jpg'; // <--- LA CAPTURA DEL MENÚ
 
 const LandingPage = ({ onStart }) => {
+  // Estado para abrir/cerrar el video
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
@@ -16,12 +18,14 @@ const LandingPage = ({ onStart }) => {
       {isVideoOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in">
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
+            {/* Botón Cerrar */}
             <button 
               onClick={() => setIsVideoOpen(false)}
               className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-red-500 text-white p-2 rounded-full transition-all backdrop-blur-md"
             >
               <X className="w-6 h-6" />
             </button>
+            {/* Video YouTube */}
             <iframe 
               className="w-full h-full"
               src="https://www.youtube.com/embed/eEUO7lpbv0E?autoplay=1&rel=0" 
@@ -61,6 +65,8 @@ const LandingPage = ({ onStart }) => {
 
       {/* --- HERO SECTION --- */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        
+        {/* FONDO */}
         <div className="absolute inset-0 z-0">
           <img 
             src={landingBg} 
@@ -95,6 +101,7 @@ const LandingPage = ({ onStart }) => {
               EMPEZAR AHORA <ChevronRight className="w-5 h-5" />
             </button>
             
+            {/* BOTÓN "VER DEMO" QUE ABRE EL VIDEO */}
             <button 
               onClick={() => setIsVideoOpen(true)}
               className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold rounded-xl text-lg transition-all border border-slate-600 backdrop-blur-md flex items-center gap-2 group"
@@ -106,6 +113,7 @@ const LandingPage = ({ onStart }) => {
             </button>
           </div>
 
+          {/* Social Proof */}
           <div className="mt-16 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
             <p className="text-xs text-slate-300 uppercase tracking-widest font-bold drop-shadow-sm">Confianza académica</p>
             <div className="flex gap-8 opacity-70 grayscale hover:grayscale-0 transition-all">
@@ -125,6 +133,7 @@ const LandingPage = ({ onStart }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Cards de características */}
             <div className="col-span-1 md:col-span-2 bg-slate-900/50 border border-slate-800 p-8 rounded-3xl hover:border-cyan-500/30 transition-all group">
               <div className="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Trophy className="w-6 h-6 text-purple-400" />
@@ -164,6 +173,8 @@ const LandingPage = ({ onStart }) => {
       <section className="py-24 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+             
+             {/* Texto de pasos */}
              <div>
                <h2 className="text-3xl lg:text-4xl font-black mb-8">Tu camino al éxito profesional</h2>
                <div className="space-y-8">
@@ -191,10 +202,10 @@ const LandingPage = ({ onStart }) => {
                </div>
              </div>
              
-             {/* 🔥 AQUÍ ESTÁ LA NUEVA IMAGEN DEL DASHBOARD 🔥 */}
-             <div className="relative group">
+             {/* 🔥 IMAGEN REAL DEL DASHBOARD (SUSTITUYE AL CUADRO GRIS) 🔥 */}
+             <div className="relative group perspective-1000">
                <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-700" />
-               <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-2 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
+               <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-2 shadow-2xl rotate-2 group-hover:rotate-0 transition-all duration-500 transform hover:scale-[1.02]">
                   <img 
                     src={dashboardPreview} 
                     alt="Vista previa del simulador" 
