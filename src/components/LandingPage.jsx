@@ -1,31 +1,27 @@
 import React, { useState } from 'react';
 import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity, X, Play } from 'lucide-react';
 
-// 🔥 IMPORTAMOS TU FONDO Y TU LOGO
+// 🔥 IMÁGENES: Ajustado a .png como me has dicho
 import landingBg from '../assets/landing-bg.jpg';
 import logoImg from '../assets/logo-hospital.png';
+import dashboardPreview from '../assets/dashboard.png'; // <--- CAMBIADO A .PNG
 
 const LandingPage = ({ onStart }) => {
-  // Estado para controlar si el video está abierto o cerrado
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-white overflow-x-hidden selection:bg-cyan-500 selection:text-black">
       
-      {/* --- MODAL DE VIDEO (VENTANA EMERGENTE) --- */}
+      {/* --- MODAL DE VIDEO --- */}
       {isVideoOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in">
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
-            
-            {/* Botón de Cerrar */}
             <button 
               onClick={() => setIsVideoOpen(false)}
               className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-red-500 text-white p-2 rounded-full transition-all backdrop-blur-md"
             >
               <X className="w-6 h-6" />
             </button>
-
-            {/* Reproductor YouTube */}
             <iframe 
               className="w-full h-full"
               src="https://www.youtube.com/embed/eEUO7lpbv0E?autoplay=1&rel=0" 
@@ -41,8 +37,6 @@ const LandingPage = ({ onStart }) => {
       {/* --- NAVBAR --- */}
       <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          
-          {/* LOGO + NOMBRE */}
           <div className="flex items-center gap-3">
             <img 
               src={logoImg} 
@@ -53,7 +47,6 @@ const LandingPage = ({ onStart }) => {
               Hospital <span className="text-cyan-400">Gest-Tech</span>
             </span>
           </div>
-
           <button 
             onClick={onStart}
             className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold hover:bg-cyan-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] text-sm uppercase tracking-wider"
@@ -65,14 +58,8 @@ const LandingPage = ({ onStart }) => {
 
       {/* --- HERO SECTION --- */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
-        
-        {/* FONDO */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={landingBg} 
-            alt="Hospital Universitario Futuro" 
-            className="w-full h-full object-cover" 
-          />
+          <img src={landingBg} alt="Hospital Futuro" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" />
         </div>
 
@@ -100,8 +87,6 @@ const LandingPage = ({ onStart }) => {
             >
               EMPEZAR AHORA <ChevronRight className="w-5 h-5" />
             </button>
-            
-            {/* 🔥 BOTÓN VIDEO CON ACCIÓN DE ABRIR MODAL 🔥 */}
             <button 
               onClick={() => setIsVideoOpen(true)}
               className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold rounded-xl text-lg transition-all border border-slate-600 backdrop-blur-md flex items-center gap-2 group"
@@ -113,7 +98,6 @@ const LandingPage = ({ onStart }) => {
             </button>
           </div>
 
-          {/* Social Proof */}
           <div className="mt-16 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
             <p className="text-xs text-slate-300 uppercase tracking-widest font-bold drop-shadow-sm">Confianza académica</p>
             <div className="flex gap-8 opacity-70 grayscale hover:grayscale-0 transition-all">
@@ -133,7 +117,6 @@ const LandingPage = ({ onStart }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
             <div className="col-span-1 md:col-span-2 bg-slate-900/50 border border-slate-800 p-8 rounded-3xl hover:border-cyan-500/30 transition-all group">
               <div className="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Trophy className="w-6 h-6 text-purple-400" />
@@ -141,8 +124,6 @@ const LandingPage = ({ onStart }) => {
               <h3 className="text-2xl font-bold mb-2">Gamificación Real</h3>
               <p className="text-slate-400">Sube de nivel, gana medallas y compite en el ranking. Aprender gestión nunca fue tan adictivo.</p>
             </div>
-
-            {/* Card 2 */}
             <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 p-8 rounded-3xl flex flex-col justify-between hover:shadow-2xl hover:shadow-cyan-900/20 transition-all">
               <div>
                 <BrainCircuit className="w-10 h-10 text-cyan-400 mb-4 animate-pulse" />
@@ -150,15 +131,11 @@ const LandingPage = ({ onStart }) => {
                 <p className="text-slate-400 text-sm">Feedback inmediato personalizado por Inteligencia Artificial.</p>
               </div>
             </div>
-
-            {/* Card 3 */}
             <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl">
                <Users className="w-10 h-10 text-blue-400 mb-4" />
                <h3 className="text-xl font-bold mb-2">Identidad Digital</h3>
                <p className="text-slate-400 text-sm">Crea tu avatar sanitario y construye tu carrera profesional virtual.</p>
             </div>
-
-            {/* Card 4 */}
             <div className="col-span-1 md:col-span-2 bg-slate-900/50 border border-slate-800 p-8 rounded-3xl flex items-center gap-6 hover:bg-slate-900 transition-colors">
               <div className="flex-1">
                 <h3 className="text-2xl font-bold mb-2">Seguridad del Paciente</h3>
@@ -203,15 +180,18 @@ const LandingPage = ({ onStart }) => {
                </div>
              </div>
              
-             <div className="relative group">
+             {/* 🔥 IMAGEN REAL DEL DASHBOARD (AHORA SÍ SALE) 🔥 */}
+             <div className="relative group perspective-1000">
                <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full group-hover:bg-cyan-500/30 transition-all duration-700" />
-               <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
-                  <div className="w-full h-64 bg-slate-800 rounded-lg flex flex-col items-center justify-center text-slate-500 border border-slate-700/50">
-                    <Activity className="w-12 h-12 mb-2 opacity-50" />
-                    <span className="text-xs font-bold tracking-widest uppercase">Dashboard de Simulación</span>
-                  </div>
+               <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-2 shadow-2xl rotate-2 group-hover:rotate-0 transition-all duration-500 transform hover:scale-[1.02]">
+                  <img 
+                    src={dashboardPreview} 
+                    alt="Vista previa del simulador" 
+                    className="w-full h-auto rounded-xl shadow-inner border border-slate-700/50 opacity-90 group-hover:opacity-100 transition-opacity"
+                  />
                </div>
              </div>
+
            </div>
         </div>
       </section>
