@@ -14,19 +14,24 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
         backgroundAttachment: 'fixed'
       }}
     >
+      {/* Efectos de fondo */}
       <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
 
-    {/* 🟢 PEGA ESTO (LOGO GRANDE): */}
-<div className="w-40 h-40 mx-auto mb-2 flex items-center justify-center transform hover:scale-110 transition-all duration-500">
-  <img 
-    src={logoImg} 
-    alt="Logo Gest-Tech" 
-    className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]" 
-  />
-</div>
+      {/* CONTENEDOR DE LA TARJETA (El recuadro oscuro) */}
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-12 max-w-2xl w-full text-center relative z-10">
         
+        {/* LOGO GRANDE */}
+        <div className="w-40 h-40 mx-auto mb-2 flex items-center justify-center transform hover:scale-110 transition-all duration-500">
+          <img 
+            src={logoImg} 
+            alt="Logo Gest-Tech" 
+            className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]" 
+          />
+        </div>
+        
+        {/* TEXTOS */}
         <h1 className="text-5xl font-black text-white mb-2 tracking-tighter">¡Bienvenid@s!</h1>
         <p className="text-2xl text-cyan-400 font-bold mb-8">al Hospital Gest-Tech</p>
         
@@ -34,6 +39,7 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
           Ingresa en el simulador de gestión sanitaria más avanzado. Completa módulos de liderazgo, toma de decisiones y gestión hospitalaria. Sube de rango y demuestra tus habilidades como gestor sanitario.
         </p>
 
+        {/* BOTONES */}
         <div className="space-y-3">
           <button 
             onClick={onContinue}
@@ -49,6 +55,7 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
             <LogOut className="w-4 h-4" /> Cerrar Sesión
           </button>
         </div>
+
       </div>
     </div>
   );
