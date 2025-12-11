@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
+import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail, 
+  sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence
 } from 'firebase/auth';
+import { KeyRound } from 'lucide-react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import logoImg from '../assets/logo-hospital.png';
 import hospitalBg from '../assets/hospital-background.png';
@@ -89,39 +90,38 @@ const AuthScreen = ({ onLogin }) => {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center p-4 relative font-sans"
-      style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover' }}
+      style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      
-      <div className="bg-slate-900/90 p-8 rounded-3xl max-w-md w-full text-center relative z-10 border border-slate-700 shadow-2xl animate-fade-in">
-        
-        {/* LOGO NUEVO */}
-<div className="flex justify-center mb-6">
-  <img 
-    src={logoImg} 
-    alt="Logo Gest-Tech" 
-    className="w-24 h-auto object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]" 
-  />
-</div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 backdrop-blur-sm" />
 
-        {/* --- AQUÍ ESTÁ EL CAMBIO DE NOMBRE --- */}
-        <h1 className="text-3xl font-black text-white mb-2 tracking-tight uppercase">
-          Hospital Gest-Tech
-        </h1>
-        
-        {/* PESTAÑAS SUPERIORES PARA CAMBIAR MODO */}
-        <div className="flex p-1 bg-black/40 rounded-xl mb-6 mt-6">
+      <div className="bg-slate-900/90 p-8 rounded-3xl max-w-md w-full text-center relative z-10 border border-cyan-500/20 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.7)] animate-fade-in">
+        <div className="flex flex-col items-center gap-3 mb-6">
+          <div className="relative w-24 h-24 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center shadow-lg shadow-cyan-500/10">
+            <img
+              src={logoImg}
+              alt="Logo Gest-Tech"
+              className="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.35)]"
+            />
+            <div className="absolute inset-0 rounded-2xl bg-cyan-500/5 blur-3xl" aria-hidden />
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/80">Bienvenido a</p>
+            <h1 className="text-3xl font-black text-white tracking-tight uppercase">Hospital Gest-Tech</h1>
+          </div>
+        </div>
+
+        <div className="flex p-1 bg-black/40 rounded-xl mb-6 mt-4 border border-white/5">
           <button
             onClick={() => setIsRegistering(false)}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isRegistering ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isRegistering ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-2 ring-cyan-300/40' : 'text-slate-400 hover:text-white'}`}
           >
             INICIAR SESIÓN
           </button>
           <button
             onClick={() => setIsRegistering(true)}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isRegistering ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isRegistering ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-2 ring-cyan-300/40' : 'text-slate-400 hover:text-white'}`}
           >
             CREAR CUENTA
           </button>
