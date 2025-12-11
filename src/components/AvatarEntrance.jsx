@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import hospitalEntranceBg from '../assets/hospital-entrance.png';
 
-// --- IMPORTACIÓN DE IMÁGENES DE PERSONAJES ---
+// --- INICIO DE LO QUE FALTABA ---
+// 1. Importamos las imágenes de los personajes una por una
+// (Ajusta los nombres de archivo si son diferentes, ej: si es .jpg o .png)
 import female1 from '../assets/female-characters/female-character-1.png';
 import female2 from '../assets/female-characters/female-character-2.png';
 import female3 from '../assets/female-characters/female-character-3.png';
@@ -10,7 +12,7 @@ import male1 from '../assets/male-characters/male-character-1.png';
 import male2 from '../assets/male-characters/male-character-2.png';
 import male3 from '../assets/male-characters/male-character-3.png';
 
-// Diccionario de imágenes
+// 2. Definimos el mapa (diccionario) que usa el componente abajo
 const characterImages = {
   female: {
     '1': female1,
@@ -23,17 +25,13 @@ const characterImages = {
     '3': male3,
   }
 };
+// --- FIN DE LO QUE FALTABA ---
 
 /**
  * AvatarEntrance - Animación de entrada del avatar al hospital
  */
 const AvatarEntrance = ({ avatar, onComplete }) => {
   const [showEntrance, setShowEntrance] = useState(true);
-
-  // Debug: Ver en consola qué datos están llegando
-  useEffect(() => {
-    console.log("Avatar recibido en entrada:", avatar);
-  }, [avatar]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,10 +43,6 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
   }, [onComplete]);
 
   if (!showEntrance) return null;
-
-  // 🔥 SOLUCIÓN AQUÍ: Detectamos el ID ya sea que venga como 'id', 'characterPreset' o 'preset'
-  const avatarId = avatar?.characterPreset || avatar?.id || avatar?.preset || '1';
-  const avatarGender = avatar?.gender || 'male';
 
   return (
     <div 
@@ -69,10 +63,10 @@ const AvatarEntrance = ({ avatar, onComplete }) => {
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-56 h-3 bg-gradient-to-r from-transparent via-black/40 to-transparent rounded-full blur-xl" />
           
           {/* Avatar figure */}
-          {avatar && (
+          {avatar && avatar.characterPreset && (
             <img
-              // Usamos las variables seguras que definimos arriba
-              src={characterImages[avatarGender]?.[avatarId] || characterImages[avatarGender]?.['1']}
+              // Ahora esto funcionará porque characterImages ya existe arriba
+              src={characterImages[avatar.gender]?.[avatar.characterPreset] || characterImages[avatar.gender]?.['1']}
               alt={avatar.name || 'Avatar'}
               className="w-full h-full object-contain drop-shadow-2xl rounded-2xl"
             />
