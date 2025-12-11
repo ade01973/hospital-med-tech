@@ -1,8 +1,9 @@
 import React from 'react';
 import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity } from 'lucide-react';
 
-// 🔥 IMPORTAMOS TU NUEVA IMAGEN DE FONDO
-import landingBg from '../assets/landing-bg.jpg'; 
+// 🔥 IMPORTAMOS TU FONDO Y TU NUEVO LOGO
+import landingBg from '../assets/landing-bg.jpg';
+import logoImg from '../assets/logo-hospital.png'; // <--- ESTO ES LO NUEVO
 
 const LandingPage = ({ onStart }) => {
   return (
@@ -11,12 +12,19 @@ const LandingPage = ({ onStart }) => {
       {/* --- NAVBAR --- */}
       <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-cyan-500/10 p-2 rounded-lg">
-              <Activity className="w-6 h-6 text-cyan-400" />
-            </div>
-            <span className="font-black text-xl tracking-tight uppercase">Hospital Gest-Tech</span>
+          
+          {/* 🔥 AQUÍ ESTÁ EL CAMBIO DEL LOGO */}
+          <div className="flex items-center gap-3">
+            <img 
+              src={logoImg} 
+              alt="Hospital Gest-Tech Logo" 
+              className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.6)] hover:scale-110 transition-transform duration-300" 
+            />
+            <span className="font-black text-xl tracking-tight uppercase text-white">
+              Hospital <span className="text-cyan-400">Gest-Tech</span>
+            </span>
           </div>
+
           <button 
             onClick={onStart}
             className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold hover:bg-cyan-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] text-sm uppercase tracking-wider"
