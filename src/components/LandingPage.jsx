@@ -1,20 +1,43 @@
-import React from 'react';
-import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity, X, Play } from 'lucide-react';
 
 // 🔥 IMPORTAMOS TU FONDO Y TU LOGO
 import landingBg from '../assets/landing-bg.jpg';
 import logoImg from '../assets/logo-hospital.png';
 
 const LandingPage = ({ onStart }) => {
-  
-  // Función para abrir el video
-  const openDemoVideo = () => {
-    window.open('https://youtu.be/eEUO7lpbv0E', '_blank');
-  };
+  // Estado para controlar si el video está abierto o cerrado
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-white overflow-x-hidden selection:bg-cyan-500 selection:text-black">
       
+      {/* --- MODAL DE VIDEO (VENTANA EMERGENTE) --- */}
+      {isVideoOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
+            
+            {/* Botón de Cerrar */}
+            <button 
+              onClick={() => setIsVideoOpen(false)}
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-red-500 text-white p-2 rounded-full transition-all backdrop-blur-md"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Reproductor YouTube */}
+            <iframe 
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/eEUO7lpbv0E?autoplay=1&rel=0" 
+              title="Demo Hospital Gest-Tech"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
+
       {/* --- NAVBAR --- */}
       <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -78,12 +101,15 @@ const LandingPage = ({ onStart }) => {
               EMPEZAR AHORA <ChevronRight className="w-5 h-5" />
             </button>
             
-            {/* 🔥 BOTÓN VIDEO CONECTADO 🔥 */}
+            {/* 🔥 BOTÓN VIDEO CON ACCIÓN DE ABRIR MODAL 🔥 */}
             <button 
-              onClick={openDemoVideo}
-              className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold rounded-xl text-lg transition-all border border-slate-600 backdrop-blur-md flex items-center gap-2"
+              onClick={() => setIsVideoOpen(true)}
+              className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold rounded-xl text-lg transition-all border border-slate-600 backdrop-blur-md flex items-center gap-2 group"
             >
-              ▶ Ver Demo (Video)
+              <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-black transition-colors">
+                <Play className="w-4 h-4 fill-current" />
+              </div>
+              Ver Demo
             </button>
           </div>
 
