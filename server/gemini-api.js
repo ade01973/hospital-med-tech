@@ -6,7 +6,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
+const apiKey = process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY_1 || process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error('Google API key is not set. Please define GOOGLE_API_KEY or GOOGLE_API_KEY_1.');
+}
+
+const ai = new GoogleGenAI({ apiKey });
 
 const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
