@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight, LogOut } from 'lucide-react';
 import hospitalBg from '../assets/hospital-entrance.png';
+import logoImg from '../assets/logo-hospital.png';
 
 const WelcomeScreen = ({ onContinue, onLogout }) => {
   return (
@@ -17,9 +18,13 @@ const WelcomeScreen = ({ onContinue, onLogout }) => {
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
 
-      <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-12 max-w-2xl w-full text-center relative z-10">
-        <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 transform hover:scale-110 transition-all duration-500">
-          <span className="text-5xl">🏥</span>
+     {/* --- LOGO NUEVO --- */}
+        <div className="flex justify-center mb-6">
+           <img 
+             src={logoImg} 
+             alt="Logo Gest-Tech" 
+             className="w-28 h-auto object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]" 
+           />
         </div>
         
         <h1 className="text-5xl font-black text-white mb-2 tracking-tighter">¡Bienvenid@s!</h1>
