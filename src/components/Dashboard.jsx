@@ -71,6 +71,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
 
+  // Administradores autorizados para crear salas de brainstorming (se puede configurar con VITE_BRAINSTORM_ADMIN_EMAILS)
+  const adminEmailWhitelist = (import.meta.env.VITE_BRAINSTORM_ADMIN_EMAILS || '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  const isBrainstormAdmin =
+    adminEmailWhitelist.length === 0 ||
+    (user?.email && adminEmailWhitelist.includes(user.email.toLowerCase()));
+
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
     currentRank, 
@@ -453,6 +462,45 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
             <LogOut className="w-4 h-4" />
             Salir
           </button>
+        </div>
+
+        {/* Brainstorming colaborativo - acceso rápido */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 rounded-3xl border-2 border-white/10 shadow-2xl shadow-cyan-500/30 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-100 mb-2">Nuevo</p>
+              <h3 className="text-2xl font-black text-white drop-shadow-lg">Brainstorming Colaborativo</h3>
+              <p className="text-slate-100/80 max-w-2xl mt-2 font-medium">
+                Juego relámpago para el aula: el profesor lanza una pregunta, los alumnos se conectan por código o QR y las ideas aparecen en tiempo real con ranking final.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => setView('brainstorm_join')}
+                className="flex-1 sm:flex-none px-5 py-4 rounded-2xl font-black text-slate-900 bg-white hover:bg-cyan-50 transition-all shadow-lg shadow-white/20 flex items-center justify-center gap-2"
+              >
+                <Users className="w-5 h-5" /> Unirse a sala
+              </button>
+
+              {isBrainstormAdmin ? (
+                <button
+                  onClick={() => setView('brainstorm_host')}
+                  className="flex-1 sm:flex-none px-5 py-4 rounded-2xl font-black text-white bg-slate-900/70 border border-white/20 hover:border-white/40 transition-all shadow-lg shadow-black/40 flex items-center justify-center gap-2"
+                >
+                  <ShieldCheck className="w-5 h-5" /> Panel profesor
+                </button>
+              ) : (
+                <div className="flex-1 sm:flex-none px-5 py-4 rounded-2xl font-black text-white bg-slate-800/70 border border-white/20 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-yellow-300" />
+                    <span>Solo para admins</span>
+                  </div>
+                  <span className="text-xs text-slate-300">Añade tu email en VITE_BRAINSTORM_ADMIN_EMAILS</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Main Grid */}
