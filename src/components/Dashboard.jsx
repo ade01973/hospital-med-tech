@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // 1. AQUI HE AÑADIDO LOS ICONOS NUEVOS (Swords y BrainCircuit)
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon, Swords, BrainCircuit } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, Star, Gift, Target, TrendingUp, Calendar, Users, Swords, BrainCircuit } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -30,7 +30,6 @@ import useNotifications from '../hooks/useNotifications';
 import { useGestCoins } from '../hooks/useGestCoins';
 import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
-import { checkBadgeUnlocks } from '../data/BADGES';
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   // Música de fondo en dashboard
@@ -63,14 +62,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [toastMessage, setToastMessage] = useState("");
   const [toastIcon, setToastIcon] = useState("");
   const [showToast, setShowToast] = useState(false);
-  const [currentStreak, setCurrentStreak] = useState(() => {
-    const saved = localStorage.getItem('userStreak');
-    return saved ? parseInt(saved, 10) : 0;
-  });
 
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
-  const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
@@ -129,9 +123,6 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
     }
   }, [userData?.totalScore, userData?.rank]);
 
-  useEffect(() => {
-    setCurrentStreak(parseInt(localStorage.getItem('userStreak') || '0', 10));
-  }, []);
 
   // Monitorear cambios en misión semanal completada
   useEffect(() => {
