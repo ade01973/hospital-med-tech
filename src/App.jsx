@@ -23,14 +23,13 @@ import BadgeNotification from './components/BadgeNotification';
 import { auth, db, appId } from './firebase.js';
 import { useLoginStreak } from './hooks/useLoginStreak';
 import { useBadges } from './hooks/useBadges';
-import useNotifications from './hooks/useNotifications';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  // Vista inicial de la app
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -93,15 +92,11 @@ const [view, setView] = useState('brainstorm_host');
       }
       setUser(u);
       
-      if (!u) {
-        setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
-          if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
-          return current === 'auth' ? 'auth' : 'landing';
-        });
-        setUserData(null);
-      }
-});
+        if (!u) {
+          setView('landing');
+          setUserData(null);
+        }
+      });
     return () => unsubscribe();
   }, [user, processLogin]);
   // 🟢 CARGAR PROGRESO DEL USUARIO
