@@ -461,28 +461,29 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
     {/* Tarjeta premium: Brainstorming colaborativo para administradores */}
     {isBrainstormAdmin && (
-      <div className="mb-8">
-        <div className="relative overflow-hidden rounded-3xl border-2 border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-cyan-900/40 to-slate-900/80 p-6 shadow-2xl">
+      <div className="mb-6">
+        <div className="relative overflow-hidden rounded-2xl border border-cyan-400/30 bg-gradient-to-r from-slate-950/90 via-cyan-900/40 to-slate-950/90 p-4 shadow-[0_12px_40px_rgba(8,47,73,0.6)]">
           <div className="absolute inset-0 opacity-30" style={{backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.3), transparent 25%), radial-gradient(circle at 80% 0%, rgba(59,130,246,0.25), transparent 20%)'}}></div>
-          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
-            <div className="flex-1 text-white">
-              <p className="text-xs uppercase font-black tracking-[0.2em] text-cyan-300 mb-2">Experiencia Premium</p>
-              <h2 className="text-3xl font-black leading-tight">Brainstorming Colaborativo en Vivo</h2>
-              <p className="text-slate-200 mt-2 max-w-2xl">Lanza preguntas, comparte el código con un QR y mira cómo llegan las ideas en tiempo real. Incluye contador de 60s, podio automático y botón de regreso al dashboard.</p>
+          <div className="absolute -right-10 -top-10 w-36 h-36 bg-cyan-500/10 blur-3xl" />
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-4">
+            <div className="flex-1 text-white space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-[10px] font-black uppercase tracking-[0.22em]">⚡ Host premium</div>
+              <h2 className="text-2xl font-black leading-tight">Brainstorming Colaborativo</h2>
+              <p className="text-slate-200 text-sm max-w-2xl">Lanza la pregunta, comparte el QR sin login y observa las ideas en vivo. Podio y análisis automáticos incluidos.</p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
               <button
                 onClick={() => setView('brainstorm_join')}
-                className="flex-1 bg-white text-slate-900 font-black px-5 py-4 rounded-2xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1"
+                className="flex-1 bg-white text-slate-900 font-black px-4 py-3 rounded-xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
               >
-                Unirse a sala
+                <Sparkles className="w-4 h-4" /> Unirse
               </button>
               <button
                 onClick={() => setView('brainstorm_host')}
-                className="flex-1 px-5 py-4 rounded-2xl font-black border-2 transition-all hover:-translate-y-1 bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-300"
+                className="flex-1 px-4 py-3 rounded-xl font-black border border-cyan-300/60 transition-all hover:-translate-y-1 bg-gradient-to-r from-cyan-500 to-sky-400 hover:from-cyan-400 hover:to-sky-300 text-slate-900 shadow-[0_10px_30px_rgba(14,165,233,0.35)] flex items-center justify-center gap-2 text-sm"
               >
-                Panel profesor
+                <Trophy className="w-4 h-4" /> Panel profe
               </button>
             </div>
           </div>
@@ -492,20 +493,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
     {/* Tarjeta de acceso rápido para estudiantes (solo join) */}
     {!isBrainstormAdmin && (
-      <div className="mb-8">
-        <div className="relative overflow-hidden rounded-3xl border-2 border-emerald-400/30 bg-gradient-to-r from-slate-900/80 via-emerald-900/30 to-slate-900/80 p-6 shadow-2xl">
+      <div className="mb-6">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-400/30 bg-gradient-to-r from-slate-950/90 via-emerald-900/30 to-slate-950/90 p-4 shadow-[0_12px_40px_rgba(6,95,70,0.5)]">
           <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 30% 10%, rgba(16,185,129,0.25), transparent 30%), radial-gradient(circle at 80% 0%, rgba(52,211,153,0.2), transparent 20%)'}}></div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-1 text-white">
-              <p className="text-xs uppercase font-black tracking-[0.2em] text-emerald-300 mb-2">Modo Alumno</p>
-              <h2 className="text-3xl font-black leading-tight">Unirse a una sala activa</h2>
-              <p className="text-slate-200 mt-2 max-w-2xl">Ingresa el código que ves en pantalla o escanea el QR. No es necesario iniciar sesión desde el móvil.</p>
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-4">
+            <div className="flex-1 text-white space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-[10px] font-black uppercase tracking-[0.22em]">🎯 Modo alumno</div>
+              <h2 className="text-2xl font-black leading-tight">Únete con código o QR</h2>
+              <p className="text-slate-200 text-sm max-w-2xl">Escanea el QR desde el móvil o teclea el código. No necesitas iniciar sesión en el teléfono.</p>
             </div>
             <button
               onClick={() => setView('brainstorm_join')}
-              className="w-full md:w-auto bg-white text-slate-900 font-black px-6 py-4 rounded-2xl shadow-lg hover:-translate-y-1 transition-all"
+              className="w-full md:w-auto bg-white text-slate-900 font-black px-4 py-3 rounded-xl shadow-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-sm"
             >
-              Ir al banner de código
+              <Hash className="w-4 h-4" /> Ir al banner de código
             </button>
           </div>
         </div>
