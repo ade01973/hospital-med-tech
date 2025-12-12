@@ -31,6 +31,8 @@ import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
 import { checkBadgeUnlocks } from '../data/BADGES';
 
+const ADMIN_EMAILS = ['gongaralberto@gmail.com', 'agong@unileon.es'];
+
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   // Música de fondo en dashboard
   useDashboardBackgroundMusic(true);
@@ -70,6 +72,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+
+  const isBrainstormAdmin = ADMIN_EMAILS.includes((user?.email || '').toLowerCase());
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
@@ -437,26 +441,59 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               </div>
             </div>
 
-            <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
-              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
-              <div className="flex items-center gap-1">
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
-              </div>
-            </div>
+        <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
+          <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
+          <div className="flex items-center gap-1">
+            <span className="text-2xl">⭐</span>
+            <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
+        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+      >
+        <LogOut className="w-4 h-4" />
+        Salir
+      </button>
+    </div>
+
+    {/* Tarjeta premium: Brainstorming colaborativo */}
+    <div className="mb-8">
+      <div className="relative overflow-hidden rounded-3xl border-2 border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-cyan-900/40 to-slate-900/80 p-6 shadow-2xl">
+        <div className="absolute inset-0 opacity-30" style={{backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.3), transparent 25%), radial-gradient(circle at 80% 0%, rgba(59,130,246,0.25), transparent 20%)'}}></div>
+        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
+          <div className="flex-1 text-white">
+            <p className="text-xs uppercase font-black tracking-[0.2em] text-cyan-300 mb-2">Experiencia Premium</p>
+            <h2 className="text-3xl font-black leading-tight">Brainstorming Colaborativo en Vivo</h2>
+            <p className="text-slate-200 mt-2 max-w-2xl">Lanza preguntas, comparte el código con un QR y mira cómo llegan las ideas en tiempo real. Incluye contador de 60s, podio automático y botón de regreso al dashboard.</p>
+            {!isBrainstormAdmin && (
+              <p className="text-xs text-amber-200/80 mt-2 font-bold">Solo los correos administradores pueden crear salas: gongaralberto@gmail.com, agong@unileon.es</p>
+            )}
           </div>
 
-          <button 
-            onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            Salir
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <button
+              onClick={() => setView('brainstorm_join')}
+              className="flex-1 bg-white text-slate-900 font-black px-5 py-4 rounded-2xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1"
+            >
+              Unirse a sala
+            </button>
+            <button
+              onClick={() => setView('brainstorm_host')}
+              disabled={!isBrainstormAdmin}
+              className={`flex-1 px-5 py-4 rounded-2xl font-black border-2 transition-all hover:-translate-y-1 ${isBrainstormAdmin ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-300' : 'bg-slate-800 text-slate-500 border-slate-600 cursor-not-allowed'}`}
+            >
+              Panel profesor
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {/* Main Grid */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Left - Unified Game Panel (Modules + Level Start) - Side by Side */}
           <div className="lg:col-span-2">

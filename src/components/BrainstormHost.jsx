@@ -190,6 +190,15 @@ const BrainstormHost = ({ onBack }) => {
     }, 2500);
   };
 
+  // Lanzar análisis automático al agotar el tiempo
+  useEffect(() => {
+    if (!isSessionActive) return;
+    if (timeLeft <= 0 && !analysisResult && !isAnalyzing) {
+      setIsSessionActive(false);
+      handleAnalyzeSession();
+    }
+  }, [timeLeft, isSessionActive, analysisResult, isAnalyzing]);
+
   const joinUrl = `${window.location.origin}?code=${sessionId}`;
 
   return (
