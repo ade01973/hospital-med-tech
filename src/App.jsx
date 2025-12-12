@@ -6,7 +6,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 
 // --- IMPORTS DE COMPONENTES ---
-import LandingPage from './components/LandingPage'; 
+import LandingPage from './LandingPage';
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import AvatarCustomization from './components/AvatarCustomization';

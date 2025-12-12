@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { ChevronRight, Shield, Users, Trophy, BrainCircuit, Activity, X, Play } from 'lucide-react';
 
 // 🔥 1. AQUÍ FALTABA IMPORTAR LA IMAGEN DEL DASHBOARD
-import landingBg from '../assets/landing-bg.jpg';
-import logoImg from '../assets/logo-hospital.png';
-import dashboardPreview from '../assets/dashboard.png'; // <--- ASEGÚRATE DE QUE SE LLAMA ASÍ EN TU CARPETA
+import landingBg from './assets/landing-bg.jpg';
+import logoImg from './assets/logo-hospital.png';
+import dashboardPreview from './assets/dashboard.png'; // <--- ASEGÚRATE DE QUE SE LLAMA ASÍ EN TU CARPETA
 
 const LandingPage = ({ onStart }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
