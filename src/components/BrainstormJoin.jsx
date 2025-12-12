@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Hash, MessageCircle, Loader2, LogOut, Check, Zap, Sparkles, Trophy } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db, appId } from '../firebase';
+import { signInAnonymously } from 'firebase/auth';
+import { auth, db, appId } from '../firebase';
 import hospitalBg from '../assets/landing-bg.jpg';
 
 // 🔊 SONIDOS DE RECOMPENSA (Satisfactorios)
@@ -37,6 +38,14 @@ const BrainstormJoin = ({ onBack }) => {
     const params = new URLSearchParams(window.location.search);
     const codeFromUrl = params.get('code');
     if (codeFromUrl) setSessionId(codeFromUrl);
+  }, []);
+
+  // 🔓 Acceso rápido: si no hay sesión, abre una sesión anónima para poder escribir en Firestore desde el QR
+  useEffect(() => {
+    if (auth.currentUser) return;
+    signInAnonymously(auth).catch((error) => {
+      console.error('No se pudo crear sesión anónima para brainstorming:', error);
+    });
   }, []);
 
   useEffect(() => {

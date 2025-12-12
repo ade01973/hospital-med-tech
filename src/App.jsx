@@ -86,23 +86,30 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
+      const isAnon = u?.isAnonymous;
+
       if (u && !user) {
-        console.log('✓ Nuevo login detectado, ir a bienvenida');
-        // 🔔 Procesar login y mostrar recompensa si hay
-        const rewardData = processLogin();
-        if (rewardData) {
-          console.log('🎉 Recompensa de login:', rewardData);
-          setRewardNotification(rewardData);
-          setShowRewardNotification(true);
+        if (isAnon) {
+          // No interrumpimos la vista de join cuando el acceso es anónimo vía QR
+          setView((current) => current === 'brainstorm_join' ? 'brainstorm_join' : current || 'brainstorm_join');
+        } else {
+          console.log('✓ Nuevo login detectado, ir a bienvenida');
+          // 🔔 Procesar login y mostrar recompensa si hay
+          const rewardData = processLogin();
+          if (rewardData) {
+            console.log('🎉 Recompensa de login:', rewardData);
+            setRewardNotification(rewardData);
+            setShowRewardNotification(true);
+          }
+          // Si entramos, vamos a la bienvenida
+          setView('welcome');
         }
-        // Si entramos, vamos a la bienvenida
-        setView('welcome');
       }
       setUser(u);
-      
+
       if (!u) {
         setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
+          if (current === 'brainstorm_host') return 'brainstorm_host';
           if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
           return current === 'auth' ? 'auth' : 'landing';
         });
