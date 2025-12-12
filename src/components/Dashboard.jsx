@@ -730,7 +730,12 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
       {/* AI Training Hub */}
       {showAITraining && (
-        <AITrainingHub onBack={() => setShowAITraining(false)} />
+        <AITrainingHub
+          onBack={() => {
+            setShowAITraining(false);
+            setView('dashboard');
+          }}
+        />
       )}
 
       {/* Toast Notification */}
