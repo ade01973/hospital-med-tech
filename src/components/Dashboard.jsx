@@ -182,9 +182,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
-  const inferBattleRole = () => {
+  const allowedProfessorEmails = ['gongaralberto@gmail.com', 'agong@unileon.es'];
+
+  const isProfessorUser = () => {
     const email = (user?.email || '').toLowerCase();
-    if (email.includes('prof') || email.includes('docente') || email.includes('teacher')) {
+    return allowedProfessorEmails.includes(email);
+  };
+
+  const inferBattleRole = () => {
+    if (isProfessorUser()) {
       return 'professor';
     }
     return 'student';
@@ -193,7 +199,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [battleRole, setBattleRole] = useState(inferBattleRole());
 
   useEffect(() => {
-    setBattleRole(inferBattleRole());
+    if (isProfessorUser()) {
+      setBattleRole('professor');
+    } else {
+      setBattleRole('student');
+    }
   }, [user?.email]);
 
   const handleBattleClick = () => {
@@ -341,16 +351,18 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 >
                   Estudiante
                 </button>
-                <button
-                  onClick={() => setBattleRole('professor')}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                    battleRole === 'professor'
-                      ? 'bg-white text-slate-900 shadow-lg shadow-cyan-500/30'
-                      : 'text-slate-200 hover:text-white'
-                  }`}
-                >
-                  Profesor
-                </button>
+                {isProfessorUser() && (
+                  <button
+                    onClick={() => setBattleRole('professor')}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                      battleRole === 'professor'
+                        ? 'bg-white text-slate-900 shadow-lg shadow-cyan-500/30'
+                        : 'text-slate-200 hover:text-white'
+                    }`}
+                  >
+                    Profesor
+                  </button>
+                )}
               </div>
 
               <button
