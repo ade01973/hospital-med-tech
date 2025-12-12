@@ -21,20 +21,32 @@ const HYPE_FEEDBACK = [
   { text: "¡GENIO! 🧠", sub: "Sigue disparando ideas." }
 ];
 
+const MOTIVATION_ICONS = ['🚀', '🎯', '✨', '🤖', '🎉', '⚡', '💡'];
+
 const BrainstormJoin = ({ onBack }) => {
   const [sessionId, setSessionId] = useState('');
   const [answer, setAnswer] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Estado para el feedback aleatorio
   const [currentFeedback, setCurrentFeedback] = useState(HYPE_FEEDBACK[0]);
+  const [ticker, setTicker] = useState(MOTIVATION_ICONS[0]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const codeFromUrl = params.get('code');
     if (codeFromUrl) setSessionId(codeFromUrl);
   }, []);
+
+  useEffect(() => {
+    if (!hasSubmitted) return;
+    const tickerInterval = setInterval(() => {
+      setTicker(MOTIVATION_ICONS[Math.floor(Math.random() * MOTIVATION_ICONS.length)]);
+      setCurrentFeedback(HYPE_FEEDBACK[Math.floor(Math.random() * HYPE_FEEDBACK.length)]);
+    }, 2200);
+    return () => clearInterval(tickerInterval);
+  }, [hasSubmitted]);
 
   const playSuccessSound = () => {
     const randomSound = SUCCESS_SOUNDS[Math.floor(Math.random() * SUCCESS_SOUNDS.length)];
@@ -82,8 +94,8 @@ const BrainstormJoin = ({ onBack }) => {
     >
       <div className="absolute inset-0 bg-slate-950/80 z-0 backdrop-blur-md" />
 
-      <div className="relative z-10 w-full max-w-md">
-        
+            <div className="relative z-10 w-full max-w-md">
+
         {/* LOGO SUPERIOR */}
         <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-4">
@@ -91,10 +103,11 @@ const BrainstormJoin = ({ onBack }) => {
                 <span className="text-white text-xs font-bold tracking-widest uppercase">En vivo</span>
             </div>
             <h1 className="text-3xl font-black text-white drop-shadow-md">Brainstorming</h1>
+            <p className="text-sm text-slate-300 font-semibold mt-1">No necesitas login, solo escribe el código y dispara ideas.</p>
         </div>
 
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden transition-all duration-300">
-            
+
             {/* Gradient Glow de fondo */}
             <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl pointer-events-none transition-colors duration-500 ${hasSubmitted ? 'bg-green-500/40' : 'bg-cyan-500/30'}`}></div>
 
@@ -122,7 +135,7 @@ const BrainstormJoin = ({ onBack }) => {
                 <div>
                     <label className="text-cyan-400 text-xs font-bold uppercase tracking-widest ml-4 mb-2 block">Tu Idea</label>
                     <div className="bg-white rounded-2xl p-1 transform transition-transform focus-within:scale-[1.02]">
-                        <textarea 
+                        <textarea
                             value={answer}
                             onChange={(e) => setAnswer(e.target.value)}
                             placeholder="Escribe aquí..."
@@ -131,6 +144,7 @@ const BrainstormJoin = ({ onBack }) => {
                         />
                     </div>
                     <p className="text-right text-xs text-slate-400 mt-2 mr-2">{answer.length}/40</p>
+                    <p className="text-[11px] text-emerald-200 font-semibold text-center mt-1">{ticker} ¡Las ideas rápidas suman más energía al equipo!</p>
                 </div>
 
                 <button 
@@ -148,7 +162,7 @@ const BrainstormJoin = ({ onBack }) => {
             ) : (
             // --- FASE 2: RECOMPENSA (HYPE) ---
             <div className="text-center py-4 animate-bounce-in relative z-10">
-                
+
                 {/* ICONO DE ÉXITO GIGANTE */}
                 <div className="mb-6 relative inline-block">
                     <div className="absolute inset-0 bg-green-500 blur-xl opacity-50 animate-pulse"></div>
@@ -166,10 +180,16 @@ const BrainstormJoin = ({ onBack }) => {
                 <p className="text-slate-300 mb-8 font-medium text-lg">
                     {currentFeedback.sub}
                 </p>
-                
+
+                <div className="flex items-center justify-center gap-3 text-sm text-emerald-200 font-semibold mb-6">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40">{ticker}</span>
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30">Sigue enviando, la pantalla del profe explota de ideas</span>
+                  <span className="px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-300/30">🔔 Sonido en cada impacto</span>
+                </div>
+
                 <div className="space-y-3">
                     {/* BOTÓN PRINCIPAL: ENVIAR OTRA (Ciclo rápido) */}
-                    <button 
+                    <button
                         onClick={handleReset}
                         className="w-full bg-white hover:bg-cyan-50 text-slate-900 font-black py-4 rounded-xl shadow-xl transition-all transform hover:-translate-y-1 hover:shadow-white/20 flex items-center justify-center gap-2"
                     >

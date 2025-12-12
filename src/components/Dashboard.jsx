@@ -459,38 +459,58 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
       </button>
     </div>
 
-    {/* Tarjeta premium: Brainstorming colaborativo */}
-    <div className="mb-8">
-      <div className="relative overflow-hidden rounded-3xl border-2 border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-cyan-900/40 to-slate-900/80 p-6 shadow-2xl">
-        <div className="absolute inset-0 opacity-30" style={{backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.3), transparent 25%), radial-gradient(circle at 80% 0%, rgba(59,130,246,0.25), transparent 20%)'}}></div>
-        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
-          <div className="flex-1 text-white">
-            <p className="text-xs uppercase font-black tracking-[0.2em] text-cyan-300 mb-2">Experiencia Premium</p>
-            <h2 className="text-3xl font-black leading-tight">Brainstorming Colaborativo en Vivo</h2>
-            <p className="text-slate-200 mt-2 max-w-2xl">Lanza preguntas, comparte el código con un QR y mira cómo llegan las ideas en tiempo real. Incluye contador de 60s, podio automático y botón de regreso al dashboard.</p>
-            {!isBrainstormAdmin && (
-              <p className="text-xs text-amber-200/80 mt-2 font-bold">Solo los correos administradores pueden crear salas: gongaralberto@gmail.com, agong@unileon.es</p>
-            )}
-          </div>
+    {/* Tarjeta premium: Brainstorming colaborativo para administradores */}
+    {isBrainstormAdmin && (
+      <div className="mb-8">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-cyan-900/40 to-slate-900/80 p-6 shadow-2xl">
+          <div className="absolute inset-0 opacity-30" style={{backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.3), transparent 25%), radial-gradient(circle at 80% 0%, rgba(59,130,246,0.25), transparent 20%)'}}></div>
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6">
+            <div className="flex-1 text-white">
+              <p className="text-xs uppercase font-black tracking-[0.2em] text-cyan-300 mb-2">Experiencia Premium</p>
+              <h2 className="text-3xl font-black leading-tight">Brainstorming Colaborativo en Vivo</h2>
+              <p className="text-slate-200 mt-2 max-w-2xl">Lanza preguntas, comparte el código con un QR y mira cómo llegan las ideas en tiempo real. Incluye contador de 60s, podio automático y botón de regreso al dashboard.</p>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+              <button
+                onClick={() => setView('brainstorm_join')}
+                className="flex-1 bg-white text-slate-900 font-black px-5 py-4 rounded-2xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1"
+              >
+                Unirse a sala
+              </button>
+              <button
+                onClick={() => setView('brainstorm_host')}
+                className="flex-1 px-5 py-4 rounded-2xl font-black border-2 transition-all hover:-translate-y-1 bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-300"
+              >
+                Panel profesor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Tarjeta de acceso rápido para estudiantes (solo join) */}
+    {!isBrainstormAdmin && (
+      <div className="mb-8">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-emerald-400/30 bg-gradient-to-r from-slate-900/80 via-emerald-900/30 to-slate-900/80 p-6 shadow-2xl">
+          <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 30% 10%, rgba(16,185,129,0.25), transparent 30%), radial-gradient(circle at 80% 0%, rgba(52,211,153,0.2), transparent 20%)'}}></div>
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-1 text-white">
+              <p className="text-xs uppercase font-black tracking-[0.2em] text-emerald-300 mb-2">Modo Alumno</p>
+              <h2 className="text-3xl font-black leading-tight">Unirse a una sala activa</h2>
+              <p className="text-slate-200 mt-2 max-w-2xl">Ingresa el código que ves en pantalla o escanea el QR. No es necesario iniciar sesión desde el móvil.</p>
+            </div>
             <button
               onClick={() => setView('brainstorm_join')}
-              className="flex-1 bg-white text-slate-900 font-black px-5 py-4 rounded-2xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1"
+              className="w-full md:w-auto bg-white text-slate-900 font-black px-6 py-4 rounded-2xl shadow-lg hover:-translate-y-1 transition-all"
             >
-              Unirse a sala
-            </button>
-            <button
-              onClick={() => setView('brainstorm_host')}
-              disabled={!isBrainstormAdmin}
-              className={`flex-1 px-5 py-4 rounded-2xl font-black border-2 transition-all hover:-translate-y-1 ${isBrainstormAdmin ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-300' : 'bg-slate-800 text-slate-500 border-slate-600 cursor-not-allowed'}`}
-            >
-              Panel profesor
+              Ir al banner de código
             </button>
           </div>
         </div>
       </div>
-    </div>
+    )}
 
     {/* Main Grid */}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

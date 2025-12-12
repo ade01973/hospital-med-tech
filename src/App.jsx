@@ -40,6 +40,14 @@ export default function App() {
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
+
+  // Permitir que los estudiantes ingresen a una sala desde el móvil sin autenticación
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code')) {
+      setView('brainstorm_join');
+    }
+  }, []);
   
   const { processLogin } = useLoginStreak();
   const { 
