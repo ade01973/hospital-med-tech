@@ -1,17 +1,744 @@
-Running build in Washington, D.C., USA (East) – iad1
-Build machine configuration: 2 cores, 8 GB
-Cloning github.com/ade01973/hospital-Gest-tech (Branch: main, Commit: 3b6fffb)
-Cloning completed: 9.135s
-Restored build cache from previous deployment (8JxHqKDVToo1ozcax3dEqTEXDwy4)
-Running "vercel build"
-Vercel CLI 50.0.0
-Installing dependencies...
-up to date in 4s
-44 packages are looking for funding
-  run `npm fund` for details
-Running "npm run build"
-> nurse-manager@1.0.0 build
-> vite build
-vite v7.2.7 building client environment for production...
-transforming...
-✓ 25 modules transformed.
+import React, { useState, useEffect } from 'react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import { TOPICS, NURSING_RANKS } from '../data/constants.js';
+import Rewards from './Rewards.jsx';
+import Missions from './Missions.jsx';
+import Leagues from './Leagues.jsx';
+import LoginCalendar from './LoginCalendar.jsx';
+import ShareModal from './ShareModal';
+import AvatarPreviewDisplay from './AvatarPreviewDisplay';
+import AvatarFullViewModal from './AvatarFullViewModal';
+import CurrencyDisplay from './CurrencyDisplay';
+import AdvancedMilestoneTimeline from './AdvancedMilestoneTimeline';
+import DailyChallenge from './DailyChallenge';
+import PreGameModal from './PreGameModal';
+import StreakTracker from './StreakTracker';
+import Leaderboards from './Leaderboards';
+import TeamChallenges from './TeamChallenges';
+import CareerProgressionModal from './CareerProgressionModal';
+import HospitalCases from './HospitalCases';
+import BadgesDisplay from './BadgesDisplay';
+import Toast from './Toast';
+import InfographiesGallery from './InfographiesGallery';
+import AITrainingHub from './AITrainingHub';
+import elevatorBg from '../assets/elevator-bg.png';
+import { useMissions } from '../hooks/useMissions';
+import { useLeagues } from '../hooks/useLeagues';
+import { useLoginStreak } from '../hooks/useLoginStreak';
+import useNotifications from '../hooks/useNotifications';
+import { useGestCoins } from '../hooks/useGestCoins';
+import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
+import ShopModal from './ShopModal';
+import { checkBadgeUnlocks } from '../data/BADGES';
+
+const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
+  // Música de fondo en dashboard
+  useDashboardBackgroundMusic(true);
+  
+  const { enabled: notificationsEnabled, toggleNotifications } = useNotifications();
+  const { balance, inventory, upgrades, buyConsumable, buyUpgrade } = useGestCoins();
+  const [selectedFloor, setSelectedFloor] = useState(1);
+  const [showRoadmap, setShowRoadmap] = useState(false);
+  const [showShop, setShowShop] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareData, setShareData] = useState(null);
+  const [showRankAchievement, setShowRankAchievement] = useState(false);
+  const [showMissions, setShowMissions] = useState(false);
+  const [showLeagues, setShowLeagues] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [showPreGameModal, setShowPreGameModal] = useState(false);
+  const [showLeaderboards, setShowLeaderboards] = useState(false);
+  const [showTeamChallenges, setShowTeamChallenges] = useState(false);
+  const [showCareerProgression, setShowCareerProgression] = useState(false);
+  const [showHospitalCases, setShowHospitalCases] = useState(false);
+  const [showInfographics, setShowInfographics] = useState(false);
+  const [showAITraining, setShowAITraining] = useState(false);
+  const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
+  const [newRank, setNewRank] = useState(null);
+  const [previousScore, setPreviousScore] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastIcon, setToastIcon] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(() => {
+    const saved = localStorage.getItem('userStreak');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
+  const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
+  const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+
+  const currentRank = userData?.rank || 'Estudiante';
+  const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
+    currentRank, 
+    userData?.totalScore || 0, 
+    user?.uid || 'demo'
+  );
+
+  const videoLinks = {
+    1: "bL0e705JuZQ",
+    2: "eb1nlMUK3-c",
+    3: "ThHodVUzC9c",
+    4: "oB4ol3EYEIs",
+    5: "yUOPtM_yEHc",
+    6: "NMY7SwEgC50",
+    7: "TU9VF7sWh-w",
+    8: "7yo2d-MtgBw",
+    9: "rTJXMJqkUSw",
+    10: "pem8VkjbNA4",
+    11: "iJNKzYCRoEw",
+    12: "VvHqG2ec744",
+    13: "scs2OI7IB2c",
+    14: "HBnbjZKqyjA",
+    15: "5KbUJ6fDVRA",
+    16: "DVlSigTdaoQ",
+    17: "e0AbDC1DlLI",
+    18: "pvOTsv6alS8",
+    19: "p2qaUIymS9M",
+    20: "w_YbsjGtn1s",
+    21: "hvI5afYV9kM",
+  };
+
+  useEffect(() => {
+    if (userData?.rank && previousScore !== userData.totalScore) {
+      const nextRank = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
+      if (nextRank) {
+        setNewRank(nextRank);
+        setShowRankAchievement(true);
+
+        // Preparar datos para compartir
+        const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+        setShareData({
+          rankTitle: nextRank.title,
+          score: userData.totalScore,
+          streak: currentStreak,
+          achievementType: 'rank',
+        });
+
+        // Mostrar modal de compartir después del banner de logro
+        setTimeout(() => {
+          setShowRankAchievement(false);
+          setShowShareModal(true);
+        }, 3000);
+      }
+      setPreviousScore(userData.totalScore);
+    }
+  }, [userData?.totalScore, userData?.rank]);
+
+  useEffect(() => {
+    setCurrentStreak(parseInt(localStorage.getItem('userStreak') || '0', 10));
+  }, []);
+
+  // Monitorear cambios en misión semanal completada
+  useEffect(() => {
+    if (weeklyMission?.completed && !weeklyMission?.claimed) {
+      const currentStreak = parseInt(localStorage.getItem('userStreak') || '0', 10);
+      setShareData({
+        score: userData.totalScore,
+        streak: currentStreak,
+        achievementType: 'mission',
+      });
+      setTimeout(() => {
+        setShowShareModal(true);
+      }, 500);
+    }
+  }, [weeklyMission?.completed]);
+
+  // Monitorear racha de 30 días
+  useEffect(() => {
+    if (currentStreakDay === 30) {
+      const currentScore = userData.totalScore || 0;
+      setShareData({
+        score: currentScore,
+        streak: 30,
+        achievementType: 'streak',
+      });
+      setTimeout(() => {
+        setShowShareModal(true);
+      }, 1000);
+    }
+  }, [currentStreakDay]);
+
+  if (!userData) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4">
+            ⏳
+          </div>
+          <p className="text-white font-black text-lg">Cargando datos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentTopic = TOPICS[selectedFloor - 1];
+  const isCurrentCompleted = userData?.completedLevels && userData.completedLevels[selectedFloor];
+  const isCurrentUnlocked = selectedFloor === 1 || (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
+  const currentRankData = NURSING_RANKS.find(r => r.title === userData.rank);
+  const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
+  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+
+  return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: `url(/images/hospital-bg.png)`}}></div>
+
+      {/* Rank Achievement Banner */}
+      {showRankAchievement && newRank && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 text-center max-w-sm animate-bounce">
+            <p className="text-white font-black text-lg mb-2">¡NUEVO RANGO!</p>
+            <p className="text-2xl font-black text-yellow-300">{newRank.title}</p>
+            <p className="text-white text-sm mt-2">Requiere {newRank.minScore} pts</p>
+          </div>
+        </div>
+      )}
+
+      {/* Missions Modal */}
+      <Missions 
+        isOpen={showMissions} 
+        onClose={() => setShowMissions(false)} 
+        dailyMissions={dailyMissions}
+        weeklyMission={weeklyMission}
+        onClaimReward={claimReward}
+      />
+
+      {/* Leagues Modal */}
+      <Leagues
+        isOpen={showLeagues}
+        onClose={() => setShowLeagues(false)}
+        currentLeague={currentLeague}
+        leagueRanking={leagueRanking}
+        playerPosition={playerPosition}
+        weeklyXP={weeklyXP}
+        nextLeague={getNextLeague()}
+        daysLeft={getDaysUntilWeekEnd()}
+      />
+
+      {/* Login Calendar Modal */}
+      <LoginCalendar
+        isOpen={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        calendarData={calendarData}
+        currentStreakDay={currentStreakDay}
+        daysInMonth={getDaysInCurrentMonth()}
+      />
+
+      {/* Rewards Modal */}
+      <Rewards
+        isOpen={showRewards}
+        onClose={() => setShowRewards(false)}
+        userData={userData}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        moduleTitle={shareData?.moduleTitle}
+        score={shareData?.score}
+        streak={shareData?.streak}
+        rankTitle={shareData?.rankTitle}
+        achievementType={shareData?.achievementType || 'module'}
+      />
+
+      {/* Shop Modal */}
+      <ShopModal
+        isOpen={showShop}
+        onClose={() => setShowShop(false)}
+        balance={balance}
+        onBuyConsumable={buyConsumable}
+        onBuyUpgrade={buyUpgrade}
+        inventory={inventory}
+        upgrades={upgrades}
+      />
+
+      {/* Leaderboards Modal */}
+      <Leaderboards
+        isOpen={showLeaderboards}
+        onClose={() => setShowLeaderboards(false)}
+        playerScore={userData?.totalScore || 0}
+        playerName={playerAvatar.name || 'Desconocido'}
+        playerUID={user?.uid || 'demo'}
+        weeklyXP={weeklyXP || 0}
+      />
+
+      {/* Team Challenges Modal */}
+      <TeamChallenges
+        isOpen={showTeamChallenges}
+        onClose={() => setShowTeamChallenges(false)}
+        playerName={playerAvatar.name || 'Desconocido'}
+        playerUID={user?.uid || 'demo'}
+      />
+
+      {/* Career Progression Modal */}
+      <CareerProgressionModal
+        isOpen={showCareerProgression}
+        onClose={() => setShowCareerProgression(false)}
+        currentScore={userData?.totalScore || 0}
+        playerName={playerAvatar.name || 'Desconocido'}
+      />
+
+      {/* Avatar Full View Modal */}
+      <AvatarFullViewModal
+        isOpen={showAvatarModal}
+        onClose={() => setShowAvatarModal(false)}
+        playerAvatar={playerAvatar}
+      />
+
+      {/* Main Content */}
+      <div className="relative z-10 container mx-auto p-6 max-w-7xl">
+
+        {/* Top Bar */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
+            {/* Avatar Display */}
+            {playerAvatar.name && (
+              <button
+                onClick={() => setShowAvatarModal(true)}
+                className="flex items-center gap-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl p-3 border-2 border-cyan-500/50 hover:border-cyan-400 hover:from-cyan-500/30 hover:to-blue-600/30 transition-all cursor-pointer transform hover:scale-105"
+              >
+                <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800/50">
+                  {playerAvatar.characterPreset ? (
+                    <img 
+  // CORREGIDO: Cambiado /src/assets/ por /avatar/
+  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
+  alt="Avatar"
+  // CORREGIDO: Añadido object-top para que se vea la cara
+  className="w-full h-full object-cover object-top"
+/>
+                  ) : (
+                    <AvatarPreviewDisplay avatar={playerAvatar} size="small" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-white font-bold text-sm leading-tight">{playerAvatar.name}</p>
+                  <p className="text-cyan-400 font-bold text-xs">{userData.rank || 'Estudiante'}</p>
+                </div>
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Balance de Monedas */}
+            <CurrencyDisplay balance={balance} />
+
+            <button 
+              onClick={toggleNotifications}
+              className={`w-12 h-12 rounded-full ${
+                notificationsEnabled 
+                  ? 'bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:shadow-green-500/50' 
+                  : 'bg-gradient-to-br from-slate-600 to-slate-700 hover:shadow-lg hover:shadow-slate-500/50'
+              } flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative`}
+              title={notificationsEnabled ? "Desactivar notificaciones" : "Activar notificaciones"}
+            >
+              <span className="text-2xl">{notificationsEnabled ? '🔔' : '🔕'}</span>
+            </button>
+
+            <button 
+              onClick={() => setShowMissions(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Ver Misiones"
+            >
+              <Target className="w-6 h-6 text-white" />
+              {getCompletedNotClaimed() > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white animate-pulse">
+                  {getCompletedNotClaimed()}
+                </div>
+              )}
+            </button>
+
+            <button
+              onClick={() => setShowLeaderboards(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Clasificaciones"
+            >
+              <Trophy className="w-6 h-6 text-white" />
+            </button>
+
+            <button
+              onClick={() => setShowTeamChallenges(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Desafíos en Equipo"
+            >
+              <Users className="w-6 h-6 text-white" />
+            </button>
+
+            <button
+              onClick={() => setShowCareerProgression(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110"
+              title="Carrera Profesional"
+            >
+              <TrendingUp className="w-6 h-6 text-white" />
+            </button>
+
+            <button 
+              onClick={() => setShowLeagues(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Ver Ligas"
+            >
+              <Trophy className="w-6 h-6 text-white" />
+              {playerPosition && playerPosition <= 3 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white">
+                  {playerPosition === 1 ? '🥇' : playerPosition === 2 ? '🥈' : '🥉'}
+                </div>
+              )}
+            </button>
+
+            <button 
+              onClick={() => setShowCalendar(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 hover:shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Calendario de Recompensas"
+            >
+              <Calendar className="w-6 h-6 text-white" />
+              {currentStreakDay > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-orange-400 flex items-center justify-center text-slate-900 text-xs font-black border border-white">
+                  {currentStreakDay}
+                </div>
+              )}
+            </button>
+
+            <button 
+              onClick={() => setShowRewards(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Ver Recompensas"
+            >
+              <Gift className="w-6 h-6 text-white" />
+              {Math.floor((userData?.totalScore || 0) / 2000) > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-black border border-white">
+                  {Math.floor((userData?.totalScore || 0) / 2000)}
+                </div>
+              )}
+            </button>
+
+            <button 
+              onClick={() => setShowShop(true)}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center border border-white/20 transition-all transform hover:scale-110 relative"
+              title="Tienda GestCoins"
+            >
+              <span className="text-2xl">🛍️</span>
+            </button>
+
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">GestCoins</span>
+              <div className="flex items-center gap-1">
+                <span className="text-lg">💸</span>
+                <span className="text-lg font-black text-yellow-300">{balance}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Experiencia</span>
+              <div className="flex items-center gap-1">
+                <Zap className="w-5 h-5 text-yellow-400" />
+                <span className="text-lg font-black text-yellow-300">{userData?.totalScore || 0}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
+              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
+              <div className="flex items-center gap-1">
+                <span className="text-2xl">⭐</span>
+                <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <button 
+            onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            Salir
+          </button>
+        </div>
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          {/* Left - Unified Game Panel (Modules + Level Start) - Side by Side */}
+          <div className="lg:col-span-2">
+            <div className="bg-slate-900/40 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 shadow-2xl">
+              <div className="flex justify-between items-center mb-5">
+                <h2 className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Entrenamiento de la Gestora Enfermera</h2>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-400/50">
+                    <Play className="w-4 h-4 text-cyan-400" />
+                    <span className="text-cyan-300 text-xs font-bold">{Object.keys(userData?.completedLevels || {}).length}/{TOPICS.length}</span>
+                  </div>
+                  <Star className="w-5 h-5 text-yellow-400" />
+                </div>
+              </div>
+
+              {/* Two Column Layout - Selector & Level Info Side by Side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Left: Module Selector */}
+                <div className="bg-slate-800/40 rounded-2xl p-4 border border-slate-700/50">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm text-white font-bold">Seleccionar Módulo</span>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => selectedFloor > 1 && setSelectedFloor(selectedFloor - 1)}
+                        className="w-7 h-7 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center justify-center transition-all"
+                      >
+                        <ChevronUp size={14} className="text-white" />
+                      </button>
+                      <button
+                        onClick={() => selectedFloor < TOPICS.length && setSelectedFloor(selectedFloor + 1)}
+                        className="w-7 h-7 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center transition-all"
+                      >
+                        <ChevronDown size={14} className="text-white" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                    {TOPICS.map((topic) => {
+                      const isCompleted = userData?.completedLevels && userData.completedLevels[topic.id];
+                      const isUnlocked = topic.id === 1 || (userData?.completedLevels && userData.completedLevels[topic.id - 1]);
+
+                      return (
+                        <button
+                          key={topic.id}
+                          onClick={() => setSelectedFloor(topic.id)}
+                          className={`w-full px-3 py-2 rounded-lg font-bold text-xs border-2 transition-all flex items-center gap-2 ${
+                            selectedFloor === topic.id
+                              ? 'bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/20'
+                              : isCompleted 
+                                ? 'bg-emerald-500/10 border-emerald-400/50 text-emerald-300 hover:border-emerald-400'
+                                : isUnlocked
+                                  ? 'bg-slate-700/30 border-slate-600 hover:border-cyan-400/70'
+                                  : 'bg-slate-800/20 border-slate-700/50 text-slate-500 cursor-not-allowed opacity-40'
+                          }`}
+                          disabled={!isUnlocked}
+                        >
+                          <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black flex-shrink-0 ${
+                            isCompleted ? 'bg-emerald-500/30 text-emerald-300' : 
+                            selectedFloor === topic.id ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-600/50'
+                          }`}>
+                            {isCompleted ? '✓' : topic.id}
+                          </span>
+                          <span className="flex-1 text-left truncate">{topic.title}</span>
+                          {!isUnlocked && <Lock className="w-3 h-3 text-slate-500 flex-shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Right: Selected Module Info & Start Button */}
+                <div className="flex flex-col">
+                  {currentTopic && (isCurrentUnlocked || isCurrentCompleted) ? (
+                    <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-2xl p-4 border-2 transition-all flex-1 flex flex-col"
+                         style={{borderColor: isCurrentCompleted ? '#10b981' : '#06b6d4'}}>
+                      
+                      {/* Module Header */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="text-4xl">{currentTopic.icon}</div>
+                        <div className="flex-1">
+                          <div className={`inline-block px-2 py-0.5 rounded-full text-xs font-black mb-1 ${isCurrentCompleted ? 'bg-emerald-500/20 text-emerald-400' : 'bg-cyan-500/20 text-cyan-400'}`}>
+                            {isCurrentCompleted ? '✓ Completado' : `Nivel ${selectedFloor}`}
+                          </div>
+                          <h3 className="text-lg font-black text-white leading-tight">{currentTopic.title}</h3>
+                          <p className="text-xs text-slate-400">{currentTopic.subtitle}</p>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="bg-slate-700/40 rounded-xl p-3 mb-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs text-slate-400 font-bold">PROGRESO DEL MÓDULO</span>
+                          <span className="font-black text-sm text-cyan-300">{isCurrentCompleted ? '100%' : '0%'}</span>
+                        </div>
+                        <div className="w-full h-3 bg-slate-600 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all relative" style={{width: isCurrentCompleted ? '100%' : '0%'}}>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Spacer */}
+                      <div className="flex-1"></div>
+
+                      {/* Start Button or Completed Badge */}
+                      {!isCurrentCompleted ? (
+                        <button
+                          onClick={() => {
+                            setSelectedLevelForGame(currentTopic);
+                            setShowPreGameModal(true);
+                          }}
+                          className="w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-400 hover:via-blue-400 hover:to-indigo-400 text-white font-black py-4 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-3 text-lg"
+                        >
+                          <Play className="w-6 h-6" />
+                          Iniciar Nivel
+                          <span className="text-2xl">→</span>
+                        </button>
+                      ) : (
+                        <div className="text-center py-4 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-xl">
+                          <p className="text-emerald-300 font-black text-lg flex items-center justify-center gap-2">
+                            <span className="text-2xl">✓</span> NIVEL COMPLETADO
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-800/40 rounded-2xl p-6 border-2 border-slate-700/50 flex-1 flex items-center justify-center">
+                      <div className="text-center">
+                        <Lock className="w-12 h-12 text-slate-500 mx-auto mb-3" />
+                        <p className="text-slate-400 font-bold">Módulo bloqueado</p>
+                        <p className="text-slate-500 text-sm">Completa el nivel anterior</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Hub de IA Gest-Tech - Below Training, Above Daily Challenge */}
+              <button
+                onClick={() => setShowAITraining(true)}
+                className="mt-5 w-full bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-5 text-left transition-all hover:scale-[1.01] hover:border-emerald-400 group shadow-xl shadow-emerald-500/10"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">🤖</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-xl font-black bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">Hub de IA Gest-Tech</h3>
+                        <span className="bg-emerald-500/30 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold border border-emerald-400/50">5 Módulos</span>
+                      </div>
+                      <p className="text-emerald-200/80 text-sm">Entrenamiento avanzado con Inteligencia Artificial</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-emerald-500/20 px-3 py-1.5 rounded-xl border border-emerald-400/50">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                      <span className="text-emerald-300 text-xs font-bold">IA Activa</span>
+                    </div>
+                    <span className="text-emerald-400 text-xl group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                </div>
+              </button>
+
+              {/* Daily Challenge - Below */}
+              <div className="mt-5">
+                <DailyChallenge />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - All Other Features */}
+          <div className="flex flex-col gap-4">
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Infografías Button */}
+              <button
+                onClick={() => setShowInfographics(true)}
+                className="bg-gradient-to-br from-purple-900/50 to-indigo-900/50 backdrop-blur-xl border-2 border-purple-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-purple-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">📊</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-purple-200 font-bold">21</span>
+                </div>
+                <h3 className="text-sm font-black text-white">Infografías</h3>
+                <p className="text-xs text-purple-200/70">Guías visuales</p>
+              </button>
+
+
+              {/* Hospital Cases Button */}
+              <button
+                onClick={() => setShowHospitalCases(true)}
+                className="bg-gradient-to-br from-red-900/50 to-orange-900/50 backdrop-blur-xl border-2 border-red-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-red-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">🏥</span>
+                  </div>
+                </div>
+                <h3 className="text-sm font-black text-white">Hospital Cases</h3>
+                <p className="text-xs text-red-200/70">Casos clínicos</p>
+              </button>
+
+              {/* Team Challenges Button */}
+              <button
+                onClick={() => setShowTeamChallenges(true)}
+                className="bg-gradient-to-br from-cyan-900/50 to-blue-900/50 backdrop-blur-xl border-2 border-cyan-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-cyan-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">👥</span>
+                  </div>
+                </div>
+                <h3 className="text-sm font-black text-white">Equipo</h3>
+                <p className="text-xs text-cyan-200/70">Desafíos grupales</p>
+              </button>
+            </div>
+
+            {/* Milestone Timeline */}
+            <AdvancedMilestoneTimeline currentRank={currentRank} currentScore={userData?.totalScore || 0} />
+
+            {/* Streak Tracker */}
+            <StreakTracker />
+
+            {/* Badges Display - Compact */}
+            <BadgesDisplay compact={true} />
+          </div>
+        </div>
+      </div>
+
+      {/* Pre-Game Modal */}
+      {selectedLevelForGame && (
+        <PreGameModal
+          isOpen={showPreGameModal}
+          onClose={() => setShowPreGameModal(false)}
+          onPlayGame={() => {
+            setLevel(selectedLevelForGame);
+            setShowElevatorDoors(true);
+            setShowPreGameModal(false);
+          }}
+          videoId={videoLinks[selectedLevelForGame.id]}
+          moduleName={selectedLevelForGame.title}
+          moduleSubtitle={selectedLevelForGame.subtitle}
+          moduleIcon={selectedLevelForGame.icon}
+        />
+      )}
+
+      {/* Hospital Cases Modal */}
+      {showHospitalCases && (
+        <HospitalCases 
+          onClose={() => setShowHospitalCases(false)}
+          onCaseComplete={(caseData) => {
+            setToastMessage(caseData.isCorrect ? '¡Decisión Correcta!' : 'Decisión No Óptima');
+            setToastIcon(caseData.isCorrect ? '✅' : '❌');
+            setShowToast(true);
+            // XP será otorgado en GameLevel cuando se complete un nivel
+          }}
+        />
+      )}
+
+      {/* Infographics Gallery Modal */}
+      <InfographiesGallery
+        isOpen={showInfographics}
+        onClose={() => setShowInfographics(false)}
+      />
+
+      {/* AI Training Hub */}
+      {showAITraining && (
+        <AITrainingHub onBack={() => setShowAITraining(false)} />
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <Toast message={toastMessage} icon={toastIcon} duration={2000} type={showToast ? "success" : "error"} />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
