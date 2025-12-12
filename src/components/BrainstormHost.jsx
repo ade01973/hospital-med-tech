@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import QRCode from 'react-qr-code';
 import { 
   ArrowLeft, Send, Users, Cpu, Loader2, MessageSquare, BrainCircuit, 
   CheckCircle, X, Sparkles, BarChart3, PieChart, Zap, Trophy, Crown, 
@@ -24,9 +23,11 @@ const HYPE_PHRASES = [ "¡ASÍ SE HACE! 🔥", "¡RITMO BRUTAL! 🚀", "¡MENUDO
 
 // 🔊 SONIDOS
 const SOUND_EFFECTS = [
-  'https://actions.google.com/sounds/v1/cartoon/pop.ogg', 
-  'https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg'
+  'https://actions.google.com/sounds/v1/cartoon/pop.ogg',
+  'https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg',
+  'https://actions.google.com/sounds/v1/alarms/beep_short.ogg'
 ];
+const NEW_MESSAGE_SOUND = 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg';
 const ALARM_SOUND = 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg';
 const VICTORY_SOUND = 'https://actions.google.com/sounds/v1/cartoon/clown_horn_fanfare.ogg';
 
@@ -105,10 +106,10 @@ const BrainstormHost = ({ onBack }) => {
   useEffect(() => {
     if (!isSessionActive || isAnalyzing || timeLeft <= 0) return;
     const timerId = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    if (timeLeft === 10) new Audio(NEW_MESSAGE_SOUND).play().catch(() => {});
     if (timeLeft === 1) new Audio(ALARM_SOUND).play().catch(()=>{});
-    if (timeLeft === 0 && !analysisResult && !isAnalyzing) { }
     return () => clearInterval(timerId);
-  }, [isSessionActive, isAnalyzing, timeLeft, analysisResult]);
+  }, [isSessionActive, isAnalyzing, timeLeft]);
 
   // --- FIREBASE LISTENER ---
   useEffect(() => {
@@ -125,12 +126,25 @@ const BrainstormHost = ({ onBack }) => {
       }
       isInitialLoadRef.current = false;
       prevCountRef.current = currentCount;
-      const newResponses = snapshot.docs.map(doc => ({
-        ...doc.data(),
-        color: CARD_COLORS[doc.data().word.length % CARD_COLORS.length],
-        rotation: (doc.data().word.length % 6) - 3 
-      }));
-      setResponses(newResponses);
+      setResponses(prev => {
+        const prevMap = new Map(prev.map(r => [r.id, r]));
+        return snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const existing = prevMap.get(doc.id);
+          const x = existing ? existing.x : Math.random() * 70 + 10;
+          const y = existing ? existing.y : Math.random() * 70 + 10;
+
+          return {
+            ...data,
+            id: doc.id,
+            color: CARD_COLORS[data.word.length % CARD_COLORS.length],
+            rotation: (data.word.length % 6) - 3,
+            x,
+            y,
+            justArrived: !existing,
+          };
+        });
+      });
     });
     idleTimerRef.current = setTimeout(() => setMotivationalPhrase("¿Quién rompe el hielo? 🧊🔨"), 5000);
     return () => { unsubscribe(); if (idleTimerRef.current) clearTimeout(idleTimerRef.current); };
@@ -191,10 +205,19 @@ const BrainstormHost = ({ onBack }) => {
     }, 2500);
   };
 
+  // Lanzar análisis automático al agotar el tiempo
+  useEffect(() => {
+    if (!isSessionActive) return;
+    if (timeLeft <= 0 && !analysisResult && !isAnalyzing) {
+      setIsSessionActive(false);
+      handleAnalyzeSession();
+    }
+  }, [timeLeft, isSessionActive, analysisResult, isAnalyzing]);
+
   const joinUrl = `${window.location.origin}?code=${sessionId}`;
 
   return (
-    <div className="min-h-screen font-sans p-6 flex flex-col items-center relative overflow-hidden selection:bg-cyan-300 selection:text-black" style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className={`min-h-screen font-sans p-6 flex flex-col items-center relative overflow-hidden selection:bg-cyan-300 selection:text-black ${timeLeft <= 10 && isSessionActive && !analysisResult ? 'critical-flash' : ''}`} style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-slate-950/85 z-0 backdrop-blur-md" />
 
       {/* --- EMOJIS FLOTANTES --- */}
@@ -342,7 +365,17 @@ const BrainstormHost = ({ onBack }) => {
         ) : (
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 h-full pb-8 animate-fade-in">
             <div className="lg:col-span-3 flex flex-col gap-6">
-              <div className="bg-white p-4 rounded-3xl shadow-2xl text-center"><QRCode value={joinUrl} size={140} /><p className="text-slate-900 font-black text-4xl mt-2 tracking-widest">{sessionId}</p><p className="text-slate-500 text-xs font-bold uppercase">Código de acceso</p></div>
+              <div className="bg-white p-4 rounded-3xl shadow-2xl text-center">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(joinUrl)}`}
+                  alt="Código QR para unirse"
+                  className="mx-auto"
+                  width={140}
+                  height={140}
+                />
+                <p className="text-slate-900 font-black text-4xl mt-2 tracking-widest">{sessionId}</p>
+                <p className="text-slate-500 text-xs font-bold uppercase">Código de acceso</p>
+              </div>
               <div className="bg-slate-900/80 p-6 rounded-3xl border border-white/10">
                 <div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-yellow-400 uppercase flex items-center gap-2"><Zap className="w-4 h-4" /> Energía</span><span className="text-white font-black">{responses.length}/20</span></div>
                 <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700"><div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-500 ease-out relative" style={{width: `${energyLevel}%`}}><div className="absolute inset-0 bg-white/30 animate-pulse"></div></div></div>
@@ -354,13 +387,25 @@ const BrainstormHost = ({ onBack }) => {
             <div className="lg:col-span-9 flex flex-col bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent h-12 flex items-center justify-center"><p className="text-cyan-300 font-black uppercase tracking-widest text-sm animate-pulse flex items-center gap-2">{motivationalPhrase}</p></div>
               <div className="mt-8 mb-4 z-10"><h3 className="text-4xl md:text-5xl font-black text-white leading-tight drop-shadow-lg text-center">{question}</h3></div>
-              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar z-10 relative">
+              <div className="flex-1 relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 shadow-inner">
                 {responses.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-500/30"><Users className="w-20 h-20 mb-4 opacity-50" /><p className="text-xl font-black uppercase tracking-widest opacity-50">Esperando...</p></div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500/40"><Users className="w-20 h-20 mb-4 opacity-60" /><p className="text-xl font-black uppercase tracking-widest opacity-60">Esperando...</p></div>
                 ) : (
-                  <div className="flex flex-wrap justify-center content-start gap-4 pb-20">
-                    {responses.map((res, index) => (
-                      <div key={index} className={`${res.color} text-white font-black px-6 py-4 rounded-2xl shadow-lg border-b-4 border-black/10 transform transition-all duration-300 hover:scale-110 cursor-default animate-bounce-in`} style={{ fontSize: res.word.length > 10 ? '1.2rem' : '1.8rem', transform: `rotate(${res.rotation}deg)` }}>{res.word}</div>
+                  <div className="absolute inset-0">
+                    {responses.map((res) => (
+                      <div
+                        key={res.id}
+                        className={`${res.color} text-white font-black px-6 py-4 rounded-2xl shadow-lg border-b-4 border-black/10 transform transition-all duration-500 hover:scale-110 cursor-default ${res.justArrived ? 'animate-word-pop' : ''}`}
+                        style={{
+                          fontSize: res.word.length > 10 ? '1.1rem' : '1.6rem',
+                          transform: `translate(-50%, -50%) rotate(${res.rotation}deg)`,
+                          top: `${res.y}%`,
+                          left: `${res.x}%`,
+                          position: 'absolute',
+                        }}
+                      >
+                        {res.word}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -381,6 +426,10 @@ const BrainstormHost = ({ onBack }) => {
         .animate-confetti-1 { animation: confetti 3s linear infinite; left: 20%; }
         .animate-confetti-2 { animation: confetti 4s linear infinite; left: 50%; }
         .animate-confetti-3 { animation: confetti 2.5s linear infinite; left: 80%; }
+        .animate-word-pop { animation: wordPop 0.9s ease-out forwards; }
+        @keyframes wordPop { 0% { transform: translate(-50%, -20%) scale(0.2); opacity: 0; } 60% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .critical-flash::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(248,113,113,0.1), transparent 45%); mix-blend-mode: screen; animation: flash 1s linear infinite; pointer-events: none; }
+        @keyframes flash { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
       `}</style>
     </div>
   );

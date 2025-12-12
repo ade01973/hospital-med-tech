@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import { Hash, Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, Sparkles, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -30,6 +30,8 @@ import { useGestCoins } from '../hooks/useGestCoins';
 import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
 import { checkBadgeUnlocks } from '../data/BADGES';
+
+const ADMIN_EMAILS = ['gongaralberto@gmail.com', 'agong@unileon.es'];
 
 const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
   // Música de fondo en dashboard
@@ -70,6 +72,8 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+
+  const isBrainstormAdmin = ADMIN_EMAILS.includes((user?.email || '').toLowerCase());
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
@@ -437,26 +441,80 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               </div>
             </div>
 
-            <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
-              <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
-              <div className="flex items-center gap-1">
-                <span className="text-2xl">⭐</span>
-                <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
-              </div>
+        <div className="flex flex-col items-center bg-gradient-to-br from-yellow-600 to-orange-600 px-4 py-2 rounded-lg border-2 border-yellow-300/50 shadow-lg shadow-yellow-500/40">
+          <span className="text-xs text-yellow-100 font-bold uppercase tracking-wider">Puntos Totales</span>
+          <div className="flex items-center gap-1">
+            <span className="text-2xl">⭐</span>
+            <span className="text-2xl font-black text-white">{userData?.totalScore || 0}</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
+        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+      >
+        <LogOut className="w-4 h-4" />
+        Salir
+      </button>
+    </div>
+
+    {/* Tarjeta premium: Brainstorming colaborativo para administradores */}
+    {isBrainstormAdmin && (
+      <div className="mb-6">
+        <div className="relative overflow-hidden rounded-2xl border border-cyan-400/30 bg-gradient-to-r from-slate-950/90 via-cyan-900/40 to-slate-950/90 p-4 shadow-[0_12px_40px_rgba(8,47,73,0.6)]">
+          <div className="absolute inset-0 opacity-30" style={{backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.3), transparent 25%), radial-gradient(circle at 80% 0%, rgba(59,130,246,0.25), transparent 20%)'}}></div>
+          <div className="absolute -right-10 -top-10 w-36 h-36 bg-cyan-500/10 blur-3xl" />
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-4">
+            <div className="flex-1 text-white space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-[10px] font-black uppercase tracking-[0.22em]">⚡ Host premium</div>
+              <h2 className="text-2xl font-black leading-tight">Brainstorming Colaborativo</h2>
+              <p className="text-slate-200 text-sm max-w-2xl">Lanza la pregunta, comparte el QR sin login y observa las ideas en vivo. Podio y análisis automáticos incluidos.</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+              <button
+                onClick={() => setView('brainstorm_join')}
+                className="flex-1 bg-white text-slate-900 font-black px-4 py-3 rounded-xl shadow-lg hover:shadow-white/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
+              >
+                <Sparkles className="w-4 h-4" /> Unirse
+              </button>
+              <button
+                onClick={() => setView('brainstorm_host')}
+                className="flex-1 px-4 py-3 rounded-xl font-black border border-cyan-300/60 transition-all hover:-translate-y-1 bg-gradient-to-r from-cyan-500 to-sky-400 hover:from-cyan-400 hover:to-sky-300 text-slate-900 shadow-[0_10px_30px_rgba(14,165,233,0.35)] flex items-center justify-center gap-2 text-sm"
+              >
+                <Trophy className="w-4 h-4" /> Panel profe
+              </button>
             </div>
           </div>
-
-          <button 
-            onClick={() => { setView('welcome'); setShowElevatorDoors(false); }}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            Salir
-          </button>
         </div>
+      </div>
+    )}
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {/* Tarjeta de acceso rápido para estudiantes (solo join) */}
+    {!isBrainstormAdmin && (
+      <div className="mb-6">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-400/30 bg-gradient-to-r from-slate-950/90 via-emerald-900/30 to-slate-950/90 p-4 shadow-[0_12px_40px_rgba(6,95,70,0.5)]">
+          <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 30% 10%, rgba(16,185,129,0.25), transparent 30%), radial-gradient(circle at 80% 0%, rgba(52,211,153,0.2), transparent 20%)'}}></div>
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-4">
+            <div className="flex-1 text-white space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-[10px] font-black uppercase tracking-[0.22em]">🎯 Modo alumno</div>
+              <h2 className="text-2xl font-black leading-tight">Únete con código o QR</h2>
+              <p className="text-slate-200 text-sm max-w-2xl">Escanea el QR desde el móvil o teclea el código. No necesitas iniciar sesión en el teléfono.</p>
+            </div>
+            <button
+              onClick={() => setView('brainstorm_join')}
+              className="w-full md:w-auto bg-white text-slate-900 font-black px-4 py-3 rounded-xl shadow-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-sm"
+            >
+              <Hash className="w-4 h-4" /> Ir al banner de código
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Main Grid */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Left - Unified Game Panel (Modules + Level Start) - Side by Side */}
           <div className="lg:col-span-2">

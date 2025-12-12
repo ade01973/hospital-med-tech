@@ -29,8 +29,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -41,6 +40,14 @@ const [view, setView] = useState('brainstorm_host');
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
+
+  // Permitir que los estudiantes ingresen a una sala desde el móvil sin autenticación
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code')) {
+      setView('brainstorm_join');
+    }
+  }, []);
   
   const { processLogin } = useLoginStreak();
   const { 
@@ -79,23 +86,30 @@ const [view, setView] = useState('brainstorm_host');
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
+      const isAnon = u?.isAnonymous;
+
       if (u && !user) {
-        console.log('✓ Nuevo login detectado, ir a bienvenida');
-        // 🔔 Procesar login y mostrar recompensa si hay
-        const rewardData = processLogin();
-        if (rewardData) {
-          console.log('🎉 Recompensa de login:', rewardData);
-          setRewardNotification(rewardData);
-          setShowRewardNotification(true);
+        if (isAnon) {
+          // No interrumpimos la vista de join cuando el acceso es anónimo vía QR
+          setView((current) => current === 'brainstorm_join' ? 'brainstorm_join' : current || 'brainstorm_join');
+        } else {
+          console.log('✓ Nuevo login detectado, ir a bienvenida');
+          // 🔔 Procesar login y mostrar recompensa si hay
+          const rewardData = processLogin();
+          if (rewardData) {
+            console.log('🎉 Recompensa de login:', rewardData);
+            setRewardNotification(rewardData);
+            setShowRewardNotification(true);
+          }
+          // Si entramos, vamos a la bienvenida
+          setView('welcome');
         }
-        // Si entramos, vamos a la bienvenida
-        setView('welcome');
       }
       setUser(u);
-      
+
       if (!u) {
         setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
+          if (current === 'brainstorm_host') return 'brainstorm_host';
           if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
           return current === 'auth' ? 'auth' : 'landing';
         });
