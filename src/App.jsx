@@ -1,5 +1,6 @@
 import BrainstormHost from './components/BrainstormHost';
-import BrainstormJoin from './components/BrainstormJoin'; 
+import BrainstormJoin from './components/BrainstormJoin';
+import BrainstormBattleHero from './components/BrainstormBattleHero';
 // 🔥 1. NUEVO IMPORT AQUÍ
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth'; 
@@ -29,8 +30,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  // 🔥 Vista inicial para el portal de brainstorming épico
+  const [view, setView] = useState('brainstorm_landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -95,8 +96,7 @@ const [view, setView] = useState('brainstorm_host');
       
       if (!u) {
         setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
-          if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
+          if (['brainstorm_host', 'brainstorm_join', 'brainstorm_landing'].includes(current)) return current;
           return current === 'auth' ? 'auth' : 'landing';
         });
         setUserData(null);
@@ -280,15 +280,23 @@ const [view, setView] = useState('brainstorm_host');
       
       {/* 8. RANKING */}
       {user && view === 'leaderboard' && <Leaderboard onBack={() => setView('dashboard')} />}
-      
+
+      {/* PORTAL DE BATALLA DE IDEAS */}
+      {view === 'brainstorm_landing' && (
+        <BrainstormBattleHero
+          onJoin={() => setView('brainstorm_join')}
+          onHost={() => setView('brainstorm_host')}
+        />
+      )}
+
       {/* PANTALLA PROFESOR */}
       {view === 'brainstorm_host' && (
-        <BrainstormHost onBack={() => setView(user ? 'dashboard' : 'landing')} />
+        <BrainstormHost onBack={() => setView(user ? 'dashboard' : 'brainstorm_landing')} />
       )}
 
       {/* PANTALLA ALUMNO */}
       {view === 'brainstorm_join' && (
-        <BrainstormJoin onBack={() => setView(user ? 'dashboard' : 'landing')} />
+        <BrainstormJoin onBack={() => setView(user ? 'dashboard' : 'brainstorm_landing')} />
       )}
 
     </div>
