@@ -182,6 +182,28 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
 
+  const inferBattleRole = () => {
+    const email = (user?.email || '').toLowerCase();
+    if (email.includes('prof') || email.includes('docente') || email.includes('teacher')) {
+      return 'professor';
+    }
+    return 'student';
+  };
+
+  const [battleRole, setBattleRole] = useState(inferBattleRole());
+
+  useEffect(() => {
+    setBattleRole(inferBattleRole());
+  }, [user?.email]);
+
+  const handleBattleClick = () => {
+    if (battleRole === 'professor') {
+      setView('brainstorm_host');
+    } else {
+      setView('brainstorm_join');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
       <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: `url(/images/hospital-bg.png)`}}></div>
@@ -291,6 +313,55 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto p-6 max-w-7xl">
+
+        {/* Mini banner Batalla de las Ideas */}
+        <div className="mb-6">
+          <div className="w-full rounded-2xl border border-cyan-500/40 bg-gradient-to-r from-slate-900/90 via-slate-900/80 to-slate-900/90 px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 shadow-inner">
+                🧠
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-cyan-300 font-black">La batalla de las ideas</p>
+                <p className="text-sm text-white font-semibold">
+                  {battleRole === 'professor' ? 'Crea y modera la sesión como profesor.' : 'Únete con el código de tu profesor como estudiante.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1">
+                <button
+                  onClick={() => setBattleRole('student')}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                    battleRole === 'student'
+                      ? 'bg-white text-slate-900 shadow-lg shadow-cyan-500/30'
+                      : 'text-slate-200 hover:text-white'
+                  }`}
+                >
+                  Estudiante
+                </button>
+                <button
+                  onClick={() => setBattleRole('professor')}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                    battleRole === 'professor'
+                      ? 'bg-white text-slate-900 shadow-lg shadow-cyan-500/30'
+                      : 'text-slate-200 hover:text-white'
+                  }`}
+                >
+                  Profesor
+                </button>
+              </div>
+
+              <button
+                onClick={handleBattleClick}
+                className="px-4 py-2 rounded-xl bg-white text-slate-950 text-sm font-black shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:-translate-y-0.5 transition-all"
+              >
+                Ir a la batalla
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
