@@ -172,7 +172,19 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const isCurrentUnlocked = selectedFloor === 1 || (userData?.completedLevels && userData.completedLevels[selectedFloor - 1]);
   const currentRankData = NURSING_RANKS.find(r => r.title === userData.rank);
   const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
-  const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+  const playerAvatar = (() => {
+    if (typeof window === 'undefined') return {};
+
+    const storedAvatar = localStorage.getItem('playerAvatar');
+    if (!storedAvatar) return {};
+
+    try {
+      return JSON.parse(storedAvatar);
+    } catch (error) {
+      console.warn('No se pudo interpretar el avatar guardado, se usará el avatar por defecto.', error);
+      return {};
+    }
+  })();
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
