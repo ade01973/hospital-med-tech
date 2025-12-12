@@ -1,9 +1,12 @@
+import BrainstormHost from './components/BrainstormHost';
+import BrainstormJoin from './components/BrainstormJoin'; 
+// 🔥 1. NUEVO IMPORT AQUÍ
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth'; 
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 
 // --- IMPORTS DE COMPONENTES ---
-import LandingPage from './components/LandingPage'; // 🔥 NUEVO IMPORT
+import LandingPage from './components/LandingPage'; 
 import AuthScreen from './components/AuthScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import AvatarCustomization from './components/AvatarCustomization';
@@ -26,12 +29,13 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 CAMBIO IMPORTANTE: El estado inicial ahora es 'landing'
-  const [view, setView] = useState('landing'); 
+  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
+const [view, setView] = useState('brainstorm_host');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
   const [showElevatorDoors, setShowElevatorDoors] = useState(false);
+  // ... (el resto sigue igual)
   const [rewardNotification, setRewardNotification] = useState(null);
   const [showRewardNotification, setShowRewardNotification] = useState(false);
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
@@ -90,16 +94,16 @@ export default function App() {
       setUser(u);
       
       if (!u) {
-        // 🔥 SI NO HAY USUARIO:
-        // Si estábamos intentando loguearnos ('auth'), nos quedamos ahí.
-        // Si no, vamos a la landing.
-        setView(current => (current === 'auth' ? 'auth' : 'landing'));
+        setView(current => {
+          if (current === 'brainstorm_host') return 'brainstorm_host'; 
+          if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
+          return current === 'auth' ? 'auth' : 'landing';
+        });
         setUserData(null);
       }
-    });
+});
     return () => unsubscribe();
   }, [user, processLogin]);
-
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
     if (!user) return;
@@ -276,6 +280,17 @@ export default function App() {
       
       {/* 8. RANKING */}
       {user && view === 'leaderboard' && <Leaderboard onBack={() => setView('dashboard')} />}
+      
+      {/* PANTALLA PROFESOR */}
+      {view === 'brainstorm_host' && (
+        <BrainstormHost onBack={() => setView(user ? 'dashboard' : 'landing')} />
+      )}
+
+      {/* PANTALLA ALUMNO */}
+      {view === 'brainstorm_join' && (
+        <BrainstormJoin onBack={() => setView(user ? 'dashboard' : 'landing')} />
+      )}
+
     </div>
   );
 }
