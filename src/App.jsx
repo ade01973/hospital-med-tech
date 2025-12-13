@@ -77,7 +77,14 @@ export default function App() {
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
+      const isGuestRoute = typeof window !== 'undefined' && window.location.pathname.includes('/battle/guest');
+
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
+      if (isGuestRoute) {
+        setUser(u);
+        return;
+      }
+
       if (u && !user) {
         console.log('✓ Nuevo login detectado, ir a bienvenida');
         // 🔔 Procesar login y mostrar recompensa si hay
@@ -91,12 +98,12 @@ export default function App() {
         setView('welcome');
       }
       setUser(u);
-      
+
       if (!u) {
         setView('landing');
         setUserData(null);
       }
-});
+    });
     return () => unsubscribe();
   }, [user, processLogin]);
   // 🟢 CARGAR PROGRESO DEL USUARIO
