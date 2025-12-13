@@ -30,7 +30,20 @@ export default function App() {
   const [userData, setUserData] = useState(null);
   
   // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  const [view, setView] = useState('brainstorm_host');
+
+  const [urlSessionId, setUrlSessionId] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionFromUrl = params.get('sala');
+
+    if (sessionFromUrl) {
+      const formattedSession = sessionFromUrl.toUpperCase();
+      setUrlSessionId(formattedSession);
+      setView('brainstorm_join');
+    }
+  }, []);
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -288,7 +301,10 @@ const [view, setView] = useState('brainstorm_host');
 
       {/* PANTALLA ALUMNO */}
       {view === 'brainstorm_join' && (
-        <BrainstormJoin onBack={() => setView(user ? 'dashboard' : 'landing')} />
+        <BrainstormJoin
+          sessionIdFromUrl={urlSessionId}
+          onBack={() => setView(user ? 'dashboard' : 'landing')}
+        />
       )}
 
     </div>

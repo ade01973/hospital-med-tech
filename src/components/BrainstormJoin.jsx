@@ -21,20 +21,30 @@ const HYPE_FEEDBACK = [
   { text: "¡GENIO! 🧠", sub: "Sigue disparando ideas." }
 ];
 
-const BrainstormJoin = ({ onBack }) => {
+const BrainstormJoin = ({ onBack, sessionIdFromUrl }) => {
   const [sessionId, setSessionId] = useState('');
   const [answer, setAnswer] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [hasPresetSession, setHasPresetSession] = useState(false);
+
   // Estado para el feedback aleatorio
   const [currentFeedback, setCurrentFeedback] = useState(HYPE_FEEDBACK[0]);
 
   useEffect(() => {
+    if (sessionIdFromUrl) {
+      setSessionId(sessionIdFromUrl.toUpperCase());
+      setHasPresetSession(true);
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
-    const codeFromUrl = params.get('code');
-    if (codeFromUrl) setSessionId(codeFromUrl);
-  }, []);
+    const codeFromUrl = params.get('sala');
+    if (codeFromUrl) {
+      setSessionId(codeFromUrl.toUpperCase());
+      setHasPresetSession(true);
+    }
+  }, [sessionIdFromUrl]);
 
   const playSuccessSound = () => {
     const randomSound = SUCCESS_SOUNDS[Math.floor(Math.random() * SUCCESS_SOUNDS.length)];
@@ -105,17 +115,36 @@ const BrainstormJoin = ({ onBack }) => {
                 {/* INPUT CÓDIGO */}
                 <div>
                     <label className="text-cyan-400 text-xs font-bold uppercase tracking-widest ml-4 mb-2 block">Código</label>
-                    <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 flex items-center focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
+                    {hasPresetSession ? (
+                      <div className="bg-slate-900/80 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-3 flex-wrap">
+                        <div className="flex items-center gap-3">
+                          <Hash className="text-green-400 w-5 h-5" />
+                          <span className="text-white font-black text-2xl tracking-widest">{sessionId || '----'}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-green-300 font-bold uppercase tracking-widest">Sala detectada</span>
+                          <button
+                            type="button"
+                            onClick={() => { setHasPresetSession(false); setSessionId(''); }}
+                            className="text-[10px] font-bold uppercase tracking-widest text-cyan-300 hover:text-white"
+                          >
+                            Usar otro código
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 flex items-center focus-within:border-cyan-500 focus-within:ring-2 focus-within:ring-cyan-500/20 transition-all">
                         <Hash className="text-slate-500 w-5 h-5 mr-3" />
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             value={sessionId}
                             onChange={(e) => setSessionId(e.target.value.toUpperCase())}
                             placeholder="ABCD"
                             className="bg-transparent w-full text-white font-black text-2xl placeholder-slate-600 outline-none uppercase tracking-widest"
                             maxLength={6}
                         />
-                    </div>
+                      </div>
+                    )}
                 </div>
 
                 {/* INPUT RESPUESTA */}
