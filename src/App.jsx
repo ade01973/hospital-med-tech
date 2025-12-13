@@ -29,8 +29,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -94,11 +93,7 @@ const [view, setView] = useState('brainstorm_host');
       setUser(u);
       
       if (!u) {
-        setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
-          if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
-          return current === 'auth' ? 'auth' : 'landing';
-        });
+        setView('landing');
         setUserData(null);
       }
 });
