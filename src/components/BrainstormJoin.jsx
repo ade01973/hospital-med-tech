@@ -33,7 +33,12 @@ const BrainstormJoin = ({ onBack }) => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const codeFromUrl = params.get('code');
-    if (codeFromUrl) setSessionId(codeFromUrl);
+    if (codeFromUrl) setSessionId(codeFromUrl.toUpperCase());
+
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (pathParts[0] === 'battle' && pathParts[1] === 'guest' && pathParts[2]) {
+      setSessionId(pathParts[2].toUpperCase());
+    }
   }, []);
 
   const playSuccessSound = () => {

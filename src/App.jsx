@@ -40,7 +40,7 @@ export default function App() {
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
-  
+
   const { processLogin } = useLoginStreak();
   const { 
     newBadge, 
@@ -106,6 +106,21 @@ export default function App() {
     });
     return () => unsubscribe();
   }, [user, processLogin]);
+
+  // 🔗 DETECTAR ACCESO DIRECTO A LA SALA DE INVITADOS
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const isGuestPath = pathParts[0] === 'battle' && pathParts[1] === 'guest';
+    const hasGuestCodeQuery = searchParams.get('code');
+
+    if (isGuestPath || hasGuestCodeQuery) {
+      setView('brainstorm_join');
+    }
+  }, []);
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
     if (!user) return;
