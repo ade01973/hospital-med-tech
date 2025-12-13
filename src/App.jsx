@@ -29,8 +29,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -41,7 +40,7 @@ const [view, setView] = useState('brainstorm_host');
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
-  
+
   const { processLogin } = useLoginStreak();
   const { 
     newBadge, 
@@ -78,7 +77,14 @@ const [view, setView] = useState('brainstorm_host');
   // 🔵 DETECTAR LOGIN Y CAMBIOS DE AUTH
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
+      const isGuestRoute = typeof window !== 'undefined' && window.location.pathname.includes('/battle/guest');
+
       console.log('Auth state changed:', u ? 'Usuario logueado' : 'Sin usuario');
+      if (isGuestRoute) {
+        setUser(u);
+        return;
+      }
+
       if (u && !user) {
         console.log('✓ Nuevo login detectado, ir a bienvenida');
         // 🔔 Procesar login y mostrar recompensa si hay
@@ -92,18 +98,29 @@ const [view, setView] = useState('brainstorm_host');
         setView('welcome');
       }
       setUser(u);
-      
+
       if (!u) {
-        setView(current => {
-          if (current === 'brainstorm_host') return 'brainstorm_host'; 
-          if (current === 'brainstorm_join') return 'brainstorm_join'; // 🔥 AÑADE ESTA LÍNEA
-          return current === 'auth' ? 'auth' : 'landing';
-        });
+        setView('landing');
         setUserData(null);
       }
-});
+    });
     return () => unsubscribe();
   }, [user, processLogin]);
+
+  // 🔗 DETECTAR ACCESO DIRECTO A LA SALA DE INVITADOS
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const isGuestPath = pathParts[0] === 'battle' && pathParts[1] === 'guest';
+    const hasGuestCodeQuery = searchParams.get('code');
+
+    if (isGuestPath || hasGuestCodeQuery) {
+      setView('brainstorm_join');
+    }
+  }, []);
   // 🟢 CARGAR PROGRESO DEL USUARIO
   useEffect(() => {
     if (!user) return;

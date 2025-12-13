@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon, Brain } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -70,6 +70,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const { dailyMissions, weeklyMission, claimReward, getCompletedNotClaimed } = useMissions();
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+
+  const authorizedBattleHosts = ['gongaralberto@gmail.com', 'agong@unileon.es'];
+  const canHostBattle = authorizedBattleHosts.includes((user?.email || '').toLowerCase());
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
@@ -635,6 +638,35 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           <div className="flex flex-col gap-4">
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-2 gap-3">
+              {/* Batalla de Ideas Button */}
+              <div className="bg-gradient-to-br from-cyan-900/50 to-emerald-900/50 backdrop-blur-xl border-2 border-cyan-400/40 rounded-2xl p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Brain className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-sm font-black text-white leading-tight">Batalla de Ideas</h3>
+                    <p className="text-[11px] text-cyan-100/80">Modo invitado sin logueo</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {canHostBattle && (
+                    <button
+                      onClick={() => setView('brainstorm_host')}
+                      className="flex-1 bg-cyan-500/20 border border-cyan-400/50 text-cyan-100 text-xs font-bold py-2 rounded-xl hover:bg-cyan-500/30 transition"
+                    >
+                      Crear sala
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setView('brainstorm_join')}
+                    className={`flex-1 bg-emerald-500/20 border border-emerald-400/50 text-emerald-100 text-xs font-bold py-2 rounded-xl hover:bg-emerald-500/30 transition ${canHostBattle ? '' : 'w-full'}`}
+                  >
+                    Unirse
+                  </button>
+                </div>
+              </div>
+
               {/* Infografías Button */}
               <button
                 onClick={() => setShowInfographics(true)}

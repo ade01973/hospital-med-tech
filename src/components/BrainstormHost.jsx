@@ -191,7 +191,8 @@ const BrainstormHost = ({ onBack }) => {
     }, 2500);
   };
 
-  const joinUrl = `${window.location.origin}?code=${sessionId}`;
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const joinUrl = sessionId ? `${origin}/battle/guest/${sessionId}` : `${origin}/battle/guest`;
 
   return (
     <div className="min-h-screen font-sans p-6 flex flex-col items-center relative overflow-hidden selection:bg-cyan-300 selection:text-black" style={{ backgroundImage: `url(${hospitalBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
