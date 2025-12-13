@@ -71,6 +71,9 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const { calendarData, currentStreakDay, getDaysInCurrentMonth } = useLoginStreak();
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
 
+  const authorizedBattleHosts = ['gongaralberto@gmail.com', 'agong@unileon.es'];
+  const canHostBattle = authorizedBattleHosts.includes((user?.email || '').toLowerCase());
+
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
     currentRank, 
@@ -647,15 +650,17 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setView('brainstorm_host')}
-                    className="flex-1 bg-cyan-500/20 border border-cyan-400/50 text-cyan-100 text-xs font-bold py-2 rounded-xl hover:bg-cyan-500/30 transition"
-                  >
-                    Crear sala
-                  </button>
+                  {canHostBattle && (
+                    <button
+                      onClick={() => setView('brainstorm_host')}
+                      className="flex-1 bg-cyan-500/20 border border-cyan-400/50 text-cyan-100 text-xs font-bold py-2 rounded-xl hover:bg-cyan-500/30 transition"
+                    >
+                      Crear sala
+                    </button>
+                  )}
                   <button
                     onClick={() => setView('brainstorm_join')}
-                    className="flex-1 bg-emerald-500/20 border border-emerald-400/50 text-emerald-100 text-xs font-bold py-2 rounded-xl hover:bg-emerald-500/30 transition"
+                    className={`flex-1 bg-emerald-500/20 border border-emerald-400/50 text-emerald-100 text-xs font-bold py-2 rounded-xl hover:bg-emerald-500/30 transition ${canHostBattle ? '' : 'w-full'}`}
                   >
                     Unirse
                   </button>
