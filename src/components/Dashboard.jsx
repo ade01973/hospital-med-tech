@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon, Sparkles, Gamepad2 } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -21,6 +21,7 @@ import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
 import AITrainingHub from './AITrainingHub';
+import HangmanGame from './HangmanGame';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -56,6 +57,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [showInfographics, setShowInfographics] = useState(false);
   const [showAITraining, setShowAITraining] = useState(false);
+  const [showHangman, setShowHangman] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -634,7 +636,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
           {/* Right Column - All Other Features */}
           <div className="flex flex-col gap-4">
             {/* Quick Actions Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               {/* Infografías Button */}
               <button
                 onClick={() => setShowInfographics(true)}
@@ -650,6 +652,35 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
+              {/* Batalla de Ideas */}
+              <button
+                onClick={() => setView('brainstorm_host')}
+                className="bg-gradient-to-br from-amber-900/50 to-orange-900/50 backdrop-blur-xl border-2 border-amber-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-amber-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-5 h-5 text-amber-100" />
+                  </div>
+                  <span className="bg-white/15 px-2 py-0.5 rounded-full text-xs text-amber-100 font-bold">Live</span>
+                </div>
+                <h3 className="text-sm font-black text-white">Batalla de ideas</h3>
+                <p className="text-xs text-amber-100/80">Sesiones en tiempo real</p>
+              </button>
+
+              {/* Ahorcado */}
+              <button
+                onClick={() => setShowHangman(true)}
+                className="bg-gradient-to-br from-emerald-900/50 to-teal-900/50 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Gamepad2 className="w-5 h-5 text-emerald-50" />
+                  </div>
+                  <span className="bg-white/15 px-2 py-0.5 rounded-full text-xs text-emerald-50 font-bold">Nuevo</span>
+                </div>
+                <h3 className="text-sm font-black text-white">Ahorcado</h3>
+                <p className="text-xs text-emerald-100/80">Repasa palabras clave</p>
+              </button>
 
               {/* Hospital Cases Button */}
               <button
@@ -727,6 +758,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         isOpen={showInfographics}
         onClose={() => setShowInfographics(false)}
       />
+
+      {/* Hangman Mini-game */}
+      {showHangman && (
+        <HangmanGame isOpen={showHangman} onClose={() => setShowHangman(false)} />
+      )}
 
       {/* AI Training Hub */}
       {showAITraining && (
