@@ -652,6 +652,24 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
+              {/* Batalla de ideas */}
+              <button
+                onClick={() => setView('brainstorm_host')}
+                className="bg-gradient-to-br from-fuchsia-900/50 to-pink-900/50 backdrop-blur-xl border-2 border-fuchsia-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-fuchsia-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">🧠</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-fuchsia-100 font-bold flex items-center gap-1">
+                    <span className="w-2 h-2 bg-amber-300 rounded-full animate-pulse"></span>
+                    En vivo
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-white">Batalla de ideas</h3>
+                <p className="text-xs text-fuchsia-100/80">Lanza sesiones con QR para tu equipo</p>
+              </button>
+
               {/* Ahorcado IA Button */}
               <button
                 onClick={() => setShowHangman(true)}

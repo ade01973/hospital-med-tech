@@ -105,8 +105,19 @@ export default function HangmanGame({ isOpen, onClose, onExitToDashboard }) {
       setStatus('playing');
       playNotification();
     } catch (err) {
-      setError(err.message || 'No se pudo cargar el reto');
-      setStatus('error');
+      console.error('Fallo al obtener reto de ahorcado', err);
+      setError('No pudimos conectar con la API de Gemini. Verifica GOOGLE_API_KEY_1 en el servidor o reintenta.');
+
+      // Fallback de cortesía para no romper la sesión
+      const fallbackChallenge = {
+        topic,
+        question: `Plan exprés sobre ${topic}: ¿qué concepto clave impulsa a la gestora enfermera?`,
+        hint: 'Piensa en liderazgo y gestión de equipos 👩‍⚕️🚀',
+        answer: 'LIDERAZGO',
+      };
+
+      setChallenge(fallbackChallenge);
+      setStatus('playing');
     } finally {
       setIsLoading(false);
     }
