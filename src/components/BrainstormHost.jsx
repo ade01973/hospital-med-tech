@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import QRCode from 'react-qr-code';
 import { 
   ArrowLeft, Send, Users, Cpu, Loader2, MessageSquare, BrainCircuit, 
   CheckCircle, X, Sparkles, BarChart3, PieChart, Zap, Trophy, Crown, 
@@ -24,11 +23,23 @@ const HYPE_PHRASES = [ "¡ASÍ SE HACE! 🔥", "¡RITMO BRUTAL! 🚀", "¡MENUDO
 
 // 🔊 SONIDOS
 const SOUND_EFFECTS = [
-  'https://actions.google.com/sounds/v1/cartoon/pop.ogg', 
+  'https://actions.google.com/sounds/v1/cartoon/pop.ogg',
   'https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg'
 ];
 const ALARM_SOUND = 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg';
 const VICTORY_SOUND = 'https://actions.google.com/sounds/v1/cartoon/clown_horn_fanfare.ogg';
+
+// ✅ Reemplazo ligero para evitar la dependencia faltante "react-qr-code"
+const SimpleQRCode = ({ value, size = 140 }) => (
+  <img
+    src={`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(value)}`}
+    alt="Código QR de la sesión"
+    className="mx-auto"
+    width={size}
+    height={size}
+    loading="lazy"
+  />
+);
 
 // 🎰 COMPONENTE DE CONTADOR ANIMADO (VERSIÓN SEGURA)
 const AnimatedNumber = ({ value }) => {
@@ -342,7 +353,7 @@ const BrainstormHost = ({ onBack }) => {
         ) : (
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 h-full pb-8 animate-fade-in">
             <div className="lg:col-span-3 flex flex-col gap-6">
-              <div className="bg-white p-4 rounded-3xl shadow-2xl text-center"><QRCode value={joinUrl} size={140} /><p className="text-slate-900 font-black text-4xl mt-2 tracking-widest">{sessionId}</p><p className="text-slate-500 text-xs font-bold uppercase">Código de acceso</p></div>
+              <div className="bg-white p-4 rounded-3xl shadow-2xl text-center"><SimpleQRCode value={joinUrl} size={140} /><p className="text-slate-900 font-black text-4xl mt-2 tracking-widest">{sessionId}</p><p className="text-slate-500 text-xs font-bold uppercase">Código de acceso</p></div>
               <div className="bg-slate-900/80 p-6 rounded-3xl border border-white/10">
                 <div className="flex justify-between items-center mb-2"><span className="text-xs font-bold text-yellow-400 uppercase flex items-center gap-2"><Zap className="w-4 h-4" /> Energía</span><span className="text-white font-black">{responses.length}/20</span></div>
                 <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700"><div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-500 ease-out relative" style={{width: `${energyLevel}%`}}><div className="absolute inset-0 bg-white/30 animate-pulse"></div></div></div>
