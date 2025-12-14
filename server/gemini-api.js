@@ -6,7 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || '' });
+const MODEL_NAME = 'gemini-2.0-flash';
 
 const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
@@ -36,14 +37,39 @@ Si no sabes algo, admítelo honestamente.`;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+const ensureModel = () => {
+  if (!process.env.GOOGLE_API_KEY_1) {
+    throw new Error('Falta GOOGLE_API_KEY_1 para conectar con Gemini.');
+  }
+
+  return ai.getGenerativeModel({ model: MODEL_NAME });
+};
+
+const normalizeContents = (contents) => {
+  if (Array.isArray(contents)) return contents;
+
+  return [
+    {
+      role: 'user',
+      parts: [{ text: typeof contents === 'string' ? contents : JSON.stringify(contents) }]
+    }
+  ];
+};
+
 async function callGeminiWithRetry(contents, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: contents,
+      const model = ensureModel();
+      const response = await model.generateContent({
+        contents: normalizeContents(contents)
       });
-      return response;
+
+      const text = response.response?.text?.();
+      if (!text) {
+        throw new Error('La respuesta de Gemini llegó vacía.');
+      }
+
+      return text;
     } catch (error) {
       console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
       
@@ -79,7 +105,7 @@ app.post('/api/chat', async (req, res) => {
     ];
 
     const response = await callGeminiWithRetry(contents);
-    res.json({ response: response.text || "Lo siento, no pude generar una respuesta." });
+    res.json({ response: response || 'Lo siento, no pude generar una respuesta.' });
   } catch (error) {
     console.error("Error calling Gemini:", error);
     
@@ -110,8 +136,7 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const text = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (jsonMatch) {
@@ -125,6 +150,76 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
     if (error.status === 503 || error.message?.includes('overloaded')) {
       res.status(503).json({ 
         error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera unos segundos e intenta de nuevo.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+app.post('/api/hangman-challenge', async (req, res) => {
+  try {
+    if (!process.env.GOOGLE_API_KEY_1) {
+      return res.status(500).json({
+        error: 'Falta GOOGLE_API_KEY_1 para generar el reto de ahorcado. Configura la clave y reinicia el servidor.'
+      });
+    }
+
+    const { topic } = req.body;
+    const topics = [
+      'Liderazgo enfermero',
+      'Toma de decisiones',
+      'Gestión de equipos',
+      'Gestión de conflictos',
+      'Comunicación efectiva',
+      'Ética en enfermería',
+      'Inteligencia artificial en salud',
+      'Imagen profesional',
+      'Imagen digital',
+      'Marketing sanitario',
+      'Dirección estratégica',
+      'Gestión de recursos humanos',
+      'Calidad asistencial',
+      'Gestión por procesos'
+    ];
+
+    const selectedTopic = topic || topics[Math.floor(Math.random() * topics.length)];
+
+    const prompt = `Genera un reto corto de ahorcado para gestoras enfermeras sobre "${selectedTopic}".
+
+${TERMINOLOGY_RULES}
+
+Devuelve SOLO un JSON válido con este formato:
+{
+  "topic": "${selectedTopic}",
+  "question": "Pregunta breve (1 frase) relacionada con el tema",
+  "hint": "Pista concisa que ayude a descubrir la palabra",
+  "answer": "Palabra o término clave (1-3 palabras, máximo 18 caracteres sin símbolos raros)",
+  "celebration": "Frase corta de celebración con emoji",
+  "takeaway": "Aprendizaje rápido en una sola frase"
+}
+
+Reglas adicionales:
+- La respuesta debe ser un concepto de gestión ENFERMERA.
+- Usa solo letras y espacios (sin números).
+- Prioriza que cada reto cambie de tema para mantener variedad.`;
+
+    const text = await callGeminiWithRetry(prompt);
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return res.json(parsed);
+    }
+
+    throw new Error('No se pudo parsear la respuesta');
+  } catch (error) {
+    console.error('Error generating hangman challenge:', error);
+
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({
+        error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera e inténtalo de nuevo.',
         retryable: true
       });
     } else {
@@ -174,8 +269,7 @@ IMPORTANTE:
 - Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const text = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
@@ -291,8 +385,7 @@ IMPORTANTE:
 - Situaciones realistas de gestión enfermera en España
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const text = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
@@ -404,8 +497,7 @@ IMPORTANTE:
 - Situaciones realistas de enfermería en España
 - NO incluyas "id" en el JSON principal, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const text = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
@@ -473,8 +565,7 @@ IMPORTANTE:
 - Usa colores: from-emerald-500 to-teal-500, from-rose-500 to-pink-500, from-amber-500 to-orange-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
-    const text = response.text || "";
+    const text = await callGeminiWithRetry(prompt);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
     if (!jsonMatch) {
