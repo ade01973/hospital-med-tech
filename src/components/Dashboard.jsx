@@ -661,21 +661,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
-              {/* Ahorcado IA */}
+              {/* El reto (Ahorcado) */}
               <button
                 onClick={() => setShowHangman(true)}
-                className="bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
+                className="bg-gradient-to-br from-teal-900/70 via-emerald-900/60 to-cyan-900/70 backdrop-blur-xl border-2 border-teal-300/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.03] hover:border-teal-300 shadow-lg shadow-emerald-500/10 group"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-xl">🎯</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/40 animate-pulse">
+                    <span className="text-xl">🏁</span>
                   </div>
                   <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> IA
                   </span>
                 </div>
-                <h3 className="text-sm font-black text-white">Ahorcado IA</h3>
-                <p className="text-xs text-emerald-100/70">Preguntas nuevas con Gemini</p>
+                <h3 className="text-sm font-black text-white tracking-wide">El reto</h3>
               </button>
 
               {/* Hospital Cases Button */}
