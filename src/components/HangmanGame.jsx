@@ -369,11 +369,6 @@ export default function HangmanGame({ isOpen, onClose, onExitToDashboard }) {
               </div>
             )}
 
-            {error && (
-              <div className="bg-rose-500/20 border border-rose-400/40 rounded-xl p-3 text-rose-100 text-sm">
-                {error}
-              </div>
-            )}
           </div>
         </div>
       </motion.div>
