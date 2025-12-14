@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon } from 'lucide-react';
+import { Lock, Trophy, Zap, ShieldCheck, ChevronUp, ChevronDown, LogOut, Map, Play, X, Star, Gift, Target, TrendingUp, Calendar, Users, TrendingUp as TrendingUpIcon, Sparkles } from 'lucide-react';
 import { TOPICS, NURSING_RANKS } from '../data/constants.js';
 import Rewards from './Rewards.jsx';
 import Missions from './Missions.jsx';
@@ -21,6 +21,7 @@ import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
 import AITrainingHub from './AITrainingHub';
+import HangmanGame from './HangmanGame';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -56,6 +57,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [showInfographics, setShowInfographics] = useState(false);
   const [showAITraining, setShowAITraining] = useState(false);
+  const [showHangman, setShowHangman] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
   const [previousScore, setPreviousScore] = useState(0);
@@ -73,7 +75,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
   const currentRank = userData?.rank || 'Estudiante';
   const { currentLeague, leagueRanking, playerPosition, weeklyXP, getNextLeague, getDaysUntilWeekEnd } = useLeagues(
-    currentRank, 
+    currentRank,
     userData?.totalScore || 0, 
     user?.uid || 'demo'
   );
@@ -181,6 +183,15 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const currentRankData = NURSING_RANKS.find(r => r.title === userData.rank);
   const nextRankData = NURSING_RANKS.find(r => r.minScore > userData.totalScore);
   const playerAvatar = JSON.parse(localStorage.getItem('playerAvatar') || '{}');
+  const professorEmails = ['agong@unileon.es', 'gongaralberto@gmail.com'];
+
+  const handleBattleOfIdeas = () => {
+    if (professorEmails.includes(user?.email)) {
+      setView('brainstorm_host');
+    } else {
+      setView('brainstorm_join');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
@@ -650,6 +661,22 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
+              {/* Ahorcado IA */}
+              <button
+                onClick={() => setShowHangman(true)}
+                className="bg-gradient-to-br from-emerald-900/60 via-teal-900/50 to-cyan-900/60 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">🎯</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" /> IA
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-white">Ahorcado IA</h3>
+                <p className="text-xs text-emerald-100/70">Preguntas nuevas con Gemini</p>
+              </button>
 
               {/* Hospital Cases Button */}
               <button
@@ -678,6 +705,28 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <h3 className="text-sm font-black text-white">Equipo</h3>
                 <p className="text-xs text-cyan-200/70">Desafíos grupales</p>
               </button>
+            </div>
+
+            {/* Batalla de Ideas */}
+            <div className="bg-gradient-to-br from-fuchsia-900/40 via-purple-900/40 to-blue-900/40 backdrop-blur-xl border-2 border-fuchsia-400/30 rounded-3xl p-4 flex flex-col gap-3 shadow-lg shadow-fuchsia-500/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center text-2xl shadow-lg shadow-fuchsia-500/40">
+                    📡
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-fuchsia-200 font-bold">Debajo de Infografías</p>
+                    <h3 className="text-lg font-black text-white">Batalla de Ideas</h3>
+                    <p className="text-sm text-fuchsia-100/80">Escanea el QR y responde. Solo el profesorado lanza la sesión.</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleBattleOfIdeas}
+                  className="px-4 py-2 rounded-xl bg-white text-slate-900 font-black text-sm shadow-lg hover:shadow-white/30 transition"
+                >
+                  {professorEmails.includes(user?.email) ? 'Lanzar como profesor' : 'Unirme con QR'}
+                </button>
+              </div>
             </div>
 
             {/* Milestone Timeline */}
@@ -727,6 +776,11 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
         isOpen={showInfographics}
         onClose={() => setShowInfographics(false)}
       />
+
+      {/* Hangman Game */}
+      {showHangman && (
+        <HangmanGame isOpen={showHangman} onClose={() => setShowHangman(false)} />
+      )}
 
       {/* AI Training Hub */}
       {showAITraining && (

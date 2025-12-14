@@ -2,7 +2,7 @@ import BrainstormHost from './components/BrainstormHost';
 import BrainstormJoin from './components/BrainstormJoin'; 
 // 🔥 1. NUEVO IMPORT AQUÍ
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth'; 
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, serverTimestamp, increment } from 'firebase/firestore';
 
 // --- IMPORTS DE COMPONENTES ---
@@ -29,8 +29,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+  // Vista inicial: portada pública
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -41,6 +41,20 @@ const [view, setView] = useState('brainstorm_host');
   const [prevCompletedCount, setPrevCompletedCount] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
+
+  const professorEmails = ['agong@unileon.es', 'gongaralberto@gmail.com'];
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewFromUrl = params.get('view');
+    const joinCode = params.get('code');
+
+    if (viewFromUrl === 'brainstorm_host') {
+      setView('brainstorm_host');
+    } else if (viewFromUrl === 'brainstorm_join' || joinCode) {
+      setView('brainstorm_join');
+    }
+  }, []);
   
   const { processLogin } = useLoginStreak();
   const { 
@@ -283,7 +297,15 @@ const [view, setView] = useState('brainstorm_host');
       
       {/* PANTALLA PROFESOR */}
       {view === 'brainstorm_host' && (
-        <BrainstormHost onBack={() => setView(user ? 'dashboard' : 'landing')} />
+        professorEmails.includes(user?.email)
+          ? (
+            <BrainstormHost onBack={() => setView(user ? 'dashboard' : 'landing')} />
+          ) : (
+            <BrainstormJoin
+              onBack={() => setView(user ? 'dashboard' : 'landing')}
+              infoMessage="Solo el profesorado puede lanzar la Batalla de Ideas. Únete con el código QR para participar."
+            />
+          )
       )}
 
       {/* PANTALLA ALUMNO */}

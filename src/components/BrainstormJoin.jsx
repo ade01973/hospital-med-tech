@@ -21,7 +21,7 @@ const HYPE_FEEDBACK = [
   { text: "¡GENIO! 🧠", sub: "Sigue disparando ideas." }
 ];
 
-const BrainstormJoin = ({ onBack }) => {
+const BrainstormJoin = ({ onBack, infoMessage }) => {
   const [sessionId, setSessionId] = useState('');
   const [answer, setAnswer] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -94,6 +94,13 @@ const BrainstormJoin = ({ onBack }) => {
         </div>
 
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden transition-all duration-300">
+
+            {infoMessage && (
+              <div className="mb-4 bg-amber-500/10 border border-amber-400/40 text-amber-100 text-sm font-semibold px-4 py-3 rounded-2xl flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                <span>{infoMessage}</span>
+              </div>
+            )}
             
             {/* Gradient Glow de fondo */}
             <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl pointer-events-none transition-colors duration-500 ${hasSubmitted ? 'bg-green-500/40' : 'bg-cyan-500/30'}`}></div>

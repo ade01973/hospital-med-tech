@@ -133,6 +133,71 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
   }
 });
 
+app.post('/api/hangman-challenge', async (req, res) => {
+  try {
+    const { topic } = req.body;
+    const topics = [
+      'Liderazgo enfermero',
+      'Toma de decisiones',
+      'Gestión de equipos',
+      'Gestión de conflictos',
+      'Comunicación efectiva',
+      'Ética en enfermería',
+      'Inteligencia artificial en salud',
+      'Imagen profesional',
+      'Imagen digital',
+      'Marketing sanitario',
+      'Dirección estratégica',
+      'Gestión de recursos humanos',
+      'Calidad asistencial',
+      'Gestión por procesos'
+    ];
+
+    const selectedTopic = topic || topics[Math.floor(Math.random() * topics.length)];
+
+    const prompt = `Genera un reto corto de ahorcado para gestoras enfermeras sobre "${selectedTopic}".
+
+${TERMINOLOGY_RULES}
+
+Devuelve SOLO un JSON válido con este formato:
+{
+  "topic": "${selectedTopic}",
+  "question": "Pregunta breve (1 frase) relacionada con el tema",
+  "hint": "Pista concisa que ayude a descubrir la palabra",
+  "answer": "Palabra o término clave (1-3 palabras, máximo 18 caracteres sin símbolos raros)",
+  "celebration": "Frase corta de celebración con emoji",
+  "takeaway": "Aprendizaje rápido en una sola frase"
+}
+
+Reglas adicionales:
+- La respuesta debe ser un concepto de gestión ENFERMERA.
+- Usa solo letras y espacios (sin números).
+- Prioriza que cada reto cambie de tema para mantener variedad.`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || '';
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return res.json(parsed);
+    }
+
+    throw new Error('No se pudo parsear la respuesta');
+  } catch (error) {
+    console.error('Error generating hangman challenge:', error);
+
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({
+        error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera e inténtalo de nuevo.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
 app.post('/api/generate-scenario', async (req, res) => {
   try {
     const { category } = req.body;
