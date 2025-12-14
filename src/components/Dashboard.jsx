@@ -651,6 +651,30 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               </button>
 
 
+              {/* Batalla de Ideas Button */}
+              <button
+                onClick={() =>
+                  ['gongaralberto@gmail.com', 'agon@unileon.es'].includes((user?.email || '').toLowerCase())
+                    ? setView('brainstorm_host')
+                    : setView('brainstorm_join')
+                }
+                className="bg-gradient-to-br from-emerald-900/50 to-teal-900/50 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">🧠</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold">Juego</span>
+                </div>
+                <h3 className="text-sm font-black text-white">Batalla de Ideas</h3>
+                <p className="text-xs text-emerald-200/70">
+                  {['gongaralberto@gmail.com', 'agon@unileon.es'].includes((user?.email || '').toLowerCase())
+                    ? 'Crear sala y compartir QR'
+                    : 'Ir a responder preguntas'}
+                </p>
+              </button>
+
+
               {/* Hospital Cases Button */}
               <button
                 onClick={() => setShowHospitalCases(true)}
