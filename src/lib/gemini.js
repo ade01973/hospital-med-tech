@@ -59,3 +59,25 @@ export async function generateQuizQuestion(topic) {
     throw error;
   }
 }
+
+export async function generateHangmanChallenge(topic, excludeTopic = null) {
+  try {
+    const response = await fetch(`${API_BASE}/generate-hangman`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ topic, excludeTopic })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Error al generar reto de ahorcado');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error generating hangman challenge:", error);
+    throw error;
+  }
+}

@@ -21,6 +21,7 @@ import BadgesDisplay from './BadgesDisplay';
 import Toast from './Toast';
 import InfographiesGallery from './InfographiesGallery';
 import AITrainingHub from './AITrainingHub';
+import HangmanGame from './HangmanGame';
 import elevatorBg from '../assets/elevator-bg.png';
 import { useMissions } from '../hooks/useMissions';
 import { useLeagues } from '../hooks/useLeagues';
@@ -55,6 +56,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
   const [showCareerProgression, setShowCareerProgression] = useState(false);
   const [showHospitalCases, setShowHospitalCases] = useState(false);
   const [showInfographics, setShowInfographics] = useState(false);
+  const [showHangman, setShowHangman] = useState(false);
   const [showAITraining, setShowAITraining] = useState(false);
   const [selectedLevelForGame, setSelectedLevelForGame] = useState(null);
   const [newRank, setNewRank] = useState(null);
@@ -650,6 +652,20 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                 <p className="text-xs text-purple-200/70">Guías visuales</p>
               </button>
 
+              {/* Ahorcado IA Button */}
+              <button
+                onClick={() => setShowHangman(true)}
+                className="bg-gradient-to-br from-emerald-900/50 to-cyan-900/50 backdrop-blur-xl border-2 border-emerald-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-emerald-400 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-xl">🤖</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs text-emerald-200 font-bold">IA + Sonidos</span>
+                </div>
+                <h3 className="text-sm font-black text-white">Ahorcado IA</h3>
+                <p className="text-xs text-emerald-200/70">Reto dinámico en gestión enfermera</p>
+              </button>
 
               {/* Hospital Cases Button */}
               <button
@@ -711,13 +727,25 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
       {/* Hospital Cases Modal */}
       {showHospitalCases && (
-        <HospitalCases 
+        <HospitalCases
           onClose={() => setShowHospitalCases(false)}
           onCaseComplete={(caseData) => {
             setToastMessage(caseData.isCorrect ? '¡Decisión Correcta!' : 'Decisión No Óptima');
             setToastIcon(caseData.isCorrect ? '✅' : '❌');
             setShowToast(true);
             // XP será otorgado en GameLevel cuando se complete un nivel
+          }}
+        />
+      )}
+
+      {/* Hangman Game */}
+      {showHangman && (
+        <HangmanGame
+          isOpen={showHangman}
+          onClose={() => setShowHangman(false)}
+          onExitToDashboard={() => {
+            setShowHangman(false);
+            setView('dashboard');
           }}
         />
       )}

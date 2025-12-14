@@ -17,7 +17,7 @@ REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
 - Habla de "equipos de enfermería", "unidades de enfermería", "supervisores/as de enfermería".
 `;
 
-const DEFAULT_SYSTEM_PROMPT = `Eres un asistente experto en gestión sanitaria para gestores y gestoras enfermeras. 
+const DEFAULT_SYSTEM_PROMPT = `Eres un asistente experto en gestión sanitaria para gestores y gestoras enfermeras.
 Tu nombre es "Asistente NurseManager".
 Ayudas a estudiantes y profesionales de enfermería a aprender sobre:
 - Gestión de equipos de enfermería
@@ -35,6 +35,23 @@ Usa ejemplos prácticos cuando sea posible.
 Si no sabes algo, admítelo honestamente.`;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const HANGMAN_TOPICS = [
+  'Liderazgo enfermero',
+  'Toma de decisiones',
+  'Gestión de equipos',
+  'Gestión de conflictos',
+  'Comunicación',
+  'Ética profesional',
+  'Inteligencia artificial',
+  'Imagen profesional',
+  'Imagen digital',
+  'Marketing sanitario',
+  'Dirección estratégica',
+  'Gestión de recursos humanos',
+  'Calidad asistencial',
+  'Gestión por procesos'
+];
 
 async function callGeminiWithRetry(contents, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -201,6 +218,72 @@ IMPORTANTE:
     if (error.status === 503 || error.message?.includes('overloaded')) {
       res.status(503).json({ 
         error: 'El servicio de IA está temporalmente sobrecargado.',
+        retryable: true
+      });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+app.post('/api/generate-hangman', async (req, res) => {
+  try {
+    const { topic, excludeTopic } = req.body;
+
+    const availableTopics = HANGMAN_TOPICS.filter(t => t !== excludeTopic);
+    const selectedTopic = topic && HANGMAN_TOPICS.includes(topic)
+      ? topic
+      : availableTopics[Math.floor(Math.random() * availableTopics.length)];
+
+    const prompt = `Genera un reto para un juego del ahorcado centrado en gestión enfermera.
+
+Tema obligatorio: "${selectedTopic}".
+
+${TERMINOLOGY_RULES}
+
+Responde SOLO con un JSON válido en este formato exacto:
+{
+  "topic": "${selectedTopic}",
+  "question": "Pregunta o situación breve sobre gestión enfermera (máximo 220 caracteres)",
+  "hint": "Pista corta y motivadora con emojis sobre el concepto", 
+  "answer": "Palabra clave en MAYÚSCULAS, sin acentos ni caracteres especiales, máximo 14 letras"
+}
+
+Instrucciones clave:
+- La respuesta debe ser una sola palabra o frase muy corta sin tildes (ej: LIDERAZGO, EQUIPO, CALIDAD, PROCESOS).
+- Mantén el tono dinámico y gamificado con energía positiva.
+- Asegura que la palabra esté directamente relacionada con gestión enfermera y el tema indicado.
+- Varía las preguntas y evita repetir estructuras obvias.`;
+
+    const response = await callGeminiWithRetry(prompt);
+    const text = response.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) {
+      throw new Error("No se pudo parsear la respuesta");
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      throw new Error("JSON inválido en la respuesta");
+    }
+
+    if (!parsed.answer || !parsed.question || !parsed.hint) {
+      throw new Error("Respuesta incompleta de la IA");
+    }
+
+    parsed.topic = parsed.topic || selectedTopic;
+    parsed.answer = parsed.answer.trim();
+
+    res.json(parsed);
+  } catch (error) {
+    console.error("Error generating hangman challenge:", error);
+
+    if (error.status === 503 || error.message?.includes('overloaded')) {
+      res.status(503).json({
+        error: 'El servicio de IA está temporalmente sobrecargado. Por favor, espera e intenta de nuevo.',
         retryable: true
       });
     } else {
