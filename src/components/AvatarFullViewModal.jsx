@@ -36,7 +36,7 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
             <h3 className="text-cyan-300 font-semibold text-lg mb-6 text-center">{playerAvatar.name}</h3>
             
             {/* Avatar Image */}
-            <div className="w-64 h-80 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
+            <div className="w-40 h-48 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
               {playerAvatar.characterPreset ? (
                <img
   src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
