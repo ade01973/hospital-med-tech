@@ -29,6 +29,9 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
 
+  const allowedProfessorEmails = ['agong@unileon.es', 'gongaralberto@gmail.com'];
+  const isProfessor = user?.email && allowedProfessorEmails.includes(user.email.toLowerCase());
+
   // Vista inicial: portada principal
   const [view, setView] = useState('landing');
   
@@ -57,6 +60,12 @@ export default function App() {
       setView('brainstorm_join');
     }
   }, []);
+
+  useEffect(() => {
+    if (view === 'brainstorm_host' && user && !isProfessor) {
+      setView('brainstorm_join');
+    }
+  }, [view, user, isProfessor]);
 
   // --- FUNCIÓN DE LIMPIEZA TOTAL (LOGOUT) ---
   const handleLogout = async () => {
@@ -271,7 +280,14 @@ export default function App() {
       
       {/* 6. DASHBOARD */}
       {user && view === 'dashboard' && (
-        <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />
+        <Dashboard
+          user={user}
+          userData={userData}
+          isProfessor={isProfessor}
+          setView={setView}
+          setLevel={setCurrentLevel}
+          setShowElevatorDoors={setShowElevatorDoors}
+        />
       )}
 
       {/* 7. JUEGO */}

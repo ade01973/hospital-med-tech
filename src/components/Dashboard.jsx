@@ -32,7 +32,7 @@ import useDashboardBackgroundMusic from '../hooks/useDashboardBackgroundMusic';
 import ShopModal from './ShopModal';
 import { checkBadgeUnlocks } from '../data/BADGES';
 
-const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) => {
+const Dashboard = ({ user, userData, isProfessor = false, setView, setLevel, setShowElevatorDoors }) => {
   // Música de fondo en dashboard
   useDashboardBackgroundMusic(true);
   
@@ -654,7 +654,7 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
 
               {/* Batalla de ideas */}
               <button
-                onClick={() => setView('brainstorm_host')}
+                onClick={() => setView(isProfessor ? 'brainstorm_host' : 'brainstorm_join')}
                 className="bg-gradient-to-br from-fuchsia-900/50 to-pink-900/50 backdrop-blur-xl border-2 border-fuchsia-400/40 rounded-2xl p-4 text-left transition-all hover:scale-[1.02] hover:border-fuchsia-400 group"
               >
                 <div className="flex items-center gap-3 mb-2">
