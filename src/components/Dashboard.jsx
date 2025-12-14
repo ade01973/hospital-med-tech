@@ -712,19 +712,19 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center text-2xl shadow-lg shadow-fuchsia-500/40">
-                    📡
+                    🧠
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-widest text-fuchsia-200 font-bold">Debajo de Infografías</p>
-                    <h3 className="text-lg font-black text-white">Batalla de Ideas</h3>
+                    <h3 className="text-lg font-black text-white">La batalla de las ideas</h3>
                     <p className="text-sm text-fuchsia-100/80">Escanea el QR y responde. Solo el profesorado lanza la sesión.</p>
                   </div>
                 </div>
                 <button
                   onClick={handleBattleOfIdeas}
-                  className="px-4 py-2 rounded-xl bg-white text-slate-900 font-black text-sm shadow-lg hover:shadow-white/30 transition"
+                  className="px-3 py-1.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-lg hover:shadow-white/30 transition"
                 >
-                  {professorEmails.includes(user?.email) ? 'Lanzar como profesor' : 'Unirme con QR'}
+                  {professorEmails.includes(user?.email) ? 'Jugar' : 'Unirme con QR'}
                 </button>
               </div>
             </div>
