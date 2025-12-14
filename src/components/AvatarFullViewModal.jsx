@@ -5,20 +5,23 @@ import avatarModalBg from '../assets/avatar-modal-bg.png';
 const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
   if (!isOpen || !playerAvatar) return null;
 
+  const gender = playerAvatar.gender === 'male' ? 'male' : 'female';
+  const avatarImage = `/avatar/${gender}-characters/${gender}-character-${playerAvatar.characterPreset}.png`;
+
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div 
-        className="rounded-2xl border-2 border-cyan-500/50 max-w-md w-full shadow-2xl overflow-hidden bg-cover bg-center relative"
+      <div
+        className="relative rounded-2xl border-2 border-cyan-500/50 max-w-sm w-full shadow-2xl overflow-hidden bg-cover bg-center"
         style={{ backgroundImage: `url(${avatarModalBg})` }}
       >
         {/* Overlay oscuro */}
         <div className="absolute inset-0 bg-black/40"></div>
-        
+
         {/* Content Container */}
         <div className="relative z-10">
           {/* Header - Solo botón cerrar */}
           <div className="p-4 flex justify-end">
-            <button 
+            <button
               onClick={onClose}
               className="hover:bg-white/20 p-2 rounded-lg transition-all bg-black/30"
               title="Cerrar"
@@ -31,19 +34,18 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
           <div className="px-6 pb-6 flex flex-col items-center">
             {/* Título */}
             <h2 className="text-white font-bold text-2xl mb-1 text-center">Gestor Enfermero</h2>
-            
+
             {/* Nombre */}
             <h3 className="text-cyan-300 font-semibold text-lg mb-6 text-center">{playerAvatar.name}</h3>
-            
+
             {/* Avatar Image */}
-            <div className="w-40 h-48 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
+            <div className="w-24 h-28 rounded-xl overflow-hidden bg-slate-800/30 border-2 border-cyan-400/60 mb-6 shadow-lg backdrop-blur-sm">
               {playerAvatar.characterPreset ? (
-               <img
-  src={`/avatar/${playerAvatar.gender === 'male' ? 'male' : 'female'}-characters/${playerAvatar.gender === 'male' ? 'male' : 'female'}-character-${playerAvatar.characterPreset}.png`}
-  alt="Avatar Completo"
-  // AQUI EL CAMBIO: Añadido "mx-auto" al final
-  className="h-full w-auto object-contain drop-shadow-2xl rounded-2xl mx-auto"
-/>
+                <img
+                  src={avatarImage}
+                  alt="Avatar Completo"
+                  className="h-full w-auto object-contain drop-shadow-2xl rounded-2xl mx-auto"
+                />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center">
                   <span className="text-slate-300 text-center font-semibold">
@@ -56,7 +58,7 @@ const AvatarFullViewModal = ({ isOpen, onClose, playerAvatar }) => {
 
           {/* Close Button */}
           <div className="px-6 pb-6">
-            <button 
+            <button
               onClick={onClose}
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg"
             >
