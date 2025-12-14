@@ -236,7 +236,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
         <div className="absolute left-10 bottom-6 w-40 h-40 bg-emerald-400/20 blur-3xl animate-[pulse_3s_ease-in-out_infinite]" />
       </div>
 
-      <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-5xl w-full overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)]">
+      <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-6xl w-full max-h-[92vh] overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)] flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-slate-900/70 to-slate-800/70">
           <div className="flex items-center gap-4">
             <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
@@ -245,8 +245,8 @@ const HangmanGame = ({ isOpen, onClose }) => {
                 {emojiMood}
               </span>
             </div>
-            <div>
-              <h2 className="text-2xl font-black text-white flex items-center gap-2">El reto de la Gestora Enfermera</h2>
+            <div className="space-y-1">
+              <h2 className="text-xl md:text-2xl font-black text-white flex items-center gap-2 leading-tight">El reto de la Gestora Enfermera</h2>
               <p className="text-sm text-cyan-100/80 font-semibold flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> {motivation}
               </p>
@@ -261,7 +261,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="grid md:grid-cols-[2fr,1fr] gap-6 p-6">
+        <div className="grid md:grid-cols-[2fr,1fr] gap-6 p-6 overflow-y-auto flex-1 min-h-0">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-200 text-xs font-black uppercase tracking-widest">
@@ -281,7 +281,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
 
             <div className="bg-white/5 border border-white/5 rounded-2xl p-5">
               <p className="text-sm text-cyan-100/80 mb-2 font-semibold">Pregunta generada por Gemini</p>
-              <h3 className="text-2xl font-black text-white leading-snug">{challenge?.question || 'Cargando pregunta...'}</h3>
+              <h3 className="text-xl md:text-2xl font-black text-white leading-snug break-words">{challenge?.question || 'Cargando pregunta...'}</h3>
               <p className="text-slate-300 mt-3 text-sm flex items-center gap-2">
                 <Volume2 className="w-4 h-4 text-cyan-300" />
                 <span>{challenge?.hint || 'Descifra el concepto clave.'}</span>
@@ -349,9 +349,6 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   );
                 })}
               </div>
-              <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-2">
-                <Sparkles className="w-3 h-3" /> Como en el árbol del ahorcado, cada fallo apaga un nodo del escudo.
-              </p>
             </div>
 
             <div className="bg-gradient-to-br from-slate-900/70 to-slate-800/70 border border-white/10 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
@@ -412,12 +409,18 @@ const HangmanGame = ({ isOpen, onClose }) => {
                 {challenge?.takeaway && (
                   <p className="text-sm text-slate-300">{challenge.takeaway}</p>
                 )}
-                <div className="flex gap-3 justify-center pt-2">
+                <div className="flex gap-3 justify-center pt-2 flex-wrap">
                   <button
                     onClick={startNewGame}
                     className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/30"
                   >
-                    <RefreshCw className="w-4 h-4" /> Nuevo tema
+                    <RefreshCw className="w-4 h-4" /> Regenerar reto
+                  </button>
+                  <button
+                    onClick={startNewGame}
+                    className="px-4 py-2 rounded-xl bg-emerald-500/90 text-white font-black text-sm flex items-center gap-2 shadow-lg shadow-emerald-400/30"
+                  >
+                    <Sparkles className="w-4 h-4" /> Volver a jugar
                   </button>
                   <button
                     onClick={onClose}
@@ -435,14 +438,21 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            <div className="flex gap-3 pt-1">
+            <div className="flex gap-3 pt-1 flex-wrap justify-center md:justify-start">
               <button
                 onClick={startNewGame}
                 disabled={isLoading}
                 className="flex-1 px-4 py-3 rounded-xl bg-white text-slate-900 font-black text-sm shadow-lg hover:shadow-white/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                {isLoading ? 'Cargando...' : 'Cambiar de reto'}
+                {isLoading ? 'Cargando...' : 'Regenerar reto'}
+              </button>
+              <button
+                onClick={startNewGame}
+                disabled={isLoading}
+                className="px-4 py-3 rounded-xl bg-emerald-500/90 text-white font-black text-sm shadow-lg shadow-emerald-400/30 hover:shadow-emerald-300/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Sparkles className="w-4 h-4" /> Volver a jugar
               </button>
               <button
                 onClick={onClose}
