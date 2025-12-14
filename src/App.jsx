@@ -28,9 +28,12 @@ import useNotifications from './hooks/useNotifications';
 export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
-  
-  // 🔥 2. CAMBIO AQUÍ: Ponemos 'brainstorm_join' para ver la pantalla del alumno
-const [view, setView] = useState('brainstorm_host');
+
+  const allowedProfessorEmails = ['agong@unileon.es', 'gongaralberto@gmail.com'];
+  const isProfessor = user?.email && allowedProfessorEmails.includes(user.email.toLowerCase());
+
+  // Vista inicial: portada principal
+  const [view, setView] = useState('landing');
   
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentFloor, setCurrentFloor] = useState(-1);
@@ -43,12 +46,26 @@ const [view, setView] = useState('brainstorm_host');
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
   
   const { processLogin } = useLoginStreak();
-  const { 
-    newBadge, 
-    showBadgeNotification, 
+  const {
+    newBadge,
+    showBadgeNotification,
     setShowBadgeNotification,
     checkLevelBadges
   } = useBadges(userData);
+
+  // Detectar acceso vía código QR y llevar directamente al modo "join"
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code')) {
+      setView('brainstorm_join');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (view === 'brainstorm_host' && user && !isProfessor) {
+      setView('brainstorm_join');
+    }
+  }, [view, user, isProfessor]);
 
   // --- FUNCIÓN DE LIMPIEZA TOTAL (LOGOUT) ---
   const handleLogout = async () => {
@@ -263,7 +280,14 @@ const [view, setView] = useState('brainstorm_host');
       
       {/* 6. DASHBOARD */}
       {user && view === 'dashboard' && (
-        <Dashboard user={user} userData={userData} setView={setView} setLevel={setCurrentLevel} setShowElevatorDoors={setShowElevatorDoors} />
+        <Dashboard
+          user={user}
+          userData={userData}
+          isProfessor={isProfessor}
+          setView={setView}
+          setLevel={setCurrentLevel}
+          setShowElevatorDoors={setShowElevatorDoors}
+        />
       )}
 
       {/* 7. JUEGO */}
