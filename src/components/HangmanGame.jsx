@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Award, Heart, RefreshCw, Sparkles, Volume2, X, Zap } from 'lucide-react';
+import { Award, Brain, Heart, RefreshCw, Sparkles, Volume2, X, Zap } from 'lucide-react';
 import { generateHangmanChallenge } from '../lib/gemini';
 
 const HANGMAN_TOPICS = [
@@ -49,6 +49,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [emojiMood, setEmojiMood] = useState('🧠');
+  const [hypeTrail, setHypeTrail] = useState(['✨', '🎯', '🚀']);
   const [topicDeck, setTopicDeck] = useState(() => shuffle(HANGMAN_TOPICS));
   const [currentTopic, setCurrentTopic] = useState(null);
 
@@ -78,6 +79,12 @@ const HangmanGame = ({ isOpen, onClose }) => {
     new Audio(url).play().catch(() => {});
   };
 
+  const rotateHypeTrail = () => {
+    const emojiPool = ['✨', '🌟', '🚀', '🎉', '💥', '🧠', '⚡', '🏆', '🎯', '🌈'];
+    const shuffled = shuffle(emojiPool).slice(0, 3);
+    setHypeTrail(shuffled);
+  };
+
   const pickTopic = () => {
     if (topicDeck.length === 0) {
       const reshuffled = shuffle(HANGMAN_TOPICS);
@@ -102,6 +109,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
     setGuessedLetters([]);
     setWrongGuesses(0);
     setEmojiMood('🧠');
+    rotateHypeTrail();
 
     const topic = consumeTopic();
 
@@ -109,8 +117,12 @@ const HangmanGame = ({ isOpen, onClose }) => {
       const data = await generateHangmanChallenge(topic);
       setChallenge(data);
       setStatus('playing');
+      setHypeTrail((trail) => trail.map((emoji, idx) => (idx === 0 ? '🧠' : emoji)));
     } catch (err) {
-      setError(err.message || 'No se pudo cargar el reto.');
+      const friendlyMessage = err.message?.includes('GOOGLE_API_KEY_1')
+        ? 'Configura la variable GOOGLE_API_KEY_1 para conectar con Gemini y recarga el juego.'
+        : err.message || 'No se pudo cargar el reto.';
+      setError(friendlyMessage);
       setStatus('error');
     } finally {
       setIsLoading(false);
@@ -178,13 +190,17 @@ const HangmanGame = ({ isOpen, onClose }) => {
 
       <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-5xl w-full overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)]">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-slate-900/70 to-slate-800/70">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
-              {emojiMood}
+          <div className="flex items-center gap-4">
+            <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+              <Brain className="w-7 h-7 text-white" />
+              <span className="absolute -top-2 -right-2 bg-white text-slate-900 text-xs font-black rounded-full px-2 py-1 shadow-lg">
+                {emojiMood}
+              </span>
             </div>
             <div>
               <p className="text-xs uppercase tracking-widest text-cyan-200 font-bold">Reto Gemini</p>
-              <h2 className="text-xl font-black text-white">Ahorcado Enfermero</h2>
+              <h2 className="text-xl font-black text-white">El reto de la Gestora Enfermera</h2>
+              <p className="text-sm text-cyan-100/80 font-semibold">Temas de liderazgo y gestión enfermera, con vibe de gamificación 2025.</p>
             </div>
           </div>
           <button
@@ -205,6 +221,13 @@ const HangmanGame = ({ isOpen, onClose }) => {
               <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/30 text-indigo-200 text-xs font-black flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> Pregunta nueva en cada partida
               </span>
+              <div className="flex items-center gap-1 text-xl" aria-hidden>
+                {hypeTrail.map((emoji, idx) => (
+                  <span key={`${emoji}-${idx}`} className="animate-pulse">
+                    {emoji}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="bg-white/5 border border-white/5 rounded-2xl p-5">

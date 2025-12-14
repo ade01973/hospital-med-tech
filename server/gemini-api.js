@@ -135,6 +135,12 @@ El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
 app.post('/api/hangman-challenge', async (req, res) => {
   try {
+    if (!process.env.GOOGLE_API_KEY_1) {
+      return res.status(500).json({
+        error: 'Falta GOOGLE_API_KEY_1 para generar el reto de ahorcado. Configura la clave y reinicia el servidor.'
+      });
+    }
+
     const { topic } = req.body;
     const topics = [
       'Liderazgo enfermero',
