@@ -439,29 +439,31 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            <div className="flex gap-2 pt-1 flex-wrap justify-center md:justify-start">
-              <button
-                onClick={startNewGame}
-                disabled={isLoading}
-                className="flex-1 min-w-[140px] px-3 py-2 rounded-xl bg-white text-slate-900 font-black text-[11px] shadow-lg hover:shadow-white/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                {isLoading ? 'Cargando...' : 'Regenerar reto'}
-              </button>
-              <button
-                onClick={startNewGame}
-                disabled={isLoading}
-                className="px-3 py-2 rounded-xl bg-emerald-500/90 text-white font-black text-[11px] shadow-lg shadow-emerald-400/30 hover:shadow-emerald-300/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4" /> Volver a jugar
-              </button>
-              <button
-                onClick={onClose}
-                className="px-3 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-[11px] border border-white/10 hover:bg-slate-700"
-              >
-                Salir al dashboard
-              </button>
-            </div>
+            {status === 'playing' && (
+              <div className="flex gap-2 pt-1 flex-wrap justify-center md:justify-start">
+                <button
+                  onClick={startNewGame}
+                  disabled={isLoading}
+                  className="flex-1 min-w-[140px] px-3 py-2 rounded-xl bg-white text-slate-900 font-black text-[11px] shadow-lg hover:shadow-white/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  {isLoading ? 'Cargando...' : 'Regenerar reto'}
+                </button>
+                <button
+                  onClick={startNewGame}
+                  disabled={isLoading}
+                  className="px-3 py-2 rounded-xl bg-emerald-500/90 text-white font-black text-[11px] shadow-lg shadow-emerald-400/30 hover:shadow-emerald-300/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Sparkles className="w-4 h-4" /> Volver a jugar
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-3 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-[11px] border border-white/10 hover:bg-slate-700"
+                >
+                  Salir al dashboard
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
