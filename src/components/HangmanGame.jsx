@@ -337,14 +337,16 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   return (
                     <div
                       key={segment.label}
-                      className={`rounded-xl px-2.5 py-1.5 border text-[10px] font-semibold flex items-center gap-1.5 transition-all overflow-hidden ${
+                      className={`rounded-xl px-2 py-1.5 border text-[9px] font-semibold flex items-center gap-1 transition-all overflow-hidden ${
                         isActive
                           ? 'border-cyan-400/40 bg-cyan-500/10 text-cyan-100 shadow-lg shadow-cyan-500/20'
                           : 'border-slate-700 bg-slate-800 text-slate-500 saturate-50'
                       }`}
                     >
                       <span className={isActive ? 'text-sm animate-pulse' : 'text-sm'}>{segment.icon}</span>
-                      <span className="leading-tight text-[10px] break-words">{segment.label}</span>
+                      <span className="leading-tight text-[9px] break-words whitespace-normal text-center">
+                        {segment.label}
+                      </span>
                     </div>
                   );
                 })}
