@@ -62,6 +62,12 @@ const HangmanGame = ({ isOpen, onClose }) => {
     return new Set(normalizedAnswer.replace(/[^A-ZÑ]/g, '').split('').filter(Boolean));
   }, [normalizedAnswer]);
 
+  const masteryProgress = useMemo(() => {
+    if (!uniqueLetters.size) return 0;
+    const hits = [...uniqueLetters].filter((char) => guessedLetters.includes(char)).length;
+    return Math.round((hits / uniqueLetters.size) * 100);
+  }, [uniqueLetters, guessedLetters]);
+
   useEffect(() => {
     if (isOpen) {
       startNewGame();
@@ -187,6 +193,11 @@ const HangmanGame = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[120] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-indigo-500/10 to-fuchsia-500/10 animate-pulse" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -left-10 -top-10 w-48 h-48 bg-cyan-500/20 blur-3xl animate-pulse" />
+        <div className="absolute -right-12 top-10 w-52 h-52 bg-indigo-500/20 blur-3xl animate-pulse" />
+        <div className="absolute left-10 bottom-6 w-40 h-40 bg-emerald-400/20 blur-3xl animate-[pulse_3s_ease-in-out_infinite]" />
+      </div>
 
       <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-5xl w-full overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)]">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-slate-900/70 to-slate-800/70">
@@ -270,6 +281,29 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   {status === 'won' && <Award className="w-4 h-4" />} {status === 'lost' && <X className="w-4 h-4" />} {status === 'playing' && <Zap className="w-4 h-4" />} {status === 'loading' ? 'Preparando...' : status === 'playing' ? 'En juego' : status === 'won' ? '¡Victoria!' : status === 'lost' ? 'Derrota' : 'Listo'}
                 </div>
               </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-900/70 to-slate-800/70 border border-white/10 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-cyan-300 font-black">Energía del reto</p>
+                  <p className="text-sm text-slate-200 font-semibold">{masteryProgress}% concepto desbloqueado</p>
+                </div>
+                <div className="flex items-center gap-2 text-xl" aria-hidden>
+                  {hypeTrail.map((emoji, idx) => (
+                    <span key={`trail-${emoji}-${idx}`} className="animate-bounce">
+                      {emoji}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
+                <div
+                  className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-lg shadow-cyan-400/40 transition-all duration-500"
+                  style={{ width: `${masteryProgress}%` }}
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-2">Cada letra correcta recarga la barra y libera más pista visual.</p>
             </div>
 
             <div className="grid grid-cols-7 gap-2">
