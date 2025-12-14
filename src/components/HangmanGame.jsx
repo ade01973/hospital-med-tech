@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Award, Brain, Heart, RefreshCw, Sparkles, Volume2, X, Zap } from 'lucide-react';
+import {
+  Award,
+  Brain,
+  Heart,
+  RefreshCw,
+  Sparkles,
+  Volume2,
+  X,
+  Zap
+} from 'lucide-react';
 import { generateHangmanChallenge } from '../lib/gemini';
 
 const HANGMAN_TOPICS = [
@@ -21,6 +30,14 @@ const HANGMAN_TOPICS = [
 
 const LETTERS = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
 const MAX_ATTEMPTS = 6;
+const STAGE_SEGMENTS = [
+  { icon: '🧠', label: 'Enfoque clínico' },
+  { icon: '🎯', label: 'Estrategia' },
+  { icon: '🤝', label: 'Equipo' },
+  { icon: '📡', label: 'Comunicación' },
+  { icon: '🛡️', label: 'Calma' },
+  { icon: '🚀', label: 'Impulso' }
+];
 
 const SUCCESS_SOUNDS = [
   'https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg',
@@ -52,6 +69,8 @@ const HangmanGame = ({ isOpen, onClose }) => {
   const [hypeTrail, setHypeTrail] = useState(['✨', '🎯', '🚀']);
   const [topicDeck, setTopicDeck] = useState(() => shuffle(HANGMAN_TOPICS));
   const [currentTopic, setCurrentTopic] = useState(null);
+  const [activeKey, setActiveKey] = useState(null);
+  const [motivation, setMotivation] = useState('Listas para liderar con foco clínico.');
 
   const normalizedAnswer = useMemo(
     () => (challenge?.answer ? normalize(challenge.answer) : ''),
@@ -138,6 +157,9 @@ const HangmanGame = ({ isOpen, onClose }) => {
   const handleGuess = (letter) => {
     if (status !== 'playing' || guessedLetters.includes(letter)) return;
 
+    setActiveKey(letter);
+    setTimeout(() => setActiveKey(null), 280);
+
     const updatedGuesses = [...guessedLetters, letter];
     setGuessedLetters(updatedGuesses);
 
@@ -145,6 +167,14 @@ const HangmanGame = ({ isOpen, onClose }) => {
       playSound(SUCCESS_SOUNDS);
       const hypeEmojis = ['🔥', '🚀', '🧠', '⚡', '🏆', '💫'];
       setEmojiMood(hypeEmojis[Math.floor(Math.random() * hypeEmojis.length)]);
+      const boosts = [
+        '¡Equipo alineado y motivado! 💪',
+        'Liderazgo que inspira resultados. 🌟',
+        'Decisión acertada, servicio brillante. 🎯',
+        'Comunicación impecable, seguimos. 📢',
+        'Gestión premium, excelencia asistencial. 🏆'
+      ];
+      setMotivation(boosts[Math.floor(Math.random() * boosts.length)]);
 
       const hasWon = [...uniqueLetters].every((char) => updatedGuesses.includes(char));
       if (hasWon) {
@@ -154,6 +184,13 @@ const HangmanGame = ({ isOpen, onClose }) => {
       playSound(FAIL_SOUNDS);
       const misses = ['😅', '🫣', '🤔', '🥶'];
       setEmojiMood(misses[Math.floor(Math.random() * misses.length)]);
+      const setbacks = [
+        'Reajusta el plan, la gestora sigue. 🔄',
+        'Calma, vuelve a la evidencia. 📚',
+        'Respira, piensa en el equipo. 🤝',
+        'Cada error es feedback de mejora. ✨'
+      ];
+      setMotivation(setbacks[Math.floor(Math.random() * setbacks.length)]);
       const nextWrong = wrongGuesses + 1;
       setWrongGuesses(nextWrong);
       if (nextWrong >= MAX_ATTEMPTS) {
@@ -209,9 +246,10 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </span>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-widest text-cyan-200 font-bold">Reto Gemini</p>
-              <h2 className="text-xl font-black text-white">El reto de la Gestora Enfermera</h2>
-              <p className="text-sm text-cyan-100/80 font-semibold">Temas de liderazgo y gestión enfermera, con vibe de gamificación 2025.</p>
+              <h2 className="text-2xl font-black text-white flex items-center gap-2">El reto de la Gestora Enfermera</h2>
+              <p className="text-sm text-cyan-100/80 font-semibold flex items-center gap-2">
+                <Sparkles className="w-4 h-4" /> {motivation}
+              </p>
             </div>
           </div>
           <button
@@ -283,6 +321,39 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </div>
             </div>
 
+            <div className="bg-slate-900/60 border border-cyan-500/20 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-cyan-300 font-black">Escudo de la gestora</p>
+                  <p className="text-sm text-slate-200 font-semibold">Se desvanece con cada error, ¡protégelo!</p>
+                </div>
+                <span className="text-2xl" aria-hidden>
+                  {wrongGuesses >= MAX_ATTEMPTS - 1 ? '🛑' : '🛡️'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {STAGE_SEGMENTS.map((segment, idx) => {
+                  const isActive = idx < MAX_ATTEMPTS - wrongGuesses;
+                  return (
+                    <div
+                      key={segment.label}
+                      className={`rounded-xl px-3 py-2 border text-xs font-semibold flex items-center gap-2 transition-all ${
+                        isActive
+                          ? 'border-cyan-400/40 bg-cyan-500/10 text-cyan-100 shadow-lg shadow-cyan-500/20'
+                          : 'border-slate-700 bg-slate-800 text-slate-500 saturate-50'
+                      }`}
+                    >
+                      <span className={isActive ? 'text-lg animate-pulse' : 'text-lg'}>{segment.icon}</span>
+                      <span className="leading-tight">{segment.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-2">
+                <Sparkles className="w-3 h-3" /> Como en el árbol del ahorcado, cada fallo apaga un nodo del escudo.
+              </p>
+            </div>
+
             <div className="bg-gradient-to-br from-slate-900/70 to-slate-800/70 border border-white/10 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -312,14 +383,19 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   key={letter}
                   onClick={() => handleGuess(letter)}
                   disabled={guessedLetters.includes(letter) || status !== 'playing' || isLoading}
-                  className={`h-10 rounded-xl text-sm font-black transition-all border ${
+                  className={`h-11 rounded-xl text-sm font-black transition-all border relative overflow-hidden ${
                     guessedLetters.includes(letter)
                       ? uniqueLetters.has(letter)
-                        ? 'bg-gradient-to-br from-emerald-500/70 to-cyan-500/70 text-white border-emerald-200/60'
+                        ? 'bg-gradient-to-br from-emerald-500/70 to-cyan-500/70 text-white border-emerald-200/60 shadow-lg shadow-emerald-400/30'
                         : 'bg-slate-700 text-slate-300 border-slate-600'
                       : 'bg-slate-900/60 border-white/5 text-white hover:bg-cyan-500/20 hover:border-cyan-400/40'
+                  } ${
+                    activeKey === letter ? 'ring-2 ring-cyan-300/80 ring-offset-2 ring-offset-slate-900 scale-105' : ''
                   }`}
                 >
+                  {!guessedLetters.includes(letter) && (
+                    <span className="absolute inset-0 bg-gradient-to-br from-white/5 to-cyan-500/10 opacity-0 hover:opacity-60 transition-opacity" aria-hidden />
+                  )}
                   {letter}
                 </button>
               ))}
