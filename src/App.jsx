@@ -28,7 +28,7 @@ import useNotifications from './hooks/useNotifications';
 export default function App() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
-  
+
   // Vista inicial: portada principal
   const [view, setView] = useState('landing');
   
@@ -43,12 +43,20 @@ export default function App() {
   const [showHospitalVideo, setShowHospitalVideo] = useState(false);
   
   const { processLogin } = useLoginStreak();
-  const { 
-    newBadge, 
-    showBadgeNotification, 
+  const {
+    newBadge,
+    showBadgeNotification,
     setShowBadgeNotification,
     checkLevelBadges
   } = useBadges(userData);
+
+  // Detectar acceso vía código QR y llevar directamente al modo "join"
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code')) {
+      setView('brainstorm_join');
+    }
+  }, []);
 
   // --- FUNCIÓN DE LIMPIEZA TOTAL (LOGOUT) ---
   const handleLogout = async () => {
