@@ -209,7 +209,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
       return (
         <span
           key={`${char}-${idx}`}
-          className={`w-10 h-14 flex items-center justify-center text-3xl font-black rounded-xl border-2 ${
+          className={`w-9 h-12 flex items-center justify-center text-2xl font-black rounded-xl border-2 ${
             isLetter
               ? 'border-white/10 bg-white/5 text-white'
               : 'border-transparent text-cyan-200'
@@ -231,23 +231,23 @@ const HangmanGame = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-[120] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-indigo-500/10 to-fuchsia-500/10 animate-pulse" />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -left-10 -top-10 w-48 h-48 bg-cyan-500/20 blur-3xl animate-pulse" />
-        <div className="absolute -right-12 top-10 w-52 h-52 bg-indigo-500/20 blur-3xl animate-pulse" />
-        <div className="absolute left-10 bottom-6 w-40 h-40 bg-emerald-400/20 blur-3xl animate-[pulse_3s_ease-in-out_infinite]" />
+        <div className="absolute -left-10 -top-10 w-36 h-36 bg-cyan-500/20 blur-3xl animate-pulse" />
+        <div className="absolute -right-10 top-8 w-40 h-40 bg-indigo-500/20 blur-3xl animate-pulse" />
+        <div className="absolute left-8 bottom-6 w-32 h-32 bg-emerald-400/20 blur-3xl animate-[pulse_3s_ease-in-out_infinite]" />
       </div>
 
-      <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-6xl w-full max-h-[92vh] overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-slate-900/70 to-slate-800/70">
-          <div className="flex items-center gap-4">
-            <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
-              <Brain className="w-7 h-7 text-white" />
-              <span className="absolute -top-2 -right-2 bg-white text-slate-900 text-xs font-black rounded-full px-2 py-1 shadow-lg">
+      <div className="relative bg-slate-900/90 border border-white/10 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-[0_0_60px_rgba(59,130,246,0.2)] flex flex-col">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-gradient-to-r from-slate-900/70 to-slate-800/70">
+          <div className="flex items-center gap-3">
+            <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+              <Brain className="w-6 h-6 text-white" />
+              <span className="absolute -top-2 -right-2 bg-white text-slate-900 text-[10px] font-black rounded-full px-2 py-0.5 shadow-lg">
                 {emojiMood}
               </span>
             </div>
             <div className="space-y-1">
-              <h2 className="text-xl md:text-2xl font-black text-white flex items-center gap-2 leading-tight">El reto de la Gestora Enfermera</h2>
-              <p className="text-sm text-cyan-100/80 font-semibold flex items-center gap-2">
+              <h2 className="text-lg md:text-xl font-black text-white flex items-center gap-2 leading-tight">El reto de la Gestora Enfermera</h2>
+              <p className="text-xs text-cyan-100/80 font-semibold flex items-center gap-2">
                 <Sparkles className="w-4 h-4" /> {motivation}
               </p>
             </div>
@@ -261,14 +261,14 @@ const HangmanGame = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="grid md:grid-cols-[2fr,1fr] gap-6 p-6 overflow-y-auto flex-1 min-h-0">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-200 text-xs font-black uppercase tracking-widest">
+        <div className="grid md:grid-cols-[2fr,1fr] gap-4 p-5 overflow-y-auto flex-1 min-h-0">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-200 text-[11px] font-black uppercase tracking-widest">
                 {currentTopic || challenge?.topic}
               </span>
-              <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/30 text-indigo-200 text-xs font-black flex items-center gap-2">
-                <Sparkles className="w-4 h-4" /> Pregunta nueva en cada partida
+              <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/30 text-indigo-200 text-[11px] font-black flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5" /> Pregunta nueva en cada partida
               </span>
               <div className="flex items-center gap-1 text-xl" aria-hidden>
                 {hypeTrail.map((emoji, idx) => (
@@ -279,16 +279,16 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/5 rounded-2xl p-5">
-              <p className="text-sm text-cyan-100/80 mb-2 font-semibold">Pregunta generada por Gemini</p>
-              <h3 className="text-xl md:text-2xl font-black text-white leading-snug break-words">{challenge?.question || 'Cargando pregunta...'}</h3>
-              <p className="text-slate-300 mt-3 text-sm flex items-center gap-2">
+            <div className="bg-white/5 border border-white/5 rounded-2xl p-4">
+              <p className="text-xs text-cyan-100/80 mb-2 font-semibold">Pregunta generada por Gemini</p>
+              <h3 className="text-lg md:text-xl font-black text-white leading-snug break-words">{challenge?.question || 'Cargando pregunta...'}</h3>
+              <p className="text-slate-300 mt-2 text-xs flex items-center gap-2">
                 <Volume2 className="w-4 h-4 text-cyan-300" />
                 <span>{challenge?.hint || 'Descifra el concepto clave.'}</span>
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2 bg-slate-800/60 border border-white/5 rounded-2xl p-4">
+            <div className="flex flex-wrap gap-1.5 bg-slate-800/60 border border-white/5 rounded-2xl p-3">
               {renderWord()}
             </div>
 
@@ -299,7 +299,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          <div className="bg-slate-800/60 border border-white/5 rounded-2xl p-5 space-y-4">
+          <div className="bg-slate-800/60 border border-white/5 rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-widest text-slate-400 font-bold">Intentos</p>
@@ -307,7 +307,7 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   {Array.from({ length: MAX_ATTEMPTS }).map((_, idx) => (
                     <Heart
                       key={idx}
-                      className={`w-5 h-5 ${idx < MAX_ATTEMPTS - wrongGuesses ? 'text-rose-400' : 'text-slate-700'}`}
+                      className={`w-[18px] h-[18px] ${idx < MAX_ATTEMPTS - wrongGuesses ? 'text-rose-400' : 'text-slate-700'}`}
                       fill={idx < MAX_ATTEMPTS - wrongGuesses ? '#fb7185' : 'none'}
                     />
                   ))}
@@ -321,17 +321,17 @@ const HangmanGame = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            <div className="bg-slate-900/60 border border-cyan-500/20 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-slate-900/60 border border-cyan-500/20 rounded-2xl p-3 shadow-inner shadow-cyan-500/10">
+              <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-cyan-300 font-black">Escudo de la gestora</p>
-                  <p className="text-sm text-slate-200 font-semibold">Se desvanece con cada error, ¡protégelo!</p>
+                  <p className="text-xs text-slate-200 font-semibold">Se desvanece con cada error, ¡protégelo!</p>
                 </div>
                 <span className="text-2xl" aria-hidden>
                   {wrongGuesses >= MAX_ATTEMPTS - 1 ? '🛑' : '🛡️'}
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 {STAGE_SEGMENTS.map((segment, idx) => {
                   const isActive = idx < MAX_ATTEMPTS - wrongGuesses;
                   return (
@@ -343,19 +343,19 @@ const HangmanGame = ({ isOpen, onClose }) => {
                           : 'border-slate-700 bg-slate-800 text-slate-500 saturate-50'
                       }`}
                     >
-                      <span className={isActive ? 'text-lg animate-pulse' : 'text-lg'}>{segment.icon}</span>
-                      <span className="leading-tight">{segment.label}</span>
+                      <span className={isActive ? 'text-base animate-pulse' : 'text-base'}>{segment.icon}</span>
+                      <span className="leading-tight text-[11px]">{segment.label}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-slate-900/70 to-slate-800/70 border border-white/10 rounded-2xl p-4 shadow-inner shadow-cyan-500/10">
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-gradient-to-br from-slate-900/70 to-slate-800/70 border border-white/10 rounded-2xl p-3 shadow-inner shadow-cyan-500/10">
+              <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-cyan-300 font-black">Energía del reto</p>
-                  <p className="text-sm text-slate-200 font-semibold">{masteryProgress}% concepto desbloqueado</p>
+                  <p className="text-xs text-slate-200 font-semibold">{masteryProgress}% concepto desbloqueado</p>
                 </div>
                 <div className="flex items-center gap-2 text-xl" aria-hidden>
                   {hypeTrail.map((emoji, idx) => (
@@ -365,22 +365,22 @@ const HangmanGame = ({ isOpen, onClose }) => {
                   ))}
                 </div>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
+              <div className="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-white/5">
                 <div
                   className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-lg shadow-cyan-400/40 transition-all duration-500"
                   style={{ width: `${masteryProgress}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-400 mt-2">Cada letra correcta recarga la barra y libera más pista visual.</p>
+              <p className="text-[11px] text-slate-400 mt-1">Cada letra correcta recarga la barra y libera más pista visual.</p>
             </div>
 
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-1.5">
               {LETTERS.map((letter) => (
                 <button
                   key={letter}
                   onClick={() => handleGuess(letter)}
                   disabled={guessedLetters.includes(letter) || status !== 'playing' || isLoading}
-                  className={`h-11 rounded-xl text-sm font-black transition-all border relative overflow-hidden ${
+                  className={`h-10 rounded-xl text-xs font-black transition-all border relative overflow-hidden ${
                     guessedLetters.includes(letter)
                       ? uniqueLetters.has(letter)
                         ? 'bg-gradient-to-br from-emerald-500/70 to-cyan-500/70 text-white border-emerald-200/60 shadow-lg shadow-emerald-400/30'
@@ -399,32 +399,32 @@ const HangmanGame = ({ isOpen, onClose }) => {
             </div>
 
             {(status === 'won' || status === 'lost') && (
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/5 rounded-2xl p-4 text-center space-y-2">
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/5 rounded-2xl p-3 text-center space-y-2">
                 <p className="text-3xl">{status === 'won' ? '🎉' : '💡'}</p>
-                <h4 className="text-lg font-black text-white">
+                <h4 className="text-base font-black text-white">
                   {status === 'won'
                     ? (challenge?.celebration || '¡Palabra salvada!')
                     : `La respuesta era: ${challenge?.answer}`}
                 </h4>
                 {challenge?.takeaway && (
-                  <p className="text-sm text-slate-300">{challenge.takeaway}</p>
+                  <p className="text-xs text-slate-300">{challenge.takeaway}</p>
                 )}
-                <div className="flex gap-3 justify-center pt-2 flex-wrap">
+                <div className="flex gap-3 justify-center pt-1 flex-wrap">
                   <button
                     onClick={startNewGame}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/30"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/30"
                   >
                     <RefreshCw className="w-4 h-4" /> Regenerar reto
                   </button>
                   <button
                     onClick={startNewGame}
-                    className="px-4 py-2 rounded-xl bg-emerald-500/90 text-white font-black text-sm flex items-center gap-2 shadow-lg shadow-emerald-400/30"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-500/90 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-emerald-400/30"
                   >
                     <Sparkles className="w-4 h-4" /> Volver a jugar
                   </button>
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-sm border border-white/10 hover:bg-slate-700"
+                    className="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-xs border border-white/10 hover:bg-slate-700"
                   >
                     Salir al dashboard
                   </button>
@@ -433,16 +433,16 @@ const HangmanGame = ({ isOpen, onClose }) => {
             )}
 
             {status === 'playing' && (
-              <div className="text-center text-slate-300 text-sm bg-slate-900/50 border border-white/5 rounded-xl p-3">
+              <div className="text-center text-slate-300 text-xs bg-slate-900/50 border border-white/5 rounded-xl p-2.5">
                 <span className="font-black text-cyan-200">Tip:</span> Cada nueva partida trae una pregunta distinta de gestión enfermera.
               </div>
             )}
 
-            <div className="flex gap-3 pt-1 flex-wrap justify-center md:justify-start">
+            <div className="flex gap-2 pt-1 flex-wrap justify-center md:justify-start">
               <button
                 onClick={startNewGame}
                 disabled={isLoading}
-                className="flex-1 px-4 py-3 rounded-xl bg-white text-slate-900 font-black text-sm shadow-lg hover:shadow-white/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 min-w-[150px] px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-lg hover:shadow-white/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 {isLoading ? 'Cargando...' : 'Regenerar reto'}
@@ -450,13 +450,13 @@ const HangmanGame = ({ isOpen, onClose }) => {
               <button
                 onClick={startNewGame}
                 disabled={isLoading}
-                className="px-4 py-3 rounded-xl bg-emerald-500/90 text-white font-black text-sm shadow-lg shadow-emerald-400/30 hover:shadow-emerald-300/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="px-3.5 py-2.5 rounded-xl bg-emerald-500/90 text-white font-black text-xs shadow-lg shadow-emerald-400/30 hover:shadow-emerald-300/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4" /> Volver a jugar
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-3 rounded-xl bg-slate-800 text-slate-200 font-bold text-sm border border-white/10 hover:bg-slate-700"
+                className="px-3.5 py-2.5 rounded-xl bg-slate-800 text-slate-200 font-bold text-xs border border-white/10 hover:bg-slate-700"
               >
                 Salir al dashboard
               </button>
