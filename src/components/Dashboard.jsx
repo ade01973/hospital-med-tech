@@ -715,16 +715,14 @@ const Dashboard = ({ user, userData, setView, setLevel, setShowElevatorDoors }) 
                     🧠
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-fuchsia-200 font-bold">Debajo de Infografías</p>
                     <h3 className="text-lg font-black text-white">La batalla de las ideas</h3>
-                    <p className="text-sm text-fuchsia-100/80">Escanea el QR y responde. Solo el profesorado lanza la sesión.</p>
                   </div>
                 </div>
                 <button
                   onClick={handleBattleOfIdeas}
                   className="px-3 py-1.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-lg hover:shadow-white/30 transition"
                 >
-                  {professorEmails.includes(user?.email) ? 'Jugar' : 'Unirme con QR'}
+                  Jugar
                 </button>
               </div>
             </div>
