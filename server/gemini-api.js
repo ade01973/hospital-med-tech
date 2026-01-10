@@ -6,7 +6,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY_1 || "" });
+
+const combineParts = (parts = []) => parts.map(part => part?.text || '').join(' ').trim();
+
+const toOpenAIMessages = (contents = [], { treatFirstUserAsSystem = false } = {}) =>
+  contents
+    .map((entry, index) => {
+      const roleFromGemini = entry.role === 'model' ? 'assistant' : entry.role || 'user';
+      const role = roleFromGemini === 'user' && treatFirstUserAsSystem && index === 0
+        ? 'system'
+        : roleFromGemini;
+
+      return {
+        role,
+        content: combineParts(entry.parts || [])
+      };
+    })
+    .filter(message => message.content);
+
+const shouldFallbackToOpenAI = (error) => {
+  const message = error?.message || '';
+  return error?.status === 429 || error?.status === 503 || /quota|limit|overloaded|exceeded/i.test(message);
+};
+
+const buildGeminiPayload = (request) => {
+  if (Array.isArray(request)) {
+    return { contents: request };
+  }
+
+  return {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: typeof request === 'string' ? request : JSON.stringify(request) }]
+      }
+    ]
+  };
+};
 
 const TERMINOLOGY_RULES = `
 REGLAS OBLIGATORIAS DE TERMINOLOGÍA:
@@ -36,12 +74,14 @@ Si no sabes algo, admítelo honestamente.`;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function callGeminiWithRetry(contents, maxRetries = 3) {
+async function callGeminiWithRetry(request, maxRetries = 3) {
+  const payload = buildGeminiPayload(request);
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: contents,
+        ...payload,
       });
       return response;
     } catch (error) {
@@ -63,6 +103,52 @@ async function callGeminiWithRetry(contents, maxRetries = 3) {
   }
 }
 
+async function callOpenAI({ messages, prompt }) {
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY no configurada');
+  }
+
+  const finalMessages = (messages && messages.length)
+    ? messages
+    : [{ role: 'user', content: prompt }];
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: finalMessages
+    })
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`OpenAI error ${response.status}: ${errorBody}`);
+  }
+
+  const data = await response.json();
+  const text = data?.choices?.[0]?.message?.content?.trim() || '';
+
+  return { text };
+}
+
+async function generateWithFallback({ geminiRequest, openaiMessages, fallbackPrompt }) {
+  try {
+    return await callGeminiWithRetry(geminiRequest);
+  } catch (error) {
+    console.warn('Gemini failed, trying OpenAI fallback:', error.message);
+
+    if (!shouldFallbackToOpenAI(error)) {
+      throw error;
+    }
+
+    return await callOpenAI({ messages: openaiMessages, prompt: fallbackPrompt });
+  }
+}
+
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, history = [], systemPrompt: customPrompt } = req.body;
@@ -78,7 +164,18 @@ app.post('/api/chat', async (req, res) => {
       { role: "user", parts: [{ text: message }] }
     ];
 
-    const response = await callGeminiWithRetry(contents);
+    const openaiMessages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'assistant', content: 'Entendido. Soy el Asistente NurseManager, especializado en gestión enfermera. Estoy aquí para ayudarte con tus dudas sobre liderazgo, administración, calidad y todos los temas relacionados con la gestión enfermera. ¿En qué puedo ayudarte?' },
+      ...toOpenAIMessages(history || []),
+      { role: 'user', content: message }
+    ].filter(entry => entry.content);
+
+    const response = await generateWithFallback({
+      geminiRequest: contents,
+      openaiMessages,
+      fallbackPrompt: `${systemPrompt}\n\n${message}`
+    });
     res.json({ response: response.text || "Lo siento, no pude generar una respuesta." });
   } catch (error) {
     console.error("Error calling Gemini:", error);
@@ -110,7 +207,14 @@ Responde SOLO con un JSON válido en este formato exacto:
 
 El campo "correct" es el índice (0-3) de la respuesta correcta.`;
 
-    const response = await callGeminiWithRetry(prompt);
+    const response = await generateWithFallback({
+      geminiRequest: prompt,
+      openaiMessages: [
+        { role: 'system', content: 'Eres un generador de preguntas tipo test para gestoras enfermeras. Responde únicamente con JSON válido.' },
+        { role: 'user', content: prompt }
+      ],
+      fallbackPrompt: prompt
+    });
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
@@ -174,7 +278,14 @@ IMPORTANTE:
 - Usa colores que combinen bien: from-cyan-500 to-blue-500, from-blue-500 to-indigo-500, from-indigo-500 to-purple-500, from-teal-500 to-cyan-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
+    const response = await generateWithFallback({
+      geminiRequest: prompt,
+      openaiMessages: [
+        { role: 'system', content: 'Eres un generador de escenarios de toma de decisiones para gestoras enfermeras. Responde únicamente con JSON válido.' },
+        { role: 'user', content: prompt }
+      ],
+      fallbackPrompt: prompt
+    });
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
@@ -291,7 +402,14 @@ IMPORTANTE:
 - Situaciones realistas de gestión enfermera en España
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
+    const response = await generateWithFallback({
+      geminiRequest: prompt,
+      openaiMessages: [
+        { role: 'system', content: 'Eres un generador de árboles de decisión para gestoras enfermeras. Responde únicamente con JSON válido.' },
+        { role: 'user', content: prompt }
+      ],
+      fallbackPrompt: prompt
+    });
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
@@ -404,7 +522,14 @@ IMPORTANTE:
 - Situaciones realistas de enfermería en España
 - NO incluyas "id" en el JSON principal, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
+    const response = await generateWithFallback({
+      geminiRequest: prompt,
+      openaiMessages: [
+        { role: 'system', content: 'Eres un generador de ejercicios de priorización para gestoras enfermeras. Responde únicamente con JSON válido.' },
+        { role: 'user', content: prompt }
+      ],
+      fallbackPrompt: prompt
+    });
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
@@ -473,7 +598,14 @@ IMPORTANTE:
 - Usa colores: from-emerald-500 to-teal-500, from-rose-500 to-pink-500, from-amber-500 to-orange-500
 - NO incluyas "id" en el JSON, se generará automáticamente`;
 
-    const response = await callGeminiWithRetry(prompt);
+    const response = await generateWithFallback({
+      geminiRequest: prompt,
+      openaiMessages: [
+        { role: 'system', content: 'Eres un generador de escenarios de liderazgo para gestoras enfermeras. Responde únicamente con JSON válido.' },
+        { role: 'user', content: prompt }
+      ],
+      fallbackPrompt: prompt
+    });
     const text = response.text || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     
